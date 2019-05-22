@@ -1,0 +1,72 @@
+//-----------------------------------------------------
+// public scss
+// 设置了公共组件、变量和宏
+//-----------------------------------------------------
+@import '@/assets/scss/theme.scss'; 
+
+@font-face {
+  font-family: carFont;
+  src: url("../font/NeogreyRegular.otf");
+}
+
+[v-cloak] {
+  display: none;
+}
+
+img {
+  object-fit: cover;
+  object-position: center center;
+}
+
+.clearfix {
+  zoom: 1;
+  &:before,
+  &:after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    font-size: 0;
+    line-height: 0;
+    overflow: hidden;
+    visibility: hidden;
+  }
+  &:after {
+    clear: both;
+  }
+}
+.c-right {
+  float: right;
+}
+
+.c-left {
+  float: left;
+}
+
+.c-hide {
+  display: none;
+}
+
+.c-pos-wrap {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 0;
+  padding-bottom: 100%;
+  background-color: #e1e1e1;
+}
+.c-pos-inner {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.c-view-btn {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
