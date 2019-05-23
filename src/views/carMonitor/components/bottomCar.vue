@@ -369,9 +369,9 @@
         let _this=this;
         var json = JSON.parse(message.data);
         var data = json.result.vehicleLiveReportCountList;
-        console.log("返回数据大小---"+data.length);
+        // console.log("返回数据大小---"+data.length);
         _this.dataHandle(data);
-        console.log("时间---"+new Date().getTime())
+        // console.log("时间---"+new Date().getTime())
       },
       dataHandle(data){
         var _this = this;
