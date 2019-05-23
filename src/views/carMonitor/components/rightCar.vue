@@ -29,9 +29,9 @@
       <span></span>
       <span></span>
       <span></span>
-      <img src="@/assets/images/car/car-16.png" class="host-vehicle" :style="{position:'absolute', left:screenConfig.scrWidth/2-13+'px',top:screenConfig.scrHeight*3/4-10+'px',transform:'rotate('+-90+'deg)'}"/>
+      <img src="@/assets/images/car/car-6.png" class="host-vehicle" :style="{left:screenConfig.scrWidth/2-13+'px',top:screenConfig.scrHeight*3/4-10+'px'}"/>
       <div class="otherCarsContainer">
-        <div class="item" v-for="(carItem,index) in carsDataformate" :style="{position:'absolute', left:carItem.Sx+'px',top:carItem.Sy+'px',transform:'rotate('+carItem.headingAngle+'deg)'}">
+        <div class="item" v-for="(carItem,index) in carsDataformate" :style="{left:carItem.Sx+'px',top:carItem.Sy+'px',transform:'rotate('+(carItem.headingAngle-currentCar.headingAngle)+'deg)'}">
             <img src="@/assets/images/car/car-17.png" class="car-position1"/>
         </div>
       </div>
@@ -64,9 +64,12 @@
         socketPath: 'ws://10.0.1.57:9982/mon',
         socket:'',
         screenConfig:{
-            scrWidth:270, //屏幕宽 px
-            scrHeight:180, //屏幕高 px
-            showHeight:200, //显示高 m
+            scrWidth: 270, //屏幕宽 px
+            scrHeight: 180, //屏幕高 px
+            // showHeight: 1800000, //显示高 m
+            showHeight: 200, //显示高 m
+            meterPerDegree: 108000, //1度=108000 m 固定值
+            scalefactor: 0,//一个像素相当于多少度
         },
         //自车数据
         currentCar:{
@@ -74,6 +77,10 @@
         carsData:[
         ],
       }
+    },
+    created() {
+      this.screenConfig.scalefactor = this.screenConfig.showHeight/(this.screenConfig.scrHeight*this.screenConfig.meterPerDegree);
+      console.log(this.screenConfig.scalefactor);
     },
     methods: {
       getDriveCalendar(){
@@ -297,11 +304,7 @@
           var that = this;
           var res = JSON.parse(msg.data);
           this.currentCar = res.result;
-          this.carsData = res.result.liveRadarDetailList;
-          // console.log("*******************************************");
-          // console.log(res.result);
-          // console.log(res.result.liveRadarDetailList);
-          // console.log(res.result.liveRadarDetailList.length);
+          this.carsData = res.result.liveRadarDetailList ? res.result.liveRadarDetailList : [];
       },
       close(){
           console.log('Socket已经关闭');
@@ -312,26 +315,21 @@
        * @param {*} latitude 纬度
        */
       mapPtToScrPt(longitude,latitude){
-          var scrWidth = this.screenConfig.scrWidth,//屏幕宽 px
-              scrHeight = this.screenConfig.scrHeight,//屏幕高 px
-              showHeight = this.screenConfig.showHeight,//显示高度 m
-              srcCenterPtX = this.screenConfig.scrWidth/2,//视图中心点x
+          var srcCenterPtX = this.screenConfig.scrWidth/2,//视图中心点x
               srcCenterPtY = this.screenConfig.scrHeight*3/4,//视图中心点y
               srcMapCenterLng = this.currentCar.longitude, //当前车经度
               srcMapCenterLat = this.currentCar.latitude,//当前车纬度
-              meterPerDegree = 108000, //1度=多少米 m
-              scalefactor = (showHeight/scrHeight)/meterPerDegree,//一个像素相当于多少度
               lng1 = longitude, //其他车经度
               lat1 = latitude; //其他车纬度
-           console.log("比例尺---"+showHeight/scrHeight);
+
           //当前车是否偏移中心点  假设在3/4高度处
           // var movedMapPt = this.movePt(0,this.screenConfig.scrHeight/4,longitude,latitude);
           // var srcMapCenterLng = movedMapPt.lng,
           //     srcMapCenterLat = movedMapPt.lat;
 
           //根据比例尺1像素=多少度，计算出其他车相对于中心点的偏移量
-          var Ssx = (lng1 - srcMapCenterLng)/scalefactor,
-              Ssy = (lat1 - srcMapCenterLat)/scalefactor;
+          var Ssx = (lng1 - srcMapCenterLng)/this.screenConfig.scalefactor,
+              Ssy = (lat1 - srcMapCenterLat)/this.screenConfig.scalefactor;
               // console.log('Ssx',Ssx,'Ssy',Ssy)
 
           //判断是否需要旋转坐标
@@ -340,48 +338,19 @@
               Ssx = rotatedData.s;
               Ssy = rotatedData.t;
           }
-          var Sx = srcCenterPtX + Ssx,
+          var Sx = srcCenterPtX - Ssx,
               Sy = srcCenterPtY + Ssy;
+          // console.log(this.currentCar.longitude, this.currentCar.latitude);
+          // console.log('Ssx',lng1 - srcMapCenterLng,'Ssy',lat1 - srcMapCenterLat);
           // console.log('Sx',Sx,'Sy',Sy);
 
           //居中，减去水滴icon的宽高的一半
-          Sx = Sx-8;
-          Sy = Sy-12;
+          // Sx = Sx-8;
+          // Sy = Sy-12;
           return {
               Sx:Sx,
               Sy:Sy
           };
-      },
-      /**
-       * scrPtToMapPt 屏幕坐标转地理坐标
-       * @param {*} x 屏幕坐标x
-       * @param {*} y 屏幕坐标y
-       */
-      scrPtToMapPt(x,y){
-          //已知：1度=多少米;偏移地图中心点的距离（单位米）；偏移屏幕中心点的距离单位px
-          //求：1像素=多少度？
-          var meterPerDegree = 108000, //1度=多少米 m
-              srcCenterPtX = this.screenConfig.scrWidth/2,//视图中心点x
-              srcCenterPtY = this.screenConfig.scrHeight/2,//视图中心点y
-              showHeight = this.screenConfig.showHeight,//显示高度 m
-              srcMapCenterLng = this.currentCar.longitude, //当前车经度
-              srcMapCenterLat = this.currentCar.latitude,//当前车纬度
-              //计算比例尺（1像素=多少度）= (1像素=多少米)/(1度=多少米)
-              scalefactor = (showHeight/this.screenConfig.scrHeight)/meterPerDegree;
-
-          //计算距离地理中心偏移量 单位：度
-          _lng = (x-srcCenterPtX)*scalefactor;
-          _lat = (y-srcCenterPtY)*scalefactor;
-          // console.log('_lng',_lng,'_lat',_lat);
-
-          var lng1 = srcMapCenterLng + _lng,
-              lat1 = srcMapCenterLat + _lat;
-          // console.log('scrPtToMapPt:',lng1,lat1);
-
-          return{
-              lng: lng1,
-              lat: lat1
-          }
       },
       //旋转坐标
       rotateCoordinateAxis(x,y,angel){
@@ -402,21 +371,18 @@
        * @param {*} longitude 平移后的经度
        * @param {*} latitude  平移后的纬度
        */
-      movePt(moveX,moveY,longitude,latitude){
-          var meterPerDegree = 108000, //1度=多少米 m
-          //计算比例尺（1像素=多少度）= (1像素=多少米)/(1度=多少米)
-          scalefactor = (this.screenConfig.showHeight/this.screenConfig.scrHeight)/meterPerDegree;
+      // movePt(moveX,moveY,longitude,latitude){
 
-          //地理偏移量 单位度
-          moveLng = moveX*scalefactor;
-          moveLat = moveY*scalefactor;
-          // console.log('平移后的经纬度：',longitude + moveLng,latitude + moveLat);
-          return {
-              lng: longitude + moveLng,
-              lat: latitude + moveLat,
-          }
+      //     //地理偏移量 单位度
+      //     moveLng = moveX*this.screenConfig.scalefactor;
+      //     moveLat = moveY*this.screenConfig.scalefactor;
+      //     // console.log('平移后的经纬度：',longitude + moveLng,latitude + moveLat);
+      //     return {
+      //         lng: longitude + moveLng,
+      //         lat: latitude + moveLat,
+      //     }
 
-      },
+      // },
     },
     mounted () {
       this.getDriveCalendar();
@@ -433,8 +399,7 @@
     computed:{
       carsDataformate(){
           var that = this;
-          // console.log("------------------------------------------------------");
-          // console.log(this.carsData);
+          // console.log(this.carsData.length);
           if(this.carsData && this.carsData.length > 0) {
             var carsDataformate = this.carsData.map(function(item,index,self){
                 var formateItem = that.mapPtToScrPt(item.longitude,item.latitude);
@@ -462,7 +427,6 @@
 <style scoped>
   .monitor-right{
     width: 300px;
-    /*  background: #24212c;*/
     min-width: 200px;
     height:100%;
   }
@@ -527,41 +491,6 @@
     height: 250px;
     margin-left:5%;
   }
-  /*  .monitor-title{
-      font-size: 18px;
-      color: #fff;
-      padding-left: 5%;
-      margin-top:10%;
-    }
-    .clear:after{
-      content: '';
-      clear: both;
-      line-height:0;
-      height:0;
-      display: block;
-      visibility: hidden;
-    }
-    .line-style{
-      padding-left: 5%;
-    }
-    .line{
-      float: left;
-    }
-    .line-1{
-      width: 10%;
-    }
-    .line-2{
-      width: 85%;
-    }
-    .line1{
-      border-top: 2px solid #ef920e;
-      display: block;
-    }
-    .line2{
-      border-top: 1px solid #ef920e;
-      display: block;
-      margin-top: 0.5px;
-    }*/
   .car-position{
     position: absolute;
     left: 124px;
@@ -569,36 +498,9 @@
     width: 22px;
     transform: rotate(-90deg);
   }
-  .car-position1{
-    position: absolute;
-    left: 100px;
-    top: 100px;
-    width: 15px;
-    transform: rotate(50deg);
-  }
-  .car-position2{
-    position: absolute;
-    left: 150px;
-    top: 80px;
-    width: 15px;
-  }
-  .car-position3{
-    position: absolute;
-    left: 120px;
-    top: 50px;
-    width: 15px;
-  }
   .right-title{
     margin-top: 35px!important;
   }
-  /* 感知数据 */
-  /* .monitor-perception{
-       width: 270px;
-       height: 180px;
-       margin: 200px auto;
-       position: relative;
-       overflow: hidden;
-   }*/
   .otherCarsContainer{
     width: 270px;
     height: 180px;
@@ -607,8 +509,18 @@
     top: 0;
   }
   .host-vehicle{
+    position: absolute;
+    z-index: 2;
     width: 26px;
     height: 20px;
+    transform:rotate(-90deg);
+  }
+  .item{
+    position: absolute;
+    z-index: 1;
+    width: 16px;
+    height: 24px;
+    margin: -12px 0 0 -8px;
   }
   .car-position1{
     width: 16px;

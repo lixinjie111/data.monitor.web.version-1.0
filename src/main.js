@@ -22,16 +22,16 @@ import echarts from 'echarts'
 Vue.prototype.$echarts = echarts
 
 //高德地图
-import VueAMap from "vue-amap";
-Vue.use(VueAMap);
+// import VueAMap from "vue-amap";
+// Vue.use(VueAMap);
 
-VueAMap.initAMapApiLoader({
-  key: "8bf04484a44d846096c9ab84730e88b8",
-  plugin: [
-    "AMap.ElasticMarker"
-  ],
-  uiVersion: "1.0"
-});
+// VueAMap.initAMapApiLoader({
+//   key: "8bf04484a44d846096c9ab84730e88b8",
+//   plugin: [
+//     "AMap.ElasticMarker"
+//   ],
+//   uiVersion: "1.0"
+// });
 
 // 权限
 import { setAuthInfo, getAdminId, getAuthInfo, removeAuthInfo } from '@/utils/auth';

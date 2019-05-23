@@ -8,7 +8,7 @@
       <img class="car-img" src="@/assets/images/car/car.png" ></img>
     </div>
     <p class="monitor-title">行车统计</p>
-    <div class="clear line-style">
+    <div class="clearfix line-style">
       <div class="line line-1" >
         <span class="line1"></span>
       </div>
@@ -16,7 +16,7 @@
         <span class="line2"></span>
       </div>
     </div>
-    <div class="clear">
+    <div class="clearfix">
        <ul class="statistic-style">
          <li>
            <img src="@/assets/images/car/car-1.png" class="statistic-img"/>
@@ -69,7 +69,7 @@
 
 
     <p class="monitor-title">行程概览</p>
-    <div class="clear line-style">
+    <div class="clearfix line-style">
       <div class="line line-1" >
         <span class="line1"></span>
       </div>
@@ -81,7 +81,7 @@
 
     <div class="single-bottom">
 
-        <span class="distance-detail">行驶开始时间：{{routeInfo.routeStartTime ? getStartTime(routeInfo.routeStartTime) : "--"}}</span>
+        <span class="distance-detail">行驶开始时间：{{routeInfo.routeStartTime ? $dateUtil.formatTime(routeInfo.routeStartTime) : "--"}}</span>
         <span class="distance-detail">累计行驶时长：{{routeInfo.durationTime ? getRunTime(routeInfo.durationTime) : "--"}}</span>
         <span class="distance-detail">累计行驶里程：{{routeInfo.mileage ? routeInfo.mileage.toFixed(1) : "--"}}km</span>
         <span class="distance-detail">平均测速：{{routeInfo.avgSpd ? routeInfo.avgSpd.toFixed(1) : "--"}}km/h</span>
@@ -167,22 +167,14 @@
           console.log("all=1, change重绘路线");
         }else{
           // this.onopen();
+          this.webSocketData.scale = this.scale;
+          this.webSocketData.all = newVal;
           this.webSocket.send(JSON.stringify(this.webSocketData));
           console.log("all=0, chang，重新发起服务");
         }
       }
     },
     methods: {
-      getStartTime(nS) {
-        var date = new Date(nS),   
-            Y = date.getFullYear() + '-',
-            M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-',
-            D = date.getDate() + ' ',
-            h = date.getHours() + ':',
-            m = date.getMinutes() + ':',
-            s = date.getSeconds();
-         return Y+M+D+h+m+s;     
-      },
       getRunTime(nS) {
         nS = nS / 1000;
         var year = Math.floor(nS / 86400 / 365);
@@ -396,7 +388,7 @@
           }];
         } 
         // pointList.forEach((item) => {
-        //   console.log(item);
+        //   console.log(item.gNSS_LONG, item.gNSS_LAT);
         // });
         this.routeInfo = {
           routeStartTime: json.data.routeStartTime, //行驶开始时间
@@ -417,10 +409,11 @@
           }else{
             console.log("第一次开启行程");
             this.routeId = json.data.routeId;
+            // console.log(this.routeId);
             AMap.convertFrom(new AMap.LngLat(pointList[0].gNSS_LONG, pointList[0].gNSS_LAT), 'gps', function (status, result){
                 if (result.info === 'ok') {
                   let firstPoint = result.locations[0];
-                  console.log(firstPoint);
+                  // console.log(firstPoint);
                   // 绘制起点
                   _this.carStartPoint = firstPoint;
                   _this.distanceMapStart();
@@ -433,24 +426,32 @@
             return false;
           }
 
-          if(pointList.length==1){
-            this.prevLastPointPath = [pointList[0].gNSS_LONG, pointList[0].gNSS_LAT];
-            // console.log(pointList[0].gNSS_LONG, pointList[0].gNSS_LAT);
-          }else{
+          if(pointList.length!=0){
             this.prevLastPointPath = [pointList[pointList.length-1].gNSS_LONG, pointList[pointList.length-1].gNSS_LAT];
-            // console.log(pointList);
           }
+          // if(pointList.length==1){
+          //   this.prevLastPointPath = [pointList[0].gNSS_LONG, pointList[0].gNSS_LAT];
+          //   // console.log(pointList[0].gNSS_LONG, pointList[0].gNSS_LAT);
+          // }else{
+          //   this.prevLastPointPath = [pointList[pointList.length-1].gNSS_LONG, pointList[pointList.length-1].gNSS_LAT];
+          //   // console.log(pointList);
+          // }
 
           var handlePointList = [];
+          // console.log("--------------------------------------------");
+          // console.log(pointList);
           pointList.forEach((item, index) => {
+            if(item.gNSS_LONG && item.gNSS_LAT){
               let lnglatArr = new AMap.LngLat(item.gNSS_LONG, item.gNSS_LAT);
               handlePointList.push(lnglatArr);
+            }
           });
 
           let _dataLength = handlePointList.length,
               _limitLength = 200;
-          if(_dataLength.length > _limitLength) {
+          if(_dataLength > _limitLength) {
             let _newLength = Math.ceil(_dataLength/_limitLength);
+            // console.log(_newLength);
             for(let i = 0; i < _newLength; i++){
               this.wholePath.push({
                 angle: (i+1)*_limitLength < _dataLength ? pointList[(i+1)*_limitLength-1].gNSS_HEAD : pointList[_dataLength-1].gNSS_HEAD,
@@ -458,6 +459,7 @@
                 pathList: handlePointList.slice(i*_limitLength, (i+1)*_limitLength)
               });
             }
+            // console.log(this.wholePath);
           }else{
             let _newWholeJson = {
               angle: pointList[_dataLength-1].gNSS_HEAD >= 0 ? pointList[_dataLength-1].gNSS_HEAD : 90,
@@ -470,6 +472,7 @@
             this.wholePath.push(_newWholeJson);
           }
             // console.log("wholePath------------");
+            // console.log(this.wholePath.length);
             // console.log(this.wholePath);
           this.changeLngLat();
 
@@ -554,14 +557,6 @@
   }
 </script>
 <style>
-  .clear:after{
-    content: '';
-    clear: both;
-    line-height:0;
-    height:0;
-    display: block;
-    visibility: hidden;
-  }
   .line-style{
     padding-left: 5%;
     margin-top: 2%;
@@ -591,7 +586,7 @@
     margin-top: 55px;
   }
 </style>
-<style scoped>
+<style scoped lang="scss">
 
   .car-detail-title{
     position: relative;
@@ -703,6 +698,10 @@
     line-height: 50px;
     color: #ddd9d1;
     text-align: left;
-    padding: 0 30px 0 20px;
+    padding: 0 20px 0 20px;
+    width: 160px;
+    &:first-child {
+      width: 230px;
+    }
   }
 </style>

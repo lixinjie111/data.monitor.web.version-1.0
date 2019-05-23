@@ -463,7 +463,6 @@
        /* _this.dataHandle(data);*/
       },
       dataHandle(data){
-        debugger
         var _this = this;
         var curve;
         var length=0;
