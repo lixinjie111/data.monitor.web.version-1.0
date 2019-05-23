@@ -2,15 +2,15 @@
   <div class="monitor-traffic">
     <div class="travel-detail">
       <div class="detail1">
-        <span>{{realData.longitude | toFixed(8)}}</span>
+        <span>{{realData.longitude? realData.longitude.toFixed(8):'--'}}</span>
         <span class="detail2">E</span>
       </div>
       <div class="detail1">
-        <span>{{realData.latitude | toFixed(8)}}</span>
+        <span>{{realData.latitude ?realData.latitude.toFixed(8):'--'}}</span>
         <span class="detail2">N</span>
       </div>
       <div class="detail1">
-        <span>{{realData.speed}}</span>
+        <span>{{realData.speed?realData.speed.toFixed(1):'--'}}</span>
         <span class="detail2">km/h</span>
       </div>
       <div class="detail1">
@@ -94,10 +94,18 @@
     },
     computed:{
       nowYear(){
-        return this.$dateUtil.formatTime(this.realData.gpsTime).split(" ")[0];
+        if(this.realData.gpsTime==''){
+          return '--';
+        }else{
+          return this.$dateUtil.formatTime(this.realData.gpsTime).split(" ")[0];
+        }
       },
       nowTime(){
-        return this.$dateUtil.formatTime(this.realData.gpsTime).split(" ")[1];
+        if(this.realData.gpsTime==''){
+          return '--';
+        }else{
+          return this.$dateUtil.formatTime(this.realData.gpsTime).split(" ")[1];
+        }
       }
     },
     methods: {
@@ -437,6 +445,7 @@
         _this.lightWebsocket.onopen = _this.onLightOpen;
       },
       onLightMessage(mesasge){
+        debugger
         var _this=this;
         var json = JSON.parse(mesasge.data);
         var lightData = json.result.data;

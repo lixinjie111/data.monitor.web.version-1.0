@@ -18,6 +18,7 @@ const CloudMonitor = resolve => require(['@/views/cloudMonitor/index'], resolve)
 const CloudViewMonitor = resolve => require(['@/views/cloudMonitor/view'], resolve)
 const AlertMonitor = resolve => require(['@/views/alertMonitor/index'], resolve)
 const AlertViewMonitor = resolve => require(['@/views/alertMonitor/view'], resolve)
+const MonitorManage = resolve => require(['@/views/monitorShow/index'], resolve)
 
 
 
@@ -142,8 +143,16 @@ export default new Router({
     meta: {
       showHeader: true
     }
+  },{
+    path: '/monitorManage',
+    name: 'MonitorManage',
+    component: MonitorManage,
+    // component: () => import('@/pages/home/Home'),
+    meta: {
+      showHeader: false
+    }
   }],
   scrollBehavior (to, from, savedPosition) {
     return { x: 0, y: 0 }
   }
-}) 
+})
