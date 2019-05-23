@@ -129,7 +129,12 @@
       stopBottomWidth(){
         let pedalData = parseFloat(this.realData.brakePedal/100);
         return parseInt(this.stopLeftWidth*2/7);
-      }
+      },
+      /*lastTime(){
+        var time = new Date().getTime()-this.realData.gpsTime;
+        console.log("time---------"+time)
+        return time;
+      }*/
     },
     methods: {
       initWebSocket(){
@@ -188,6 +193,15 @@
           }
         }else{
           return;
+        }
+      }
+    },
+    watch:{
+      lastTime(oldValue,newValue){
+        if(oldValue>=30000){
+          this.realData.transmission='P';
+          this.pedalLeftWidth=0;
+          this.stopLeftWidth=0;
         }
       }
     },
@@ -381,7 +395,6 @@
 
   .header-angle img{
     position: relative;
-    left: 1px;
     top: 5px;
   }
   .header-angle {

@@ -61,6 +61,7 @@
         var json = JSON.parse(mesasge.data);
         /*var type = json.action;*/
         this.realData = json.result;
+
       },
       onclose(data){
         console.log("结束连接");

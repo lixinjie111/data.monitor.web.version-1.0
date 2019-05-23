@@ -66,7 +66,7 @@
         screenConfig:{
             scrWidth:270, //屏幕宽 px
             scrHeight:180, //屏幕高 px
-            showHeight:1800000, //显示高 m
+            showHeight:200, //显示高 m
         },
         //自车数据
         currentCar:{
@@ -119,7 +119,7 @@
                 hoverLink:true,
                 pieces: [
                   {min: 0, max: 7200000, color: '#2b2218'},//0-2小时
-                  {min: 7200000, max: 14400000, color: '#2b2218'},//2-4小时
+                  {min: 7200000, max: 14400000, color: '#503512'},//2-4小时
                   {min: 14400000, max: 21600000, color: '#503913'},//4-6小时
                   {min: 21600000, max: 28800000, color: '#885a0b'},//6-8小时
                   {min: 28800000, color: '#d38600'},//8小时以上
@@ -323,7 +323,7 @@
               scalefactor = (showHeight/scrHeight)/meterPerDegree,//一个像素相当于多少度
               lng1 = longitude, //其他车经度
               lat1 = latitude; //其他车纬度
-
+           console.log("比例尺---"+showHeight/scrHeight);
           //当前车是否偏移中心点  假设在3/4高度处
           // var movedMapPt = this.movePt(0,this.screenConfig.scrHeight/4,longitude,latitude);
           // var srcMapCenterLng = movedMapPt.lng,

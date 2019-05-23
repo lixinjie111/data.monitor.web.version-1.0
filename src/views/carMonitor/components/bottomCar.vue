@@ -109,10 +109,12 @@
         container:{},
         webSocket:{},
         reportWebSocket:{},
+        reportList:[],
         isFirst:true,
         isMultiple:true,
         eventData:[],
-        vehicleData:[]
+        vehicleData:[],
+        m:0
       }
     },
     props:{
@@ -366,14 +368,102 @@
         _this.reportWebSocket.onopen = _this.onReportOpen;
       },
       onReportMessage(message){
+//        console.log("时间----"+new Date().getTime())
         let _this=this;
         var json = JSON.parse(message.data);
         var data = json.result.vehicleLiveReportCountList;
-        console.log("返回数据大小---"+data.length);
-        _this.dataHandle(data);
-        console.log("时间---"+new Date().getTime())
+        var canData=[];
+        var gpsData=[];
+        var radarData=[];
+        var eventData = [];
+        if(data.length>0){
+
+          if(_this.m==10){
+            _this.m=0;
+            /*_this.k=0;
+            _this.i=0;
+            _this.upRandom=0.1;
+            _this.downRandom = 0.1;*/
+
+          }
+          data.forEach(function (item) {
+            if(item.dataType=='vehicleCanCount'){
+              canData.push(item);
+            }
+            if(item.dataType=='vehicleGpsCount'){
+              gpsData.push(item);
+            }
+            if(item.dataType=='vehicleRadarCount'){
+              radarData.push(item);
+            }
+            if(item.dataType=='vehicleEventCount'){
+              eventData.push(item);
+            }
+          })
+          //绘制can和gps
+          if(_this.m==1||_this.m==5||_this.m==9){
+            if(_this.k==9&&canData.length>0&&gpsData.length>0){
+              var canCurve = new Curve1([110, 142], [300, 58], '600', '200', _this.upRandom,'CAN',_this.k,'up');
+              canCurve.generateForward();
+              _this.upRandom = _this.upRandom+0.08;
+              _this.k++;
+              if(_this.k==10){
+                _this.k=0;
+                _this.upRandom=0.1
+              }
+            }else{
+              if(canData.length>0){
+                var canCurve = new Curve1([110, 142], [300, 58], '600', '200', _this.upRandom,'CAN',_this.k,'up');
+                canCurve.generateForward();
+                _this.upRandom = _this.upRandom+0.08;
+                _this.k++;
+                if(_this.k==10){
+                  _this.k=0;
+                  _this.upRandom=0.1
+                }
+              }
+              if(gpsData.length>0){
+                var gpsCurve = new Curve1( [110, 142], [300, 58], '600', '200', _this.upRandom,'GPS',_this.k,'up');
+                gpsCurve.generateForward();
+                _this.upRandom = _this.upRandom+0.08;
+                _this.k++;
+                if(_this.k==10){
+                  _this.k=0;
+                  _this.upRandom=0.1
+                }
+              }
+            }
+          }
+          if(_this.m==3||_this.m==6){
+            if(radarData.length>0){
+              var radarCurve = new Curve1( [110, 142], [300, 58], '600', '200', _this.upRandom,'radar',_this.k,'up');
+              radarCurve.generateForward();
+              _this.upRandom = _this.upRandom+0.08;
+              _this.k++;
+              if(_this.k==10){
+                _this.k=0;
+                _this.upRandom=0.1
+              }
+            }
+          }
+          if(_this.m==3||_this.m==4||_this.m==9){
+            if(eventData.length>0){
+              var eventCurve = new Curve1([345, 60], [540, 155], '600', '200', _this.downRandom,'event',_this.i,'down');
+              eventCurve.generateForward();
+              _this.downRandom = _this.downRandom+0.08;
+              _this.i++;
+              if(_this.i==10){
+                _this.i=0;
+                _this.downRandom=0.1
+              }
+            }
+          }
+          _this.m++;
+        }
+       /* _this.dataHandle(data);*/
       },
       dataHandle(data){
+        debugger
         var _this = this;
         var curve;
         var length=0;
@@ -399,10 +489,11 @@
         }*/
         if(data.length>0){
           data.forEach(function (item) {
+            _this.reportList.push(item);
             length++;
             if(item.count>0){
               if(item.dataType=='vehicleEventCount'){
-                if(_this.i<8){
+                if(_this.i<10){
                   curve = new Curve1([345, 60], [540, 155], '600', '200', _this.downRandom,'event',_this.i,'down');
                   curve.generateForward();
                   _this.downRandom = _this.downRandom+0.05;
@@ -415,7 +506,7 @@
                   }
                 }
               }else {
-                if(_this.k<8){
+                if(_this.k<10){
                   if(item.dataType=='vehicleCanCount'){
                     curve = new Curve1([110, 142], [300, 58], '600', '200', _this.upRandom,'CAN',_this.k,'up');
                     curve.generateForward();
@@ -442,12 +533,12 @@
               }
             }
           })
-          if(_this.vehicleData.length>0){
+          /*if(_this.vehicleData.length>0){
             _this.lineHandle(_this.vehicleData,'up');
           }
           if(_this.eventData.length>0){
             _this.lineHandle(_this.eventData,'down');
-          }
+          }*/
           //第一次进入直接调用
           /*if(_this.isFirst){
             _this.dataHandle(data);
@@ -598,12 +689,14 @@
       var _this = this;
      _this.container = document.getElementById('canvasContainer');
       var random=0.1;
+      /*var data=[{'dataType':'vehicleCanCount','count':1}]
+      _this.dataHandle(data);*/
      /* _this.$curveUtil.generateForward(container, [110, 142], [292, 58], '600', '200', random,'GPS');
       _this.$curveUtil.generateForward(container, [345, 60], [532, 142], '600', '200', random,'Mds');*/
-     var data=[{'dataType':'vehicleCanCount','count':1},{'dataType':'vehicleGpsCount','count':1},{'dataType':'vehicleRadarCount','count':1}]
+     /*var data=[{'dataType':'vehicleCanCount','count':1},{'dataType':'vehicleGpsCount','count':1}]
      var time = setInterval(function () {
        _this.dataHandle(data);
-     },2000);
+     },1000);*/
       //速度和加速度
       _this.speedChart = _this.$echarts.init(document.getElementById('speedChart'));
       _this.accelerateChart = _this.$echarts.init(document.getElementById('accelerateChart'));
