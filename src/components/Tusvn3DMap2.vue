@@ -90,20 +90,10 @@ export default {
             // this.updateCameraPosition(442455.99844902,4427229.863377506,58.45029574064428,147.4909535804191,-0.6650238516042308,-0.8020833333333345);
             //添加模型
             // this.addModel("car","./static/map3d/map_photo/car.3DS",0,0,12.816);
-            for(let m = 0;m<this.cacheModelNum;m++)
-            {
-                let model = new dl.Model({url: "./static/map3d/map_photo/car.3DS"});
-                model.position.x = 0;
-                model.position.y = 0;
-                model.position.z = 0;
-
-                this.modelArr[m] = model;
-                dl.scene.add(model);
-            }
-            console.log(this.modelArr.length);
+            
 
             //初始化websocket连接
-            // this.initWebsocket(this.websocketUrl);
+            this.initWebsocket(this.websocketUrl);
             // setInterval(()=>{
             //    let camera =  dl.viewer.scene.view;
             //    console.log(camera);
@@ -111,7 +101,18 @@ export default {
 
             setTimeout(()=>{
                 this.updateCameraPosition(442456.0905737311,4427223.965503679, 60.22107514430958, 2.4329173138415072,-0.6747685185185206,-0.7853942219746017);
-            },1500);
+                for(let m = 0;m<this.cacheModelNum;m++)
+                {
+                    let model = new dl.Model({url: "./static/map3d/map_photo/car.3DS"});
+                    model.position.x = 0;
+                    model.position.y = 0;
+                    model.position.z = 0;
+
+                    this.modelArr[m] = model;
+                    dl.scene.add(model);
+                }
+                console.log(this.modelArr.length);
+            },500);
 
 
         },
@@ -172,6 +173,9 @@ export default {
             //         yaw: -Math.PI / 180 * (lastUtmPosition.rotation),
             //         pitch: -0.8
             // });
+        },
+        resetCamera:function(){
+            this.updateCameraPosition(442456.0905737311,4427223.965503679, 60.22107514430958, 2.4329173138415072,-0.6747685185185206,-0.7853942219746017);
         },
         initWebsocket:function(url){
             if ('WebSocket' in window) {
