@@ -37,7 +37,7 @@ class Curve1{
     ctx.lineWidth = 0.1;
     /*ctx.shadowColor="#d28605";                //设置或返回用于阴影的颜色
     ctx.shadowBlur=10;*/
-    ctx.strokeStyle = "#d28605";
+    ctx.strokeStyle = "#696766";
     /* var random = 0.2;*/
     /*ctx.lineWidth = 0.1;
     ctx.shadowColor=color;                //设置或返回用于阴影的颜色
@@ -343,8 +343,20 @@ class Curve1{
     ctx.drawImage(img,(b[ 0 ]-5),(b[ 1 ]-5),10,10);
 
 
-    ctx.strokeStyle= '#f473ff';
-    ctx.font = '8px Adobe Ming Std';
+
+    if(type=='GPS'){
+      ctx.strokeStyle= '#6ec9fd';
+    }
+    if(type=='CAN'){
+      ctx.strokeStyle= '#3db765';
+    }
+    if(type=='radar'){
+      ctx.strokeStyle= '#d47b24';
+    }
+    if(type=='event'){
+      ctx.strokeStyle= '#f75b30';
+    }
+    ctx.font = '10px Adobe Ming Std';
     /*console.log("x"+b[ 0 ]+"---y"+b[ 1 ]);*/
     ctx.strokeText(type,(b[ 0 ]-5),(b[ 1 ]-10));
     ctx.stroke();
