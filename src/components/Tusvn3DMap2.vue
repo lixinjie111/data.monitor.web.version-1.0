@@ -32,7 +32,8 @@ export default {
             ,cacheModelNum:30     
 
             // ,websocketUrl:"ws://10.0.1.57:9999/ws"
-            ,websocketUrl:"ws://192.168.1.132:9998/ws"
+            // ,websocketUrl:"ws://192.168.1.132:9998/ws"
+            ,websocketUrl:"ws://172.17.1.13:9998/ws"
             ,hostWebsocket:null
             ,tweens: {}
 
@@ -189,7 +190,7 @@ export default {
             }            
         }, 
         onMessage:function(data){
-            // console.log(data);
+            console.log(data);
             this.models={};
             // let models = dl.models;
             // if(models!=null)
@@ -199,11 +200,22 @@ export default {
             //         dl.removeModel(models[n]);
             //     }
             // }
+
+            
             
             let rsuDatas = JSON.parse(data.data);
+            let cars = new Array();
             for(let i = 0;i<rsuDatas.length;i++)
             {
-                let d = rsuDatas[i];
+                if(rsuDatas[i].type == 3)
+                {
+                    cars.push(rsuDatas[i]);
+                }
+                
+            }
+            for(let i = 0;i<cars.length;i++)
+            {
+                let d = cars[i];
                 // // console.log(rsuDatas[i]);
                 let dUTM = proj4(this.sourceProject,this.destinatePorject,[d.longitude,d.latitude]);
                 // console.log(dUTM);
@@ -233,7 +245,7 @@ export default {
         onOpen:function(){
             console.log("建立连接");
             // 2046A1035893
-            var hostVehicle = '{"action":"rcu","data":{"rcuId":"2046A1035893"},"token":"fpx"}';
+            var hostVehicle = '{"action":"rcu","data":{"rcuId":"2046A1037E1F"},"token":"fpx"}';
             // var hostVehicleMsg = JSON.stringify(hostVehicle);
             this.sendMsg(hostVehicle);
         },
