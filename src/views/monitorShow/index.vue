@@ -5,48 +5,72 @@
     <span class="monitor-title-style">监控管理平台</span>
   </div>
   <div class="crossing-info">
-    <p class="crossing-number">路口编号：{{deviceStatus.crossId}}</p>
+    <p class="crossing-number">路口编号：110108-335</p>
     <div class="crossing-overview">
       <div class="crossing-position">
         <img src="@/assets/images/monitorShow/monitor-2.png" class="crossing-position-img"/>
       </div>
-      <span>{{deviceStatus.rCUPosName}}</span>
+      <span>双清路与中关村东路交叉口</span>
       <ul class="monitor-device">
-        <li v-for="item in deviceStatus.devices">
+        <!--<li v-for="item in deviceStatus.devices">
           <span class="monitor-device-line"></span>
           <img src="@/assets/images/monitorShow/monitor-3.png" class="monitor-device-img-1" v-show="item.deviceType=='1'"/>
           <img src="@/assets/images/monitorShow/monitor-4.png" class="monitor-device-img-2" v-show="item.deviceType=='2'"/>
           <span class="monitor-device-text">N32302</span>
           <span class="monitor-device-symbol"></span>
-        </li>
-      <!--  <li>
+        </li>-->
+        <li>
           <span class="monitor-device-line"></span>
-          <img src="@/assets/images/monitorShow/monitor-4.png" class="monitor-device-img-2"/>
-          <span class="monitor-device-text">N32302</span>
+          <img src="@/assets/images/monitorShow/monitor-3.png" class="monitor-device-img-1"/>
+          <span class="monitor-device-text">N-191-302</span>
           <span class="monitor-device-symbol"></span>
         </li>
         <li>
           <span class="monitor-device-line"></span>
           <img src="@/assets/images/monitorShow/monitor-3.png" class="monitor-device-img-1"/>
-          <span class="monitor-device-text">N32302</span>
+          <span class="monitor-device-text">N-191-303</span>
           <span class="monitor-device-symbol"></span>
         </li>
         <li>
           <span class="monitor-device-line"></span>
           <img src="@/assets/images/monitorShow/monitor-4.png" class="monitor-device-img-2"/>
-          <span class="monitor-device-text">N32302</span>
+          <span class="monitor-device-text">M-452-121</span>
           <span class="monitor-device-symbol"></span>
-        </li>-->
+        </li>
+        <li>
+          <span class="monitor-device-line"></span>
+          <img src="@/assets/images/monitorShow/monitor-3.png" class="monitor-device-img-1"/>
+          <span class="monitor-device-text">N-191-304</span>
+          <span class="monitor-device-symbol"></span>
+        </li>
+        <li>
+          <span class="monitor-device-line"></span>
+          <img src="@/assets/images/monitorShow/monitor-3.png" class="monitor-device-img-1"/>
+          <span class="monitor-device-text">N-191-305</span>
+          <span class="monitor-device-symbol"></span>
+        </li>
+        <li>
+          <span class="monitor-device-line"></span>
+          <img src="@/assets/images/monitorShow/monitor-4.png" class="monitor-device-img-2"/>
+          <span class="monitor-device-text">M-452-122</span>
+          <span class="monitor-device-symbol"></span>
+        </li>
       </ul>
     </div>
   </div>
   <div class="monitor-vedio-info">
     <div id="cmsplayer" class="monitor-vedio"></div>
   </div>
+  <div class="moniter-manage-map">
+    <tusvn-map :target-id="map-monitor">
+
+    </tusvn-map>
+  </div>
 </div>
 </template>
 <script>
   import {findBaseData,getRTMPData,getDeviceStatus} from '@/api/monitorManage'
+  import TusvnMap from '@/components/Tusvn3DMap2'
     export default {
         data() {
             return {
@@ -54,6 +78,7 @@
               deviceStatus:{}
             }
         },
+        components:{TusvnMap},
         methods: {
           findBaseData(){
             findBaseData({
@@ -71,8 +96,8 @@
           },
           getStream(){
             getRTMPData({
-              "procotal": this.cameraList[0].procotal,
-              "serialNum": this.cameraList[0].serialNum
+              "procotal": this.cameraList[3].procotal,
+              "serialNum": this.cameraList[3].serialNum.trim()
             }).then(res => {
               if(res.code == 200){
                 //获取视频地址并赋值
@@ -132,11 +157,20 @@
 </script>
 <style scoped>
   .monitor-manage{
-    position: fixed;
+    /*position: fixed;
     top:0;
     left:0;
     bottom:0;
-    right:0;
+    right:0;*/
+    position: absolute;
+    top:50%;
+    margin-top: -540px;
+    left:50%;
+    margin-left: -960px;
+    /*background: #d2a458;*/
+    width:1920px;
+    height: 1080px;
+    overflow:hidden;
   }
   .monitor-manage-title{
     padding:24px 24px 24px 30px;
@@ -144,13 +178,17 @@
     top:0;
     left: 0;
     width:100%;
+    border-bottom:1px solid #4d4d4d;
+    padding:16px 10px;
+    z-index:1;
   }
   .monitor-title-img{
     width: 46px;
     height:auto;
+    padding-right: 10px; ;
   }
   .monitor-title-style{
-    font-size: 30px;
+    font-size: 40px;
     letter-spacing: 3px;
     vertical-align: middle;
     color: #ffffff;
@@ -159,14 +197,17 @@
     position: absolute;
     left: 30px;
     top: 104px;
+    z-index:1;
   }
   .crossing-number{
     position: relative;
     font-size: 24px;
     letter-spacing: 2px;
     color: #e4f5ef;
-    margin-bottom: 70px;
+    /*margin-bottom: 70px;*/
     padding-left: 18px;
+    margin-top: 20px;
+    margin-bottom: 24px;
   }
   .crossing-number:before{
     content: '';
@@ -179,13 +220,15 @@
     background-color: #51cdff;
   }
   .crossing-overview{
-    color: #e4f5ef;
+    color: #c0c4cc;
     font-size: 20px;
     letter-spacing: 2px;
+    font-family: MicrosoftYaHei;
+    background: #000;
   }
   .crossing-position{
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
     border-radius: 5px;
     border: solid 1px #51cdff;
     position: relative;
@@ -194,7 +237,7 @@
     margin-right: 18px;
   }
   .crossing-position-img{
-    width: 60px;
+    width: 46px;
     height:auto;
     left:50%;
     top:50%;
@@ -206,19 +249,19 @@
     letter-spacing: 2px;
   }*/
   .monitor-device{
-    margin-left: 40px;
+    margin-left: 30px;
     border-left:1px solid #51cdff;
-    height: 360px;
   }
   .monitor-device li{
-    height: 90px;
-    line-height: 90px;
+    height: 70px;
+    line-height: 70px;
   }
   .monitor-device-img-1{
-    width:45px;
+    width:38px;
   }
   .monitor-device-img-2{
-    width:38px;
+    width:34px;
+    padding: 0px 2px;
   }
   .monitor-device-text{
     vertical-align: middle;
@@ -246,10 +289,17 @@
     top: 100px;
     right: 24px;
     padding: 10px;
+    z-index:1;
   }
   .monitor-vedio{
     width: 100%;
     height: 100%;
+  }
+  .moniter-manage-map{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index:0;
   }
 
 </style>
