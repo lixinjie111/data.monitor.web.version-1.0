@@ -67,7 +67,7 @@
             scrWidth: 270, //屏幕宽 px
             scrHeight: 180, //屏幕高 px
             // showHeight: 1800000, //显示高 m
-            showHeight: 1000, //显示高 m
+            showHeight: 200, //显示高 m
             meterPerDegree: 108000, //1度=108000 m 固定值
             scalefactor: 0,//一个像素相当于多少度
         },
@@ -126,7 +126,7 @@
                 hoverLink:true,
                 pieces: [
                   {min: 0, max: 7200000, color: '#2b2218'},//0-2小时
-                  {min: 7200000, max: 14400000, color: '#2b2218'},//2-4小时
+                  {min: 7200000, max: 14400000, color: '#503512'},//2-4小时
                   {min: 14400000, max: 21600000, color: '#503913'},//4-6小时
                   {min: 21600000, max: 28800000, color: '#885a0b'},//6-8小时
                   {min: 28800000, color: '#d38600'},//8小时以上

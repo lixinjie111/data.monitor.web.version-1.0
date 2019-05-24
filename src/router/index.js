@@ -12,7 +12,7 @@ const CarMonitor = resolve => require(['@/views/carMonitor/index'], resolve)
 const SingleCarMonitor = resolve => require(['@/views/carMonitor/singleCarMonitor'], resolve)
 const RoadMonitor = resolve => require(['@/views/roadMonitor/index'], resolve)
 const EquipmentMonitor = resolve => require(['@/views/equipmentMonitor/index'], resolve)
-
+const MonitorManage = resolve => require(['@/views/monitorShow/index'], resolve)
 
 
 const EchartsTest = resolve => require(['@/views/test/echarts'], resolve)
@@ -94,8 +94,16 @@ export default new Router({
     meta: {
       showHeader: true
     }
+  },{
+    path: '/monitorManage',
+    name: 'MonitorManage',
+    component: MonitorManage,
+    // component: () => import('@/pages/home/Home'),
+    meta: {
+      showHeader: false
+    }
   }],
   scrollBehavior (to, from, savedPosition) {
     return { x: 0, y: 0 }
   }
-}) 
+})

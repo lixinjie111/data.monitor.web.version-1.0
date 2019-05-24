@@ -2,15 +2,15 @@
   <div class="monitor-traffic">
     <div class="travel-detail">
       <div class="detail1">
-        <span>{{realData.longitude | toFixed(8)}}</span>
+        <span>{{realData.longitude? realData.longitude.toFixed(8):'--'}}</span>
         <span class="detail2">E</span>
       </div>
       <div class="detail1">
-        <span>{{realData.latitude | toFixed(8)}}</span>
+        <span>{{realData.latitude ?realData.latitude.toFixed(8):'--'}}</span>
         <span class="detail2">N</span>
       </div>
       <div class="detail1">
-        <span>{{realData.speed}}</span>
+        <span>{{realData.speed?realData.speed.toFixed(1):'--'}}</span>
         <span class="detail2">km/h</span>
       </div>
       <div class="detail1">
@@ -94,10 +94,18 @@
     },
     computed:{
       nowYear(){
-        return this.$dateUtil.formatTime(this.realData.gpsTime).split(" ")[0];
+        if(this.realData.gpsTime==''){
+          return '--';
+        }else{
+          return this.$dateUtil.formatTime(this.realData.gpsTime).split(" ")[0];
+        }
       },
       nowTime(){
-        return this.$dateUtil.formatTime(this.realData.gpsTime).split(" ")[1];
+        if(this.realData.gpsTime==''){
+          return '--';
+        }else{
+          return this.$dateUtil.formatTime(this.realData.gpsTime).split(" ")[1];
+        }
       }
     },
     methods: {
@@ -153,11 +161,12 @@
             _this.distanceMap.panTo(newPosition);
             //设置旋转角度
             _this.headingAngle = data.heading;
-            _this.distanceMap.setRotation(-_this.headingAngle);
+            /*console.log("航向角-----"+_this.headingAngle);*/
+            /*_this.distanceMap.setRotation(-_this.headingAngle);*/
             _this.marker.setAngle(_this.headingAngle);
             //所要移动的位置
             _this.marker.moveTo(newPosition,data.speed);
-            _this.distanceMap.setZoom(18);
+            /*_this.distanceMap.setZoom(18);*/
             /*_this.distanceMap.setFitView();*/
           }
         })
@@ -347,10 +356,10 @@
                 position: newPosition,
                 icon: 'static/images/car/car-3.png', // 添加 Icon 图标 URL
                 title: '北京',
-                angle:90
+                /*angle:90*/
               });
               // console.log("航向角："+_this.headingAngle);
-              marker.setAngle(_this.headingAngle);
+             /* marker.setAngle(_this.headingAngle);*/
               _this.distanceMap.add(marker);
               _this.tempDeviceList.push(marker)
               /*_this.deviceMarkerList.push(marker);*/
@@ -361,7 +370,7 @@
             // console.log("上次灯的长度："+this.deviceMarkerList.length);
         }
         //去除不在范围内地图上的点
-        if(_this.tempDeviceList.length>0){
+        /*if(_this.tempDeviceList.length>0){
           // debugger
           if(_this.deviceMarkerList.length==0){
             _this.deviceMarkerList = _this.tempDeviceList;
@@ -400,7 +409,7 @@
             _this.distanceMap.remove(_this.deviceMarkerList);
             _this.deviceMarkerList = [];
           }
-        }
+        }*/
       },
       onDeviceClose(data){
         console.log("结束连接");
@@ -436,18 +445,24 @@
         _this.lightWebsocket.onopen = _this.onLightOpen;
       },
       onLightMessage(mesasge){
+        debugger
         var _this=this;
         var json = JSON.parse(mesasge.data);
         var lightData = json.result.data;
         var position;
         lightData.forEach(function (item) {
-          position = new AMap.LngLat(item.longitude, item.latitude);
-          var marker = new AMap.Marker({
-            position: position,
-            icon: 'static/images/car/car-4.png', // 添加 Icon 图标 URL
-            title: '北京',
-          });
-          _this.distanceMap.add(marker);
+          var newPosition;
+          var marker;
+          AMap.convertFrom(position, 'gps', function (status, result) {
+            newPosition = new AMap.LngLat(item.longitude, item.latitude);
+            marker = new AMap.Marker({
+              position: newPosition,
+              icon: 'static/images/car/car-4.png', // 添加 Icon 图标 URL
+              title: '北京',
+            });
+            _this.distanceMap.add(marker);
+            _this.lightMarkerList.push(marker);
+          })
         })
       },
       onLightClose(data){

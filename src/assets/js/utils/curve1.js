@@ -30,18 +30,19 @@ class Curve1{
    * @param {Array.<Number>} end  结束坐标
    */
   animate(ctx,random,color,percent,i,start,end) {
+    // console.log("开始时间-----"+new Date().getTime())
     //console.log("order------"+this.order);
     var _this = this;
     /* ctx.clearRect( 0, 0, 800, 800 );*/
-    /*ctx.lineWidth = 0.1;
-    ctx.shadowColor="#8fab4f";                //设置或返回用于阴影的颜色
-    ctx.shadowBlur=10;
-    ctx.strokeStyle = "#6fab3c";*/
-    /* var random = 0.2;*/
     ctx.lineWidth = 0.1;
+    /*ctx.shadowColor="#d28605";                //设置或返回用于阴影的颜色
+    ctx.shadowBlur=10;*/
+    ctx.strokeStyle = "#d28605";
+    /* var random = 0.2;*/
+    /*ctx.lineWidth = 0.1;
     ctx.shadowColor=color;                //设置或返回用于阴影的颜色
     ctx.shadowBlur=10;
-    ctx.strokeStyle = color;
+    ctx.strokeStyle = color;*/
     this.drawPath(
       ctx,
       start,
@@ -52,10 +53,15 @@ class Curve1{
     ctx.stroke();
     percent = ( percent + 1 ) % 100;
     if(percent==99){
+      // console.log("结束时间-----"+new Date().getTime())
       /*console.log("该对象已完成");*/
       /*console.log("sessionStorage key-----"+_this.order+i)*/
       // sessionStorage.setItem(_this.order+i,i);
       /*Curve1.k = this.i;*/
+      if(i==9){
+        /*console.log("i====="+i+",order"+this.order)*/
+        _this.clearLines();
+      }
       cancelAnimationFrame(this.stop1);
       return;
     }
@@ -117,7 +123,6 @@ class Curve1{
     var _this = this;
     var time = setInterval(()=> {
       var percent = ( ++_this.imgPercent ) % 100;
-      console.log("percent---"+percent);
       if(percent==99){
         clearInterval(time);
         return;
@@ -222,6 +227,7 @@ class Curve1{
     //console.log("this.order---"+this.order);
     var lineCanvas = document.getElementById(this.order+this.i);
     //console.log("lineCanvas---"+lineCanvas);
+    /*var lineCanvas = document.getElementById("up0");*/
     var lineCtx = lineCanvas.getContext( '2d' );
     //设置或返回阴影距形状的垂直距离
      lineCtx.globalCompositeOperation = 'destination-out';
@@ -338,7 +344,8 @@ class Curve1{
 
 
     ctx.strokeStyle= '#f473ff';
-    ctx.font = '10px Adobe Ming Std';
+    ctx.font = '8px Adobe Ming Std';
+    /*console.log("x"+b[ 0 ]+"---y"+b[ 1 ]);*/
     ctx.strokeText(type,(b[ 0 ]-5),(b[ 1 ]-10));
     ctx.stroke();
 
@@ -353,23 +360,90 @@ class Curve1{
 
   }
 
-  clearLines(container) {
+  clearLines() {
     /*this.i=0;*/
-    var allCanvas = document.querySelectorAll(".canvas");
+    var allCanvas;
+    var lineCtx;
+    console.log("进入了？"+this.i)
+    this.isClear=true;
+    if(this.order=='up'){
 
-   /* for (var i=0;i<this.stopImgOpts.length;i++){
-      cancelAnimationFrame(this.stopImgOpts[i]);
+      /* allCanvas= document.querySelectorAll(".upCanvas");*/
+      var obj0 = document.getElementById("up0");
+      obj0.height = 0;
+      obj0.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );
+      var obj1 = document.getElementById("up1");
+      obj1.height = 0;
+      obj1.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );
+      var obj2 = document.getElementById("up2");
+      obj2.height = 0;
+      obj2.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );
+      var obj3 = document.getElementById("up3");
+      obj3.height = 0;
+      obj3.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );
+      var obj4 = document.getElementById("up4");
+      obj4.height = 0;
+      obj4.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );
+      var obj5 = document.getElementById("up5");
+      obj5.height = 0;
+       obj5.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );
+      var obj6 = document.getElementById("up6");
+      obj6.height = 0;
+      obj6.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );
+      var obj7 = document.getElementById("up7");
+      obj7.height = 0;
+        obj7.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );
+      var obj8 = document.getElementById("up8");
+      obj8.height = 0;
+      obj8.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );
+      var obj9 = document.getElementById("up9");
+      obj9.height = 0;
+      obj9.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );
+      //清除所有节点
+      /* console.log("startTime---"+new Date().getTime());*/
+      /*for(var i=allCanvas.length-1;i>=0;i--){
+        /!*container.removeChild(allCanvas[i]);*!/
+      /!*  sessionStorage.removeItem('up'+i);*!/
+        console.log("id===="+allCanvas[i].id);
+        lineCtx = allCanvas[i].getContext( '2d' );
+        /!*lineCtx.height=lineCtx.height;*!/
+        lineCtx.strokeStyle='rgba(0,0,0,0)';
+        lineCtx.clearRect( 0, 0, 1000, 1000 );
+      }*/
+      /*console.log("endTime---"+new Date().getTime());*/
     }
-*/
-   //清除所有节点
-    for(var i=allCanvas.length-1;i>=0;i--){
-      container.removeChild(allCanvas[i]);
+    if(this.order=='down'){
+      allCanvas= document.querySelectorAll(".downCanvas");
+      var obj0 = document.getElementById("down0");
+      obj0.height = 0;
+      /*obj0.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );*/
+      var obj1 = document.getElementById("down1");
+      obj1.height = 0;
+      /*obj1.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );*/
+      var obj2 = document.getElementById("down2");
+      obj2.height = 0;
+      /*obj2.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );*/
+      var obj3 = document.getElementById("down3");
+      obj3.height = 0;
+      /*obj3.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );*/
+      var obj4 = document.getElementById("down4");
+      obj4.height = 0;
+      /*obj4.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );*/
+      var obj5 = document.getElementById("down5");
+      obj5.height = 0;
+      /* obj5.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );*/
+      var obj6 = document.getElementById("down6");
+      obj6.height = 0;
+      /*obj6.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );*/
+      var obj7 = document.getElementById("down7");
+      obj7.height = 0;
+      /*  obj7.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );*/
+      var obj8 = document.getElementById("down8");
+      obj8.height = 0;
+      /*obj8.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );*/
+      var obj9 = document.getElementById("down9");
+      obj9.height = 0;
     }
-   /* allCanvas.forEach(function (item) {
-      /!*item.getContext("2d").clearRect(0,0,1000,1000);*!/
-      document.removeChild(item);
-    });*/
-
   }
 
 }

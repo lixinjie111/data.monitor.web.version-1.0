@@ -51,37 +51,37 @@
       <ul class="monitor-header signal-detail">
         <li>
           <div class="signal-item1 signal-style">
-            <span class="signal-icon1" :class="[vehicleStatus.gpsStatus==1 ? liveUsed : vehicleStatus.gpsStatus==2?liveBroken:liveUnused]"></span>
+            <span class="signal-icon1" :class="[vehicleStatus.gpsStatus==1 ? liveUsed : vehicleStatus.gpsStatus==2?liveBroken:vehicleStatus.gpsStatus==0?liveUnused:liveUsed]"></span>
             <span>GPS</span>
           </div>
           <div class="signal-item1">
-            <span class="signal-icon1" :class="[vehicleStatus.cameraStatus==1 ? liveUsed : vehicleStatus.cameraStatus==2?liveBroken:liveUnused]"></span>
+            <span class="signal-icon1" :class="[vehicleStatus.cameraStatus==1 ? liveUsed : vehicleStatus.cameraStatus==2?liveBroken:vehicleStatus.cameraStatus==0?liveUnused:liveUsed]"></span>
             <span>Camera</span>
           </div>
           <div class="signal-item1 signal-style">
-            <span class="signal-icon1" :class="[vehicleStatus.canStatus==1 ? liveUsed : vehicleStatus.canStatus==2?liveBroken:liveUnused]"></span>
+            <span class="signal-icon1" :class="[vehicleStatus.canStatus==1 ? liveUsed : vehicleStatus.canStatus==2?liveBroken:vehicleStatus.canStatus==0?liveUnused:liveUsed]"></span>
             <span>V2X</span>
           </div>
           <div class="signal-item1">
-            <span class="signal-icon1" :class="[vehicleStatus.radarStatus==1 ? liveUsed : vehicleStatus.radarStatus==2?liveBroken:liveUnused]"></span>
+            <span class="signal-icon1" :class="[vehicleStatus.radarStatus==1 ? liveUsed : vehicleStatus.radarStatus==2?liveBroken:vehicleStatus.radarStatus==0?liveUnused:liveUsed]"></span>
             <span>Radar</span>
           </div>
         </li>
         <li>
           <div class="signal-item2">
-            <span class="signal-icon2" :class="[naviStatus.naviControlStatus==1 ? liveUsed : naviStatus.naviControlStatus==2?liveBroken:liveUnused]"></span>
+            <span class="signal-icon2" :class="[naviStatus.naviControlStatus==1 ? liveUsed : naviStatus.naviControlStatus==2?liveBroken:naviStatus.naviControlStatus==0?liveUnused:liveUsed]"></span>
             <span>Navi Control</span>
           </div>
           <div class="signal-item2">
-            <span class="signal-icon2" :class="[naviStatus.naviPlanningStatus==1 ? liveUsed : naviStatus.naviPlanningStatus==2?liveBroken:liveUnused]"></span>
+            <span class="signal-icon2" :class="[naviStatus.naviPlanningStatus==1 ? liveUsed : naviStatus.naviPlanningStatus==2?liveBroken:naviStatus.naviPlanningStatus==0?liveUnused:liveUsed]"></span>
             <span>Navi Plannig</span>
           </div>
           <div class="signal-item2">
-            <span class="signal-icon2" :class="[naviStatus.naviPerceptionStatus==1 ? liveUsed : naviStatus.naviPerceptionStatus==2?liveBroken:liveUnused]"></span>
+            <span class="signal-icon2" :class="[naviStatus.naviPerceptionStatus==1 ? liveUsed : naviStatus.naviPerceptionStatus==2?liveBroken:naviStatus.naviPerceptionStatus==0?liveUnused:liveUsed]"></span>
             <span>Navi Perception</span>
           </div>
           <div class="signal-item2">
-            <span class="signal-icon2" :class="[naviStatus.naviPredictionStatus==1 ? liveUsed : naviStatus.naviPredictionStatus==2?liveBroken:liveUnused]"></span>
+            <span class="signal-icon2" :class="[naviStatus.naviPredictionStatus==1 ? liveUsed : naviStatus.naviPredictionStatus==2?liveBroken:naviStatus.naviPredictionStatus==0?liveUnused:liveUsed]"></span>
             <span>Navi Prediction</span>
           </div>
 
@@ -99,7 +99,8 @@
         liveBroken:'live-broken',
         vehicleStatus:{},
         naviStatus:{},
-        webSocket:{}
+        webSocket:{},
+
 
       }
     },
@@ -129,7 +130,12 @@
       stopBottomWidth(){
         let pedalData = parseFloat(this.realData.brakePedal/100);
         return parseInt(this.stopLeftWidth*2/7);
-      }
+      },
+      /*lastTime(){
+        var time = new Date().getTime()-this.realData.gpsTime;
+        console.log("time---------"+time)
+        return time;
+      }*/
     },
     methods: {
       initWebSocket(){
@@ -191,8 +197,17 @@
         }
       }
     },
+    watch:{
+      lastTime(oldValue,newValue){
+        if(oldValue>=30000){
+          this.realData.transmission='P';
+          this.pedalLeftWidth=0;
+          this.stopLeftWidth=0;
+        }
+      }
+    },
     mounted () {
-      this.initWebSocket();
+      /*this.initWebSocket();*/
     }
   }
 </script>
@@ -381,7 +396,6 @@
 
   .header-angle img{
     position: relative;
-    left: 1px;
     top: 5px;
   }
   .header-angle {

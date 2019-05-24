@@ -39,7 +39,16 @@
         distancePath:[],
         isFirst:true,
         zoom:18,
-        realData:{},
+        realData:{
+          oilDoor:0,
+          brakePedal:0,
+          headingAngle:0,
+          headingAngleCalc:0,
+          remainElec:0,
+          turnLight:'',
+          transmission:'P',
+          gpsTime:''
+        },
         liveData:{},
         speedData:{},
         vehicleId:'B21E-00-017'
@@ -57,10 +66,20 @@
         _this.webSocket.onerror = _this.onerror;
       },
       onmessage(mesasge){
+        debugger
         let _this=this;
         var json = JSON.parse(mesasge.data);
         /*var type = json.action;*/
-        this.realData = json.result;
+        var data = json.result;
+
+        if(data.transmission=='P'){
+          this.realData.transmission='P';
+          this.realData.oilDoor=0;
+          this.realData.brakePedal=0;
+        }else{
+          this.realData = json.result;
+          console.log("转向灯---"+this.realData.turnLight)
+        }
       },
       onclose(data){
         console.log("结束连接");
