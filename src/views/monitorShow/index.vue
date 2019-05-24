@@ -62,7 +62,7 @@
     <div id="cmsplayer" class="monitor-vedio"></div>
   </div>
   <div class="moniter-manage-map">
-    <tusvn-map :target-id="map-monitor">
+    <tusvn-map :target-id="map-monitor" ref="tusvnMap">
 
     </tusvn-map>
   </div>
@@ -77,7 +77,7 @@
               cameraList:[],
               deviceStatus:{},
               monitorSocket:{},
-              monitorUrl:'ws://192.168.1.132:9998/ws'
+              monitorUrl:'ws://172.17.1.13:9998/ws'
             }
         },
         components:{TusvnMap},
@@ -196,13 +196,13 @@
             console.error("WebSocket error observed:", event);
           },
           restore(){
-            alert("恢复角度");
+            this.$refs.tusvnMap.resetCamera();
           }
         },
         mounted() {
           this.findBaseData();
           this.getDeviceStatus();
-          this.initWebSocket();
+         /* this.initWebSocket();*/
         }
     }
 </script>
