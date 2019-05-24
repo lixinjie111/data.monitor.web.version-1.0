@@ -66,7 +66,6 @@
         _this.webSocket.onerror = _this.onerror;
       },
       onmessage(mesasge){
-        debugger
         let _this=this;
         var json = JSON.parse(mesasge.data);
         /*var type = json.action;*/

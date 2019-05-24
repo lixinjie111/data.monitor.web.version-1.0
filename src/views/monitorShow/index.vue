@@ -7,7 +7,7 @@
   <div class="crossing-info">
     <p class="crossing-number">路口编号：110108-335</p>
     <div class="crossing-overview">
-      <div class="crossing-position">
+      <div class="crossing-position" @click="restore">
         <img src="@/assets/images/monitorShow/monitor-2.png" class="crossing-position-img"/>
       </div>
       <span>双清路与中关村东路交叉口</span>
@@ -75,7 +75,9 @@
         data() {
             return {
               cameraList:[],
-              deviceStatus:{}
+              deviceStatus:{},
+              monitorSocket:{},
+              monitorUrl:'ws://192.168.1.132:9998/ws'
             }
         },
         components:{TusvnMap},
@@ -147,11 +149,60 @@
             }).catch(err => {
               this.$message.error("error: 获取路侧设备状态数据失败");
             });
+          },
+          initWebSocket(){
+            let _this=this;
+            if ('WebSocket' in window) {
+              _this.monitorSocket = new WebSocket(_this.monitorUrl);  //获得WebSocket对象
+            }
+            _this.monitorSocket.onmessage = _this.onmessage;
+            _this.monitorSocket.onclose = _this.onclose;
+            _this.monitorSocket.onopen = _this.onopen;
+            _this.monitorSocket.onerror = _this.onerror;
+          },
+          onmessage(mesasge){
+            debugger
+            let _this=this;
+            var json = JSON.parse(mesasge.data);
+            /*var type = json.action;*/
+            var data = json.result;
+
+          },
+          onclose(data){
+            console.log("结束连接");
+          },
+          onopen(data){
+            var monitor = {
+              "action":"rcu",
+              "data":{"rcuId":"2046A1035893"},
+              "token":"fpx"
+            }
+            var monitorMsg = JSON.stringify(monitor);
+            this.sendMsg(monitorMsg);
+          },
+          sendMsg(msg) {
+            let _this=this;
+            console.log("连接状态："+_this.monitorSocket.readyState);
+            if(window.WebSocket){
+              if(_this.monitorSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+                _this.monitorSocket.send(msg); //send()发送消息
+                console.log("已发送消息:"+ msg);
+              }
+            }else{
+              return;
+            }
+          },
+          onerror(event){
+            console.error("WebSocket error observed:", event);
+          },
+          restore(){
+            alert("恢复角度");
           }
         },
         mounted() {
           this.findBaseData();
           this.getDeviceStatus();
+          this.initWebSocket();
         }
     }
 </script>
@@ -286,7 +337,7 @@
     width: 480px;
     height: 300px;
     border:1px solid #5e5970;
-    top: 100px;
+    top: 130px;
     right: 24px;
     padding: 10px;
     z-index:1;

@@ -368,10 +368,11 @@
         _this.reportWebSocket.onopen = _this.onReportOpen;
       },
       onReportMessage(message){
-//        console.log("时间----"+new Date().getTime())
+       /* console.log("--------")
+        console.log("时间----"+new Date().getTime())*/
         let _this=this;
         var json = JSON.parse(message.data);
-        var data = json.result.vehicleLiveReportCountList;
+        var data = json.result.reportItems;
         var canData=[];
         var gpsData=[];
         var radarData=[];
@@ -386,51 +387,58 @@
             _this.downRandom = 0.1;*/
 
           }
+          if(_this.k==12){
+            _this.k=0;
+            _this.upRandom=0.1
+          }
+          if(_this.k==10){
+            _this.k++;
+            return;
+          }
           data.forEach(function (item) {
-            if(item.dataType=='vehicleCanCount'){
+            console.log("type-----"+item.type)
+            if(item.type=='can'){
               canData.push(item);
             }
-            if(item.dataType=='vehicleGpsCount'){
+            if(item.type=='gps'){
               gpsData.push(item);
             }
-            if(item.dataType=='vehicleRadarCount'){
+            if(item.type=='radar'){
               radarData.push(item);
             }
-            if(item.dataType=='vehicleEventCount'){
+            if(item.type=='event'){
               eventData.push(item);
             }
           })
           //绘制can和gps
-          if(_this.m==1||_this.m==5||_this.m==9){
+          if(_this.m==1 ||_this.m==5||_this.m==9){
             if(_this.k==9&&canData.length>0&&gpsData.length>0){
               var canCurve = new Curve1([110, 142], [300, 58], '600', '200', _this.upRandom,'CAN',_this.k,'up');
               canCurve.generateForward();
               _this.upRandom = _this.upRandom+0.08;
               _this.k++;
-              if(_this.k==10){
+
+              /*if(_this.k==10){
                 _this.k=0;
                 _this.upRandom=0.1
-              }
+              }*/
             }else{
               if(canData.length>0){
                 var canCurve = new Curve1([110, 142], [300, 58], '600', '200', _this.upRandom,'CAN',_this.k,'up');
                 canCurve.generateForward();
                 _this.upRandom = _this.upRandom+0.08;
                 _this.k++;
-                if(_this.k==10){
+               /* if(_this.k==10){
                   _this.k=0;
                   _this.upRandom=0.1
-                }
+                }*/
               }
               if(gpsData.length>0){
                 var gpsCurve = new Curve1( [110, 142], [300, 58], '600', '200', _this.upRandom,'GPS',_this.k,'up');
                 gpsCurve.generateForward();
                 _this.upRandom = _this.upRandom+0.08;
                 _this.k++;
-                if(_this.k==10){
-                  _this.k=0;
-                  _this.upRandom=0.1
-                }
+
               }
             }
           }
@@ -440,10 +448,10 @@
               radarCurve.generateForward();
               _this.upRandom = _this.upRandom+0.08;
               _this.k++;
-              if(_this.k==10){
+              /*if(_this.k==10){
                 _this.k=0;
                 _this.upRandom=0.1
-              }
+              }*/
             }
           }
           if(_this.m==3||_this.m==4||_this.m==9){
@@ -788,7 +796,7 @@
     top: 15px;
   }
   .title2{
-    right: 200px;
+    right: 160px;
     top: 15px;
   }
 </style>

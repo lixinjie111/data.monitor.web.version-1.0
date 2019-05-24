@@ -445,7 +445,6 @@
         _this.lightWebsocket.onopen = _this.onLightOpen;
       },
       onLightMessage(mesasge){
-        debugger
         var _this=this;
         var json = JSON.parse(mesasge.data);
         var lightData = json.result.data;
