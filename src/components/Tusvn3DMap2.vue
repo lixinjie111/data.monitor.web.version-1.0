@@ -102,12 +102,28 @@ export default {
 
             setTimeout(()=>{
                 this.updateCameraPosition(442456.0905737311,4427223.965503679, 60.22107514430958, 2.4329173138415072,-0.6747685185185206,-0.7853942219746017);
+                var matStdObjects = new THREE.MeshStandardMaterial( { color: 0xffff00, roughness: 0.5, metalness: 0 } );
                 for(let m = 0;m<this.cacheModelNum;m++)
                 {
-                    let model = new dl.Model({url: "./static/map3d/map_photo/car.3DS"});
-                    model.position.x = 0;
-                    model.position.y = 0;
-                    model.position.z = 0;
+                    // let model = new dl.Model({url: "./static/map3d/map_photo/car.3DS"});
+                    // model.position.x = 0;
+                    // model.position.y = 0;
+                    // model.position.z = 0;
+                    
+                    //圆球
+                    // var geoSphere = new THREE.SphereBufferGeometry( 0.8, 15, 15 );
+                    // var model = new THREE.Mesh( geoSphere, matStdObjects );
+                    // model.position.set( 0, 0, 0 );
+                    // model.castShadow = true;
+                    // model.receiveShadow = true;
+
+                    //立方体
+                    var geoBox = new THREE.BoxBufferGeometry( 1, 1, 1);
+                    var model = new THREE.Mesh( geoBox, matStdObjects );
+                    model.position.set( 0, 0, 0 );
+                    model.rotation.set( 0, Math.PI / 2.0, 0 );
+                    model.castShadow = true;
+                    model.receiveShadow = true;
 
                     this.modelArr[m] = model;
                     dl.scene.add(model);
@@ -192,6 +208,14 @@ export default {
         onMessage:function(data){
             console.log(data);
             this.models={};
+
+            for(let p=0;p<this.modelArr.length;p++)
+            {
+                let mdl = this.modelArr[p];
+                mdl.position.x = 0;
+                mdl.position.y = 0;
+                mdl.position.z = 0;
+            }
             // let models = dl.models;
             // if(models!=null)
             // {
@@ -200,33 +224,27 @@ export default {
             //         dl.removeModel(models[n]);
             //     }
             // }
-
-            
             
             let rsuDatas = JSON.parse(data.data);
-            let cars = new Array();
             for(let i = 0;i<rsuDatas.length;i++)
             {
-                if(rsuDatas[i].type == 3)
-                {
-                    cars.push(rsuDatas[i]);
-                }
-                
-            }
-            for(let i = 0;i<cars.length;i++)
-            {
-                let d = cars[i];
+                let d = rsuDatas[i];
                 // // console.log(rsuDatas[i]);
                 let dUTM = proj4(this.sourceProject,this.destinatePorject,[d.longitude,d.latitude]);
                 // console.log(dUTM);
                 // this.addModel(d.objId,"./static/map3d/map_photo/car.3DS",dUTM[0],dUTM[1],this.defualtZ);
-                if(i<this.modelArr.length)
-                {
-                    let mdl = this.modelArr[i];
-                    mdl.position.x = dUTM[0];
-                    mdl.position.y = dUTM[1];
-                    mdl.position.z = this.defualtZ+6;
-                }
+                // if(d.type == 3 || d.type == 6 || d.type ==8)
+                // {
+                    if(i<this.modelArr.length)
+                    {
+                        let mdl = this.modelArr[i];
+                        mdl.position.x = dUTM[0];
+                        mdl.position.y = dUTM[1];
+                        mdl.position.z = this.defualtZ+6;
+                    }
+                    
+                // }
+                
             }
             // if(rsuDatas.length>0){
             //     console.log("感知到"+rsuDatas.length+"个物体");
