@@ -2,11 +2,8 @@
   <div id="app">
     <!-- 头部 -->
     <header-bar v-if="this.$route.meta.showHeader"></header-bar>
-
-    <div class="app-container" v-if="this.$route.meta.showHeader">
-      <router-view></router-view>
-    </div>
-    <div class="app-view-container" v-else>
+    
+    <div class="app-container">
       <router-view></router-view>
     </div>
   </div>
@@ -29,21 +26,18 @@ export default {
 
 <style lang="scss">
 #app {
+  font-family: MicrosoftYaHei;
+  background: #2a2a2a;
   position: relative;
 	width: 100%;
 	height: 100%;
+  font-size: 14px;
+  line-height: 40px;
+  letter-spacing: 2px;
+  color: #fff;
   overflow: hidden;
   .app-container {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 64px;
-    bottom: 0;
-    overflow-y: auto;
-  }
-  .app-view-container {
     position: relative;
-    background: #17181c;
     width:100%;
     height: 100%;
     overflow:hidden;

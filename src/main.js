@@ -66,9 +66,10 @@ Vue.prototype.$dateUtil = TDate;
 // 在免登录白名单，直接进入
 const whiteList = ['/login','/404'];
 setAuthInfo({
-    adminName: "shilu",
-    adminId: "123456"
+    adminName: "********",
+    adminId: "********"
 });
+// removeAuthInfo();
 // router global config
 router.beforeEach((to,from,next) => {
     NProgress.start()

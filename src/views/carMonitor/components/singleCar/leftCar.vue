@@ -217,10 +217,10 @@
             this.drivingStatistics.cumulatedMiles = this.drivingStatistics.cumulatedMiles.toFixed(1);
             this.drivingStatistics.avgSpeed = this.drivingStatistics.avgSpeed.toFixed(1);
           }else{
-            this.$message.error("请求行车统计数据失败！");
+            this.$message.error(res.message);
           }
         }).catch(err => {
-          this.$message.error("error: 获取行车统计数据失败！");
+          this.$message.error("error！");
         });
       },
       getBaseData(){
@@ -232,10 +232,10 @@
           if(res.status == 200){
             this.singleVehicle = res.vehicleBaseDetail[0];
           }else{
-            this.$message.error("请求单车基本数据失败！");
+            this.$message.error(res.message);
           }
         }).catch(err => {
-          this.$message.error("error: 获取单车基本数据失败！");
+          this.$message.error("error！");
         });
       },
       //重绘形成初始化

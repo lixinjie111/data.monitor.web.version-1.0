@@ -1,6 +1,6 @@
 <template>
 	<div class="home-wrapper">
-	    <el-button class="c-view-btn">这是首页</el-button>
+	    <el-button class="c-view-btn" type="primary">这是"首页"</el-button>
 	</div>
 </template>
 
@@ -11,5 +11,4 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
 </style>

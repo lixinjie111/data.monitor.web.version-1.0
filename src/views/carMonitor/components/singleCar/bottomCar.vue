@@ -468,7 +468,6 @@
           }
           _this.m++;
         }
-       /* _this.dataHandle(data);*/
       },
       dataHandle(data){
         var _this = this;

@@ -1,17 +1,20 @@
 <template>
-	<div class="header">
-        <div class="left">
-            <router-link tag="div" class="logo-wrap" to="/">  
-                <img class="logo" src="@/assets/images/logo.png">
-                <span class="title">矩阵管理后台</span>
-            </router-link>
-            <ul class="menu-box">
-               <router-link tag="li" v-for="item in navList" :key="item.id" class="menu-list" :to="item.path">{{item.name}}</router-link>
-            </ul>
+	<div class="header clearfix">
+        <router-link tag="a" class="logo-wrap" to="/">  
+            <img class="logo" src="@/assets/images/logo.png">
+        </router-link>
+        <ul class="menu-box clearfix">
+           <router-link tag="li" v-for="item in navList" :key="item.id" class="menu-list" :to="item.path">{{item.name}}</router-link>
+        </ul>
+        <div class="sub-info clearfix">
+            <span class="tip">2019-09-23 08:00:00</span>
+            <span class="tip"><img src="@/assets/images/weather/default.png" class="weather-icon" /><span class="c-middle">15.6°</span></span>
+            <span class="tip">预警<em class="num">30</em></span>
+            <span class="tip">故障<em class="num">26</em></span>
         </div>
-        <a href="javascript:;" class="userinfo" @click="logout">
+        <!-- <a href="javascript:;" class="userinfo" @click="logout">
             当前用户：{{sysAdminName}} 退出
-        </a>
+        </a> -->
     </div>
 </template>
 <script>
@@ -22,11 +25,10 @@ export default {
         return {
             sysAdminName: this.$store.state.admin.adminName,
             navList: [
-              {id:1,name:'数据概览',path:'/dataMonitor'},
-              {id:2,name:'车辆监控',path:'/carMonitor'},
-              {id:3,name:'路测监控',path:'/roadMonitor'},
-              {id:4,name:'云端监控',path:'/cloudMonitor'},
-              {id:5,name:'告警监控',path:'/alertMonitor'}
+              {id:1,name:'概览',path:'/dataMonitor'},
+              {id:2,name:'车辆',path:'/carMonitor'},
+              {id:3,name:'路网',path:'/roadMonitor'},
+              {id:4,name:'路测设备',path:'/equipmentMonitor'}
             ]
         }
     },
@@ -77,58 +79,67 @@ export default {
     right: 0;
     top: 0;
     z-index: 2;
-    height: 44px;
-    background: #080808;
+    height: 40px;
     color: #fff;
-    padding: 10px 20px;
-    @include layoutMode(between);
-    .left {
-        @include layoutMode();
-        .logo-wrap {
-            @include layoutMode();
+    padding: 24px 30px;
+    text-align: center;
+    letter-spacing: 1px;
+    .logo-wrap {
+        float: left;
+        padding: 5px 0;
+        cursor: pointer;
+        height: 30px;
+        .logo {
+            height: 100%;
+            vertical-align: top;
+        }
+    }
+    .menu-box{
+        display: inline-block;
+        white-space: nowrap;
+        .menu-list {
+            float: left;
+            margin:0px 46px;
+            height:100%;
+            font-size: 20px;
+            line-height:40px;
+            vertical-align: middle;
             cursor: pointer;
-            .logo {
-                margin-right: 10px;
-                height: 30px;
+            &:hover {
+                border-bottom: 3px solid #925d00;
             }
-            .title {
-                line-height: 64px;
-                font-size: 22px;
-                font-family: 'MicrosoftYaHei';
-                font-weight: 100;
+            &.is-active {
+                border-bottom: 3px solid #925d00;
+                cursor: default;
             }
         }
     }
-    .userinfo {
-        font-size: 12px;
-        height: 100%;
-        color: #fff;
-        @include layoutMode();
+    .sub-info {
+        float: right;
+        font-size: 14px;
+        .tip {
+            margin-left: 40px;
+            &:first-child {
+                margin-left: 0;
+            }
+            .weather-icon {
+                display: inline-block;
+                width: 26px;
+                vertical-align: middle;
+                margin-right: 8px;
+            }
+            .num {
+                margin-left: 15px;
+                color: #dc8c00;
+            }
+        }
     }
-}
-.menu-box{
-    height: 64px;
-    padding: 0px 50px;
-    display: inline-block;
-    text-align: center;
-    font-size: 15px;
-    .menu-list {
-    	margin: 0px;
-	    padding:0px 20px;
-	    height:62px;
-	    line-height:62px;
-	    vertical-align: middle;
-	    float: left;
-	    cursor: pointer;
-	    &:hover {
-	    	border-bottom:2px solid #5aaaeb;
-    		color:#5aaaeb;
-	    }
-	    &.is-active {
-	    	border-bottom: 2px solid #37B6E6;
-    		color: #37B6E6;
-	    }
-    }
+    // .userinfo {
+    //     font-size: 12px;
+    //     height: 100%;
+    //     color: #fff;
+    //     @include layoutMode();
+    // }
 }
 </style>
 
