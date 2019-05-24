@@ -88,10 +88,10 @@
                 this.cameraList = res.data;
                 this.getStream();
               }else{
-                this.$message.error("获取路侧实时视频数据失败1");
+                this.$message.error(res.message);
               }
             }).catch(err => {
-              this.$message.error("error: 获取路侧实时视频数据失败1");
+              this.$message.error("error!");
             });
           },
           getStream(){
@@ -106,10 +106,10 @@
                 //直播报活调用
                 //this.repeatFn();//拉取流后，保活
               }else{
-                this.$message.error("获取车辆实时视频数据失败2");
+                this.$message.error(res.message);
               }
             }).catch(err => {
-              this.$message.error("error: 获取车辆实时视频数据失败2");
+              this.$message.error("error!");
             });
           },
           embedFlash(rtmpSource){//部署
@@ -142,10 +142,10 @@
               if(res.code == 200){
                 this.deviceStatus = res.data;
               }else{
-                this.$message.error("获取路侧设备状态数据失败");
+                this.$message.error(res.message);
               }
             }).catch(err => {
-              this.$message.error("error: 获取路侧设备状态数据失败");
+              this.$message.error("error!");
             });
           }
         },

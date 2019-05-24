@@ -172,10 +172,10 @@
             }
             _this.calendarMap.setOption(option);
           }else{
-            this.$message.error("获取获取行车日历失败");
+            this.$message.error(res.message);
           }
         }).catch(err => {
-            this.$message.error("error: 获取获取行车日历失败");
+            this.$message.error("error!");
         });
       },
       getVirtulData() {
@@ -200,10 +200,10 @@
             this.liveDeviceInfo = res.liveDeviceData;
             this.getStream();
           }else{
-            this.$message.error("获取车辆实时视频数据失败1");
+            this.$message.error(res.message);
           }
         }).catch(err => {
-            this.$message.error("error: 获取车辆实时视频数据失败1");
+            this.$message.error("error!");
         });
       },
       getStream(){
@@ -220,10 +220,10 @@
             //直播报活调用
             this.repeatFn();//拉取流后，保活
           }else{
-            this.$message.error("获取车辆实时视频数据失败2");
+            this.$message.error(res.message);
           }
         }).catch(err => {
-            this.$message.error("error: 获取车辆实时视频数据失败2");
+            this.$message.error("error!");
         });
       },
       keepStream(){
@@ -234,7 +234,7 @@
         }).then(res => {
           // if(res.status == 200){
           // }else{
-          //   this.$message.error("获取车辆实时视频数据失败3");
+          //   this.$message.error(res.message);
           // }
         }).catch(err => {
             this.$message.error("error: 获取车辆实时视频数据失败3");
