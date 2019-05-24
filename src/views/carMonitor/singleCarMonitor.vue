@@ -26,13 +26,13 @@
 </div>
 </template>
 <script>
-  import LeftCar from './components/leftCar.vue'
-  import HeaderCar from './components/headerCar.vue'
-  import RightCar from './components/rightCar.vue'
-  import MainCar from './components/mainCar.vue'
-  import BottomCar from './components/bottomCar.vue'
+  import LeftCar from './components/singleCar/leftCar.vue'
+  import HeaderCar from './components/singleCar/headerCar.vue'
+  import RightCar from './components/singleCar/rightCar.vue'
+  import MainCar from './components/singleCar/mainCar.vue'
+  import BottomCar from './components/singleCar/bottomCar.vue'
   export default {
-    name: "CarViewMonitor",
+    name: "SingleCarMonitor",
     components: {LeftCar,HeaderCar,RightCar,MainCar,BottomCar},
     data () {
       return {

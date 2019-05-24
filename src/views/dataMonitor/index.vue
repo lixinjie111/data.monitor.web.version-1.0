@@ -1,6 +1,6 @@
 <template>
     <div class="data-monitor">
-        <el-button type="primary" class="c-view-btn" @click="showView">查看"数据概览"大屏视图</el-button>
+        <el-button class="c-view-btn" type="primary">这是"概览"</el-button>
     </div>
 </template>
 <script>
@@ -10,12 +10,6 @@ export default {
         return {}
     },
     methods: {
-        showView() {
-            const { href } = this.$router.resolve({
-                name: 'DataViewMonitor'
-            })
-            window.open(href, '_blank')
-        }
     },
     mounted () {
 

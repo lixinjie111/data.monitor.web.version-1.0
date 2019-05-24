@@ -8,16 +8,10 @@ const Err404 = resolve => require(['@/views/error/404'], resolve)
 
 
 const DataMonitor = resolve => require(['@/views/dataMonitor/index'], resolve)
-const DataViewMonitor = resolve => require(['@/views/dataMonitor/view'], resolve)
 const CarMonitor = resolve => require(['@/views/carMonitor/index'], resolve)
-const CarViewMonitor = resolve => require(['@/views/carMonitor/view'], resolve)
 const SingleCarMonitor = resolve => require(['@/views/carMonitor/singleCarMonitor'], resolve)
 const RoadMonitor = resolve => require(['@/views/roadMonitor/index'], resolve)
-const RoadViewMonitor = resolve => require(['@/views/roadMonitor/view'], resolve)
-const CloudMonitor = resolve => require(['@/views/cloudMonitor/index'], resolve)
-const CloudViewMonitor = resolve => require(['@/views/cloudMonitor/view'], resolve)
-const AlertMonitor = resolve => require(['@/views/alertMonitor/index'], resolve)
-const AlertViewMonitor = resolve => require(['@/views/alertMonitor/view'], resolve)
+const EquipmentMonitor = resolve => require(['@/views/equipmentMonitor/index'], resolve)
 
 
 
@@ -51,25 +45,11 @@ export default new Router({
       showHeader: true
     }
   },{
-    path: '/dataMonitor/view',
-    name: 'DataViewMonitor',
-    component: DataViewMonitor,
-    meta: {
-      showHeader: false
-    }
-  },{
     path: '/carMonitor',
     name: 'CarMonitor',
     component: CarMonitor,
     meta: {
       showHeader: true
-    }
-  },{
-    path: '/carMonitor/view',
-    name: 'CarViewMonitor',
-    component: CarViewMonitor,
-    meta: {
-      showHeader: false
     }
   },{
     path: '/singleCarMonitor/:vehicleId',
@@ -86,39 +66,11 @@ export default new Router({
       showHeader: true
     }
   },{
-    path: '/roadMonitor/view',
-    name: 'RoadViewMonitor',
-    component: RoadViewMonitor,
-    meta: {
-      showHeader: false
-    }
-  },{
-    path: '/cloudMonitor',
-    name: 'CloudMonitor',
-    component: CloudMonitor,
+    path: '/equipmentMonitor',
+    name: 'EquipmentMonitor',
+    component: EquipmentMonitor,
     meta: {
       showHeader: true
-    }
-  },{
-    path: '/cloudMonitor/view',
-    name: 'CloudViewMonitor',
-    component: CloudViewMonitor,
-    meta: {
-      showHeader: false
-    }
-  },{
-    path: '/alertMonitor',
-    name: 'AlertMonitor',
-    component: AlertMonitor,
-    meta: {
-      showHeader: true
-    }
-  },{
-    path: '/alertMonitor/view',
-    name: 'AlertViewMonitor',
-    component: AlertViewMonitor,
-    meta: {
-      showHeader: false
     }
   },{
     path: '/test/echarts',
