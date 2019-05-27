@@ -123,6 +123,9 @@
     width:1920px;
     height: 1080px;
     overflow:hidden;
+    line-height: 1.42857143;
+    letter-spacing: 0;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
   }
   .single-top{
     width:100%;

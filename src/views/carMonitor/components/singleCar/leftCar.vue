@@ -216,8 +216,8 @@
             this.drivingStatistics = res.vehicleBaseDetail[0];
             this.drivingStatistics.cumulatedMiles = this.drivingStatistics.cumulatedMiles.toFixed(1);
             this.drivingStatistics.avgSpeed = this.drivingStatistics.avgSpeed.toFixed(1);
-          }else{
-            this.$message.error(res.message);
+          // }else{
+          //   this.$message.error(res.message);
           }
         }).catch(err => {
           this.$message.error("error！");
@@ -231,8 +231,8 @@
         }).then(res => {
           if(res.status == 200){
             this.singleVehicle = res.vehicleBaseDetail[0];
-          }else{
-            this.$message.error(res.message);
+          // }else{
+          //   this.$message.error(res.message);
           }
         }).catch(err => {
           this.$message.error("error！");
