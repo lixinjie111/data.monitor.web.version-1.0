@@ -133,7 +133,7 @@ export default {
                     // model.receiveShadow = true;
                     // 0019D1AA0424  0019EAFA0104  0019EAFA0102  0018EAFA0332
                     //车
-                    var geoBox1 = new THREE.BoxBufferGeometry( 0.5, 1, 0.5);
+                    var geoBox1 = new THREE.BoxBufferGeometry( 1.2, 1.6, 0.8);
                     var model1 = new THREE.Mesh( geoBox1, matStdObjects );
                     model1.position.set( 0, 0, 0 );
                     model1.rotation.set( this.pitch,this.yaw,this.roll );
@@ -143,7 +143,7 @@ export default {
                     dl.scene.add(model1);
                     this.deviceModels["0019D1AA0424"].cars[m] = model1;
 
-                    var pBox1 = new THREE.BoxBufferGeometry( 0.3, 0.3, 0.6);
+                    var pBox1 = new THREE.BoxBufferGeometry(0.4, 0.4, 0.9);
                     var pmodel1 = new THREE.Mesh( pBox1, person );
                     pmodel1.position.set( 0, 0, 0 );
                     pmodel1.rotation.set( 0, 0, 0 );
@@ -157,7 +157,7 @@ export default {
 
 
 
-                    var geoBox2 = new THREE.BoxBufferGeometry( 0.5, 1, 0.5);
+                    var geoBox2 = new THREE.BoxBufferGeometry(  1.2, 1.6, 0.8);
                     var model2 = new THREE.Mesh( geoBox2, matStdObjects );
                     model2.position.set( 0, 0, 0 );
                     model2.rotation.set( this.pitch,this.yaw,this.roll );
@@ -167,7 +167,7 @@ export default {
                     dl.scene.add(model2);
                     this.deviceModels["0019EAFA0104"].cars[m] = model2;
 
-                    var pBox2 = new THREE.BoxBufferGeometry(  0.3, 0.3, 0.6);
+                    var pBox2 = new THREE.BoxBufferGeometry(0.4, 0.4, 0.9);
                     var pmodel2 = new THREE.Mesh( pBox2, person );
                     pmodel2.position.set( 0, 0, 0 );
                     pmodel2.rotation.set( 0, 0, 0 );
@@ -181,7 +181,7 @@ export default {
 
 
 
-                    var geoBox3 = new THREE.BoxBufferGeometry( 0.5, 1, 0.5);
+                    var geoBox3 = new THREE.BoxBufferGeometry( 1.2, 1.6, 0.8);
                     var model3 = new THREE.Mesh( geoBox3, matStdObjects );
                     model3.position.set( 0, 0, 0 );
                     model3.rotation.set( this.pitch,this.yaw,this.roll );
@@ -191,7 +191,7 @@ export default {
                     dl.scene.add(model3);
                     this.deviceModels["0019EAFA0102"].cars[m] = model3;
 
-                    var pBox3 = new THREE.BoxBufferGeometry(  0.3, 0.3, 0.6);
+                    var pBox3 = new THREE.BoxBufferGeometry(0.4, 0.4, 0.9);
                     var pmodel3 = new THREE.Mesh( pBox3, person );
                     pmodel3.position.set( 0, 0, 0 );
                     pmodel3.rotation.set( 0, 0, 0 );
@@ -207,7 +207,7 @@ export default {
 
 
 
-                    var geoBox4 = new THREE.BoxBufferGeometry( 0.5, 1, 0.5);
+                    var geoBox4 = new THREE.BoxBufferGeometry(  1.2, 1.6, 0.8);
                     var model4 = new THREE.Mesh( geoBox4, matStdObjects );
                     model4.position.set( 0, 0, 0 );
                     model4.rotation.set( this.pitch,this.yaw,this.roll );
@@ -217,7 +217,7 @@ export default {
                     dl.scene.add(model4);
                     this.deviceModels["0018EAFA0332"].cars[m] = model4;
 
-                    var pBox4 = new THREE.BoxBufferGeometry(  0.3, 0.3, 0.6);
+                    var pBox4 = new THREE.BoxBufferGeometry(0.4, 0.4, 0.9);
                     var pmodel4 = new THREE.Mesh( pBox4, person );
                     pmodel4.position.set( 0, 0, 0 );
                     pmodel4.rotation.set( 0, 0, 0 );
@@ -340,7 +340,7 @@ export default {
             }
         },
         onMessage:function(data){
-            // console.log(data);
+            console.log(data);
             this.models={};
             // this.deviceModels
 
