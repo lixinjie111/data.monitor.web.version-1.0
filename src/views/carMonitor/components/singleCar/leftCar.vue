@@ -333,25 +333,25 @@
       },
       setScale(){
         switch(this.handleZoom) {
-          case 11: 
+          case 11:
             this.scale = 20;
             break;
-          case 12: 
+          case 12:
             this.scale = 18;
             break;
-          case 13: 
+          case 13:
             this.scale = 16;
             break;
-          case 14: 
+          case 14:
             this.scale = 12;
             break;
-          case 15: 
+          case 15:
             this.scale = 8;
             break;
-          case 16: 
+          case 16:
             this.scale = 5;
             break;
-          default: 
+          default:
             this.scale = 20;
         }
       },
@@ -375,18 +375,18 @@
             pointList = json.data.pointList;
           }else{
             pointList = [{
-              gNSS_LONG: json.data.lon, 
+              gNSS_LONG: json.data.lon,
               gNSS_LAT: json.data.lat,
               gNSS_HEAD: json.data.head
             }];
           }
         }else{
           pointList = [{
-            gNSS_LONG: json.data.lon, 
+            gNSS_LONG: json.data.lon,
             gNSS_LAT: json.data.lat,
             gNSS_HEAD: json.data.head
           }];
-        } 
+        }
         // pointList.forEach((item) => {
         //   console.log(item.gNSS_LONG, item.gNSS_LAT);
         // });
@@ -468,7 +468,7 @@
             }
             // console.log("航向角："+_newWholeJson.angle);
             // console.log("坐标轴："+handlePointList.toString());
-            
+
             this.wholePath.push(_newWholeJson);
           }
             // console.log("wholePath------------");
@@ -476,7 +476,7 @@
             // console.log(this.wholePath);
           this.changeLngLat();
 
-          
+
           this.all = 0;
         }
       },
@@ -592,6 +592,7 @@
     position: relative;
     height: 50px;
     background: #423e4e;
+    letter-spacing: 1px;
   }
   .car-detail{
     font-size: 16px;
@@ -682,7 +683,7 @@
     margin-top: 35px;
 
   }
-  
+
   .single-bottom{
     position: absolute;
     left: 0;

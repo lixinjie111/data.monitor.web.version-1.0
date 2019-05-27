@@ -29,10 +29,9 @@ function axiosFilter() {
     // response
     axios.interceptors.response.use(function(response) {
         const returnStatus = response.data.status;
-
         switch (returnStatus) {
             case '200': {
-                resolve(response);
+                return response;
                 break;
             }
             case '403': {
@@ -82,7 +81,7 @@ function axiosFilter() {
                 removeAuthInfo();
                 window.location.href = '/'
                 isOutLogin = true;
-            }  
+            }
         });
     });
 }
