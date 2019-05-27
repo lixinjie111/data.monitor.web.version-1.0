@@ -95,10 +95,10 @@ export default {
 
             //初始化websocket连接
             this.initWebsocket(this.websocketUrl);
-            // setInterval(()=>{
-            //    let camera =  dl.viewer.scene.view;
-            //    console.log(camera);
-            // },1000);
+            setInterval(()=>{
+               let camera =  dl.viewer.scene.view;
+               console.log(camera);
+            },1000);
 
             setTimeout(()=>{
                 this.updateCameraPosition(442456.0905737311,4427223.965503679, 60.22107514430958, 2.4329173138415072,-0.6747685185185206,-0.7853942219746017);
