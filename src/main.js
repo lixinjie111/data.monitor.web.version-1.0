@@ -46,10 +46,6 @@ NProgress.configure({ easing: 'ease', speed: 500, showSpinner: false })
 
 Vue.config.productionTip = false;
 
-// axios 过滤器
-import axiosFilter from './api/axiosConfig.js';
-axiosFilter();
-
 /* eslint-disable no-new */
 Vue.filter('toFixed',function (value,num) {
   value = Number(value);
@@ -103,4 +99,8 @@ const vm = new Vue({
     store,
     components: { App },
     template: '<App/>'
-})
+});
+
+// axios 过滤器
+import axiosFilter from './api/axiosConfig.js';
+axiosFilter(vm);

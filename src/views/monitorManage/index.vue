@@ -86,14 +86,8 @@
             findBaseData({
               'rCUId': '1240',
             }).then(res => {
-              if(res.code == 200){
-                this.cameraList = res.data;
-                this.getStream();
-              // }else{
-              //   this.$message.error(res.message);
-              }
-            }).catch(err => {
-              this.$message.error("error!");
+              this.cameraList = res.data;
+              this.getStream();
             });
           },
           getStream(){
@@ -101,17 +95,9 @@
               "procotal": this.cameraList[3].procotal,
               "serialNum": this.cameraList[3].serialNum.trim()
             }).then(res => {
-              if(res.code == 200){
-                //获取视频地址并赋值
-                let videoUrl = res.data.rtmp;
-                this.embedFlash(videoUrl);
-                //直播报活调用
-                //this.repeatFn();//拉取流后，保活
-              // }else{
-              //   this.$message.error(res.message);
-              }
-            }).catch(err => {
-              // this.$message.error("error!");
+              //获取视频地址并赋值
+              let videoUrl = res.data.rtmp;
+              this.embedFlash(videoUrl);
             });
           },
           embedFlash(rtmpSource){//部署
@@ -141,13 +127,7 @@
             getDeviceStatus({
               'rCUId': '1240',
             }).then(res => {
-              if(res.code == 200){
-                this.deviceStatus = res.data;
-              // }else{
-              //   this.$message.error(res.message);
-              }
-            }).catch(err => {
-              // this.$message.error("error!");
+              this.deviceStatus = res.data;
             });
           },
           initWebSocket(){

@@ -90,92 +90,86 @@
         getVehicleCalendarData({
           'vehicleId': this.vehicleId,
         }).then(res => {
-          if(res.status == 200){
-            var list = res.vehicleCalendarDetail;
-             if(list==null&&list.length<=0){
-              this.$message.error("行车日历结果不存在");
-               return;
-             }
-             var xDate;
-             list.forEach(function (e) {
-               xDate = e.date.substring(0,4)+"-"+e.date.substring(4,6)+"-"+e.date.substring(6,8);
-               _this.mapData.push([
-                 xDate,
-                 e.driveTime
-               ]);
-             })
-            var range = list[0].date.substring(0,4)+"-"+list[0].date.substring(4,6);
-            var option = {
-              tooltip:{
-                trigger:'item',
-                formatter: function(a) {
-                  return (
-                           '日期 : ' + a.value[0]
-                    + '<br/>时长 : ' +(parseFloat(a.value[1])/(1000*60*60)).toFixed(1) +'小时'
-                   );
-                },
-              },
-              visualMap: {
-                 type:'piecewise',
-                calculable: true,
-                orient: 'horizontal',
-               /* min:0,*/
-                /*max:1000,*/
-                color:['#d28601','#895a0c','#2b2219'],
-                show:false,
-                hoverLink:true,
-                pieces: [
-                  {min: 0, max: 7200000, color: '#2b2218'},//0-2小时
-                  {min: 7200000, max: 14400000, color: '#503512'},//2-4小时
-                  {min: 14400000, max: 21600000, color: '#503913'},//4-6小时
-                  {min: 21600000, max: 28800000, color: '#885a0b'},//6-8小时
-                  {min: 28800000, color: '#d38600'},//8小时以上
-                ]
-                /* left: '670',
-                 top: 'center'*/
-              },
-              calendar:  {
-                orient: 'vertical',
-                range: range,
-                dayLabel:{
-                  /*nameMap:['周日','周一','周二','周三','周四','周五','周六']*/
-                  nameMap:'cn',
-                  color:'#bbb8b1'
-                },
-                monthLabel:{
-                  show:false
-                },
-                yearLabel:{
-                  show:false
-                },
-                itemStyle:{
-                  borderWidth:1,
-                  borderColor:'#18171b',
-                  opacity:0.5,
-                  color:'#18171b'
-                },
-                splitLine:{
-                  lineStyle:{
-                    color:'#18171b',
-                    width:3
-                  }
-                },
-                cellSize: [38, 30],
-                left:'center'
-              },
-              series: {
-                type: 'heatmap',
-                coordinateSystem: 'calendar',
-                calendarIndex: 0,
-                data: _this.mapData
-              }
-            }
-            _this.calendarMap.setOption(option);
-          // }else{
-          //   this.$message.error(res.message);
+          var list = res.vehicleCalendarDetail;
+          if(list==null&&list.length<=0){
+            this.$message.error("行车日历结果不存在");
+            return;
           }
-        }).catch(err => {
-            this.$message.error("error!");
+          var xDate;
+          list.forEach(function (e) {
+            xDate = e.date.substring(0,4)+"-"+e.date.substring(4,6)+"-"+e.date.substring(6,8);
+            _this.mapData.push([
+              xDate,
+              e.driveTime
+            ]);
+          })
+          var range = list[0].date.substring(0,4)+"-"+list[0].date.substring(4,6);
+          var option = {
+            tooltip:{
+              trigger:'item',
+              formatter: function(a) {
+                return (
+                         '日期 : ' + a.value[0]
+                  + '<br/>时长 : ' +(parseFloat(a.value[1])/(1000*60*60)).toFixed(1) +'小时'
+                 );
+              },
+            },
+            visualMap: {
+               type:'piecewise',
+              calculable: true,
+              orient: 'horizontal',
+             /* min:0,*/
+              /*max:1000,*/
+              color:['#d28601','#895a0c','#2b2219'],
+              show:false,
+              hoverLink:true,
+              pieces: [
+                {min: 0, max: 7200000, color: '#2b2218'},//0-2小时
+                {min: 7200000, max: 14400000, color: '#503512'},//2-4小时
+                {min: 14400000, max: 21600000, color: '#503913'},//4-6小时
+                {min: 21600000, max: 28800000, color: '#885a0b'},//6-8小时
+                {min: 28800000, color: '#d38600'},//8小时以上
+              ]
+              /* left: '670',
+               top: 'center'*/
+            },
+            calendar:  {
+              orient: 'vertical',
+              range: range,
+              dayLabel:{
+                /*nameMap:['周日','周一','周二','周三','周四','周五','周六']*/
+                nameMap:'cn',
+                color:'#bbb8b1'
+              },
+              monthLabel:{
+                show:false
+              },
+              yearLabel:{
+                show:false
+              },
+              itemStyle:{
+                borderWidth:1,
+                borderColor:'#18171b',
+                opacity:0.5,
+                color:'#18171b'
+              },
+              splitLine:{
+                lineStyle:{
+                  color:'#18171b',
+                  width:3
+                }
+              },
+              cellSize: [38, 30],
+              left:'center'
+            },
+            series: {
+              type: 'heatmap',
+              coordinateSystem: 'calendar',
+              calendarIndex: 0,
+              data: _this.mapData
+            }
+          }
+          _this.calendarMap.setOption(option);
         });
       },
       getVirtulData() {
@@ -196,14 +190,8 @@
         getLiveDeviceInfo({
           'vehicleId': this.vehicleId,
         }).then(res => {
-          if(res.status == 200){
-            this.liveDeviceInfo = res.liveDeviceData;
-            this.getStream();
-          // }else{
-          //   this.$message.error(res.message);
-          }
-        }).catch(err => {
-            this.$message.error("error!");
+          this.liveDeviceInfo = res.liveDeviceData;
+          this.getStream();
         });
       },
       getStream(){
@@ -212,18 +200,12 @@
           'camId':this.liveDeviceInfo.serialNum,
           'protocal':this.liveDeviceInfo.protocol
         }).then(res => {
-          if(res.status == 200){
-            this.streamInfo = res.streamInfoRes;
-            //获取视频地址并赋值
-            let videoUrl = this.streamInfo.rtmp;
-            this.embedFlash(videoUrl);
-            //直播报活调用
-            this.repeatFn();//拉取流后，保活
-          // }else{
-          //   this.$message.error(res.message);
-          }
-        }).catch(err => {
-            this.$message.error("error!");
+          this.streamInfo = res.streamInfoRes;
+          //获取视频地址并赋值
+          let videoUrl = this.streamInfo.rtmp;
+          this.embedFlash(videoUrl);
+          //直播报活调用
+          this.repeatFn();//拉取流后，保活
         });
       },
       keepStream(){
@@ -232,12 +214,6 @@
           'camId':this.liveDeviceInfo.serialNum,
           'protocal':this.liveDeviceInfo.protocol
         }).then(res => {
-          // if(res.status == 200){
-          // }else{
-          //   this.$message.error(res.message);
-          // }
-        }).catch(err => {
-            this.$message.error("error!");
         });
       },
       repeatFn(){//每5秒直播报活一次

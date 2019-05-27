@@ -10,16 +10,16 @@
         <div class="c-view-side c-view-right">
             <div class="c-scroll-wrap">
                 <div class="c-scroll-inner">
-                    <div class="c-car-list c-clear-padding-vertical">
+                    <div class="c-car-list">
                         <circle-progress title="道路级别"></circle-progress>
                     </div>
-                    <div class="c-car-list c-clear-padding-vertical">
+                    <div class="c-car-list">
                         <circle-progress title="设备良好"></circle-progress>
                     </div>
-                    <div class="c-car-list c-clear-padding-vertical">
+                    <div class="c-car-list">
                         <driving-car-echarts title="在驶车辆" id="driving-car-echarts-1"></driving-car-echarts>
                     </div>
-                    <div class="c-car-list c-clear-padding-vertical">
+                    <div class="c-car-list">
                         <driving-car-echarts title="平台数据" id="driving-car-echarts-2"></driving-car-echarts>
                     </div>
                 </div>
@@ -51,4 +51,7 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+.c-car-list {
+    padding: 0 12px;
+}
 </style>

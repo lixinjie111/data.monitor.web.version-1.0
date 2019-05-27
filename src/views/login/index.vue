@@ -73,16 +73,12 @@ export default {
                                 adminName: 123456
                             }
                         };
-                        if(res.status == 200){
-                            that.$message.success(res.msg);
-                            that.$router.push({ path: '/' });
-                        }else {
-                            that.$message.warning(res.msg);
-                        }
+
+                        that.$message.success(res.msg);
+                        that.$router.push({ path: '/' });
                         that.loading = false;
                     }).catch(err => {
                         that.loading = false;
-                        that.$message.error("请求失败！");
                     })
                 } else {
                     // that.$message.error('error submit!!');

@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import axios from 'axios'
+// Element-ui
+import ElementUI from 'element-ui'
 
 axios.defaults.withCredentials = true;
 Vue.prototype.$http = axios;
@@ -9,7 +11,7 @@ let isOutLogin = true;
 /**
  * axios过滤器
  */
-function axiosFilter() {
+function axiosFilter(vm) {
     // request
     axios.create({
       baseURL: cfg.url,
@@ -28,31 +30,27 @@ function axiosFilter() {
 
     // response
     axios.interceptors.response.use(function(response) {
-        const returnStatus = response.data.status;
-
+        let returnStatus = response.data.status;
         switch (returnStatus) {
             case '200': {
-                resolve(response);
+                return response;
                 break;
             }
             case '403': {
                 vm.$message.error('无权限');
-                reject();
                 break;
             }
             case '407': {
                 vm.$message.error('需要身份验证');
-                reject();
                 break;
             }
             case '500': {
                 vm.$message.error('服务器出错，操作失败');
-                reject();
                 break;
             }
             default: {
-                vm.$message.error('操作失败');
-                reject();
+                vm.$message.error(response.data.message);
+                return;
             }
         }
 
@@ -75,15 +73,17 @@ function axiosFilter() {
         }
         // return response;
     }, function(error) {
-        // vm.$message.error('error!');
-        vm.$alert('登录已过期，请重新登录', '', {
-            confirmButtonText: '确定',
-            callback: action => {
-                removeAuthInfo();
-                window.location.href = '/'
-                isOutLogin = true;
-            }  
-        });
+        vm.$message.error('error!');
+        console.log(error);
+        return Promise.reject(error);
+        // vm.$alert('登录已过期，请重新登录', '', {
+        //     confirmButtonText: '确定',
+        //     callback: action => {
+        //         removeAuthInfo();
+        //         window.location.href = '/'
+        //         isOutLogin = true;
+        //     }  
+        // });
     });
 }
 
