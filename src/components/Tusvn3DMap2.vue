@@ -340,7 +340,7 @@ export default {
             }
         },
         onMessage:function(data){
-            console.log(data);
+            // console.log(data);
             this.models={};
             // this.deviceModels
 
