@@ -8,6 +8,6 @@ export const requestLogin = params => { return axios.post(`${HTTPURL}login`, par
 /**
  * 退出登录
  */
-export const requestLogout = params => { return axios.get(`${HTTPURL}logout`, params).then(res => res.data); };
+export const requestLogout = params => { return axios.get(`${HTTPURL}logout`, {params: params}).then(res => res.data); };
 
 

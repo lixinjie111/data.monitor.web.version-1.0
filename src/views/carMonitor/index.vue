@@ -4,9 +4,9 @@
             <div class="c-scroll-wrap">
                 <div class="c-scroll-inner">
                     <left-top></left-top>
-                    <left-middle :title="circleTitleOne"></left-middle>
-                    <left-middle :title="circleTitleTwo"></left-middle>
-                    <left-bottom :title="circleTitleThree"></left-bottom>
+                    <left-middle title="自动驾驶分布"></left-middle>
+                    <left-middle title="车辆用途"></left-middle>
+                    <left-bottom title="在驶车辆"></left-bottom>
                 </div>
             </div>
         </div>
@@ -27,15 +27,11 @@ import LeftMiddle from './components/index/leftMiddle.vue'
 import LeftBottom from './components/index/leftBottom.vue'
 import RightList from './components/index/rightList.vue'
 import MoreBtn from './components/index/moreBtn.vue'
-// import Mask from './components/index/mask.vue'
 export default {
     name: "CarMonitor",
     components: { LeftTop, LeftMiddle, LeftBottom, RightList, MoreBtn },
     data () {
         return {
-            circleTitleOne: "自动驾驶分布",
-            circleTitleTwo: "车辆用途",
-            circleTitleThree: "在驶车辆",
             AMap: null,
             mapOption: {  
                 center: [116.395577, 39.892257],

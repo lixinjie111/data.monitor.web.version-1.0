@@ -154,7 +154,7 @@ export default {
 .right-list-wrap {                  
 	.c-car-list {
 		cursor: pointer;
-		padding: 14px 12px;
+		// padding: 14px 12px;
 		margin-bottom: 20px;
 		&:last-child {
 			margin-bottom: 0;
@@ -225,6 +225,7 @@ export default {
 		.car-middle-info {
 			height: 55px;
 			margin-top: 42px;
+			margin-bottom: 27px;
 			line-height: 26px;    
 			@include layoutMode(all);
 			.car-img {

@@ -87,8 +87,8 @@
               if(res.code == 200){
                 this.cameraList = res.data;
                 this.getStream();
-              }else{
-                this.$message.error(res.message);
+              // }else{
+              //   this.$message.error(res.message);
               }
             }).catch(err => {
               this.$message.error("error!");
@@ -105,11 +105,11 @@
                 this.embedFlash(videoUrl);
                 //直播报活调用
                 //this.repeatFn();//拉取流后，保活
-              }else{
-                this.$message.error(res.message);
+              // }else{
+              //   this.$message.error(res.message);
               }
             }).catch(err => {
-              this.$message.error("error!");
+              // this.$message.error("error!");
             });
           },
           embedFlash(rtmpSource){//部署
@@ -141,11 +141,11 @@
             }).then(res => {
               if(res.code == 200){
                 this.deviceStatus = res.data;
-              }else{
-                this.$message.error(res.message);
+              // }else{
+              //   this.$message.error(res.message);
               }
             }).catch(err => {
-              this.$message.error("error!");
+              // this.$message.error("error!");
             });
           }
         },
