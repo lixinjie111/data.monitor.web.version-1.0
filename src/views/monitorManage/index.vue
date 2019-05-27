@@ -92,8 +92,8 @@
           },
           getStream(){
             getRTMPData({
-              "procotal": this.cameraList[3].procotal,
-              "serialNum": this.cameraList[3].serialNum.trim()
+              "procotal": '1',
+              "serialNum": '3402000000132000001401'
             }).then(res => {
               //获取视频地址并赋值
               let videoUrl = res.data.rtmp;
@@ -185,7 +185,7 @@
         }
     }
 </script>
-<style>
+<style scoped>
   .monitor-manage{
     position: fixed;
     top:0;
@@ -201,14 +201,12 @@
     width:1920px;
     height: 1080px;*/
     overflow:hidden;
+    background: #2a2a2a;
   }
   .monitor-vedio{
     width: 100%;
     height: 100%;
   }
-</style>
-<style scoped>
-
   .monitor-manage-title{
     padding:24px 24px 24px 30px;
     position: absolute;

@@ -104,7 +104,7 @@ export default new Router({
       showHeader: false
     }
   },{
-    path: '/monitorManage-1',
+    path: '/monitorVideo',
     name: 'MonitorVideo',
     component: MonitorVideo,
     // component: () => import('@/pages/home/Home'),

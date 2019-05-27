@@ -4,6 +4,7 @@
 </div>
 </template>
 <script>
+  import {findBaseData,getRTMPData,getDeviceStatus} from '@/api/monitorManage'
     export default {
         data() {
             return {
@@ -21,8 +22,8 @@
           },
           getStream(){
             getRTMPData({
-              "procotal": this.cameraList[3].procotal,
-              "serialNum": this.cameraList[3].serialNum.trim()
+              "procotal": '1',
+              "serialNum": '3402000000132000001701'
             }).then(res => {
               //获取视频地址并赋值
               let videoUrl = res.data.rtmp;
@@ -58,4 +59,29 @@
         }
     }
 </script>
-<style scoped></style>
+<style scoped>
+  .monitor-manage{
+    position: fixed;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    /*position: absolute;
+    top:50%;
+    margin-top: -540px;
+    left:50%;
+    margin-left: -960px;
+    !*background: #d2a458;*!
+    width:1920px;
+    height: 1080px;*/
+    overflow:hidden;
+    background: #2a2a2a;
+  }
+  .monitor-vedio{
+    width: 100%;
+    height: 900px;
+    position: absolute;
+    top: 50%;
+    margin-top: -450px;
+  }
+</style>

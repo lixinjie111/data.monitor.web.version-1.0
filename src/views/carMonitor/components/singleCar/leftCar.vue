@@ -50,7 +50,7 @@
            <span class="text-style">KM/h</span>
          </li>
          <li>
-           <span class="text-style">驾驶速度</span>
+           <span class="text-style">平均速度</span>
          </li>
        </ul>
        <ul class="statistic-style">
