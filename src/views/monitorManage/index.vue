@@ -2,7 +2,7 @@
 <div class="monitor-manage">
   <div class="monitor-manage-title">
     <img src="@/assets/images/monitorShow/monitor-1.png" class="monitor-title-img"/>
-    <span class="monitor-title-style">监控管理平台</span>
+    <span class="monitor-title-style">云控智能路侧系统</span>
   </div>
   <div class="crossing-info">
     <p class="crossing-number">路口编号：110108-335</p>
@@ -185,7 +185,7 @@
         }
     }
 </script>
-<style scoped>
+<style>
   .monitor-manage{
     position: fixed;
     top:0;
@@ -202,6 +202,13 @@
     height: 1080px;*/
     overflow:hidden;
   }
+  .monitor-vedio{
+    width: 100%;
+    height: 100%;
+  }
+</style>
+<style scoped>
+
   .monitor-manage-title{
     padding:24px 24px 24px 30px;
     position: absolute;
@@ -321,10 +328,6 @@
     padding: 10px;
     z-index:1;
     background: #000;
-  }
-  .monitor-vedio{
-    width: 100%;
-    height: 100%;
   }
   .moniter-manage-map{
     position: absolute;

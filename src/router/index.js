@@ -13,6 +13,7 @@ const SingleCarMonitor = resolve => require(['@/views/carMonitor/singleCarMonito
 const RoadMonitor = resolve => require(['@/views/roadMonitor/index'], resolve)
 const EquipmentMonitor = resolve => require(['@/views/equipmentMonitor/index'], resolve)
 const MonitorManage = resolve => require(['@/views/monitorManage/index'], resolve)
+const MonitorVideo = resolve => require(['@/views/monitorManage/monitorVideo.vue'], resolve)
 
 
 const EchartsTest = resolve => require(['@/views/test/echarts'], resolve)
@@ -98,6 +99,14 @@ export default new Router({
     path: '/monitorManage',
     name: 'MonitorManage',
     component: MonitorManage,
+    // component: () => import('@/pages/home/Home'),
+    meta: {
+      showHeader: false
+    }
+  },{
+    path: '/monitorManage-1',
+    name: 'MonitorVideo',
+    component: MonitorVideo,
     // component: () => import('@/pages/home/Home'),
     meta: {
       showHeader: false
