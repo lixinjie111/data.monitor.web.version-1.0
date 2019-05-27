@@ -20,13 +20,20 @@ export default {
                 background:"black",
                 navMode: Pt.OrbitControls
             }
-            ,viewVector1:{x:287406.0,y:3463772,z:50}
-            ,viewVector2:{x:287707.0,y:3463835.0,z:80.0} 
+            // ,viewVector1:{x:287406.0,y:3463772,z:50}
+            // ,viewVector2:{x:287707.0,y:3463835.0,z:80.0} 
+
+            ,viewVector1:{x:442350.475567611,y:4427186.352713934,z:50}
+            ,viewVector2:{x:442637.284474562,y:4427363.359317946,z:80.0} 
 
             ,shps:{}
-            ,models:{}            
+            ,models:{}     
+            ,modelArr:[]  
+            ,cacheModelNum:30     
 
-            ,websocketUrl:"ws://10.0.1.57:9999/ws"
+            // ,websocketUrl:"ws://10.0.1.57:9999/ws"
+            // ,websocketUrl:"ws://192.168.1.132:9998/ws"
+            ,websocketUrl:"ws://172.17.1.13:9998/ws"
             ,hostWebsocket:null
             ,tweens: {}
 
@@ -42,7 +49,7 @@ export default {
             // ,utmposition: null
 
             ,sourceProject:"EPSG:4326"
-            ,destinatePorject:"+proj=utm +zone=51 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+            ,destinatePorject:"+proj=utm +zone=50 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
         }
     },
     watch:{
@@ -51,19 +58,82 @@ export default {
         initMap:function(){
             dl.init(this.mapoption);
             //添加数据
-            this.addShape("intersection","./static/map3d/suzhou_CityRoad_utm51/Intersection.shp",dl.styles.intersection.color)
-            this.addShape("Crosswalk","./static/map3d/suzhou_CityRoad_utm51/Crosswalk.shp",dl.styles.crosswalk.color)
-            this.addShape("lane_marking","./static/map3d/suzhou_CityRoad_utm51/Lane_marking.shp",dl.styles.lane_marking.color)
-            this.addShape("lane_arrow","./static/map3d/suzhou_CityRoad_utm51/Direction_arrow.shp",dl.styles.lane_arrow.color)
-            this.addShape("lane_boundary","./static/map3d/suzhou_CityRoad_utm51/Lane_boundary.shp",dl.styles.lane_boundary.color)
+            // this.addShape("intersection","./static/map3d/suzhou_CityRoad_utm51/Intersection.shp",dl.styles.intersection.color)
+            // this.addShape("Crosswalk","./static/map3d/suzhou_CityRoad_utm51/Crosswalk.shp",dl.styles.crosswalk.color)
+            // this.addShape("lane_marking","./static/map3d/suzhou_CityRoad_utm51/Lane_marking.shp",dl.styles.lane_marking.color)
+            // this.addShape("lane_arrow","./static/map3d/suzhou_CityRoad_utm51/Direction_arrow.shp",dl.styles.lane_arrow.color)
+            // this.addShape("lane_boundary","./static/map3d/suzhou_CityRoad_utm51/Lane_boundary.shp",dl.styles.lane_boundary.color)
+            
+            this.addShape("Crosswalk2","./static/map3d/kjy/UTM/crosswalk.shp","#999999")
+            this.addShape("lane2","./static/map3d/kjy/UTM/lane.shp",dl.styles.lane_boundary.color)
+            this.addShape("roadline2","./static/map3d/kjy/UTM/roadline.shp",dl.styles.lane_boundary.color)
+
+            this.addShape("1","./static/map3d/kjy/UTM/1.shp",dl.styles.lane_boundary.color)
+            this.addShape("2","./static/map3d/kjy/UTM/2.shp",dl.styles.lane_boundary.color)
+            this.addShape("3","./static/map3d/kjy/UTM/3.shp",dl.styles.lane_boundary.color)
+            this.addShape("4","./static/map3d/kjy/UTM/4.shp",dl.styles.lane_boundary.color)
+            this.addShape("5","./static/map3d/kjy/UTM/5.shp",dl.styles.lane_boundary.color)
+            this.addShape("6","./static/map3d/kjy/UTM/6.shp",dl.styles.lane_boundary.color)
+            this.addShape("7","./static/map3d/kjy/UTM/7.shp",dl.styles.lane_boundary.color)
+            this.addShape("8","./static/map3d/kjy/UTM/8.shp",dl.styles.lane_boundary.color)
+            this.addShape("9","./static/map3d/kjy/UTM/9.shp",dl.styles.lane_boundary.color)
+            this.addShape("10","./static/map3d/kjy/UTM/10.shp",dl.styles.lane_boundary.color)
+            this.addShape("11","./static/map3d/kjy/UTM/11.shp",dl.styles.lane_boundary.color)
+            this.addShape("12","./static/map3d/kjy/UTM/12.shp",dl.styles.lane_boundary.color)
+
+            
+            // this.addShape("lane_marking","./static/map3d/suzhou_CityRoad_utm51/Lane_marking.shp",dl.styles.lane_marking.color)
+            // this.addShape("lane_arrow","./static/map3d/suzhou_CityRoad_utm51/Direction_arrow.shp",dl.styles.lane_arrow.color)
+            
             //初始化视锥体
             this.initView(this.viewVector1.x,this.viewVector1.y,this.viewVector1.z,this.viewVector2.x,this.viewVector2.y,this.viewVector2.z);
 
+            // this.updateCameraPosition(442455.99844902,4427229.863377506,58.45029574064428,147.4909535804191,-0.6650238516042308,-0.8020833333333345);
             //添加模型
             // this.addModel("car","./static/map3d/map_photo/car.3DS",0,0,12.816);
+            
 
             //初始化websocket连接
             this.initWebsocket(this.websocketUrl);
+            setInterval(()=>{
+               let camera =  dl.viewer.scene.view;
+               console.log(camera);
+            },1000);
+
+            setTimeout(()=>{
+                // 442454.32658246456,4427227.8078830885, 37.73509248844059, 0.0000028926452461693342,-0.5081018518518544,-0.7385192219746066
+                // 442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606
+                this.updateCameraPosition(442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606);
+                var matStdObjects = new THREE.MeshStandardMaterial( { color: 0xffff00, roughness: 0.5, metalness: 0 } );
+                for(let m = 0;m<this.cacheModelNum;m++)
+                {
+                    // let model = new dl.Model({url: "./static/map3d/map_photo/car.3DS"});
+                    // model.position.x = 0;
+                    // model.position.y = 0;
+                    // model.position.z = 0;
+                    
+                    //圆球
+                    // var geoSphere = new THREE.SphereBufferGeometry( 0.8, 15, 15 );
+                    // var model = new THREE.Mesh( geoSphere, matStdObjects );
+                    // model.position.set( 0, 0, 0 );
+                    // model.castShadow = true;
+                    // model.receiveShadow = true;
+
+                    //立方体
+                    var geoBox = new THREE.BoxBufferGeometry( 1, 1, 1);
+                    var model = new THREE.Mesh( geoBox, matStdObjects );
+                    model.position.set( 0, 0, 0 );
+                    model.rotation.set( 0, Math.PI / 2.0, 0 );
+                    model.castShadow = true;
+                    model.receiveShadow = true;
+
+                    this.modelArr[m] = model;
+                    dl.scene.add(model);
+                }
+                console.log(this.modelArr.length);
+            },500);
+
+
         },
         initView:function(x1,y1,z1,x2,y2,z2){
             let bbox = new THREE.Box3(new THREE.Vector3(x1,y1,z1), new THREE.Vector3(x2,y2,z2));
@@ -123,6 +193,9 @@ export default {
             //         pitch: -0.8
             // });
         },
+        resetCamera:function(){
+            this.updateCameraPosition(442456.0905737311,4427223.965503679, 60.22107514430958, 2.4329173138415072,-0.6747685185185206,-0.7853942219746017);
+        },
         initWebsocket:function(url){
             if ('WebSocket' in window) {
                 this.hostWebsocket = new WebSocket(url);
@@ -135,125 +208,54 @@ export default {
             }            
         }, 
         onMessage:function(data){
-            let json = JSON.parse(data.data);
-            let data2 = json.result;
-            console.log(data2);
-            let vid = data2.vehicleId;
+            console.log(data);
+            this.models={};
 
-            let carModel = this.models[vid];
-            if(carModel==null)
+            for(let p=0;p<this.modelArr.length;p++)
             {
-                this.addModel(vid,"./static/map3d/map_photo/car.3DS",data2.longitude,data2.latitude,this.defualtZ)
+                let mdl = this.modelArr[p];
+                mdl.position.x = 0;
+                mdl.position.y = 0;
+                mdl.position.z = 0;
             }
+            // let models = dl.models;
+            // if(models!=null)
+            // {
+            //     for(let n = 0;n<models.length;n++)
+            //     {
+            //         dl.removeModel(models[n]);
+            //     }
+            // }
             
-            let carData = this.carBusinessData[vid];
-            let lastUtmPosition = null;
-            if(carData!=null)
+            let rsuDatas = JSON.parse(data.data);
+            for(let i = 0;i<rsuDatas.length;i++)
             {
-                lastUtmPosition = this.carBusinessData[vid]['lastUtmPosition'];
-            }else{
-                carData = {};
-                this.carBusinessData[vid]={};
-            }
-
-            if(this.carBusinessData[vid]['lastUtmPosition'] == null)
-            {
-                this.carBusinessData[vid]['utmposition'] = proj4(this.sourceProject,this.destinatePorject,[data2.longitude,data2.latitude]);
-                this.models[vid].position.x = this.carBusinessData[vid]['utmposition'][0];
-                this.models[vid].position.y = this.carBusinessData[vid]['utmposition'][1];
-                this.carBusinessData[vid]['utmposition'][2] = data2.heading;
-                this.carBusinessData[vid]['utmposition'][3] = data2.gpsTime;
-                this.models[vid].setHeading(-Math.PI / 180 * (data2.heading));
-                //vid与设定的主车vid相等则做相机跟随操作
-                if(this.mainCarVID == vid)
-                {
-                    this.updateCameraPosition(this.carBusinessData[vid]['utmposition'][0]+6,this.carBusinessData[vid]['utmposition'][1], this.defualtZ,this.defualtRadius,this.defualtPitch,-Math.PI / 180 * (data2.heading));
-                }
-
-                this.carBusinessData[vid]['lastUtmPosition'] = {};
-                this.carBusinessData[vid]['lastUtmPosition'].x=this.carBusinessData[vid]['utmposition'][0];
-                this.carBusinessData[vid]['lastUtmPosition'].y=this.carBusinessData[vid]['utmposition'][1];
-                this.carBusinessData[vid]['lastUtmPosition'].rotation=this.carBusinessData[vid]['utmposition'][2];
-                this.carBusinessData[vid]['lastUtmPosition'].gpstime=this.carBusinessData[vid]['utmposition'][3];
-
-                // console.log(this.carBusinessData[vid]['lastUtmPosition']);
-
-            }else{
-                console.log(this.carBusinessData[vid]['lastUtmPosition']);
-                this.carBusinessData[vid]['nowPosition'] = proj4(this.sourceProject,this.destinatePorject,[data2.longitude,data2.latitude]);
-                this.carBusinessData[vid]['nowPosition'][2] = data2.heading;
-                this.carBusinessData[vid]['nowPosition'][3] = data2.gpsTime;
-                if(this.tweens[vid]==null)
-                {
-                    this.tweens[vid] = new TWEEN.Tween(this.carBusinessData[vid]['lastUtmPosition'])
-                    .to({x: this.carBusinessData[vid]['nowPosition'][0], y: this.carBusinessData[vid]['nowPosition'][1], rotation: this.carBusinessData[vid]['nowPosition'][2],gpstime:this.carBusinessData[vid]['nowPosition'][3]}, this.carBusinessData[vid]['nowPosition'][3]-this.carBusinessData[vid]['lastUtmPosition'].gpstime)
-                    .delay(0)
-                    // .easing(TWEEN.Easing.Elastic.In)
-                    .easing(TWEEN.Easing.Linear.None)
-                    .onUpdate(
-                        (d)=>{
-                            // console.log("onUpdate");
-                            // console.log(d);
-                            this.models[vid].position.x = this.carBusinessData[vid]['lastUtmPosition'].x;
-                            this.models[vid].position.y = this.carBusinessData[vid]['lastUtmPosition'].y;
-                            this.models[vid].setHeading(-Math.PI / 180 * (this.carBusinessData[vid]['lastUtmPosition'].rotation));
-                            if(this.mainCarVID==vid)
-                            {
-                                dl.moveTo({
-                                    position: [this.carBusinessData[vid]['lastUtmPosition'].x+6,this.carBusinessData[vid]['lastUtmPosition'].y, this.defualtZ],
-                                    radius: this.defualtRadius,
-                                    yaw: -Math.PI / 180 * (this.carBusinessData[vid]['lastUtmPosition'].rotation),
-                                    pitch: this.defualtPitch
-
-                                });
-                            }
-                        }
-                    );
+                let d = rsuDatas[i];
+                // // console.log(rsuDatas[i]);
+                let dUTM = proj4(this.sourceProject,this.destinatePorject,[d.longitude,d.latitude]);
+                // console.log(dUTM);
+                // this.addModel(d.objId,"./static/map3d/map_photo/car.3DS",dUTM[0],dUTM[1],this.defualtZ);
+                // if(d.type == 3 || d.type == 6 || d.type ==8)
+                // {
+                    if(i<this.modelArr.length)
+                    {
+                        let mdl = this.modelArr[i];
+                        mdl.position.x = dUTM[0];
+                        mdl.position.y = dUTM[1];
+                        mdl.position.z = this.defualtZ+6;
+                    }
                     
-                }else{
-                        this.tweens[vid].stop();
-                        this.tweens[vid]=
-                            new TWEEN.Tween(this.carBusinessData[vid]['lastUtmPosition'])
-                                .to({x: this.carBusinessData[vid]['nowPosition'][0], y: this.carBusinessData[vid]['nowPosition'][1], rotation: this.carBusinessData[vid]['nowPosition'][2],gpstime:this.carBusinessData[vid]['nowPosition'][3]}, this.carBusinessData[vid]['nowPosition'][3]-this.carBusinessData[vid]['lastUtmPosition'].gpstime)
-                                .delay(0)
-                                // .easing(TWEEN.Easing.Elastic.In)
-                                .easing(TWEEN.Easing.Linear.None)
-                                .onUpdate(
-                                    (d)=>{
-                                        // console.log("onUpdate");
-                                        // console.log(d);
-                                        this.models[vid].position.x = this.carBusinessData[vid]['lastUtmPosition'].x;
-                                        this.models[vid].position.y = this.carBusinessData[vid]['lastUtmPosition'].y;
-                                        this.models[vid].setHeading(-Math.PI / 180 * (this.carBusinessData[vid]['lastUtmPosition'].rotation));
-                                        if(this.mainCarVID==vid)
-                                        {
-                                            dl.moveTo({
-                                                position: [this.carBusinessData[vid]['lastUtmPosition'].x+6,this.carBusinessData[vid]['lastUtmPosition'].y, this.defualtZ],
-                                                radius: this.defualtRadius,
-                                                yaw: -Math.PI / 180 * (this.carBusinessData[vid]['lastUtmPosition'].rotation),
-                                                pitch: this.defualtPitch
-
-                                            });
-                                        }
-                                    }
-                                )
-                        ;
-                    
-                }
-                this.tweens[vid].start();
+                // }
                 
-                if(this.carBusinessData[vid]['nowUtmPosition'] == null)
-                {
-                    this.carBusinessData[vid]['nowUtmPosition'] = {};
-                }
-
-                this.carBusinessData[vid]['nowUtmPosition'].x = this.carBusinessData[vid]['nowPosition'][0];
-                this.carBusinessData[vid]['nowUtmPosition'].y = this.carBusinessData[vid]['nowPosition'][1];
-                this.carBusinessData[vid]['nowUtmPosition'].rotation = this.carBusinessData[vid]['nowPosition'][2];
-                this.carBusinessData[vid]['nowUtmPosition'].gpstime = this.carBusinessData[vid]['nowPosition'][3];
-                this.carBusinessData[vid]['lastUtmPosition'] = this.carBusinessData[vid]['nowUtmPosition'];
-                this.carBusinessData[vid]['utmposition'] = this.carBusinessData[vid]['nowPosition'];
             }
+            // if(rsuDatas.length>0){
+            //     console.log("感知到"+rsuDatas.length+"个物体");
+            //     let d = rsuDatas[0];
+            //     // console.log(rsuDatas[i]);
+            //     let dUTM = proj4(this.sourceProject,this.destinatePorject,[d.longitude,d.latitude]);
+            //     this.addModel(d.objId,"./static/map3d/map_photo/car.3DS",dUTM[0],dUTM[1],this.defualtZ+10);
+            //     console.log(dUTM);
+            // }
             
             
         },
@@ -262,12 +264,10 @@ export default {
         },
         onOpen:function(){
             console.log("建立连接");
-            var hostVehicle = {
-                "action": this.action,
-                "vehicleId": this.vehicleIds
-            }
-            var hostVehicleMsg = JSON.stringify(hostVehicle);
-            this.sendMsg(hostVehicleMsg);
+            // 2046A1035893
+            var hostVehicle = '{"action":"rcu","data":{"rcuId":"2046A1037E1F"},"token":"fpx"}';
+            // var hostVehicleMsg = JSON.stringify(hostVehicle);
+            this.sendMsg(hostVehicle);
         },
         sendMsg:function(msg){
             if(window.WebSocket){
