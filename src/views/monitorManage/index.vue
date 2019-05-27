@@ -14,8 +14,8 @@
       <ul class="monitor-device">
         <!--<li v-for="item in deviceStatus.devices">
           <span class="monitor-device-line"></span>
-          <img src="@/assets/images/monitorShow/monitor-3.png" class="monitor-device-img-1" v-show="item.deviceType=='1'"/>
-          <img src="@/assets/images/monitorShow/monitor-4.png" class="monitor-device-img-2" v-show="item.deviceType=='2'"/>
+          <img src="@/assets/images/monitorManage/monitor-3.png" class="monitor-device-img-1" v-show="item.deviceType=='1'"/>
+          <img src="@/assets/images/monitorManage/monitor-4.png" class="monitor-device-img-2" v-show="item.deviceType=='2'"/>
           <span class="monitor-device-text">N32302</span>
           <span class="monitor-device-symbol"></span>
         </li>-->
@@ -77,7 +77,7 @@
               cameraList:[],
               deviceStatus:{},
               monitorSocket:{},
-              monitorUrl:'ws://172.17.1.13:9998/ws'
+              monitorUrl:'ws://120.133.21.14:29998/ws'
             }
         },
         components:{TusvnMap},
@@ -161,7 +161,6 @@
             _this.monitorSocket.onerror = _this.onerror;
           },
           onmessage(mesasge){
-            debugger
             let _this=this;
             var json = JSON.parse(mesasge.data);
             /*var type = json.action;*/
@@ -208,19 +207,19 @@
 </script>
 <style scoped>
   .monitor-manage{
-    /*position: fixed;
+    position: fixed;
     top:0;
     left:0;
     bottom:0;
-    right:0;*/
-    position: absolute;
+    right:0;
+    /*position: absolute;
     top:50%;
     margin-top: -540px;
     left:50%;
     margin-left: -960px;
-    /*background: #d2a458;*/
+    !*background: #d2a458;*!
     width:1920px;
-    height: 1080px;
+    height: 1080px;*/
     overflow:hidden;
   }
   .monitor-manage-title{
@@ -341,6 +340,7 @@
     right: 24px;
     padding: 10px;
     z-index:1;
+    background: #000;
   }
   .monitor-vedio{
     width: 100%;

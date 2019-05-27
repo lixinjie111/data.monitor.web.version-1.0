@@ -21,19 +21,19 @@ export default {
                 navMode: Pt.OrbitControls
             }
             // ,viewVector1:{x:287406.0,y:3463772,z:50}
-            // ,viewVector2:{x:287707.0,y:3463835.0,z:80.0} 
+            // ,viewVector2:{x:287707.0,y:3463835.0,z:80.0}
 
             ,viewVector1:{x:442350.475567611,y:4427186.352713934,z:50}
-            ,viewVector2:{x:442637.284474562,y:4427363.359317946,z:80.0} 
+            ,viewVector2:{x:442637.284474562,y:4427363.359317946,z:80.0}
 
             ,shps:{}
-            ,models:{}     
-            ,modelArr:[]  
-            ,cacheModelNum:30     
+            ,models:{}
+            ,modelArr:[]
+            ,cacheModelNum:30
 
             // ,websocketUrl:"ws://10.0.1.57:9999/ws"
             // ,websocketUrl:"ws://192.168.1.132:9998/ws"
-            ,websocketUrl:"ws://172.17.1.13:9998/ws"
+            ,websocketUrl:"ws://120.133.21.14:29998/ws"
             ,hostWebsocket:null
             ,tweens: {}
 
@@ -63,7 +63,7 @@ export default {
             // this.addShape("lane_marking","./static/map3d/suzhou_CityRoad_utm51/Lane_marking.shp",dl.styles.lane_marking.color)
             // this.addShape("lane_arrow","./static/map3d/suzhou_CityRoad_utm51/Direction_arrow.shp",dl.styles.lane_arrow.color)
             // this.addShape("lane_boundary","./static/map3d/suzhou_CityRoad_utm51/Lane_boundary.shp",dl.styles.lane_boundary.color)
-            
+
             this.addShape("Crosswalk2","./static/map3d/kjy/UTM/crosswalk.shp","#999999")
             this.addShape("lane2","./static/map3d/kjy/UTM/lane.shp",dl.styles.lane_boundary.color)
             this.addShape("roadline2","./static/map3d/kjy/UTM/roadline.shp",dl.styles.lane_boundary.color)
@@ -81,17 +81,17 @@ export default {
             this.addShape("11","./static/map3d/kjy/UTM/11.shp",dl.styles.lane_boundary.color)
             this.addShape("12","./static/map3d/kjy/UTM/12.shp",dl.styles.lane_boundary.color)
 
-            
+
             // this.addShape("lane_marking","./static/map3d/suzhou_CityRoad_utm51/Lane_marking.shp",dl.styles.lane_marking.color)
             // this.addShape("lane_arrow","./static/map3d/suzhou_CityRoad_utm51/Direction_arrow.shp",dl.styles.lane_arrow.color)
-            
+
             //初始化视锥体
             this.initView(this.viewVector1.x,this.viewVector1.y,this.viewVector1.z,this.viewVector2.x,this.viewVector2.y,this.viewVector2.z);
 
             // this.updateCameraPosition(442455.99844902,4427229.863377506,58.45029574064428,147.4909535804191,-0.6650238516042308,-0.8020833333333345);
             //添加模型
             // this.addModel("car","./static/map3d/map_photo/car.3DS",0,0,12.816);
-            
+
 
             //初始化websocket连接
             this.initWebsocket(this.websocketUrl);
@@ -109,7 +109,7 @@ export default {
                     // model.position.x = 0;
                     // model.position.y = 0;
                     // model.position.z = 0;
-                    
+
                     //圆球
                     // var geoSphere = new THREE.SphereBufferGeometry( 0.8, 15, 15 );
                     // var model = new THREE.Mesh( geoSphere, matStdObjects );
@@ -203,8 +203,8 @@ export default {
                 this.hostWebsocket.onerror = this.onError;
             }else{
                 console.log("该浏览器不支持WebSocket!");
-            }            
-        }, 
+            }
+        },
         onMessage:function(data){
             console.log(data);
             this.models={};
@@ -224,7 +224,7 @@ export default {
             //         dl.removeModel(models[n]);
             //     }
             // }
-            
+
             let rsuDatas = JSON.parse(data.data);
             for(let i = 0;i<rsuDatas.length;i++)
             {
@@ -242,9 +242,9 @@ export default {
                         mdl.position.y = dUTM[1];
                         mdl.position.z = this.defualtZ+6;
                     }
-                    
+
                 // }
-                
+
             }
             // if(rsuDatas.length>0){
             //     console.log("感知到"+rsuDatas.length+"个物体");
@@ -254,8 +254,8 @@ export default {
             //     this.addModel(d.objId,"./static/map3d/map_photo/car.3DS",dUTM[0],dUTM[1],this.defualtZ+10);
             //     console.log(dUTM);
             // }
-            
-            
+
+
         },
         onClose:function(data){
             console.log("结束连接");
@@ -285,7 +285,7 @@ export default {
         },
         resize:function(size)
         {
-            
+
         }
     },
     created(){
@@ -302,7 +302,7 @@ export default {
         }, 1000);
     },
     destroyed(){
-        
+
     }
 }
 </script>
@@ -313,8 +313,8 @@ export default {
         overflow: hidden;
         margin:0;
     }
-    canvas { 
-        width: 100%; 
+    canvas {
+        width: 100%;
         height: 100%;
         position: relative;
     }
