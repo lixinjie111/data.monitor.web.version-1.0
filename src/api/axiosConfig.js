@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import axios from 'axios'
+// Element-ui
+import ElementUI from 'element-ui'
 
 axios.defaults.withCredentials = true;
 Vue.prototype.$http = axios;
@@ -9,7 +11,7 @@ let isOutLogin = true;
 /**
  * axios过滤器
  */
-function axiosFilter() {
+function axiosFilter(vm) {
     // request
     axios.create({
       baseURL: cfg.url,
@@ -28,7 +30,7 @@ function axiosFilter() {
 
     // response
     axios.interceptors.response.use(function(response) {
-        const returnStatus = response.data.status;
+        let returnStatus = response.data.status;
         switch (returnStatus) {
             case '200': {
                 return response;
@@ -74,15 +76,17 @@ function axiosFilter() {
         }
         // return response;
     }, function(error) {
-        // vm.$message.error('error!');
-        vm.$alert('登录已过期，请重新登录', '', {
-            confirmButtonText: '确定',
-            callback: action => {
-                removeAuthInfo();
-                window.location.href = '/'
-                isOutLogin = true;
-            }
-        });
+        vm.$message.error('error!');
+        console.log(error);
+        return Promise.reject(error);
+        // vm.$alert('登录已过期，请重新登录', '', {
+        //     confirmButtonText: '确定',
+        //     callback: action => {
+        //         removeAuthInfo();
+        //         window.location.href = '/'
+        //         isOutLogin = true;
+        //     }
+        // });
     });
 }
 

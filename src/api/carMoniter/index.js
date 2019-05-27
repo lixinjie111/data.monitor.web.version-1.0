@@ -6,25 +6,10 @@ import {HTTPURL} from '../requestUrl';
  */
 
 /**
- * 获取车辆总数（辆）
- * I_M2_M21_01_01 参考 I_M1_M11_01_01
+ * 获取车辆信息
+ * I_M2_M21_00_01
  */
- export const getVehCount = params => {return axios.post(`${HTTPURL}getVehCount`, params).then(res => res.data); };
-/**
- * 获取总行驶里程（公里）
- * I_M2_M21_02_01
- */
- export const getDrivMileage = params => {return axios.post(`${HTTPURL}getDrivMileage`, params).then(res => res.data); };
-/**
- * 获取总行驶时长
- * I_M2_M21_02_02
- */
- export const getTravelTime = params => {return axios.post(`${HTTPURL}getTravelTime`, params).then(res => res.data); };
-/**
- * 获取平均行驶时长（分钟）
- * I_M2_M21_02_03
- */
- export const getAvgTravelTime = params => {return axios.post(`${HTTPURL}getAvgTravelTime`, params).then(res => res.data); };
+ export const getTotalInfo = params => {return axios.post(`${HTTPURL}getTotalInfo`, params).then(res => res.data); };
 /**
  * 获取自动驾驶级别分布数据
  * I_M2_M21_03_01

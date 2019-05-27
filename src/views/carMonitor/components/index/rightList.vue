@@ -154,11 +154,7 @@ export default {
 .right-list-wrap {                  
 	.c-car-list {
 		cursor: pointer;
-		// padding: 14px 12px;
-		margin-bottom: 20px;
-		&:last-child {
-			margin-bottom: 0;
-		}
+		padding: 14px 12px;
 		.right-list-head {
 			@include layoutMode(between);
 			line-height: 26px;

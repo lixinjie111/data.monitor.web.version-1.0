@@ -212,15 +212,9 @@
         getDrivingStatisticsData({
           'vehicleId': this.vehicleId,
         }).then(res => {
-          if(res.status == 200){
-            this.drivingStatistics = res.vehicleBaseDetail[0];
-            this.drivingStatistics.cumulatedMiles = this.drivingStatistics.cumulatedMiles.toFixed(1);
-            this.drivingStatistics.avgSpeed = this.drivingStatistics.avgSpeed.toFixed(1);
-          // }else{
-          //   this.$message.error(res.message);
-          }
-        }).catch(err => {
-          this.$message.error("error！");
+          this.drivingStatistics = res.vehicleBaseDetail[0];
+          this.drivingStatistics.cumulatedMiles = this.drivingStatistics.cumulatedMiles.toFixed(1);
+          this.drivingStatistics.avgSpeed = this.drivingStatistics.avgSpeed.toFixed(1);
         });
       },
       getBaseData(){
@@ -229,13 +223,7 @@
         getVehicleBaseData({
           'vehicleId': this.vehicleId,
         }).then(res => {
-          if(res.status == 200){
-            this.singleVehicle = res.vehicleBaseDetail[0];
-          // }else{
-          //   this.$message.error(res.message);
-          }
-        }).catch(err => {
-          this.$message.error("error！");
+          this.singleVehicle = res.vehicleBaseDetail[0];
         });
       },
       //重绘形成初始化

@@ -4,9 +4,9 @@
             <div class="c-scroll-wrap">
                 <div class="c-scroll-inner">
                     <left-top></left-top>
-                    <left-middle title="自动驾驶分布"></left-middle>
-                    <left-middle title="车辆用途"></left-middle>
-                    <left-bottom title="在驶车辆"></left-bottom>
+                    <circle-progress title="自动驾驶分布"></circle-progress>
+                    <circle-progress title="车辆用途"></circle-progress>
+                    <driving-car-echarts title="在驶车辆" id="driving-car-echarts-3"></driving-car-echarts>
                 </div>
             </div>
         </div>
@@ -23,13 +23,13 @@
 </template>
 <script>
 import LeftTop from './components/index/leftTop.vue'
-import LeftMiddle from './components/index/leftMiddle.vue'
-import LeftBottom from './components/index/leftBottom.vue'
+import CircleProgress from '@/components/circleProgress.vue'
+import DrivingCarEcharts from '@/components/drivingCarEcharts.vue'
 import RightList from './components/index/rightList.vue'
 import MoreBtn from './components/index/moreBtn.vue'
 export default {
     name: "CarMonitor",
-    components: { LeftTop, LeftMiddle, LeftBottom, RightList, MoreBtn },
+    components: { LeftTop, CircleProgress, DrivingCarEcharts, RightList, MoreBtn },
     data () {
         return {
             AMap: null,
