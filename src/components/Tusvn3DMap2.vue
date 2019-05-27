@@ -116,8 +116,8 @@ export default {
                 // 442454.32658246456,4427227.8078830885, 37.73509248844059, 0.0000028926452461693342,-0.5081018518518544,-0.7385192219746066
                 // 442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606
                 this.updateCameraPosition(442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606);
-                var matStdObjects = new THREE.MeshStandardMaterial( { color: 0xff0000, roughness: 1, metalness: 0 } );
-                var person = new THREE.MeshStandardMaterial( { color: 0xffff00, roughness: 1, metalness: 0 } );
+                var matStdObjects = new THREE.MeshStandardMaterial( { color: 0x7337E3, roughness: 1, metalness: 0 } );
+                var person = new THREE.MeshStandardMaterial( { color: 0xC4B17A, roughness: 1, metalness: 0 } );
                 for(let m = 0;m<this.cacheModelNum;m++)
                 {
                     // let model = new dl.Model({url: "./static/map3d/map_photo/car.3DS"});
