@@ -76,22 +76,26 @@ export default {
             // this.addShape("lane_arrow","./static/map3d/suzhou_CityRoad_utm51/Direction_arrow.shp",dl.styles.lane_arrow.color)
             // this.addShape("lane_boundary","./static/map3d/suzhou_CityRoad_utm51/Lane_boundary.shp",dl.styles.lane_boundary.color)
 
-            this.addShape("Crosswalk2","./static/map3d/kjy/UTM/crosswalk.shp","#999999")
-            this.addShape("lane2","./static/map3d/kjy/UTM/lane.shp",dl.styles.lane_boundary.color)
-            this.addShape("roadline2","./static/map3d/kjy/UTM/roadline.shp",dl.styles.lane_boundary.color)
+            // this.addShape("Crosswalk2","./static/map3d/kjy/UTM/crosswalk.shp","#999999")
+            // this.addShape("lane2","./static/map3d/kjy/UTM/lane.shp",dl.styles.lane_boundary.color)
+            // this.addShape("roadline2","./static/map3d/kjy/UTM/roadline.shp",dl.styles.lane_boundary.color)
 
-            this.addShape("1","./static/map3d/kjy/UTM/1.shp",dl.styles.lane_boundary.color)
-            this.addShape("2","./static/map3d/kjy/UTM/2.shp",dl.styles.lane_boundary.color)
-            this.addShape("3","./static/map3d/kjy/UTM/3.shp",dl.styles.lane_boundary.color)
-            this.addShape("4","./static/map3d/kjy/UTM/4.shp",dl.styles.lane_boundary.color)
-            this.addShape("5","./static/map3d/kjy/UTM/5.shp",dl.styles.lane_boundary.color)
-            this.addShape("6","./static/map3d/kjy/UTM/6.shp",dl.styles.lane_boundary.color)
-            this.addShape("7","./static/map3d/kjy/UTM/7.shp",dl.styles.lane_boundary.color)
-            this.addShape("8","./static/map3d/kjy/UTM/8.shp",dl.styles.lane_boundary.color)
-            this.addShape("9","./static/map3d/kjy/UTM/9.shp",dl.styles.lane_boundary.color)
-            this.addShape("10","./static/map3d/kjy/UTM/10.shp",dl.styles.lane_boundary.color)
-            this.addShape("11","./static/map3d/kjy/UTM/11.shp",dl.styles.lane_boundary.color)
-            this.addShape("12","./static/map3d/kjy/UTM/12.shp",dl.styles.lane_boundary.color)
+          this.addShape("Crosswalk2","./static/map3d/newUTMData/crosswalk.shp","#999999")
+          this.addShape("lane2","./static/map3d/newUTMData/lane.shp",dl.styles.lane_boundary.color)
+          this.addShape("roadline2","./static/map3d/newUTMData/roadline.shp",dl.styles.lane_boundary.color)
+
+          // this.addShape("1","./static/map3d/kjy/UTM/1.shp",dl.styles.lane_boundary.color)
+          //   this.addShape("2","./static/map3d/kjy/UTM/2.shp",dl.styles.lane_boundary.color)
+          //   this.addShape("3","./static/map3d/kjy/UTM/3.shp",dl.styles.lane_boundary.color)
+          //   this.addShape("4","./static/map3d/kjy/UTM/4.shp",dl.styles.lane_boundary.color)
+          //   this.addShape("5","./static/map3d/kjy/UTM/5.shp",dl.styles.lane_boundary.color)
+          //   this.addShape("6","./static/map3d/kjy/UTM/6.shp",dl.styles.lane_boundary.color)
+          //   this.addShape("7","./static/map3d/kjy/UTM/7.shp",dl.styles.lane_boundary.color)
+          //   this.addShape("8","./static/map3d/kjy/UTM/8.shp",dl.styles.lane_boundary.color)
+          //   this.addShape("9","./static/map3d/kjy/UTM/9.shp",dl.styles.lane_boundary.color)
+          //   this.addShape("10","./static/map3d/kjy/UTM/10.shp",dl.styles.lane_boundary.color)
+          //   this.addShape("11","./static/map3d/kjy/UTM/11.shp",dl.styles.lane_boundary.color)
+          //   this.addShape("12","./static/map3d/kjy/UTM/12.shp",dl.styles.lane_boundary.color)
 
 
             // this.addShape("lane_marking","./static/map3d/suzhou_CityRoad_utm51/Lane_marking.shp",dl.styles.lane_marking.color)
@@ -163,7 +167,7 @@ export default {
                     model2.rotation.set( this.pitch,this.yaw,this.roll );
                     model2.castShadow = true;
                     model2.receiveShadow = true;
-                    
+
                     dl.scene.add(model2);
                     this.deviceModels["0019EAFA0104"].cars[m] = model2;
 
@@ -187,7 +191,7 @@ export default {
                     model3.rotation.set( this.pitch,this.yaw,this.roll );
                     model3.castShadow = true;
                     model3.receiveShadow = true;
-                    
+
                     dl.scene.add(model3);
                     this.deviceModels["0019EAFA0102"].cars[m] = model3;
 
@@ -213,7 +217,7 @@ export default {
                     model4.rotation.set( this.pitch,this.yaw,this.roll );
                     model4.castShadow = true;
                     model4.receiveShadow = true;
-                    
+
                     dl.scene.add(model4);
                     this.deviceModels["0018EAFA0332"].cars[m] = model4;
 
@@ -251,7 +255,7 @@ export default {
                 // model5.rotation.set( this.pitch,this.yaw,this.roll );
                 // model5.castShadow = true;
                 // model5.receiveShadow = true;
-                
+
                 // dl.scene.add(model5);
 
                 // var pBox6 = new THREE.BoxBufferGeometry( 1, 0.5, 0.5);
@@ -405,7 +409,7 @@ export default {
                             mdl.position.z = this.defualtZ+6;
                         }
                     }
-                    
+
 
                 // }
 
