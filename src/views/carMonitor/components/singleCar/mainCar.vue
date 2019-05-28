@@ -214,6 +214,7 @@
         var position;
         var existList = [];
         var newList = [];
+        /*console.log("*****************");*/
         sideVehicleData.forEach(function (item) {
           var newObj;
           var oldObj;
@@ -353,21 +354,19 @@
                 newPosition = result.locations[0];
               }
               //如果地图上有该设备，无需重新绘制
-              var flag = false;
+              /*var flag = false;
               _this.deviceMarkerList.forEach(function (item) {
                 if(item.getPosition()[0] == newPosition[0] &&item.getPosition()[1] == newPosition[1]){
                   flag=true;
                 }
-              })
-              if(!flag){
+              })*/
                 marker = new AMap.Marker({
                   position: newPosition,
                   icon: 'static/images/car/car-3.png', // 添加 Icon 图标 URL
                   title: '北京',
                 });
                 _this.distanceMap.add(marker);
-                _this.deviceMarkerList.push(marker)
-              }
+               /* _this.deviceMarkerList.push(marker)*/
             })
           })
 
@@ -457,21 +456,19 @@
           var marker;
           AMap.convertFrom(position, 'gps', function (status, result) {
             newPosition = new AMap.LngLat(item.longitude, item.latitude);
-            var flag = false;
+            /*var flag = false;
             _this.lightMarkerList.forEach(function (item) {
               if(item.getPosition()[0] == newPosition[0] &&item.getPosition()[1] == newPosition[1]){
                 flag=true;
               }
-            })
-            if(!flag){
+            })*/
               marker = new AMap.Marker({
                 position: newPosition,
                 icon: 'static/images/car/car-4.png', // 添加 Icon 图标 URL
                 title: '北京',
               });
               _this.distanceMap.add(marker);
-              _this.lightMarkerList.push(marker);
-            }
+              /*_this.lightMarkerList.push(marker);*/
           })
         })
       },

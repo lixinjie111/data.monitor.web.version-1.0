@@ -58,11 +58,11 @@
       </ul>
     </div>
   </div>
-  <div class="monitor-vedio-info">
+  <!--<div class="monitor-vedio-info">
     <div id="cmsplayer" class="monitor-vedio"></div>
-  </div>
+  </div>-->
   <div class="moniter-manage-map">
-    <tusvn-map :target-id="map-monitor" ref="tusvnMap">
+    <tusvn-map :target-id="'mapMonitor'" ref="tusvnMap">
 
     </tusvn-map>
   </div>
@@ -179,8 +179,8 @@
           }
         },
         mounted() {
-          this.findBaseData();
-          this.getDeviceStatus();
+          /*this.findBaseData();
+          this.getDeviceStatus();*/
          /* this.initWebSocket();*/
         }
     }

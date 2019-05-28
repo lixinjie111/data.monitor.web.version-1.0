@@ -15,25 +15,18 @@
         <canvas id="up2" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <canvas id="upImg2" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <img id="upPlan2" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="up3" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <canvas id="upImg3" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <img id="upPlan3" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="up4" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <canvas id="upImg4" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <img id="upPlan4" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="up5" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <canvas id="upImg5" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <img id="upPlan5" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="up6" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <canvas id="upImg6" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <img id="upPlan6" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="up7" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <canvas id="upImg7" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <img id="upPlan7" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="up8" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <canvas id="upImg8" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <img id="upPlan8" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="up9" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <canvas id="upImg9" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <img id="upPlan9" src="@/assets/images/car/circle.png" style="display: none;">
 
@@ -50,22 +43,16 @@
         <canvas id="down3" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <canvas id="downImg3" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <img id="downPlan3" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="down4" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <canvas id="downImg4" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <img id="downPlan4" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="down5" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <canvas id="downImg5" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <img id="downPlan5" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="down6" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <canvas id="downImg6" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <img id="downPlan6" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="down7" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <canvas id="downImg7" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <img id="downPlan7" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="down8" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <canvas id="downImg8" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <img id="downPlan8" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="down9" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <canvas id="downImg9" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <img id="downPlan9" src="@/assets/images/car/circle.png" style="display: none;">
       </div>
@@ -87,7 +74,7 @@
 
 </template>
 <script>
-  import Curve1 from '@/assets/js/utils/curve1.js';
+  import Curve from '@/assets/js/utils/curveNew.js';
 
   export default {
     name:"bottom-car",
@@ -368,11 +355,11 @@
         _this.reportWebSocket.onopen = _this.onReportOpen;
       },
       onReportMessage(message){
-        console.log("--------")
-        console.log("时间----"+new Date().getTime())
         let _this=this;
         var json = JSON.parse(message.data);
         var data = json.result.reportItems;
+        console.log("**********************")
+        console.log("时间----"+new Date().getTime()+"长度"+data.length);
         var canData=[];
         var gpsData=[];
         var radarData=[];
@@ -387,7 +374,7 @@
             _this.downRandom = 0.1;*/
 
           }
-          if(_this.k==12){
+          if(_this.k==11){
             _this.k=0;
             _this.upRandom=0.1
           }
@@ -411,18 +398,18 @@
             }
           })
           //绘制can和gps
-          if(_this.m==1 ||_this.m==5||_this.m==9){
+          /*if(_this.m==1 ||_this.m==5||_this.m==9){
             if(_this.k==9&&canData.length>0&&gpsData.length>0){
               var canCurve = new Curve1([110, 142], [300, 58], '600', '200', _this.upRandom,'CAN',_this.k,'up');
               canCurve.generateForward();
               _this.upRandom = _this.upRandom+0.08;
               _this.k++;
 
-              /*if(_this.k==10){
+              /!*if(_this.k==10){
                 _this.k=0;
                 _this.upRandom=0.1
-              }*/
-            }else{
+              }*!/
+            }else{*/
               if(canData.length>0){
                 var canCurve = new Curve1([110, 142], [300, 58], '600', '200', _this.upRandom,'CAN',_this.k,'up');
                 canCurve.generateForward();
@@ -440,9 +427,9 @@
                 _this.k++;
 
               }
-            }
-          }
-          if(_this.m==3||_this.m==6){
+          /*  }
+          }*/
+         /* if(_this.m==3||_this.m==6){*/
             if(radarData.length>0){
               var radarCurve = new Curve1( [110, 142], [300, 58], '600', '200', _this.upRandom,'radar',_this.k,'up');
               radarCurve.generateForward();
@@ -453,8 +440,8 @@
                 _this.upRandom=0.1
               }*/
             }
-          }
-          if(_this.m==3||_this.m==4||_this.m==9){
+          /*}*/
+         /* if(_this.m==3||_this.m==4||_this.m==9){*/
             if(eventData.length>0){
               var eventCurve = new Curve1([345, 60], [540, 155], '600', '200', _this.downRandom,'event',_this.i,'down');
               eventCurve.generateForward();
@@ -465,7 +452,7 @@
                 _this.downRandom=0.1
               }
             }
-          }
+          /*}*/
           _this.m++;
         }
       },
@@ -695,20 +682,37 @@
       var _this = this;
      _this.container = document.getElementById('canvasContainer');
       var random=0.1;
-      /*var data=[{'dataType':'vehicleCanCount','count':1}]
-      _this.dataHandle(data);*/
-     /* _this.$curveUtil.generateForward(container, [110, 142], [292, 58], '600', '200', random,'GPS');
-      _this.$curveUtil.generateForward(container, [345, 60], [532, 142], '600', '200', random,'Mds');*/
-     /*var data=[{'dataType':'vehicleCanCount','count':1},{'dataType':'vehicleGpsCount','count':1}]
-     var time = setInterval(function () {
-       _this.dataHandle(data);
-     },1000);*/
+      //画上行三条线 random,color,order,i,start,end
+      var curve1 = new Curve();
+      curve1.drawLines(0.1,'#9D589D','up',0,[110, 142], [300, 58]);
+      var curve2 = new Curve();
+      curve2.drawLines(0.2,'#2e9d27','up',1,[110, 142], [300, 58]);
+      var curve3 = new Curve();
+      curve3.drawLines(0.3,'#d27a3a','up',2,[110, 142], [300, 58]);
+
+      //画下行三条线
+      var downCurve1 = new Curve();
+      downCurve1.drawLines(0.1,'#9D589D','down',0,[345, 60], [540, 155]);
+      var downCurve2 = new Curve();
+      downCurve2.drawLines(0.2,'#2e9d27','down',1,[345, 60], [540, 155]);
+      var downCurve3 = new Curve();
+      downCurve3.drawLines(0.3,'#d27a3a','down',2,[345, 60], [540, 155]);
+      var i=0;
+      setInterval(function (e) {
+        if(i>=3){
+          i=0
+        }
+        //画上行的图片
+        var curve = new Curve();
+        curve.drawImage(random,'GPS','down',i,[110, 142], [300, 58]);
+        i++;
+      },1000)
       //速度和加速度
       _this.speedChart = _this.$echarts.init(document.getElementById('speedChart'));
       _this.accelerateChart = _this.$echarts.init(document.getElementById('accelerateChart'));
 
       _this.initWebSocket();
-      _this.realReportWebSocket();
+      /*_this.realReportWebSocket();*/
 
     },
     beforeDestroy(){
@@ -720,6 +724,7 @@
 <style scoped>
   .downCanvas, .upCanvas {
     position: absolute;
+    color: #000;
   }
   .car-bottom{
     overflow: hidden;

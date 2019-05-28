@@ -80,7 +80,6 @@
     },
     created() {
       this.screenConfig.scalefactor = this.screenConfig.showHeight/(this.screenConfig.scrHeight*this.screenConfig.meterPerDegree);
-      console.log(this.screenConfig.scalefactor);
     },
     methods: {
       getDriveCalendar(){
@@ -280,6 +279,7 @@
           var res = JSON.parse(msg.data);
           this.currentCar = res.result;
           this.carsData = res.result.liveRadarDetailList ? res.result.liveRadarDetailList : [];
+
       },
       close(){
           console.log('Socket已经关闭');
@@ -290,6 +290,10 @@
        * @param {*} latitude 纬度
        */
       mapPtToScrPt(longitude,latitude){
+        /*console.log('当前车的经度：'+this.currentCar.longitude);
+        console.log('当前车的维度：'+this.currentCar.latitude);
+        console.log("旁车的经度"+longitude);
+        console.log("旁车的维度"+latitude);*/
           var srcCenterPtX = this.screenConfig.scrWidth/2,//视图中心点x
               srcCenterPtY = this.screenConfig.scrHeight*3/4,//视图中心点y
               srcMapCenterLng = this.currentCar.longitude, //当前车经度
@@ -306,7 +310,6 @@
           var Ssx = (lng1 - srcMapCenterLng)/this.screenConfig.scalefactor,
               Ssy = (lat1 - srcMapCenterLat)/this.screenConfig.scalefactor;
               // console.log('Ssx',Ssx,'Ssy',Ssy)
-
           //判断是否需要旋转坐标
           if(this.currentCar.headingAngle != 0){
               var rotatedData = this.rotateCoordinateAxis(Ssx,Ssy,this.currentCar.headingAngle);
@@ -364,7 +367,6 @@
       this.getDeviceInfo();
      /* this.getStream();*/
       this.initSocket();
-
     },
     beforeDestroy(){
       clearTimeout(this.timer);
@@ -474,7 +476,7 @@
     transform: rotate(-90deg);
   }
   .right-title{
-    margin-top: 35px!important;
+    margin-top: 40px!important;
   }
   .otherCarsContainer{
     width: 270px;

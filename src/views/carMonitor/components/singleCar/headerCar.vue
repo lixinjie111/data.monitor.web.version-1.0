@@ -1,93 +1,93 @@
 <template>
-    <div class="real-detail">
-      <ul class="base-detail monitor-header ">
-        <li class="base-detail-style">
-          <span>油门</span>
-          <div class="pedal-icon">
-            <span class="pedal-icon1"></span>
-            <span class="pedal-icon2" v-bind:style="{ top:'-' +pedalBottomWidth+ 'px', borderBottomWidth: pedalBottomWidth + 'px', borderLeftWidth: pedalLeftWidth + 'px' }"></span>
-          </div>
-        </li>
-        <li class="base-detail-style">
-          <span>刹车</span>
-          <div class="pedal-icon">
-            <span class="pedal-icon1"></span>
-            <span class="pedal-icon2"  v-bind:style="{ top:'-' +stopBottomWidth+ 'px', borderBottomWidth: stopBottomWidth + 'px', borderLeftWidth: stopLeftWidth + 'px' }"></span>
-          </div>
-        </li>
-        <li class="base-detail-direction">
-          <div class="header-angle" :style="{transform:'rotate('+realData.headingAngle+'deg)'}">
-            <img src="@/assets/images/car/car-11.png"/>
-          </div>
-          <span class="header-angle-style">{{realData.headingAngleName}} {{realData.headingAngleCalc  | toFixed(1)}}°</span>
-        </li>
-        <li class="director">
+  <div class="real-detail">
+    <ul class="base-detail monitor-header ">
+      <li class="base-detail-style">
+        <span>油门</span>
+        <div class="pedal-icon">
+          <span class="pedal-icon1"></span>
+          <span class="pedal-icon2" v-bind:style="{ top:'-' +pedalBottomWidth+ 'px', borderBottomWidth: pedalBottomWidth + 'px', borderLeftWidth: pedalLeftWidth + 'px' }"></span>
+        </div>
+      </li>
+      <li class="base-detail-style">
+        <span>刹车</span>
+        <div class="pedal-icon">
+          <span class="pedal-icon1"></span>
+          <span class="pedal-icon2"  v-bind:style="{ top:'-' +stopBottomWidth+ 'px', borderBottomWidth: stopBottomWidth + 'px', borderLeftWidth: stopLeftWidth + 'px' }"></span>
+        </div>
+      </li>
+      <li class="base-detail-direction">
+        <div class="header-angle" :style="{transform:'rotate('+realData.headingAngle+'deg)'}">
+          <img src="@/assets/images/car/car-11.png"/>
+        </div>
+        <span class="header-angle-style">{{realData.headingAngleName}} {{realData.headingAngleCalc  | toFixed(1)}}°</span>
+      </li>
+      <li class="director">
 
-          <div class="director-icon">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <!--向左转 亮-->
-            <img src="@/assets/images/car/car-12.png" v-if="realData.turnLight=='left'">
-            <img src="@/assets/images/car/car-13.png" class="director-left" v-else>
-            <!--向右转 亮-->
-            <img src="@/assets/images/car/car-12.png" class="director-right" v-if="realData.turnLight=='right'">
-            <img src="@/assets/images/car/car-13.png" v-else >
-          </div>
+        <div class="director-icon">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <!--向左转 亮-->
+          <img src="@/assets/images/car/car-12.png" v-if="realData.turnLight=='left'">
+          <img src="@/assets/images/car/car-13.png" class="director-left" v-else>
+          <!--向右转 亮-->
+          <img src="@/assets/images/car/car-12.png" class="director-right" v-if="realData.turnLight=='right'">
+          <img src="@/assets/images/car/car-13.png" v-else >
+        </div>
 
-        </li>
-        <li>
-          <span>当前档位</span>
-          <!--<img src="@/assets/images/car/car-14.png"/>-->
-          <span class="current-gear">{{realData.transmission}}</span>
-        </li>
-        <li>
-          <span>剩余里程</span>
-          <!--<img src="@/assets/images/car/car-15.png"/>-->
-          <span class="current-electric">{{realData.remainElec | toFixed(1)}} KM</span>
-        </li>
-      </ul>
-      <ul class="monitor-header signal-detail">
-        <li>
-          <div class="signal-item1 signal-style">
-            <span class="signal-icon1" :class="[vehicleStatus.gpsStatus==1 ? liveUsed : vehicleStatus.gpsStatus==2?liveBroken:vehicleStatus.gpsStatus==0?liveUnused:liveUsed]"></span>
-            <span>GPS</span>
-          </div>
-          <div class="signal-item1">
-            <span class="signal-icon1" :class="[vehicleStatus.cameraStatus==1 ? liveUsed : vehicleStatus.cameraStatus==2?liveBroken:vehicleStatus.cameraStatus==0?liveUnused:liveUsed]"></span>
-            <span>Camera</span>
-          </div>
-          <div class="signal-item1 signal-style">
-            <span class="signal-icon1" :class="[vehicleStatus.canStatus==1 ? liveUsed : vehicleStatus.canStatus==2?liveBroken:vehicleStatus.canStatus==0?liveUnused:liveUsed]"></span>
-            <span>V2X</span>
-          </div>
-          <div class="signal-item1">
-            <span class="signal-icon1" :class="[vehicleStatus.radarStatus==1 ? liveUsed : vehicleStatus.radarStatus==2?liveBroken:vehicleStatus.radarStatus==0?liveUnused:liveUsed]"></span>
-            <span>Radar</span>
-          </div>
-        </li>
-        <li>
-          <div class="signal-item2">
-            <span class="signal-icon2" :class="[naviStatus.naviControlStatus==1 ? liveUsed : naviStatus.naviControlStatus==2?liveBroken:naviStatus.naviControlStatus==0?liveUnused:liveUsed]"></span>
-            <span>Navi Control</span>
-          </div>
-          <div class="signal-item2">
-            <span class="signal-icon2" :class="[naviStatus.naviPlanningStatus==1 ? liveUsed : naviStatus.naviPlanningStatus==2?liveBroken:naviStatus.naviPlanningStatus==0?liveUnused:liveUsed]"></span>
-            <span>Navi Plannig</span>
-          </div>
-          <div class="signal-item2">
-            <span class="signal-icon2" :class="[naviStatus.naviPerceptionStatus==1 ? liveUsed : naviStatus.naviPerceptionStatus==2?liveBroken:naviStatus.naviPerceptionStatus==0?liveUnused:liveUsed]"></span>
-            <span>Navi Perception</span>
-          </div>
-          <div class="signal-item2">
-            <span class="signal-icon2" :class="[naviStatus.naviPredictionStatus==1 ? liveUsed : naviStatus.naviPredictionStatus==2?liveBroken:naviStatus.naviPredictionStatus==0?liveUnused:liveUsed]"></span>
-            <span>Navi Prediction</span>
-          </div>
+      </li>
+      <li>
+        <span>当前档位</span>
+        <!--<img src="@/assets/images/car/car-14.png"/>-->
+        <span class="current-gear">{{realData.transmission}}</span>
+      </li>
+      <li>
+        <span>剩余里程</span>
+        <!--<img src="@/assets/images/car/car-15.png"/>-->
+        <span class="current-electric">{{realData.remainElec | toFixed(1)}} KM</span>
+      </li>
+    </ul>
+    <ul class="monitor-header signal-detail">
+      <li>
+        <div class="signal-item1 signal-style">
+          <span class="signal-icon1" :class="[vehicleStatus.gpsStatus==1 ? liveUsed : vehicleStatus.gpsStatus==2?liveBroken:vehicleStatus.gpsStatus==0?liveUnused:liveUsed]"></span>
+          <span>GPS</span>
+        </div>
+        <div class="signal-item1">
+          <span class="signal-icon1" :class="[vehicleStatus.cameraStatus==1 ? liveUsed : vehicleStatus.cameraStatus==2?liveBroken:vehicleStatus.cameraStatus==0?liveUnused:liveUsed]"></span>
+          <span>Camera</span>
+        </div>
+        <div class="signal-item1 signal-style">
+          <span class="signal-icon1" :class="[vehicleStatus.canStatus==1 ? liveUsed : vehicleStatus.canStatus==2?liveBroken:vehicleStatus.canStatus==0?liveUnused:liveUsed]"></span>
+          <span>V2X</span>
+        </div>
+        <div class="signal-item1">
+          <span class="signal-icon1" :class="[vehicleStatus.radarStatus==1 ? liveUsed : vehicleStatus.radarStatus==2?liveBroken:vehicleStatus.radarStatus==0?liveUnused:liveUsed]"></span>
+          <span>Radar</span>
+        </div>
+      </li>
+      <li>
+        <div class="signal-item2">
+          <span class="signal-icon2" :class="[naviStatus.naviControlStatus==1 ? liveUsed : naviStatus.naviControlStatus==2?liveBroken:naviStatus.naviControlStatus==0?liveUnused:liveUsed]"></span>
+          <span>Navi Control</span>
+        </div>
+        <div class="signal-item2">
+          <span class="signal-icon2" :class="[naviStatus.naviPlanningStatus==1 ? liveUsed : naviStatus.naviPlanningStatus==2?liveBroken:naviStatus.naviPlanningStatus==0?liveUnused:liveUsed]"></span>
+          <span>Navi Plannig</span>
+        </div>
+        <div class="signal-item2">
+          <span class="signal-icon2" :class="[naviStatus.naviPerceptionStatus==1 ? liveUsed : naviStatus.naviPerceptionStatus==2?liveBroken:naviStatus.naviPerceptionStatus==0?liveUnused:liveUsed]"></span>
+          <span>Navi Perception</span>
+        </div>
+        <div class="signal-item2">
+          <span class="signal-icon2" :class="[naviStatus.naviPredictionStatus==1 ? liveUsed : naviStatus.naviPredictionStatus==2?liveBroken:naviStatus.naviPredictionStatus==0?liveUnused:liveUsed]"></span>
+          <span>Navi Prediction</span>
+        </div>
 
-        </li>
-      </ul>
-    </div>
+      </li>
+    </ul>
+  </div>
 </template>
 <script>
   export default {
@@ -207,7 +207,7 @@
       }
     },
     mounted () {
-      /*this.initWebSocket();*/
+      this.initWebSocket();
     }
   }
 </script>

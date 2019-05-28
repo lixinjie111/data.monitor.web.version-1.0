@@ -23,7 +23,8 @@
           getStream(){
             getRTMPData({
               "procotal": '1',
-              "serialNum": '3402000000132000001701'
+              "serialNum": '3402000000132000001401'
+              /*"serialNum": '3402000000132000001401'*/
             }).then(res => {
               //获取视频地址并赋值
               let videoUrl = res.data.rtmp;
