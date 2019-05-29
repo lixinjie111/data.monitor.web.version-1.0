@@ -28,8 +28,16 @@ export default {
 
             ,shps:{}
             ,models:{}
-            ,modelArr:[]
-            ,cacheModelNum:30
+// 0019D1AA0424  0019EAFA0104  0019EAFA0102  0018EAFA0332
+            ,deviceModels:{
+                "0019D1AA0424":{cars:[],persons:[]},
+                "0019EAFA0104":{cars:[],persons:[]},
+                "0019EAFA0102":{cars:[],persons:[]},
+                "0018EAFA0332":{cars:[],persons:[]},
+            }
+
+            ,modelPersonArr:[]
+            ,cacheModelNum:15
 
             // ,websocketUrl:"ws://10.0.1.57:9999/ws"
             // ,websocketUrl:"ws://192.168.1.132:9998/ws"
@@ -44,6 +52,10 @@ export default {
             ,defualtRadius:100
             ,defualtPitch:-0.8
             ,defualtZ:12.816
+
+            ,pitch:0
+            ,yaw:0
+            ,roll:Math.PI*(65/90)
             // ,lastUtmPosition: null
             // ,nowUtmPosition: null
             // ,utmposition: null
@@ -64,22 +76,26 @@ export default {
             // this.addShape("lane_arrow","./static/map3d/suzhou_CityRoad_utm51/Direction_arrow.shp",dl.styles.lane_arrow.color)
             // this.addShape("lane_boundary","./static/map3d/suzhou_CityRoad_utm51/Lane_boundary.shp",dl.styles.lane_boundary.color)
 
-            this.addShape("Crosswalk2","./static/map3d/kjy/UTM/crosswalk.shp","#999999")
-            this.addShape("lane2","./static/map3d/kjy/UTM/lane.shp",dl.styles.lane_boundary.color)
-            this.addShape("roadline2","./static/map3d/kjy/UTM/roadline.shp",dl.styles.lane_boundary.color)
+            // this.addShape("Crosswalk2","./static/map3d/kjy/UTM/crosswalk.shp","#999999")
+            // this.addShape("lane2","./static/map3d/kjy/UTM/lane.shp",dl.styles.lane_boundary.color)
+            // this.addShape("roadline2","./static/map3d/kjy/UTM/roadline.shp",dl.styles.lane_boundary.color)
 
-            this.addShape("1","./static/map3d/kjy/UTM/1.shp",dl.styles.lane_boundary.color)
-            this.addShape("2","./static/map3d/kjy/UTM/2.shp",dl.styles.lane_boundary.color)
-            this.addShape("3","./static/map3d/kjy/UTM/3.shp",dl.styles.lane_boundary.color)
-            this.addShape("4","./static/map3d/kjy/UTM/4.shp",dl.styles.lane_boundary.color)
-            this.addShape("5","./static/map3d/kjy/UTM/5.shp",dl.styles.lane_boundary.color)
-            this.addShape("6","./static/map3d/kjy/UTM/6.shp",dl.styles.lane_boundary.color)
-            this.addShape("7","./static/map3d/kjy/UTM/7.shp",dl.styles.lane_boundary.color)
-            this.addShape("8","./static/map3d/kjy/UTM/8.shp",dl.styles.lane_boundary.color)
-            this.addShape("9","./static/map3d/kjy/UTM/9.shp",dl.styles.lane_boundary.color)
-            this.addShape("10","./static/map3d/kjy/UTM/10.shp",dl.styles.lane_boundary.color)
-            this.addShape("11","./static/map3d/kjy/UTM/11.shp",dl.styles.lane_boundary.color)
-            this.addShape("12","./static/map3d/kjy/UTM/12.shp",dl.styles.lane_boundary.color)
+          this.addShape("Crosswalk2","./static/map3d/newUTMData/crosswalk.shp","#999999")
+          this.addShape("lane2","./static/map3d/newUTMData/lane.shp",dl.styles.lane_boundary.color)
+          this.addShape("roadline2","./static/map3d/newUTMData/roadline.shp",dl.styles.lane_boundary.color)
+
+          // this.addShape("1","./static/map3d/kjy/UTM/1.shp",dl.styles.lane_boundary.color)
+          //   this.addShape("2","./static/map3d/kjy/UTM/2.shp",dl.styles.lane_boundary.color)
+          //   this.addShape("3","./static/map3d/kjy/UTM/3.shp",dl.styles.lane_boundary.color)
+          //   this.addShape("4","./static/map3d/kjy/UTM/4.shp",dl.styles.lane_boundary.color)
+          //   this.addShape("5","./static/map3d/kjy/UTM/5.shp",dl.styles.lane_boundary.color)
+          //   this.addShape("6","./static/map3d/kjy/UTM/6.shp",dl.styles.lane_boundary.color)
+          //   this.addShape("7","./static/map3d/kjy/UTM/7.shp",dl.styles.lane_boundary.color)
+          //   this.addShape("8","./static/map3d/kjy/UTM/8.shp",dl.styles.lane_boundary.color)
+          //   this.addShape("9","./static/map3d/kjy/UTM/9.shp",dl.styles.lane_boundary.color)
+          //   this.addShape("10","./static/map3d/kjy/UTM/10.shp",dl.styles.lane_boundary.color)
+          //   this.addShape("11","./static/map3d/kjy/UTM/11.shp",dl.styles.lane_boundary.color)
+          //   this.addShape("12","./static/map3d/kjy/UTM/12.shp",dl.styles.lane_boundary.color)
 
 
             // this.addShape("lane_marking","./static/map3d/suzhou_CityRoad_utm51/Lane_marking.shp",dl.styles.lane_marking.color)
@@ -95,16 +111,17 @@ export default {
 
             //初始化websocket连接
             this.initWebsocket(this.websocketUrl);
-            setInterval(()=>{
-               let camera =  dl.viewer.scene.view;
-               // console.log(camera);
-            },1000);
+            // setInterval(()=>{
+            //    let camera =  dl.viewer.scene.view;
+            //    console.log(camera);
+            // },1000);
 
             setTimeout(()=>{
                 // 442454.32658246456,4427227.8078830885, 37.73509248844059, 0.0000028926452461693342,-0.5081018518518544,-0.7385192219746066
                 // 442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606
                 this.updateCameraPosition(442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606);
-                var matStdObjects = new THREE.MeshStandardMaterial( { color: 0xffff00, roughness: 0.5, metalness: 0 } );
+                var matStdObjects = new THREE.MeshStandardMaterial( { color: 0x7337E3, roughness: 1, metalness: 0 } );
+                var person = new THREE.MeshStandardMaterial( { color: 0xC4B17A, roughness: 1, metalness: 0 } );
                 for(let m = 0;m<this.cacheModelNum;m++)
                 {
                     // let model = new dl.Model({url: "./static/map3d/map_photo/car.3DS"});
@@ -118,18 +135,137 @@ export default {
                     // model.position.set( 0, 0, 0 );
                     // model.castShadow = true;
                     // model.receiveShadow = true;
+                    // 0019D1AA0424  0019EAFA0104  0019EAFA0102  0018EAFA0332
+                    //车
+                    var geoBox1 = new THREE.BoxBufferGeometry( 1.2, 1.6, 0.8);
+                    var model1 = new THREE.Mesh( geoBox1, matStdObjects );
+                    model1.position.set( 0, 0, 0 );
+                    model1.rotation.set( this.pitch,this.yaw,this.roll );
+                    model1.castShadow = true;
+                    model1.receiveShadow = true;
 
-                    //立方体
-                    var geoBox = new THREE.BoxBufferGeometry( 1, 1, 1);
-                    var model = new THREE.Mesh( geoBox, matStdObjects );
-                    model.position.set( 0, 0, 0 );
-                    model.rotation.set( 0, Math.PI / 2.0, 0 );
-                    model.castShadow = true;
-                    model.receiveShadow = true;
+                    dl.scene.add(model1);
+                    this.deviceModels["0019D1AA0424"].cars[m] = model1;
 
-                    this.modelArr[m] = model;
-                    dl.scene.add(model);
+                    var pBox1 = new THREE.BoxBufferGeometry(0.4, 0.4, 0.9);
+                    var pmodel1 = new THREE.Mesh( pBox1, person );
+                    pmodel1.position.set( 0, 0, 0 );
+                    pmodel1.rotation.set( 0, 0, 0 );
+                    pmodel1.castShadow = true;
+                    pmodel1.receiveShadow = true;
+
+                    this.deviceModels["0019D1AA0424"].persons[m]= pmodel1;
+                    dl.scene.add(pmodel1);
+
+
+
+
+
+                    var geoBox2 = new THREE.BoxBufferGeometry(  1.2, 1.6, 0.8);
+                    var model2 = new THREE.Mesh( geoBox2, matStdObjects );
+                    model2.position.set( 0, 0, 0 );
+                    model2.rotation.set( this.pitch,this.yaw,this.roll );
+                    model2.castShadow = true;
+                    model2.receiveShadow = true;
+
+                    dl.scene.add(model2);
+                    this.deviceModels["0019EAFA0104"].cars[m] = model2;
+
+                    var pBox2 = new THREE.BoxBufferGeometry(0.4, 0.4, 0.9);
+                    var pmodel2 = new THREE.Mesh( pBox2, person );
+                    pmodel2.position.set( 0, 0, 0 );
+                    pmodel2.rotation.set( 0, 0, 0 );
+                    pmodel2.castShadow = true;
+                    pmodel2.receiveShadow = true;
+
+                    this.deviceModels["0019EAFA0104"].persons[m]= pmodel2;
+                    dl.scene.add(pmodel2);
+
+
+
+
+
+                    var geoBox3 = new THREE.BoxBufferGeometry( 1.2, 1.6, 0.8);
+                    var model3 = new THREE.Mesh( geoBox3, matStdObjects );
+                    model3.position.set( 0, 0, 0 );
+                    model3.rotation.set( this.pitch,this.yaw,this.roll );
+                    model3.castShadow = true;
+                    model3.receiveShadow = true;
+
+                    dl.scene.add(model3);
+                    this.deviceModels["0019EAFA0102"].cars[m] = model3;
+
+                    var pBox3 = new THREE.BoxBufferGeometry(0.4, 0.4, 0.9);
+                    var pmodel3 = new THREE.Mesh( pBox3, person );
+                    pmodel3.position.set( 0, 0, 0 );
+                    pmodel3.rotation.set( 0, 0, 0 );
+                    pmodel3.castShadow = true;
+                    pmodel3.receiveShadow = true;
+
+                    this.deviceModels["0019EAFA0102"].persons[m]= pmodel3;
+                    dl.scene.add(pmodel3);
+
+
+
+
+
+
+
+                    var geoBox4 = new THREE.BoxBufferGeometry(  1.2, 1.6, 0.8);
+                    var model4 = new THREE.Mesh( geoBox4, matStdObjects );
+                    model4.position.set( 0, 0, 0 );
+                    model4.rotation.set( this.pitch,this.yaw,this.roll );
+                    model4.castShadow = true;
+                    model4.receiveShadow = true;
+
+                    dl.scene.add(model4);
+                    this.deviceModels["0018EAFA0332"].cars[m] = model4;
+
+                    var pBox4 = new THREE.BoxBufferGeometry(0.4, 0.4, 0.9);
+                    var pmodel4 = new THREE.Mesh( pBox4, person );
+                    pmodel4.position.set( 0, 0, 0 );
+                    pmodel4.rotation.set( 0, 0, 0 );
+                    pmodel4.castShadow = true;
+                    pmodel4.receiveShadow = true;
+
+                    this.deviceModels["0018EAFA0332"].persons[m]= pmodel4;
+                    dl.scene.add(pmodel4);
+
+
+
+
+                    //ren
+                    // var pBox = new THREE.BoxBufferGeometry( 0.5, 1, 0.5);
+                    // var pmodel = new THREE.Mesh( pBox, matStdObjects );
+                    // pmodel.position.set( 0, 0, 0 );
+                    // pmodel.rotation.set( 0, Math.PI / 2.0, 0 );
+                    // pmodel.castShadow = true;
+                    // pmodel.receiveShadow = true;
+
+                    // this.modelPersonArr[m] = pmodel;
+                    // dl.scene.add(pmodel);
+
+
+                    // modelPersonArr
                 }
+
+                // var geoBox5 = new THREE.BoxBufferGeometry( 0.5, 1, 0.5);
+                // var model5 = new THREE.Mesh( geoBox5, matStdObjects );
+                // model5.position.set( 0, 0, 0 );
+                // model5.rotation.set( this.pitch,this.yaw,this.roll );
+                // model5.castShadow = true;
+                // model5.receiveShadow = true;
+
+                // dl.scene.add(model5);
+
+                // var pBox6 = new THREE.BoxBufferGeometry( 1, 0.5, 0.5);
+                // var pmodel6 = new THREE.Mesh( pBox6, person );
+                // pmodel6.position.set( 0, 0, 0 );
+                // pmodel6.rotation.set( 0, 0, 0 );
+                // pmodel6.castShadow = true;
+                // pmodel6.receiveShadow = true;
+
+                // dl.scene.add(pmodel6);
                 // console.log(this.modelArr.length);
             },500);
 
@@ -208,16 +344,17 @@ export default {
             }
         },
         onMessage:function(data){
-            console.log(data);
+            // console.log(data);
             this.models={};
+            // this.deviceModels
 
-            for(let p=0;p<this.modelArr.length;p++)
-            {
-                let mdl = this.modelArr[p];
-                mdl.position.x = 0;
-                mdl.position.y = 0;
-                mdl.position.z = 0;
-            }
+            // for(let p=0;p<this.modelArr.length;p++)
+            // {
+            //     let mdl = this.modelArr[p];
+            //     mdl.position.x = 0;
+            //     mdl.position.y = 0;
+            //     mdl.position.z = 0;
+            // }
             // let models = dl.models;
             // if(models!=null)
             // {
@@ -228,6 +365,23 @@ export default {
             // }
 
             let rsuDatas = JSON.parse(data.data);
+            var deviceid = null;
+            if(rsuDatas.length>0)
+            {
+                deviceid = rsuDatas[0].deviceId;
+                for(let p=0;p<this.deviceModels[deviceid].cars.length;p++)
+                {
+                    let car = this.deviceModels[deviceid].cars[p];
+                    car.position.x = 0;
+                    car.position.y = 0;
+                    car.position.z = 0;
+
+                    let person = this.deviceModels[deviceid].persons[p];
+                    person.position.x = 0;
+                    person.position.y = 0;
+                    person.position.z = 0;
+                }
+            }
             for(let i = 0;i<rsuDatas.length;i++)
             {
                 let d = rsuDatas[i];
@@ -237,13 +391,25 @@ export default {
                 // this.addModel(d.objId,"./static/map3d/map_photo/car.3DS",dUTM[0],dUTM[1],this.defualtZ);
                 // if(d.type == 3 || d.type == 6 || d.type ==8)
                 // {
-                    if(i<this.modelArr.length)
+                    if(d.type!=1&&d.type!=2&&d.type!=4)
                     {
-                        let mdl = this.modelArr[i];
-                        mdl.position.x = dUTM[0];
-                        mdl.position.y = dUTM[1];
-                        mdl.position.z = this.defualtZ+6;
+                        if(i<this.deviceModels[deviceid].persons.length)
+                        {
+                            let mdl = this.deviceModels[deviceid].persons[i];
+                            mdl.position.x = dUTM[0];
+                            mdl.position.y = dUTM[1];
+                            mdl.position.z = this.defualtZ+6;
+                        }
+                    }else{
+                        if(i<this.deviceModels[deviceid].cars.length)
+                        {
+                            let mdl = this.deviceModels[deviceid].cars[i];
+                            mdl.position.x = dUTM[0];
+                            mdl.position.y = dUTM[1];
+                            mdl.position.z = this.defualtZ+6;
+                        }
                     }
+
 
                 // }
 

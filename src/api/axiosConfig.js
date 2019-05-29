@@ -30,7 +30,7 @@ function axiosFilter(vm) {
 
     // response
     axios.interceptors.response.use(function(response) {
-        let returnStatus = response.data.status;
+        let returnStatus = response.data.status || response.data.code;
         switch (returnStatus.toString()) {
             case '200': {
                 return response;
@@ -38,19 +38,22 @@ function axiosFilter(vm) {
             }
             case '403': {
                 vm.$message.error('无权限');
+                reject();
                 break;
             }
             case '407': {
                 vm.$message.error('需要身份验证');
+                reject();
                 break;
             }
             case '500': {
                 vm.$message.error('服务器出错，操作失败');
+                reject();
                 break;
             }
             default: {
-                vm.$message.error(response.data.message);
-                return;
+                vm.$message.error('操作失败');
+                reject();
             }
         }
 
@@ -82,7 +85,7 @@ function axiosFilter(vm) {
         //         removeAuthInfo();
         //         window.location.href = '/'
         //         isOutLogin = true;
-        //     }  
+        //     }
         // });
     });
 }

@@ -368,8 +368,8 @@
         _this.reportWebSocket.onopen = _this.onReportOpen;
       },
       onReportMessage(message){
-       /* console.log("--------")
-        console.log("时间----"+new Date().getTime())*/
+        console.log("--------")
+        console.log("时间----"+new Date().getTime())
         let _this=this;
         var json = JSON.parse(message.data);
         var data = json.result.reportItems;
