@@ -1,23 +1,15 @@
 
 <template>
 	<ul class="echarts-list-wrap clearfix">
-		<li class="echarts-list">
-			<p class="echarts-list-title">行程距离分布</p>
-			<div class="echarts-list-box" id="echarts-bar-horizontal"></div>
+		<li class="echarts-list" v-for="(item, index) in responseData">
+			<p class="echarts-list-title">{{item.scatName}}</p>
+			<div class="echarts-list-box" :id="item.id"></div>
 		</li>
-		<!-- <li class="echarts-list">
-			<p class="echarts-list-title">行程时长分布</p>
-			<div class="echarts-list-box" id="echarts"></div>
-		</li>
-		<li class="echarts-list">
-			<p class="echarts-list-title">行程时段分布</p>
-			<div class="echarts-list-box" id="echarts"></div>
-		</li> -->
 	</ul>
 </template>
 
 <script>
-// import { requestGetShareData } from './api/share's
+import { getRouteStat } from '@/api/carMonitor'
 export default {
 	name: 'BarHorizontalEcharts',
 	props: {
@@ -25,62 +17,8 @@ export default {
 	},
 	data () {
 		return {
-			echarts: null,
-			echartsOption: {
-				dataset: {
-			        source: [
-			            ['label', 'value'],
-			            ['0-3', 89.3],
-			            ['3-6', 57.1],
-			            ['6-9', 74.4],
-			            ['9-12', 50.1],
-			            ['12-15', 89.7],
-			            ['15-18', 57.1],
-			            ['18-21', 74.4],
-			            ['21-24', 89.7]
-			        ]
-			    },
-			    grid: {
-			    	left: 30,
-			    	right: 30,
-			    	top: 40,
-			    	bottom: 40
-			    },
-			    tooltip: {
-			        trigger: 'axis',
-			        axisPointer: {
-			            type: 'shadow'
-			        }
-			    },
-			    color: "#41b27e",
-			    xAxis: {
-			        type: 'category',
-			        boundaryGap: true,
-			    	axisLine:{
-                        show: false
-                    },
-                    axisTick:{
-                        show: false
-                    },
-                    axisLabel:{
-                        color:'#ccc',
-                        fontSize: 12,
-                        fontFamily: 'MicrosoftYaHei'
-                    }
-			    },
-			    yAxis: {
-			        show: false
-			    },
-			    series: {
-		            type: 'bar',
-		            encode: {
-		                x: 'label',
-		                y: 'value'
-		            },
-		    		barCategoryGap: '50%'
-		        }
-			}
-
+			loaded: false,
+			responseData: []
 		}
 	},
 	watch: {
@@ -88,24 +26,98 @@ export default {
 		dialogVisible: {
 			handler(newVal, oldVal) {
 				if(newVal) {
-					setTimeout(() => {
-						if(!this.echarts) {
-							console.log("初始化echarts-bar-horizontal实例");
-							this.echarts = this.$echarts.init(document.getElementById("echarts-bar-horizontal"));
-							this.echarts.setOption(this.echartsOption);
-						}
-						// console.log("重新设置echarts-bar-horizontal参数");
-						// this.echarts.setOption(this.echartsOption);
-					}, 100);
+					this.loaded = true;
+				}
+			}
+		},
+		loaded: {
+			handler(newVal, oldVal) {
+				if(newVal) {
+					this.getRouteStat();
 				}
 			}
 		}
 	},
-	created() {
-	},
-	mounted() {
-	},
 	methods: {
+		getRouteStat() {
+            console.log('获取行程分析（近30天）');
+			getRouteStat().then(res => {
+				let _responseData = res.data.data,
+					_defaultOption = this.defaultOption();
+
+				this.responseData = _responseData.map((item, index) => {
+					item.id = "echarts-bar-horizontal-" + index;
+					return item;
+				});
+
+				setTimeout(() => {
+					this.responseData.forEach(item => {
+						if(item.data.length > 0) {
+							let _echarts = this.$echarts.init(document.getElementById(item.id)),
+								_option = this.defaultOption(item.data);
+							_echarts.setOption(_option);
+						}
+					});
+				}, 0);
+			});
+		},
+		defaultOption(data) {
+			let option = {
+					dataset: {
+						source: data
+				        // source: [
+				        //     {name: '0-3', count: 89.3},
+				        //     {name: '3-6', count: 57.1},
+				        //     {name: '6-9', count: 74.4},
+				        //     {name: '9-12', count: 50.1},
+				        //     {name: '12-15', count: 89.7},
+				        //     {name: '15-18', count: 57.1},
+				        //     {name: '18-21', count: 74.4},
+				        //     {name: '21-24', count: 89.}
+				        // ]
+				    },
+				    grid: {
+				    	left: 30,
+				    	right: 30,
+				    	top: 40,
+				    	bottom: 40
+				    },
+				    tooltip: {
+				        trigger: 'axis',
+				        axisPointer: {
+				            type: 'shadow'
+				        }
+				    },
+				    color: "#41b27e",
+				    xAxis: {
+				        type: 'category',
+				        boundaryGap: true,
+				    	axisLine:{
+	                        show: false
+	                    },
+	                    axisTick:{
+	                        show: false
+	                    },
+	                    axisLabel:{
+	                        color:'#ccc',
+	                        fontSize: 12,
+	                        fontFamily: 'MicrosoftYaHei'
+	                    }
+				    },
+				    yAxis: {
+				        show: false
+				    },
+				    series: {
+			            type: 'bar',
+			            encode: {
+			                x: 'name',
+			                y: 'count'
+			            },
+			    		barCategoryGap: '50%'
+			        }
+				};
+			return option;
+		}
 	}
 }
 </script>

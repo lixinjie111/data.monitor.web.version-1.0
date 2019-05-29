@@ -1,27 +1,15 @@
 
 <template>
 	<ul class="echarts-list-wrap clearfix">
-		<li class="echarts-list">
-			<p class="echarts-list-title">车型品牌分布</p>
-			<div class="echarts-list-box" id="echarts-pie"></div>
+		<li class="echarts-list" v-for="(item, index) in responseData">
+			<p class="echarts-list-title">{{item.scatName}}</p>
+			<div class="echarts-list-box" :id="item.id"></div>
 		</li>
-		<!-- <li class="echarts-list">
-			<p class="echarts-list-title">车辆自动驾驶等级分布</p>
-			<div class="echarts-list-box"></div>
-		</li>
-		<li class="echarts-list">
-			<p class="echarts-list-title">车辆用途分布</p>
-			<div class="echarts-list-box"></div>
-		</li>
-		<li class="echarts-list">
-			<p class="echarts-list-title">车辆动力类型分布</p>
-			<div class="echarts-list-box"></div>
-		</li> -->
 	</ul>
 </template>
 
 <script>
-// import { requestGetShareData } from './api/share'
+import { getVehStat } from '@/api/carMonitor'
 export default {
 	name: 'PieEcharts',
 	props: {
@@ -29,75 +17,8 @@ export default {
 	},
 	data () {
 		return {
-			echarts: null,
-			echartsOption: {
-				tooltip: {
-			        trigger: 'item',
-			        formatter: "{b}: {c} <br/>占比: {d}%",
-			        textStyle: {
-			        	color: "#dc8c00"
-			        	// fontWeight: "bold"
-			        }
-			    },
-			 	grid: {
-			 		right: "10%"
-			 	},
-			    legend: {
-			        orient: 'vertical',
-			        right: '2%',
-			        y: 'center',
-			        itemGap: 0,
-			        padding: [0, 30, 0, 0],
-			        textStyle: {
-			        	color: '#ccc',
-			        	lineHeight: 20,
-			        	fontFamily: 'MicrosoftYaHei'
-			        }
-			    },
-			    color: ["#139cbe", "#41b27e", "#9ccc68", "#f7ca49", "#9496a1", "#4666f1"],
-			    series: [
-			        {
-			            // name:'adfasdfasf',
-			            type:'pie',
-			            radius: ['40%', '70%'],
-			            center: ['37%', '51%'],
-			            avoidLabelOverlap: false,
-			            label: {
-			                normal: {
-			                    show: true,
-			                    position: 'inside',
-			                	formatter:function(data){
-			                		return data.percent > 10 ? data.percent.toFixed(1)+'%' : '';
-			                	},
-			                	color: '#fff',
-			                },
-			                // normal: {
-			                //     show: false,
-			                //     position: 'center'
-			                // },
-			                emphasis: {
-			                    show: true,
-			                    textStyle: {
-			                        fontSize: '12'
-			                    }
-			                },
-			            },
-			            labelLine: {
-			                normal: {
-			                    show: true
-			                }
-			            },
-			            data:[
-			                {value:1548, name:'直接访问'},
-			                {value:1032, name:'邮件营销'},
-			                {value:534, name:'联盟广告'},
-			                {value:235, name:'视频广告'},
-			                {value:154, name:'搜索引擎'},
-			                {value:99, name:'搜索引擎2'}
-			            ]
-			        }
-			    ]
-			}
+			loaded: false,
+			responseData: []
 		}
 	},
 	watch: {
@@ -105,24 +26,111 @@ export default {
 		dialogVisible: {
 			handler(newVal, oldVal) {
 				if(newVal) {
-					setTimeout(() => {
-						if(!this.echarts) {
-							console.log("初始化echarts-pie实例");
-							this.echarts = this.$echarts.init(document.getElementById("echarts-pie"));
-							this.echarts.setOption(this.echartsOption);
-						}
-						// console.log("重新设置echarts-pie参数");
-						// this.echarts.setOption(this.echartsOption);
-					}, 100);
+					this.loaded = true;
+				}
+			}
+		},
+		loaded: {
+			handler(newVal, oldVal) {
+				if(newVal) {
+					this.getVehStat();
 				}
 			}
 		}
 	},
-	created() {
-	},
-	mounted() {
-	},
 	methods: {
+		getVehStat() {
+            console.log('获取车辆分析');
+			getVehStat().then(res => {
+
+				let _responseData = res.data.data,
+					_defaultOption = this.defaultOption();
+
+				this.responseData = _responseData.map((item, index) => {
+					item.id = "echarts-pie-" + index;
+					return item;
+				});
+
+				setTimeout(() => {
+					this.responseData.forEach(item => {
+						if(item.data.length > 0) {
+							item.data.forEach(items => {
+								items.value = items.count;
+							});
+							let _echarts = this.$echarts.init(document.getElementById(item.id)),
+								_option = this.defaultOption(item.data);
+							_echarts.setOption(_option);
+						}
+					});
+				}, 0);
+			});
+		},
+		defaultOption(data) {
+			let option = {
+					tooltip: {
+				        trigger: 'item',
+				        formatter: "{b}: {c} <br/>占比: {d}%",
+				        textStyle: {
+				        	color: "#dc8c00"
+				        }
+				    },
+				 	grid: {
+				 		right: "10%"
+				 	},
+				    legend: {
+				        orient: 'vertical',
+				        right: '2%',
+				        y: 'center',
+				        itemGap: 0,
+				        padding: [0, 30, 0, 0],
+				        textStyle: {
+				        	color: '#ccc',
+				        	lineHeight: 20,
+				        	fontFamily: 'MicrosoftYaHei'
+				        }
+				    },
+				    color: ["#139cbe", "#41b27e", "#9ccc68", "#f7ca49", "#9496a1", "#4666f1"],
+				    series: [
+				        {
+				            type:'pie',
+				            radius: ['40%', '70%'],
+				            center: ['37%', '51%'],
+				            avoidLabelOverlap: false,
+				            label: {
+				                normal: {
+				                    show: true,
+				                    position: 'inside',
+				                	formatter:function(data){
+				                		return data.percent > 10 ? data.percent.toFixed(1)+'%' : '';
+				                	},
+				                	color: '#fff',
+				                },
+				                emphasis: {
+				                    show: true,
+				                    textStyle: {
+				                        fontSize: '12'
+				                    }
+				                },
+				            },
+				            labelLine: {
+				                normal: {
+				                    show: true
+				                }
+				            },
+				            data: data
+				            // data:[
+				            //     {value:1548, name:'直接访问'},
+				            //     {value:1032, name:'邮件营销'},
+				            //     {value:534, name:'联盟广告'},
+				            //     {value:235, name:'视频广告'},
+				            //     {value:154, name:'搜索引擎'},
+				            //     {value:99, name:'搜索引擎2'}
+				            // ]
+				        }
+				    ]
+				};
+			return option;
+		}
 	}
 }
 </script>

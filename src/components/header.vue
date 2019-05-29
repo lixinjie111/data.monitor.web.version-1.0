@@ -7,10 +7,12 @@
            <router-link tag="li" v-for="item in navList" :key="item.id" class="menu-list" :to="item.path">{{item.name}}</router-link>
         </ul>
         <div class="sub-info clearfix">
-            <span class="tip">2019-09-23 08:00:00</span>
-            <span class="tip"><img src="@/assets/images/weather/default.png" class="weather-icon" /><span class="c-middle">15.6°</span></span>
-            <span class="tip">预警<em class="num">30</em></span>
-            <span class="tip">故障<em class="num">26</em></span>
+            <span class="tip">{{formatTime || '--'}}</span>
+            <span class="tip">
+                <img src="@/assets/images/weather/default.png" class="weather-icon" /><em class="c-middle" v-if="responseData.weather">{{responseData.weather.wendu || '--'}}°</em>
+            </span>
+            <span class="tip">预警<em class="num">{{responseData.warningNum || '--'}}</em></span>
+            <span class="tip">故障<em class="num">{{responseData.faultNum || '--'}}</em></span>
         </div>
         <!-- <a href="javascript:;" class="userinfo" @click="logout">
             当前用户：{{sysAdminName}} 退出
@@ -18,6 +20,7 @@
     </div>
 </template>
 <script>
+import { getTopHead } from '@/api/header';
 import { mapActions } from 'vuex';
 export default {
 	name: "Header",
@@ -29,13 +32,40 @@ export default {
               {id:2,name:'车辆',path:'/carMonitor'},
               {id:3,name:'路网',path:'/roadMonitor'},
               {id:4,name:'路测设备',path:'/equipmentMonitor'}
-            ]
+            ],
+            responseData: {
+                timestamp: new Date().getTime()
+            }
         }
     },
+    computed: {
+        formatTime() {
+            if(this.responseData.timestamp){
+                return this.$dateUtil.formatTime(this.responseData.timestamp);
+            }else {
+                return '--'
+            }
+        }
+    },
+    mounted(){
+        this.getTopHead();
+        this.changeTime();
+    },
     methods: {
+        getTopHead() {
+            // console.log('获取天气数据、预警故障数量');
+            getTopHead({}).then(res => {
+                this.responseData = res.data;
+            });
+        },
+        changeTime() {
+            setInterval(() => {
+                this.responseData.timestamp += 1000;
+            }, 1000);
+        },
         ...mapActions(['goLogOut']),
         //退出登录
-        logout: function() {
+        logout() {
             let that = this;
             that.$confirm('确认退出吗?', '提示', {
             }).then(() => {
@@ -45,29 +75,7 @@ export default {
                 });
             }).catch(() => {
             });
-        },
-        navClick(item){
-            this.$router.push({path: item.path});
-            //点击的时候，选中
-            this.initUIByURL(item.path);
-        },
-        initUIByURL(path){
-            var url = window.location.hash;
-            url = url.slice(1);
-            //开始初始化不需要遍历渲染
-            if(url == '/home'){
-                return;
-            }
-            //刷新的时候
-            path=url;
-            for(let i=0;i<this.navList.length;i++){
-                let temp = this.navList[i];
-            }
         }
-    },
-    mounted(){
-        this.initUIByURL('/dataOverview');
-        window.vheader=this;
     }
 }
 </script>

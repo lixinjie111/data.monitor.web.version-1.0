@@ -51,7 +51,7 @@
   </div>
 </template>
 <script>
-  import { getVehicleCalendarData, getLiveDeviceInfo, startStream, sendStreamHeart } from '@/api/carMoniter'
+  import { getVehicleCalendarData, getLiveDeviceInfo, startStream, sendStreamHeart } from '@/api/carMonitor'
   export default {
     data () {
       return {

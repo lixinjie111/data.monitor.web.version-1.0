@@ -97,7 +97,7 @@ export default {
             this.initWebsocket(this.websocketUrl);
             setInterval(()=>{
                let camera =  dl.viewer.scene.view;
-               console.log(camera);
+               // console.log(camera);
             },1000);
 
             setTimeout(()=>{
@@ -130,7 +130,7 @@ export default {
                     this.modelArr[m] = model;
                     dl.scene.add(model);
                 }
-                console.log(this.modelArr.length);
+                // console.log(this.modelArr.length);
             },500);
 
 
@@ -181,8 +181,8 @@ export default {
             TWEEN.update( time );
         },
         update:function(e) {
-            console.log("=====================update====================================");
-            console.log(e)
+            // console.log("=====================update====================================");
+            // console.log(e)
             // model.position.x = lastUtmPosition.x;
             // model.position.y = lastUtmPosition.y;
             // model.setHeading(-Math.PI / 180 * (lastUtmPosition.rotation));

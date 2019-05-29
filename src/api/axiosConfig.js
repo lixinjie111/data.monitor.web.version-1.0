@@ -31,7 +31,7 @@ function axiosFilter(vm) {
     // response
     axios.interceptors.response.use(function(response) {
         let returnStatus = response.data.status;
-        switch (returnStatus) {
+        switch (returnStatus.toString()) {
             case '200': {
                 return response;
                 break;

@@ -126,7 +126,7 @@ img {
   bottom: 0;
   z-index: 1;
   width: 398px;
-  padding-top: 94px;
+  padding-top: 100px;
   background-size: 100% auto;
   background-repeat: repeat-y;
   &.c-view-left {
@@ -151,7 +151,7 @@ img {
   }
   .c-scroll-wrap {
     position: absolute;
-    top: 94px;
+    top: 100px;
     bottom: 20px;
     height: auto;
     .c-scroll-inner {
@@ -164,7 +164,7 @@ img {
 }
 
 .c-info-wrap {
-  margin-top: 20px;
+  margin-top: 14px;
   .c-info-list {
     float: left;
     width: 50%;
@@ -196,6 +196,14 @@ img {
     width: 22px;
     height: 2px;
     background-color: #d38600;
+  }
+  .c-sub-title {
+    float: right;
+    font-size: 14px;
+    letter-spacing: 1px;
+    line-height: 30px;
+    margin-top: 10px;
+    color: #ccc;
   }
 }
 

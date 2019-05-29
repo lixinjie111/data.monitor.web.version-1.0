@@ -1,66 +1,30 @@
 <template>
   <ul class="right-list-wrap">
-    <router-link tag="li" to="/singleCarMonitor/B21E-00-017" class="c-car-list">
+    <router-link tag="li" :to="'/singleCarMonitor/'+item.vehicleId" class="c-car-list" v-for="(item, index) in responseData" :key="item.vehicleId">
     	<div class="right-list-head">
     		<div class="left clearfix">
-	    		<span class="model c-left">L3</span>
-	    		<span class="plate c-left">沪A090901</span>
+	    		<span class="model c-left">L{{item.autoLevel}}</span>
+	    		<span class="plate c-left">{{item.platNo}}</span>
 	    	</div>
 	    	<div class="right clearfix">
-	    		<span class="gears c-left">D</span>
-	    		<span class="direction c-left"><i class="direction-icon" style="transform: rotate(30deg);"></i></span>
+	    		<span class="gears c-left">{{item.transmission}}</span>
+	    		<span class="direction c-left">
+	    			<i class="direction-icon" v-if="item.headingAngle" :style="{transform:'rotate('+ item.headingAngle +'deg)'}"></i>
+	    			<i class="direction-icon" v-else></i>
+	    		</span>
 	    		<span class="turn c-left">
-	    			<i class="turn-icon turn-left c-left"></i>
-	    			<i class="turn-icon turn-right c-right"></i>
+	    			<i class="turn-icon turn-left c-left" :class="item.turnLight == 'left' ? 'active' : ''"></i>
+	    			<i class="turn-icon turn-right c-right" :class="item.turnLight == 'right' ? 'active' : ''"></i>
 	    		</span>
 	    	</div>
     	</div>
     	<div class="car-middle-info">
-    		<img src="@/assets/images/develop/car-1.png" class="car-img" />
-    		<div class="speed">45.5</div>
-    		<div class="echarts-wrap" id="echarts-1"></div>
-    	</div>
-    </router-link>
-    <router-link tag="li" to="/singleCarMonitor/B21E-00-017" class="c-car-list">
-    	<div class="right-list-head">
-    		<div class="left clearfix">
-	    		<span class="model c-left">L3</span>
-	    		<span class="plate c-left">沪A090901</span>
-	    	</div>
-	    	<div class="right clearfix">
-	    		<span class="gears c-left">D</span>
-	    		<span class="direction c-left"><i class="direction-icon"></i></span>
-	    		<span class="turn c-left">
-	    			<i class="turn-icon turn-left c-left active"></i>
-	    			<i class="turn-icon turn-right c-right"></i>
-	    		</span>
-	    	</div>
-    	</div>
-    	<div class="car-middle-info">
-    		<img src="@/assets/images/develop/car-2.png" class="car-img" />
-    		<div class="speed">45.5</div>
-    		<div class="echarts-wrap" id="echarts-2"></div>
-    	</div>
-    </router-link>
-    <router-link tag="li" to="/singleCarMonitor/B21E-00-017" class="c-car-list">
-    	<div class="right-list-head">
-    		<div class="left clearfix">
-	    		<span class="model c-left">L3</span>
-	    		<span class="plate c-left">沪A090901</span>
-	    	</div>
-	    	<div class="right clearfix">
-	    		<span class="gears c-left">D</span>
-	    		<span class="direction c-left"><i class="direction-icon"></i></span>
-	    		<span class="turn c-left">
-	    			<i class="turn-icon turn-left c-left"></i>
-	    			<i class="turn-icon turn-right c-right active"></i>
-	    		</span>
-	    	</div>
-    	</div>
-    	<div class="car-middle-info">
-    		<img src="@/assets/images/develop/car-3.png" class="car-img" />
-    		<div class="speed">45.5</div>
-    		<div class="echarts-wrap" id="echarts-3"></div>
+    		<!-- <img :src="item.vehicleLogo" class="car-img" /> -->
+    		<img src="@/assets/images/develop/car-1.png" class="car-img" v-if="index%3 == 0" />
+    		<img src="@/assets/images/develop/car-2.png" class="car-img" v-if="index%3 == 1" />
+    		<img src="@/assets/images/develop/car-3.png" class="car-img" v-if="index%3 == 2" />
+    		<div class="speed">{{item.speed || 0}}</div>
+    		<div class="echarts-wrap" :id="item.id"></div>
     	</div>
     </router-link>
   </ul>
@@ -72,10 +36,152 @@ export default {
 	name: 'RightList',
 	data () {
 		return {
-			echarts1: null,
-			echarts2: null,
-			echarts3: null,
-			echartsOption: {
+			responseData: [],
+			// responseData: [
+			// 	{
+			// 		vehicleId: 'B21E-00-017',
+			// 		// vehicleLogo: 'static/images/develop/car-1.png',
+			// 		platNo: '沪A090901',
+			// 		autoLevel: '1',
+			// 		transmission: 'D',
+			// 		headingAngle: 0,
+			// 		speed: '45.1',
+			// 		turnLight: 'left',
+
+			// 		id: "echarts-0",
+			// 		echarts: null,
+			// 		echartsData: ['45.1']
+			// 	},
+			// 	{
+			// 		vehicleId: 'B21E-00-018',
+			// 		// vehicleLogo: 'static/images/develop/car-2.png',
+			// 		platNo: '沪A090902',
+			// 		autoLevel: '2',
+			// 		transmission: 'P',
+			// 		headingAngle: 70,
+			// 		speed: '45.2',
+			// 		turnLight: 'right',
+
+			// 		id: "echarts-1",
+			// 		echarts: null,
+			// 		echartsData: ['45.2']
+			// 	},
+			// 	{
+			// 		vehicleId: 'B21E-00-019',
+			// 		// vehicleLogo: 'static/images/develop/car-3.png',
+			// 		platNo: '沪A090903',
+			// 		autoLevel: '3',
+			// 		transmission: 'D',
+			// 		headingAngle: 240,
+			// 		speed: '45.3',
+			// 		turnLight: '',
+
+			// 		id: "echarts-2",
+			// 		echarts: null,
+			// 		echartsData: ['45.3']
+			// 	},
+			// 	{
+			// 		vehicleId: 'B21E-00-020',
+			// 		// vehicleLogo: 'static/images/develop/car-3.png',
+			// 		platNo: '沪A090904',
+			// 		autoLevel: '4',
+			// 		transmission: 'D',
+			// 		headingAngle: 300,
+			// 		speed: '45.4',
+			// 		turnLight: '',
+
+			// 		id: "echarts-3",
+			// 		echarts: null,
+			// 		echartsData: ['45.4']
+			// 	}
+			// ],
+			// 获取指定车辆实时信息
+            webSocket:{},
+            webSocketData: {
+                action: 'vehicleList',
+                token: 'fpx',
+                vehicleIds: 'B21E-00-017,B21E-00-018,B21E-00-019,B21E-00-020'
+            }		
+		}
+	},
+	mounted() {
+
+        this.initWebSocket();
+	},
+	methods: {
+        initWebSocket(){
+            console.log('websocket获取指定车辆实时信息');
+            if ('WebSocket' in window) {
+                this.webSocket = new WebSocket(window.cfg.websocketUrl);  //获得WebSocket对象
+            }
+            this.webSocket.onmessage = this.onmessage;
+            this.webSocket.onclose = this.onclose;
+            this.webSocket.onopen = this.onopen;
+            this.webSocket.onerror = this.onerror;
+        },
+        onmessage(message){
+            let _json = JSON.parse(message.data),
+            	_result = _json.result;
+			if(!this.responseData.length) {
+				this.initResult(_result);
+			}else {
+				let _isLoad = false;
+	            this.responseData.forEach((item, index) => {
+	            	if(item.vehicleId == _result.vehicleId ) {
+	            		_isLoad = true
+		            	item.speed = _result.speed || 0;
+		            	item.transmission = _result.transmission;
+		            	item.headingAngle = _result.headingAngle || 0;
+		            	item.turnLight = _result.turnLight || '';
+
+		            	if(item.echartsData.length >= 180) {
+		            		item.echartsData.shift();
+		            	}
+		            	item.echartsData.push(_result.speed);
+		        		let _option = this.defaultOption(item.echartsData);
+		            	item.echarts.setOption(_option);
+	            	}
+	            });
+	            if(!_isLoad) {
+	            	this.initResult(_result);
+	            }
+			}
+        },
+        initResult(result) {
+        	let _filterResult = result;
+				_filterResult.id = "echarts-"+this.responseData.length;
+				_filterResult.echarts = null;
+				_filterResult.echartsData = [];
+				_filterResult.echartsData.push(_filterResult.speed);
+			this.responseData.push(_filterResult);
+			setTimeout(() => {
+				let _handlerObj = this.responseData[this.responseData.length-1],
+					_option = this.defaultOption(_handlerObj.echartsData);
+		        	_handlerObj.echarts = this.$echarts.init(document.getElementById(_handlerObj.id));
+		        	_handlerObj.echarts.setOption(_option);
+		    }, 0);
+        },
+        onclose(data){
+            console.log("结束--trackAll--连接");
+        },
+        onopen(data){
+            console.log("建立--trackAll--连接");
+            //行程
+            this.sendMsg(JSON.stringify(this.webSocketData));
+        },
+        sendMsg(msg) {
+            console.log("trackAll--连接状态："+this.webSocket.readyState);
+            if(window.WebSocket){
+                if(this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+                    this.webSocket.send(msg); //send()发送消息
+                    console.log("trackAll--已发送消息:"+ msg);
+                }
+            }else{
+                return;
+            }
+        },
+		defaultOption(data) {
+			let option = {
 				grid:{
                     x: 0,
                     y: 0,
@@ -100,8 +206,7 @@ export default {
                         textStyle: {
                         	color: "#918d84"
                         }
-                    },
-                    data: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]
+                    }
                 },
                 yAxis:  {
                 	type: 'value',
@@ -120,32 +225,12 @@ export default {
                     areaStyle: {
             			color: 'rgba(55, 186, 123, .2)'
             		},
-                    data: [245, 182, 434, 791, 390, 245, 465, 245, 182, 434, 791, 390, 245, 465, 245, 182, 434, 791, 390, 245, 465, 245, 182, 434, 121]
+                    data: data
+                    // data: [245, 182, 434, 791, 390, 245, 465, 245, 182, 434, 791, 390, 245, 465, 245, 182, 434, 791, 390, 245, 465, 245, 182, 434, 121]
                 }]
-			}		
+			};
+			return option;
 		}
-	},
-	watch: {
-	// 	shareData:{
-	// 		handler(curVal,oldVal){
-				
-	// 		},
-	// 　　　	deep:true
-	// 	}
-	},
-	created() {
-		
-	},
-	mounted() {
-		this.echarts1 = this.$echarts.init(document.getElementById("echarts-1"));
-		this.echarts1.setOption(this.echartsOption);
-		this.echarts2 = this.$echarts.init(document.getElementById("echarts-2"));
-		this.echarts2.setOption(this.echartsOption);
-		this.echarts3 = this.$echarts.init(document.getElementById("echarts-3"));
-		this.echarts3.setOption(this.echartsOption);
-	},
-	methods: {
-		
 	}
 }
 </script>
