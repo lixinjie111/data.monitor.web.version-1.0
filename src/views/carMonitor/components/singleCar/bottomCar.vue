@@ -83,6 +83,9 @@
         <img id="downPlan14" src="@/assets/images/car/circle.png" style="display: none;" >
 
       </div>
+      <div class="legend">
+
+      </div>
     </div>
     <div class="chart-region">
       <div class="chart-title title1">
