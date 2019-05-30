@@ -54,6 +54,7 @@
 </template>
 <script>
   import { getVehicleCalendarData, getLiveDeviceInfo, startStream, sendStreamHeart } from '@/api/carMonitor'
+  const isProduction = process.env.NODE_ENV === 'production'
   export default {
     data () {
       return {
@@ -85,7 +86,7 @@
             techOrder: ['flash', 'html5'],
             sourceOrder: true,
             flash: {
-              swf:  '/static/media/video-js.swf'
+              swf: isProduction ? '/dataMonitor/static/media/video-js.swf' : '/static/media/video-js.swf'
             },
           sources: [
             {
