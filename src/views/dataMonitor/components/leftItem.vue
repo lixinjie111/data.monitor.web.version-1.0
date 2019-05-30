@@ -38,7 +38,7 @@
     </ul>
 </template>
 <script>
-import { getBaseStat } from "@/api/DataMonitor"
+import { getBaseStat } from "@/api/dataMonitor"
 export default {
     name: "LeftItem",
     data () {
