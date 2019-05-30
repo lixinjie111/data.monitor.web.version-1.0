@@ -30,10 +30,10 @@ export default {
             ,models:{}
 // 0019D1AA0424  0019EAFA0104  0019EAFA0102  0018EAFA0332
             ,deviceModels:{
-                "0019D1AA0424":{cars:[],persons:[]},
-                "0019EAFA0104":{cars:[],persons:[]},
-                "0019EAFA0102":{cars:[],persons:[]},
-                "0018EAFA0332":{cars:[],persons:[]},
+                "0019D1AA0424":{cars:[],persons:[],texts:[]},
+                "0019EAFA0104":{cars:[],persons:[],texts:[]},
+                "0019EAFA0102":{cars:[],persons:[],texts:[]},
+                "0018EAFA0332":{cars:[],persons:[],texts:[]},
             }
 
             ,modelPersonArr:[]
@@ -59,6 +59,8 @@ export default {
             // ,lastUtmPosition: null
             // ,nowUtmPosition: null
             // ,utmposition: null
+            ,fontface:"宋体"
+            ,fontSize:60
 
             ,sourceProject:"EPSG:4326"
             ,destinatePorject:"+proj=utm +zone=50 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
@@ -137,7 +139,7 @@ export default {
                     // model.receiveShadow = true;
                     // 0019D1AA0424  0019EAFA0104  0019EAFA0102  0018EAFA0332
                     //车
-                    var geoBox1 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
+                    var geoBox1 = new THREE.BoxBufferGeometry( 1.7, 4.6, 1.4);
                     var model1 = new THREE.Mesh( geoBox1, matStdObjects );
                     model1.position.set( 0, 0, 0 );
                     model1.rotation.set( this.pitch,this.yaw,this.roll );
@@ -157,11 +159,20 @@ export default {
                     this.deviceModels["0019D1AA0424"].persons[m]= pmodel1;
                     dl.scene.add(pmodel1);
 
+                    var text1 = new dl.Text({
+                        text:"",
+                        fontsize:this.fontSize,
+                        borderThickness:0,
+                        textColor:{r: 0, g: 0, b: 0, a: 1.0}
+                    });
+
+                    this.deviceModels["0019D1AA0424"].texts[m]=text1;
+                    dl.scene.add(text1);
 
 
 
 
-                    var geoBox2 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
+                    var geoBox2 = new THREE.BoxBufferGeometry( 1.7, 4.6, 1.4);
                     var model2 = new THREE.Mesh( geoBox2, matStdObjects );
                     model2.position.set( 0, 0, 0 );
                     model2.rotation.set( this.pitch,this.yaw,this.roll );
@@ -181,11 +192,20 @@ export default {
                     this.deviceModels["0019EAFA0104"].persons[m]= pmodel2;
                     dl.scene.add(pmodel2);
 
+                    var text2 = new dl.Text({
+                        text:"",
+                        fontsize:this.fontSize,
+                        borderThickness:0,
+                        textColor:{r: 0, g: 0, b: 0, a: 1.0}
+                    });
+                    this.deviceModels["0019EAFA0104"].texts[m]=text2;
+                    dl.scene.add(text2);
 
 
 
 
-                    var geoBox3 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
+
+                    var geoBox3 = new THREE.BoxBufferGeometry( 1.7, 4.6, 1.4);
                     var model3 = new THREE.Mesh( geoBox3, matStdObjects );
                     model3.position.set( 0, 0, 0 );
                     model3.rotation.set( this.pitch,this.yaw,this.roll );
@@ -205,13 +225,22 @@ export default {
                     this.deviceModels["0019EAFA0102"].persons[m]= pmodel3;
                     dl.scene.add(pmodel3);
 
+                    var text3 = new dl.Text({
+                        text:"",
+                        fontsize:this.fontSize,
+                        borderThickness:0,
+                        textColor:{r: 0, g: 0, b: 0, a: 1.0}
+                    });
+                    this.deviceModels["0019EAFA0102"].texts[m]=text3;
+                    dl.scene.add(text3);
 
 
 
 
 
 
-                    var geoBox4 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
+
+                    var geoBox4 = new THREE.BoxBufferGeometry( 1.7, 4.6, 1.4);
                     var model4 = new THREE.Mesh( geoBox4, matStdObjects );
                     model4.position.set( 0, 0, 0 );
                     model4.rotation.set( this.pitch,this.yaw,this.roll );
@@ -231,22 +260,14 @@ export default {
                     this.deviceModels["0018EAFA0332"].persons[m]= pmodel4;
                     dl.scene.add(pmodel4);
 
-
-
-
-                    //ren
-                    // var pBox = new THREE.BoxBufferGeometry( 0.5, 1, 0.5);
-                    // var pmodel = new THREE.Mesh( pBox, matStdObjects );
-                    // pmodel.position.set( 0, 0, 0 );
-                    // pmodel.rotation.set( 0, Math.PI / 2.0, 0 );
-                    // pmodel.castShadow = true;
-                    // pmodel.receiveShadow = true;
-
-                    // this.modelPersonArr[m] = pmodel;
-                    // dl.scene.add(pmodel);
-
-
-                    // modelPersonArr
+                    var text4 = new dl.Text({
+                        text:"",
+                        fontsize:this.fontSize,
+                        borderThickness:0,
+                        textColor:{r: 0, g: 0, b: 0, a: 1.0}
+                    });
+                    this.deviceModels["0018EAFA0332"].texts[m]=text4;
+                    dl.scene.add(text4);
                 }
 
                 // var geoBox5 = new THREE.BoxBufferGeometry( 0.5, 1, 0.5);
@@ -354,6 +375,33 @@ export default {
           var ms= date.getMilliseconds();
           return Y+M+D+h+m+s+"."+ms;
         },
+        IsInside:function(x,y)
+        {
+            let count = this.Points.length;
+
+            if(count < 3)
+            {
+                return false;
+            }
+
+            let result = false;
+
+            for(let i = 0, j = count - 1; i < count; i++)
+            {
+                var p1 = this.Points[i];
+                var p2 = this.Points[j];
+
+                if(p1[1] < y && p2[1] >= y || p2[1] < y && p1[1] >= y)
+                {
+                    if(p1[0] + (y - p1[1]) / (p2[1] - p1[1]) * (p2[0] - p1[0]) < x)
+                    {
+                        result = !result;
+                    }
+                }
+                j = i;
+            }
+            return result;
+        },
         onMessage:function(data){
             // console.log(data);
             this.models={};
@@ -379,8 +427,8 @@ export default {
             var deviceid = null;
             if(rsuDatas.length>0)
             {
-              var time = this.timetrans(rsuDatas[0].timestamp);
-              this.$emit('showTimeStamp',time);
+                var time = this.timetrans(rsuDatas[0].timestamp);
+                this.$emit('showTimeStamp',time);
                 deviceid = rsuDatas[0].deviceId;
                 for(let p=0;p<this.deviceModels[deviceid].cars.length;p++)
                 {
@@ -393,6 +441,11 @@ export default {
                     person.position.x = 0;
                     person.position.y = 0;
                     person.position.z = 0;
+
+                    let text = this.deviceModels[deviceid].texts[p];                    
+                    text.setPositon([0,0,0]);
+                    text.fontface=this.fontface;
+                    text.update();
                 }
             }
             for(let i = 0;i<rsuDatas.length;i++)
@@ -412,6 +465,10 @@ export default {
                             mdl.position.x = dUTM[0];
                             mdl.position.y = dUTM[1];
                             mdl.position.z = this.defualtZ+4;
+
+                            let text = this.deviceModels[deviceid].texts[i]; 
+                            text.setText(d.objId.substr(0,8));                   
+                            text.setPositon([dUTM[0],dUTM[1],this.defualtZ+5]);
                         }
                     }else{
                         if(i<this.deviceModels[deviceid].cars.length)
@@ -420,6 +477,10 @@ export default {
                             mdl.position.x = dUTM[0];
                             mdl.position.y = dUTM[1];
                             mdl.position.z = this.defualtZ+4;
+
+                            let text = this.deviceModels[deviceid].texts[i];
+                            text.setText(d.objId.substr(0,8));                    
+                            text.setPositon([dUTM[0],dUTM[1],this.defualtZ+6]);
                         }
                     }
 
