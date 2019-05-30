@@ -35,12 +35,10 @@
 import pieEcharts from './components/pieEcharts.vue'
 import BarVerticalEcharts from './components/barVerticalEcharts.vue'
 import BarHorizontalEcharts from './components/barHorizontalEcharts.vue'
-// import { requestGetShareData } from './api/share'
 export default {
 	name: 'MoreBtn',
     components: { pieEcharts, BarVerticalEcharts, BarHorizontalEcharts },
 	data () {
-		var _this = this;
 		return {
 			dialogVisible: false
 		}
@@ -60,7 +58,7 @@ export default {
 @import "@/assets/scss/theme.scss";
 .more-btn {
     position: absolute;
-    top: 94px;
+    top: 100px;
     right: 417px;
     z-index: 3;
     width: 65px;

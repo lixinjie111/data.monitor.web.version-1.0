@@ -3,24 +3,25 @@
         <div class="c-view-side c-view-left">
             <div class="c-scroll-wrap">
                 <div class="c-scroll-inner">
+                    <left-item></left-item>
                 </div>
             </div>
         </div>
-        <div class="c-view-main" id="map-container"></div>
+        <map-container></map-container>
         <div class="c-view-side c-view-right">
             <div class="c-scroll-wrap">
                 <div class="c-scroll-inner">
                     <div class="c-car-list">
-                        <circle-progress title="道路级别"></circle-progress>
+                        <circle-progress title="道路级别" :requestUrl="getRoadLevelStat"></circle-progress>
                     </div>
                     <div class="c-car-list">
-                        <circle-progress title="设备良好"></circle-progress>
+                        <circle-progress title="设备良好率" type="2" :requestUrl="getDevStatusStat"></circle-progress>
                     </div>
                     <div class="c-car-list">
                         <driving-car-echarts title="在驶车辆" id="driving-car-echarts-1"></driving-car-echarts>
                     </div>
                     <div class="c-car-list">
-                        <driving-car-echarts title="平台数据" id="driving-car-echarts-2"></driving-car-echarts>
+                        <platform-data-echarts title="平台数据"></platform-data-echarts>
                     </div>
                 </div>
             </div>
@@ -28,25 +29,24 @@
     </div>
 </template>
 <script>
+import MapContainer from './components/map.vue'
+import LeftItem from './components/leftItem.vue'
 import CircleProgress from '@/components/circleProgress.vue'
 import DrivingCarEcharts from '@/components/drivingCarEcharts.vue'
+import PlatformDataEcharts from './components/platformDataEcharts.vue'
+import { getRoadLevelStat, getDevStatusStat } from "@/api/dataMonitor"
 export default {
     name: "DataMonitor",
-    components: { CircleProgress, DrivingCarEcharts },
+    components: { LeftItem, MapContainer, CircleProgress, DrivingCarEcharts, PlatformDataEcharts },
     data () {
         return {
-            AMap: null,
-            mapOption: {  
-                center: [116.395577, 39.892257],
-                zoom: 11,
-                mapStyle: "amap://styles/7b007636f01d8a19e9cc2841a85dc083"
-            }
+            getRoadLevelStat: getRoadLevelStat,
+            getDevStatusStat: getDevStatusStat
         }
     },
     methods: {
     },
     mounted() {
-        this.AMap = new AMap.Map("map-container", this.mapOption);
     }
 }
 </script>

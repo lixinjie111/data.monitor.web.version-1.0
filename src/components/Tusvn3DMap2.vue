@@ -317,8 +317,8 @@ export default {
             TWEEN.update( time );
         },
         update:function(e) {
-            console.log("=====================update====================================");
-            console.log(e)
+            // console.log("=====================update====================================");
+            // console.log(e)
             // model.position.x = lastUtmPosition.x;
             // model.position.y = lastUtmPosition.y;
             // model.setHeading(-Math.PI / 180 * (lastUtmPosition.rotation));

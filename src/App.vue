@@ -16,6 +16,11 @@ export default {
     components: {
         HeaderBar
     },
+    data() {
+      return {
+        defalutCenterPoint: [116.395577, 39.892257]
+      }
+    },
     watch: {
       "$route"(val) {
         // console.log(val);

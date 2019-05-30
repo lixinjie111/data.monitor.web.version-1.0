@@ -6,7 +6,7 @@
 </template>
 
 <script>
-// import { requestGetShareData } from '@/api/carMoniter'
+import { getHisVehStat } from '@/api/dataMonitor'
 export default {
 	name: 'DrivingCarEcharts',
 	props: {
@@ -15,9 +15,89 @@ export default {
 	},
 	data () {
 		return {
-			echarts: null,
-			echartsOption: {
-				grid:{
+            // 获取在驶车辆实时数据（辆）
+            webSocket:{},
+            webSocketData: {
+                action: "vehicleOLCount",
+                token: 'fpx'
+            },
+            dataLength: 0,
+            responseData: {
+                last: [],
+                curDay: []
+            },
+			echarts: null
+		}
+	},
+	watch: {
+	},
+	created() {
+		
+	},
+	mounted() {
+        this.getHisVehStat();
+		this.echarts = this.$echarts.init(document.getElementById(this.id));
+	},
+	methods: {
+		getHisVehStat() {
+            console.log('获取上周当天在驶车辆分布数量（分钟）以及获取当天0点到目前的分布数量');
+            getHisVehStat().then(res => {
+                let _resultLast = res.data.last,
+                    _resultCurDay = res.data.curDay;
+                this.dataLength = _resultLast.length;
+                // console.log(this.dataLength);
+                _resultLast.forEach(item => {
+                    this.responseData.last.push(item.count);
+                });
+                _resultCurDay.forEach(item => {
+                    this.responseData.curDay.push(item.count);
+                });
+                this.echarts.setOption(this.defaultOption());
+                this.initWebSocket();
+            });
+        },
+        initWebSocket(){
+            console.log('websocket获取当前时间节点的车辆分布数量');
+            if ('WebSocket' in window) {
+                this.webSocket = new WebSocket(window.cfg.socketUrl);  //获得WebSocket对象
+            }
+            this.webSocket.onmessage = this.onmessage;
+            this.webSocket.onclose = this.onclose;
+            this.webSocket.onopen = this.onopen;
+            this.webSocket.onerror = this.onerror;
+        },
+        onmessage(message){
+            let _json = JSON.parse(message.data),
+                _result = _json.result;
+            if(this.responseData.curDay.length >= this.dataLength) {
+                this.responseData.curDay.shift();
+            }
+            this.responseData.curDay.push(_result.count);
+            // console.log(this.responseData.curDay.length);
+            this.echarts.setOption(this.defaultOption());
+        },
+        onclose(data){
+            console.log("结束--vehicleOLCount--连接");
+        },
+        onopen(data){
+            console.log("建立--vehicleOLCount--连接");
+            //行程
+            this.sendMsg(JSON.stringify(this.webSocketData));
+        },
+        sendMsg(msg) {
+            console.log("vehicleOLCount--连接状态："+this.webSocket.readyState);
+            if(window.WebSocket){
+                if(this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+                    this.webSocket.send(msg); //send()发送消息
+                    console.log("vehicleOLCount--已发送消息:"+ msg);
+                }
+            }else{
+                return;
+            }
+        },
+        defaultOption() {
+            let option = {
+                grid:{
                     x: 0,
                     y: 0,
                     x2: 0,
@@ -39,13 +119,13 @@ export default {
                     axisLabel:{
                         interval: 5,
                         textStyle: {
-                        	color: "#918d84"
+                            color: "#918d84"
                         }
                     },
-                    data: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]
+                    // data: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]
                 },
                 yAxis:  {
-                	type: 'value',
+                    type: 'value',
                     show: false
                 },
                 series: [{
@@ -53,44 +133,31 @@ export default {
                     type: 'line',
                     smooth: true,
                     symbol: 'none',
-                    symbolSize: 2,
                     lineStyle: {
-                    	color: '#575757',
-                    	width: 1
+                        color: '#575757',
+                        width: 1
                     },
                     areaStyle: {
-            			color: 'rgba(87, 87, 87, .1)'
-            		},
-                    data: [10, 12, 21, 54, 260, 830, 710, 10, 12, 21, 54, 260, 830, 710, 10, 12, 21, 54, 260, 830, 710, 10, 12, 21, 21]
+                        color: 'rgba(87, 87, 87, .1)'
+                    },
+                    data: this.responseData.last
                 },{
                     name: "今日在使车辆",
                     type: 'line',
                     smooth: true,
                     symbol: 'none',
-                    symbolSize: 2,
                     lineStyle: {
-                    	color: '#37ba7b',
-                    	width: 1
+                        color: '#37ba7b',
+                        width: 1
                     },
                     areaStyle: {
-            			color: 'rgba(55, 186, 123, .1)'
-            		},
-                    data: [30, 182, 434, 791, 390, 30, 10, 30, 182, 434, 791, 390, 30, 10, 30]
+                        color: 'rgba(55, 186, 123, .1)'
+                    },
+                    data: this.responseData.curDay
                 }]
-			}		
-		}
-	},
-	watch: {
-	},
-	created() {
-		
-	},
-	mounted() {
-		this.echarts = this.$echarts.init(document.getElementById(this.id));
-		this.echarts.setOption(this.echartsOption);
-	},
-	methods: {
-		
+            };
+            return option;
+        }
 	}
 }
 </script>

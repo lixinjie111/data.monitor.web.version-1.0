@@ -124,7 +124,7 @@
             embedCode += ' width="100%" height="100%" ';
             embedCode += 'flashvars="' + flashVars + '">';
             embedCode += '</embed></object>';
-            console.log(embedCode);
+            // console.log(embedCode);
             document.getElementById("cmsplayer").innerHTML = embedCode;
           },
           getDeviceStatus(){

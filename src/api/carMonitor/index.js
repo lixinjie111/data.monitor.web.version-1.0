@@ -7,27 +7,34 @@ import {HTTPURL} from '../requestUrl';
 
 /**
  * 获取车辆信息
- * I_M2_M21_00_01
+ * I_VL1_01
  */
- export const getTotalInfo = params => {return axios.post(`${HTTPURL}getTotalInfo`, params).then(res => res.data); };
+ export const getTotalStat = params => {return axios.post(`${HTTPURL}vl/platStat/getTotalStat`, params).then(res => res.data); };
 /**
  * 获取自动驾驶级别分布数据
- * I_M2_M21_03_01
+ * I_V1L_02
  */
- export const getAutoPilotLevelScat = params => {return axios.post(`${HTTPURL}getAutoPilotLevelScat`, params).then(res => res.data); };
+ export const getAutoLevelStat = params => {return axios.post(`${HTTPURL}vl/vehStat/getAutoLevelStat`, params).then(res => res.data); };
 /**
  * 获取车辆用途分布数据
- * I_M2_M21_03_02
+ * I_VL1_03
  */
- export const getVehUsageScat = params => {return axios.post(`${HTTPURL}getVehUsageScat`, params).then(res => res.data); };
+ export const getVehUsageStat = params => {return axios.post(`${HTTPURL}vl/vehStat/getVehUsageStat`, params).then(res => res.data); };
 /**
- * 获取在驶车辆信息
- * I_M2_M21_04_01 参考 I_M1_M12_01
- * I_M1_M12_01_02   getLastWeeksDayVehicle	获取上周当天在驶车辆分布数量（分钟）
- * I_M1_M12_01_03	getToDayVehicle	获取平台当天0点到目前的车辆分布数据
+ * 获取车型品牌分布数据
+ * I_VL4_01
  */
- // export const getAvgTravelTime = params => {return axios.post(`${HTTPURL}getAvgTravelTime`, params).then(res => res.data); };
-
+ export const getVehStat = params => {return axios.post(`${HTTPURL}vl/vehStat/getVehStat`, params).then(res => res.data); };
+/**
+ * 获取最近30天活跃车辆top5的车辆数据
+ * I_VL4_02
+ */
+ export const getActiveVehStat = params => {return axios.post(`${HTTPURL}vl/actVehStat/getActiveVehStat`, params).then(res => res.data); };
+/**
+ * 获取最近30天行程分析分布数据
+ * I_VL4_03
+ */
+ export const getRouteStat = params => {return axios.post(`${HTTPURL}vl/routeStat/getRouteStat`, params).then(res => res.data); };
 
 /**
  * 单车监控

@@ -92,7 +92,7 @@
 </template>
 <script>
   import AMap from 'AMap';
-  import { getDrivingStatisticsData, getVehicleBaseData } from '@/api/carMoniter'
+  import { getDrivingStatisticsData, getVehicleBaseData } from '@/api/carMonitor'
   export default {
     name: "LeftCar", // 实时数据
     props:{
@@ -120,7 +120,7 @@
 
         distanceMap:{}, //创建的地图对象
         prevLastPointPath:[],//上次请求的终点，
-        carStartPoint:[116.395577, 39.892257],
+        carStartPoint:this.$parent.defalutCenterPoint,
         routeId: "",
         pointPath:[],//整个行程路径
         markers: {
@@ -229,7 +229,7 @@
       //重绘形成初始化
       initDistanceMap(){
         this.prevLastPointPath = [];//上次请求的终点，
-        this.carStartPoint = [116.395577, 39.892257];
+        this.carStartPoint = this.$parent.defalutCenterPoint;
         this.routeId = "";
         this.pointPath = [];
         // this.direction = 0;
