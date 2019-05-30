@@ -1,13 +1,11 @@
-
-/*var stopImgOpts = [];
-var random = 0.1;
-var i=0;*/
 class Curve{
-  static  i = 0;
-  static stopImgOpts = [];
+
   constructor(){
 
+    this.stop1=null;
+    this.stop2=null;
   }
+
   /**
    * 动画画曲线
    *
@@ -19,16 +17,16 @@ class Curve{
    * @param {Array.<Number>} start  开始坐标
    * @param {Array.<Number>} end  结束坐标
    */
-  static animate(ctx,random,color,percent,i,start,end) {
+  animate(ctx,random,color,percent,start,end) {
+    // console.log("开始时间-----"+new Date().getTime())
+    //console.log("order------"+this.order);
     var _this = this;
-
     /* ctx.clearRect( 0, 0, 800, 800 );*/
-
     ctx.lineWidth = 0.1;
-    ctx.shadowColor="#8fab4f";                //设置或返回用于阴影的颜色
-    ctx.shadowBlur=10;
-    ctx.strokeStyle = "#6fab3c";
-     var random = 0.2;
+    /*ctx.shadowColor="#d28605";                //设置或返回用于阴影的颜色
+    ctx.shadowBlur=10;*/
+    ctx.strokeStyle = color;
+    /* var random = 0.2;*/
     /*ctx.lineWidth = 0.1;
     ctx.shadowColor=color;                //设置或返回用于阴影的颜色
     ctx.shadowBlur=10;
@@ -39,19 +37,16 @@ class Curve{
       end,
       random,
       percent
-
     );
-
     ctx.stroke();
     percent = ( percent + 1 ) % 100;
     if(percent==99){
-      cancelAnimationFrame(this.stopImgOpts[i]);
+      cancelAnimationFrame(this.stop1);
+      return;
     }
-    console.log("percent----"+percent)
-    this.stopImgOpts[i] = requestAnimationFrame(function() {
-      _this.animate(ctx,random,color,percent,i,start,end);
+    this.stop1= requestAnimationFrame(function() {
+      _this.animate(ctx,random,color,percent,start,end);
     });
-
   }
 
 
@@ -66,11 +61,10 @@ class Curve{
    * @param {Array.<Number>} start  开始坐标
    * @param {Array.<Number>} end  结束坐标
    */
-  static generatorImg(imgCtx,random,img,imgPercent,start,end,type) {
+  generatorImg(imgCtx,random,img,imgPercent,start,end,type,color) {
     var _this = this;
     imgCtx.clearRect(0, 0, 800, 800);
     imgCtx.beginPath();
-
     /* var random = 0.2;*/
     this.drawImage(
       imgCtx,
@@ -79,159 +73,45 @@ class Curve{
       random,
       imgPercent,
       img,
-      type
+      type,
+      color
     );
     imgCtx.stroke();
     imgPercent = ( imgPercent + 1 ) % 100;
     if(imgPercent==99){
-      window.cancelAnimationFrame(stop);
       imgCtx.clearRect( 10, 10, 1000, 1000 );
+      window.cancelAnimationFrame(this.stop2);
       return ;
     }
-    var stop = requestAnimationFrame(function() {
+    this.stop2 = requestAnimationFrame(function() {
       _this.generatorImg(imgCtx,random,img,imgPercent,start,end,type)
     });
   }
-
-  static generateColor () {
-
-    var colors = [];
-    // 生成随机颜色
-    for ( var i = 0; i < 10; i++ )  {
-      colors.push(
-        'rgb( ' +
-        ( Math.random() * 255 >> 0 ) + ',' +
-        ( Math.random() * 255 >> 0 ) + ',' +
-        ( Math.random() * 255 >> 0 ) +
-        ' )'
-      );
-    }
-    return colors;
-  }
-
-
-
-  /**
-   * 绘制动画方法
-   *
-   * @param {String} id 容器id
-   * @param {Array.<Number>} start  开始坐标
-   * @param {Array.<Number>} end  结束坐标
-   */
-  static generateForward(container,start,end,width,height,random,type){
-
-   /* if(this.random<1){*/
-      var color = 'rgb( ' +
-        ( Math.random() * 255 >> 0 ) + ',' +
-        ( Math.random() * 255 >> 0 ) + ',' +
-        ( Math.random() * 255 >> 0 ) +
-        ' )';
-    var container = document.getElementById("canvasContainer");
-    var random = 0.1;
-    var i=0;
-    /*var colors = generateColor();*/
-    /*for(i;i<5;i++){
-      random = random+0.1;
-      //创建曲线canvas标签
-      var lineObj = document.createElement('canvas');
-      lineObj.id='canvas'+i;
-      lineObj.className = 'canvas';
-      lineObj.width='800';
-      lineObj.height='800';
-      container.appendChild(lineObj);
-      //获取曲线的canvas对象
-      var lineCanvas = document.getElementById( lineObj.id );
-      var lineCtx = lineCanvas.getContext( '2d' );
-
-
-      //创建图像canvas标签
-      var canvasObj = document.createElement('canvas');
-      canvasObj.id='imgCanvas'+i;
-      canvasObj.className = 'canvas';
-      canvasObj.width='800';
-      canvasObj.height='800';
-      container.appendChild(canvasObj);
-      //获取图像canvas对象
-      var imgCanvas = document.getElementById( canvasObj.id );
-      var imgCtx = imgCanvas.getContext( '2d' );
-
-      //创建图像
-      var imgObj = document.createElement('img');
-      imgObj.id='plan'+i;
-      imgObj.src = './static/images/plane.jpg';
-      imgObj.style.display='none';
-    container.appendChild(imgObj);
-
-    //获取图像
-    var img = document.getElementById(imgObj.id);
-
-
-    if(random<1){
-
-      animate(lineCtx,random,colors[i],0);
-      generatorImg(imgCtx,random,img,0);
-
-
-      /!* reverseAnimate(random,'#b33db5');
-       generatorReverseImg(random,img,imgPercent);*!/
-    }
-  }
- */
-    /*var timer = setInterval(function () {*/
-    random = random+0.1;
-    //创建曲线canvas标签
-    var lineObj = document.createElement('canvas');
-    lineObj.id='canvas'+this.i;
-    lineObj.className = 'canvas';
-    container.appendChild(lineObj);
-    //获取曲线的canvas对象
-    var lineCanvas = document.getElementById( lineObj.id );
+  drawLines(random,color,order,i,start,end){
+    var lineCanvas = document.getElementById(order +i);
     var lineCtx = lineCanvas.getContext( '2d' );
-    //设置或返回阴影距形状的垂直距离
-     lineCtx.globalCompositeOperation = 'destination-out';
-    /* lineCanvas.width='400';
-     lineCanvas.height='200';*/
-    lineCanvas.width=width*2;
-    lineCanvas.height=height*2;
-    /*lineCtx.translate(-1, 0.5);*/
-    lineCanvas.style.width=width+'px';
-    lineCanvas.style.height=height+'px';
+    lineCtx.globalCompositeOperation = 'destination-out';
+    lineCanvas.width=1200;
+    lineCanvas.height=400;
+    lineCanvas.style.width='600px';
+    lineCanvas.style.height='200px';
     lineCtx.scale(2,2);
+    this.animate(lineCtx,random,color,1,start, end);
+  }
 
-    //创建图像canvas标签
-    var canvasObj = document.createElement('canvas');
-    canvasObj.id='imgCanvas'+this.i;
-    canvasObj.className = 'canvas';
-    container.appendChild(canvasObj);
-    //获取图像canvas对象
-    var imgCanvas = document.getElementById( canvasObj.id );
+
+  drawImgs(random,type,order,i,start,end,color){
+    var imgCanvas = document.getElementById(order+'Img'+i);
     var imgCtx = imgCanvas.getContext( '2d' );
 
-    imgCanvas.width=width*2;
-    imgCanvas.height=height*2;
-    /*lineCtx.translate(-1, 0.5);*/
-    imgCanvas.style.width=width+'px';
-    imgCanvas.style.height=height+'px';
+    imgCanvas.width=1200;
+    imgCanvas.height=400;
+    imgCanvas.style.width='600px';
+    imgCanvas.style.height='200px';
     imgCtx.scale(2,2);
-
-    //创建图像
-    var imgObj = document.createElement('img');
-    imgObj.id='plan'+this.i;
-    imgObj.src = './static/images/circle.png';
-    imgObj.style.display='none';
-    container.appendChild(imgObj);
-
-      //获取图像
-      var img = document.getElementById(imgObj.id);
-      this.animate(lineCtx,random,color,0,this.i,start,end);
-      this.generatorImg(imgCtx,random,img,0,start,end,type);
-      this.i++;
-      this.random = this.random+0.1;
-
-    /*}else{
-      setTimeout(clearALL, 1000);
-      clearInterval(timer);
-    }*/
+    //获取图像
+    var img = document.getElementById(order+"Plan"+i);
+    this.generatorImg(imgCtx,random,img,1,start, end,type,color);
   }
 
   /**
@@ -243,7 +123,7 @@ class Curve{
    * @param  {number} percent 绘制百分比(0-100)
    */
 
-  static drawPath(ctx, start, end, curveness, percent){
+  drawPath(ctx, start, end, curveness, percent){
     ctx.clearRect( 10, 10, 800, 800 );
     var cp = [
       ( start[ 0 ] + end[ 0 ] ) / 2 - ( start[ 1 ] - end[ 1 ] ) * curveness,
@@ -273,8 +153,9 @@ class Curve{
     );
 
   }
-  static drawImage( ctx, start, end, curveness, percent,img,type) {
+  drawImage( ctx, start, end, curveness, percent,img,type,color) {
 
+    //console.log("curveness----"+curveness);
     var cp = [
       ( start[ 0 ] + end[ 0 ] ) / 2 - ( start[ 1 ] - end[ 1 ] ) * curveness,
       ( start[ 1 ] + end[ 1 ] ) / 2 - ( end[ 0 ] - start[ 0 ] ) * curveness
@@ -299,39 +180,34 @@ class Curve{
     ctx.drawImage(img,(b[ 0 ]-5),(b[ 1 ]-5),10,10);
 
 
-    ctx.strokeStyle= '#f473ff';
+    ctx.strokeStyle= color;
+    if(type=='GPS'){
+      ctx.strokeStyle= '#6ec9fd';
+    }
+    if(type=='CAN'){
+      ctx.strokeStyle= '#3db765';
+    }
+    if(type=='perception'){
+      ctx.strokeStyle= '#d47b24';
+    }
+    if(type=='event'){
+      ctx.strokeStyle= '#f75b30';
+    }
     ctx.font = '10px Adobe Ming Std';
+    /*console.log("x"+b[ 0 ]+"---y"+b[ 1 ]);*/
     ctx.strokeText(type,(b[ 0 ]-5),(b[ 1 ]-10));
     ctx.stroke();
 
-    img.onload = function () {
-      ctx.drawImage(img,(b[ 0 ]),(b[ 1 ]),10,10);
-    }
-
+    /* img.onload = function () {
+       ctx.drawImage(img,(b[ 0 ]),(b[ 1 ]),10,10);
+     }
+ */
 
 
 
 
 
   }
-
-  static clearALL() {
-    this.i=0;
-    var allCanvas = document.querySelectorAll(".canvas");
-    console.log(allCanvas);
-
-    for (var i=0;i<this.stopImgOpts.length;i++){
-      cancelAnimationFrame(this.stopImgOpts[i]);
-    }
-
-    allCanvas.forEach(function (item) {
-      item.getContext("2d").clearRect(0,0,1000,1000);
-    });
-
-  }
-
-
-
 
 
 

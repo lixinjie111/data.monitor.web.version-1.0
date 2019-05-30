@@ -29,9 +29,11 @@
           <span></span>
           <span></span>
           <!--向左转 亮-->
+          <!--<img src="@/assets/images/car/car-12.png" v-if="realData.turnLight=='left'">-->
           <img src="@/assets/images/car/car-12.png" v-if="realData.turnLight=='left'">
           <img src="@/assets/images/car/car-13.png" class="director-left" v-else>
           <!--向右转 亮-->
+          <!--<img src="@/assets/images/car/car-12.png" class="director-right" v-if="realData.turnLight=='right'">-->
           <img src="@/assets/images/car/car-12.png" class="director-right" v-if="realData.turnLight=='right'">
           <img src="@/assets/images/car/car-13.png" v-else >
         </div>

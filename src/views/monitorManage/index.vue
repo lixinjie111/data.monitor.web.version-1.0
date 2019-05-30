@@ -2,7 +2,7 @@
 <div class="monitor-manage">
   <div class="monitor-manage-title">
     <img src="@/assets/images/monitorShow/monitor-1.png" class="monitor-title-img"/>
-    <span class="monitor-title-style">云控智能路侧系统</span>
+    <span class="monitor-title-style">云控智能路网系统</span>
   </div>
   <div class="crossing-info">
     <p class="crossing-number">路口编号：110108-335</p>
@@ -62,9 +62,12 @@
     <div id="cmsplayer" class="monitor-vedio"></div>
   </div>-->
   <div class="moniter-manage-map">
-    <tusvn-map :target-id="'mapMonitor'" ref="tusvnMap">
+    <tusvn-map :target-id="'mapMonitor'" ref="tusvnMap" @showTimeStamp="showTimeStamp">
 
     </tusvn-map>
+  </div>
+  <div class="time-style">
+    <span class="t-class">{{time}}</span>
   </div>
 </div>
 </template>
@@ -77,7 +80,8 @@
               cameraList:[],
               deviceStatus:{},
               monitorSocket:{},
-              monitorUrl:'ws://120.133.21.14:29998/ws'
+              monitorUrl:'ws://120.133.21.14:29998/ws',
+              time:''
             }
         },
         components:{TusvnMap},
@@ -176,6 +180,9 @@
           },
           restore(){
             this.$refs.tusvnMap.resetCamera();
+          },
+          showTimeStamp(time){
+            this.time=time;
           }
         },
         mounted() {
@@ -332,6 +339,17 @@
     width: 100%;
     height: 100%;
     z-index:0;
+  }
+  .time-style{
+    position: absolute;
+    bottom: 100px;
+    right: 150px;
+  }
+  .t-class{
+    width: 250px;
+    text-align: left;
+    display: block;
+    font-size: 16px;
   }
 
 </style>

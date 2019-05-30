@@ -15,6 +15,7 @@
         <canvas id="up2" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <canvas id="upImg2" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <img id="upPlan2" src="@/assets/images/car/circle.png" style="display: none;">
+        <canvas id="up3" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <canvas id="upImg3" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <img id="upPlan3" src="@/assets/images/car/circle.png" style="display: none;">
         <canvas id="upImg4" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
@@ -29,6 +30,20 @@
         <img id="upPlan8" src="@/assets/images/car/circle.png" style="display: none;">
         <canvas id="upImg9" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <img id="upPlan9" src="@/assets/images/car/circle.png" style="display: none;">
+        <canvas id="upImg10" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <img id="upPlan10" src="@/assets/images/car/circle.png" style="display: none;">
+        <canvas id="upImg11" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <img id="upPlan11" src="@/assets/images/car/circle.png" style="display: none;">
+
+        <canvas id="upImg12" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;" ></canvas>
+        <img id="upPlan12" src="@/assets/images/car/circle.png" style="display: none;" >
+        <canvas id="upImg13" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <img id="upPlan13" src="@/assets/images/car/circle.png" style="display: none;" >
+        <canvas id="upImg14" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <img id="upPlan14" src="@/assets/images/car/circle.png" style="display: none;">
+        <canvas id="upImg15" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <img id="upPlan15" src="@/assets/images/car/circle.png" style="display: none;">
+
 
 
         <canvas id="down0" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
@@ -55,6 +70,18 @@
         <img id="downPlan8" src="@/assets/images/car/circle.png" style="display: none;">
         <canvas id="downImg9" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
         <img id="downPlan9" src="@/assets/images/car/circle.png" style="display: none;">
+        <canvas id="downImg10" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <img id="downPlan10" src="@/assets/images/car/circle.png" style="display: none;">
+        <canvas id="downImg11" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <img id="downPlan11" src="@/assets/images/car/circle.png" style="display: none;">
+
+        <canvas id="downImg12" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;" ></canvas>
+        <img id="downPlan12" src="@/assets/images/car/circle.png" style="display: none;">
+        <canvas id="downImg13" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <img id="downPlan13" src="@/assets/images/car/circle.png" style="display: none;">
+        <canvas id="downImg14" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <img id="downPlan14" src="@/assets/images/car/circle.png" style="display: none;" >
+
       </div>
     </div>
     <div class="chart-region">
@@ -74,7 +101,7 @@
 
 </template>
 <script>
-  import Curve from '@/assets/js/utils/curveNew.js';
+  import Curve from '@/assets/js/utils/curve.js';
 
   export default {
     name:"bottom-car",
@@ -88,20 +115,40 @@
         data:[NaN,NaN,NaN,NaN,NaN],
         accelerateData:[NaN,NaN,NaN,NaN,NaN],
         isStop: false,
-        markDate:'',
-        upRandom:0.1,
-        downRandom:0.1,
-        i:0, //控制生成的标签
-        k:0,//控制有多少条线进行清除
+
         container:{},
         webSocket:{},
         reportWebSocket:{},
-        reportList:[],
-        isFirst:true,
-        isMultiple:true,
-        eventData:[],
-        vehicleData:[],
-        m:0
+
+        canIsFirst:true,
+        bsmIsFirst:true,
+        perIsFirst:true,
+        eventIsFirst:true,
+
+        spatIsFirst:true,
+        v2xIsFirst:true,
+        rsiIsFirst:true,
+        i:0,
+        k:3,
+        m : 6,
+        n :9,
+
+        j:0,
+        k1:4,
+        m1:8,
+        upRandom:0.1,
+        canRandom:0,
+        gpsRandom:0,
+        perRandom:0,
+        eventRandom:0,
+
+        downRandom:0.1,
+        spatRandom:0,
+        v2xRandom:0,
+        rsiRandom:0,
+
+        n1:0
+
       }
     },
     props:{
@@ -358,232 +405,175 @@
         let _this=this;
         var json = JSON.parse(message.data);
         var data = json.result.reportItems;
-        console.log("**********************")
-        console.log("时间----"+new Date().getTime()+"长度"+data.length);
-        var canData=[];
-        var gpsData=[];
-        var radarData=[];
-        var eventData = [];
-        if(data.length>0){
+        _this.n1++;
 
-          if(_this.m==10){
-            _this.m=0;
-            /*_this.k=0;
-            _this.i=0;
-            _this.upRandom=0.1;
-            _this.downRandom = 0.1;*/
+        var canGpsData=[];
+        var bsmData=[];
+        var perData=[];
+        var eventData=[];
 
-          }
-          if(_this.k==11){
-            _this.k=0;
-            _this.upRandom=0.1
-          }
-          if(_this.k==10){
-            _this.k++;
-            return;
-          }
+        var rsmRcuData = [];
+        var spatData = [];
+        var rsiData = [];
+
+        if(_this.i>=3){
+          _this.i=0;
+        }
+        if(_this.k>=6){
+          _this.k=3;
+        }
+        if(_this.m>=9){
+          _this.m=6;
+        }
+        if(_this.n>=12){
+          _this.m=9;
+        }
+
+        if(_this.j>=4){
+          _this.j=0;
+        }
+        if(_this.k1>=8){
+          _this.k1=4;
+        }
+        if(_this.m1>=12){
+          _this.m1=8;
+        }
+
+        if(data.length>0) {
           data.forEach(function (item) {
-            console.log("type-----"+item.type)
-            if(item.type=='can'){
-              canData.push(item);
+            if (item.type == 'GPS+CAN') {
+              canGpsData.push(item);
             }
-            if(item.type=='gps'){
-              gpsData.push(item);
+            if (item.type == 'BSM') {
+              bsmData.push(item);
             }
-            if(item.type=='radar'){
-              radarData.push(item);
+            if (item.type == 'PER') {
+              perData.push(item);
             }
-            if(item.type=='event'){
+            if (item.type == 'EVENT') {
               eventData.push(item);
             }
-          })
-          //绘制can和gps
-          /*if(_this.m==1 ||_this.m==5||_this.m==9){
-            if(_this.k==9&&canData.length>0&&gpsData.length>0){
-              var canCurve = new Curve1([110, 142], [300, 58], '600', '200', _this.upRandom,'CAN',_this.k,'up');
-              canCurve.generateForward();
-              _this.upRandom = _this.upRandom+0.08;
-              _this.k++;
 
-              /!*if(_this.k==10){
-                _this.k=0;
-                _this.upRandom=0.1
-              }*!/
-            }else{*/
-              if(canData.length>0){
-                var canCurve = new Curve1([110, 142], [300, 58], '600', '200', _this.upRandom,'CAN',_this.k,'up');
-                canCurve.generateForward();
-                _this.upRandom = _this.upRandom+0.08;
-                _this.k++;
-               /* if(_this.k==10){
-                  _this.k=0;
-                  _this.upRandom=0.1
-                }*/
-              }
-              if(gpsData.length>0){
-                var gpsCurve = new Curve1( [110, 142], [300, 58], '600', '200', _this.upRandom,'GPS',_this.k,'up');
-                gpsCurve.generateForward();
-                _this.upRandom = _this.upRandom+0.08;
-                _this.k++;
-
-              }
-          /*  }
-          }*/
-         /* if(_this.m==3||_this.m==6){*/
-            if(radarData.length>0){
-              var radarCurve = new Curve1( [110, 142], [300, 58], '600', '200', _this.upRandom,'radar',_this.k,'up');
-              radarCurve.generateForward();
-              _this.upRandom = _this.upRandom+0.08;
-              _this.k++;
-              /*if(_this.k==10){
-                _this.k=0;
-                _this.upRandom=0.1
-              }*/
+            if (item.type == 'RSM/RCU') {
+              rsmRcuData.push(item);
             }
-          /*}*/
-         /* if(_this.m==3||_this.m==4||_this.m==9){*/
-            if(eventData.length>0){
-              var eventCurve = new Curve1([345, 60], [540, 155], '600', '200', _this.downRandom,'event',_this.i,'down');
-              eventCurve.generateForward();
-              _this.downRandom = _this.downRandom+0.08;
+            if (item.type == 'SPAT') {
+              spatData.push(item);
+            }
+            if (item.type == 'RSI') {
+              rsiData.push(item);
+            }
+          })
+
+          if(canGpsData.length>0){
+            var curve1 = new Curve();
+            //开始画gps的第一条线
+            if(_this.gpsIsFirst){
+              curve1.drawLines(_this.upRandom,'#9D589D','up',0,[110, 142], [300, 58]);
+              curve1.drawImgs(_this.upRandom,'GPS+CAN','up',12,[110, 142], [300, 58],'#6ec9fd');
+              _this.gpsRandom = _this.upRandom;
+              _this.upRandom=_this.upRandom+0.1;
+              _this.gpsIsFirst=false;
+            }else {
+              curve1.drawImgs(_this.gpsRandom,'GPS+CAN','up',_this.i,[110, 142], [300, 58],'#6ec9fd');
               _this.i++;
-              if(_this.i==10){
-                _this.i=0;
-                _this.downRandom=0.1
-              }
             }
-          /*}*/
-          _this.m++;
-        }
-      },
-      dataHandle(data){
-        var _this = this;
-        var curve;
-        var length=0;
-       /* var vehicleObj = document.getElementById("up9");
-        //当清除后，将其他线进行绘制
-        if(vehicleObj.height==0) {
-          _this.isMultiple = false;
-          vehicleObj.height = vehicleObj.height;
-          _this.dataHandle(_this.vehicleData);
-        }
-
-        var eventObj = document.getElementById("down9");
-        //当清除后，将其他线进行绘制
-        if(eventObj.height==0) {
-          _this.isMultiple = false;
-          eventObj.height = eventObj.height;
-          _this.dataHandle(_this.eventData);
-        }
-*/
-        //进行多次调用，直到最后一条线删除
-        /*if(_this.isMultiple){
-          _this.dataHandle(data);
-        }*/
-        if(data.length>0){
-          data.forEach(function (item) {
-            _this.reportList.push(item);
-            length++;
-            if(item.count>0){
-              if(item.dataType=='vehicleEventCount'){
-                if(_this.i<10){
-                  curve = new Curve1([345, 60], [540, 155], '600', '200', _this.downRandom,'event',_this.i,'down');
-                  curve.generateForward();
-                  _this.downRandom = _this.downRandom+0.05;
-                  _this.i++;
-                }else{
-                  _this.eventData.push(item);
-                  if(length==data.length){
-                    _this.downRandom=0.1;
-                    _this.i=0;
-                  }
-                }
-              }else {
-                if(_this.k<10){
-                  if(item.dataType=='vehicleCanCount'){
-                    curve = new Curve1([110, 142], [300, 58], '600', '200', _this.upRandom,'CAN',_this.k,'up');
-                    curve.generateForward();
-                    _this.upRandom = _this.upRandom+0.05;
-                    _this.k++;
-                  }else if(item.dataType=='vehicleGpsCount'){
-                    curve = new Curve1( [110, 142], [300, 58], '600', '200', _this.upRandom,'GPS',_this.k,'up');
-                    curve.generateForward();
-                    _this.upRandom = _this.upRandom+0.05;
-                    _this.k++;
-                  }else if(item.dataType=='vehicleRadarCount'){
-                    curve = new Curve1( [110, 142], [300, 58], '600', '200', _this.upRandom,'radar',_this.k,'up');
-                    curve.generateForward();
-                    _this.upRandom = _this.upRandom+0.05;
-                    _this.k++;
-                  }
-                }else{
-                  _this.vehicleData.push(item);
-                  if(length==data.length){
-                    _this.upRandom=0.1;
-                    _this.k=0;
-                  }
-                }
-              }
-            }
-          })
-          /*if(_this.vehicleData.length>0){
-            _this.lineHandle(_this.vehicleData,'up');
           }
-          if(_this.eventData.length>0){
-            _this.lineHandle(_this.eventData,'down');
-          }*/
-          //第一次进入直接调用
-          /*if(_this.isFirst){
-            _this.dataHandle(data);
-            _this.isFirst=false;
-          }*/
-        }
-      },
-      lineHandle(data,type){
-        var _this = this;
-        var curve;
-        if(type=='up'){
-          var vehicleObj = document.getElementById("up9");
-         /* console.log("高度---"+vehicleObj.height);
-          if(vehicleObj.height!=0){
-            _this.lineHandle(data,type);
-          }*/
-          data.forEach(function (item) {
-            if(item.dataType=='vehicleCanCount'){
-              curve = new Curve1([110, 142], [300, 58], '600', '200', _this.upRandom,'CAN',_this.k,'up');
-              curve.generateForward();
-              _this.upRandom = _this.upRandom+0.05;
-              _this.k++;
-            }else if(item.dataType=='vehicleGpsCount'){
-              curve = new Curve1( [110, 142], [300, 58], '600', '200', _this.upRandom,'GPS',_this.k,'up');
-              curve.generateForward();
-              _this.upRandom = _this.upRandom+0.05;
-              _this.k++;
-            }else if(item.dataType=='vehicleRadarCount'){
-              curve = new Curve1( [110, 142], [300, 58], '600', '200', _this.upRandom,'radar',_this.k,'up');
-              curve.generateForward();
-              _this.upRandom = _this.upRandom+0.05;
+          if(bsmData.length>0){
+            var curve2 = new Curve();
+            //开始画can的第一条线
+            if(_this.bsmIsFirst){
+              curve2.drawLines(_this.upRandom,'#2e9d27','up',1,[110, 142], [300, 58]);
+              curve2.drawImgs(_this.upRandom,'BSM','up',13,[110, 142], [300, 58],'#3db765');
+              _this.canRandom = _this.upRandom;
+              _this.upRandom=_this.upRandom+0.1;
+              _this.bsmIsFirst=false;
+            }else{
+              curve2.drawImgs(_this.canRandom,'BSM','up',_this.k,[110, 142], [300, 58],'#3db765');
               _this.k++;
             }
-            curve.generateForward();
-            _this.vehicleData=[];
-          })
+          }
+
+          if(perData.length>0){
+            var curve3 = new Curve();
+            //开始画perception的第一条线
+            if(_this.perIsFirst){
+              curve3.drawLines(_this.upRandom,'#d27a3a','up',2,[110, 142], [300, 58]);
+              curve3.drawImgs(_this.upRandom,'PER','up',14,[110, 142], [300, 58],'#d47b24');
+              _this.perRandom = _this.upRandom;
+              _this.upRandom=_this.upRandom+0.1;
+
+              _this.perIsFirst=false;
+            }else {
+              curve3.drawImgs(_this.perRandom,'PER','up',_this.m,[110, 142], [300, 58],'#d47b24');
+              _this.m++;
+            }
+          }
+
+          if(eventData.length>0){
+            var curve4 = new Curve();
+            //开始画perception的第一条线
+            if(_this.eventIsFirst){
+              curve4.drawLines(_this.upRandom,'#d068d2','up',3,[110, 142], [300, 58]);
+              curve4.drawImgs(_this.upRandom,'EVENT','up',15,[110, 142], [300, 58],'#59d44f');
+              _this.eventRandom = _this.upRandom;
+              _this.upRandom=_this.upRandom+0.1;
+              _this.eventIsFirst=false;
+            }else {
+              curve4.drawImgs(_this.eventRandom,'EVENT','up',_this.n,[110, 142], [300, 58],'#59d44f');
+              _this.n++;
+            }
+          }
+
+
+          /*if(spatData.length>0){*/
+          if(_this.n1==1){
+            var downCurve1 = new Curve();
+            //开始画spat的第一条线
+            if(_this.spatIsFirst){
+              downCurve1.drawLines(_this.downRandom,'#9D589D','down',0,[345, 60], [540, 155]);
+              downCurve1.drawImgs(_this.downRandom,'SPAT','down',12,[345, 60], [540, 155],'#59d44f');//信号灯
+              _this.spatRandom = _this.downRandom;
+              _this.downRandom=_this.downRandom+0.1;
+              _this.spatIsFirst=false;
+            }else {
+              downCurve1.drawImgs(_this.spatRandom,'SPAT','down',_this.j,[345, 60], [540, 155],'#59d44f');//信号灯
+              _this.j++;
+            }
+          }
+
+          /*if(rsmRcuData.length>0){*/
+          if(_this.n1==10){
+            var downCurve2 = new Curve();
+            //开始画v2x的第一条线
+            if(_this.v2xIsFirst){
+              downCurve2.drawLines(_this.downRandom,'#2e9d27','down',1,[345, 60], [540, 155]);
+              downCurve2.drawImgs(_this.downRandom,'RSM/RCU','down',13,[345, 60], [540, 155],'#59d44f');
+              _this.v2xRandom = _this.downRandom;
+              _this.downRandom=_this.downRandom+0.1;
+              _this.v2xIsFirst=false;
+            }else{
+              downCurve2.drawImgs(_this.v2xRandom,'RSM/RCU','down',_this.k1,[345, 60], [540, 155],'#59d44f');
+              _this.k1++;
+            }
+          }
+
+          /*if(rsiData.length>0){*/
+          if(_this.n1==15){
+            var downCurve3 = new Curve();
+            //开始画can的第一条线
+            if(_this.rsiIsFirst){
+              downCurve3.drawLines(_this.downRandom,'#d27a3a','down',2,[345, 60], [540, 155]);
+              downCurve3.drawImgs(_this.downRandom,'RSI','down',14,[345, 60], [540, 155],'#59d44f');//有大雾  road side information  信息预报
+              _this.rsiRandom = _this.downRandom;
+              _this.downRandom=_this.downRandom+0.1;
+              _this.rsiIsFirst=false;
+            }else {
+              downCurve3.drawImgs(_this.rsiRandom,'RSI','down',_this.m1,[345, 60], [540, 155],'#59d44f');//有大雾  road side information  信息预报
+              _this.m1++;
+            }
+          }
         }
-        if(type=='down'){
-         /* var eventObj = document.getElementById("down9");
-          if(eventObj.height!=0){
-            _this.lineHandle(data,type);
-          }*/
-          curve = new Curve1([345, 60], [540, 155], '600', '200', _this.downRandom,'event',_this.i,'down');
-          curve.generateForward();
-          _this.downRandom = _this.downRandom+0.05;
-          _this.i++;
-          _this.eventData=[];
-        }
-        /*if(_this.isFirst){
-          _this.lineHandle(data,type);
-          _this.isFirst=false;
-        }*/
       },
       onReportOpen(data){
         console.log("建立连接,,,,,,");
@@ -611,69 +601,6 @@
       },
       onReportClose(data){
         console.log("结束连接");
-      },
-      clearLines(container,type) {
-        var allCanvas;
-        var lineCtx;
-        if(type=='up'){
-
-         /* allCanvas= document.querySelectorAll(".upCanvas");*/
-          var obj0 = document.getElementById("up0");
-          obj0.height = 0;
-          /*obj0.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );*/
-          var obj1 = document.getElementById("up1");
-          obj1.height = 0;
-          /*obj1.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );*/
-          var obj2 = document.getElementById("up2");
-          obj2.height = 0;
-          /*obj2.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );*/
-          var obj3 = document.getElementById("up3");
-          obj3.height = 0;
-          /*obj3.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );*/
-          var obj4 = document.getElementById("up4");
-          obj4.height = 0;
-          /*obj4.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );*/
-          var obj5 = document.getElementById("up5");
-          obj5.height = 0;
-         /* obj5.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );*/
-          var obj6 = document.getElementById("up6");
-          obj6.height = 0;
-          /*obj6.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );*/
-          var obj7 = document.getElementById("up7");
-          obj7.height = 0;
-        /*  obj7.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );*/
-          var obj8 = document.getElementById("up8");
-          obj8.height = 0;
-          /*obj8.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );*/
-          var obj9 = document.getElementById("up9");
-          obj9.height = 0;
-          /*obj9.getContext( '2d' ).clearRect( 0, 0, 1200, 1000 );*/
-          //清除所有节点
-         /* console.log("startTime---"+new Date().getTime());*/
-          /*for(var i=allCanvas.length-1;i>=0;i--){
-            /!*container.removeChild(allCanvas[i]);*!/
-          /!*  sessionStorage.removeItem('up'+i);*!/
-            console.log("id===="+allCanvas[i].id);
-            lineCtx = allCanvas[i].getContext( '2d' );
-            /!*lineCtx.height=lineCtx.height;*!/
-            lineCtx.strokeStyle='rgba(0,0,0,0)';
-            lineCtx.clearRect( 0, 0, 1000, 1000 );
-          }*/
-          /*console.log("endTime---"+new Date().getTime());*/
-        }
-        if(type=='down'){
-          allCanvas= document.querySelectorAll(".downCanvas");
-          allCanvas= document.querySelectorAll(".upCanvas");
-          //清除所有节点
-          for(var i=allCanvas.length-1;i>=0;i--){
-            /*container.removeChild(allCanvas[i]);*/
-            /*sessionStorage.removeItem('down'+i);*/
-            lineCtx = allCanvas[i].getContext( '2d' );
-            lineCtx.strokeStyle='rgba(0,0,0,0)';
-            lineCtx.clearRect( 10, 10, 1000, 1000 );
-          }
-        }
-
       }
 
     },
@@ -681,7 +608,7 @@
 
       var _this = this;
      _this.container = document.getElementById('canvasContainer');
-      var random=0.1;
+     /* var random=0.1;
       //画上行三条线 random,color,order,i,start,end
       var curve1 = new Curve();
       curve1.drawLines(0.1,'#9D589D','up',0,[110, 142], [300, 58]);
@@ -698,21 +625,61 @@
       var downCurve3 = new Curve();
       downCurve3.drawLines(0.3,'#d27a3a','down',2,[345, 60], [540, 155]);
       var i=0;
+      var k=4;
+      var m = 8;
+
+      var j=0;
+      var k1=4;
+      var m1=8;
       setInterval(function (e) {
-        if(i>=3){
-          i=0
+
+        if(i>=4){
+          i=0;
+          console.log('释放--');
+        }
+        if(k>=8){
+          k=4;
+        }
+        if(m>=12){
+          m=8;
+        }
+        if(j>=4){
+          j=0;
+          console.log('释放--');
+        }
+        if(k1>=8){
+          k1=4;
+        }
+        if(m1>=12){
+          m1=8;
         }
         //画上行的图片
-        var curve = new Curve();
-        curve.drawImage(random,'GPS','down',i,[110, 142], [300, 58]);
+        var curve1 = new Curve();
+        curve1.drawImgs(0.1,'GPS','up',i,[110, 142], [300, 58]);
+        var curve2 = new Curve();
+        curve2.drawImgs(0.2,'CAN','up',k,[110, 142], [300, 58]);
+        var curve3 = new Curve();
+        curve3.drawImgs(0.3,'perception','up',m,[110, 142], [300, 58]);
         i++;
-      },1000)
+        k++;
+        m++;
+        //下行图片
+        var down1 = new Curve();
+        down1.drawImgs(0.1,'spat','down',j,[345, 60], [540, 155]);//信号灯
+        var down2 = new Curve()
+        down2.drawImgs(0.2,'v2x','down',k1,[345, 60], [540, 155]);
+        var down3 = new Curve()
+        down3.drawImgs(0.3,'rsi','down',m1,[345, 60], [540, 155]);//有大雾  road side information  信息预报
+        j++;
+        k1++;
+        m1++;
+      },1000)*/
       //速度和加速度
       _this.speedChart = _this.$echarts.init(document.getElementById('speedChart'));
       _this.accelerateChart = _this.$echarts.init(document.getElementById('accelerateChart'));
 
       _this.initWebSocket();
-      /*_this.realReportWebSocket();*/
+      _this.realReportWebSocket();
 
     },
     beforeDestroy(){

@@ -13,7 +13,9 @@
       <!--<video src="movie.ogg" controls="controls" autoplay width="270" height="200">
         您的浏览器不支持 video 标签。
       </video>-->
-      <div id="cmsplayer" style="width:100%;height:100%"></div>
+      <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions">
+      </video-player>
+      <!--<div id="cmsplayer" style="width:100%;height:100%"></div>-->
     </div>
     <p class="monitor-title right-title">感知数据</p>
     <div class="clear line-style">
@@ -76,6 +78,24 @@
         },
         carsData:[
         ],
+        playerOptions: {
+          overNative: true,
+            autoplay: true,
+            controls: true,
+            techOrder: ['flash', 'html5'],
+            sourceOrder: true,
+            flash: {
+              swf:  '/static/media/video-js.swf'
+            },
+          sources: [
+            {
+              type: 'rtmp/mp4',
+              src: ''
+            }
+          ],
+          width:'270',
+          height:'180'
+        }
       }
     },
     created() {
@@ -202,7 +222,7 @@
           this.streamInfo = res.streamInfoRes;
           //获取视频地址并赋值
           let videoUrl = this.streamInfo.rtmp;
-          this.embedFlash(videoUrl);
+          this.playerOptions.sources[0].src=videoUrl;
           //直播报活调用
           this.repeatFn();//拉取流后，保活
         });
@@ -223,28 +243,6 @@
         _this.timer = setTimeout(function(){
           _this.repeatFn();
         },5000)
-      },
-      embedFlash(rtmpSource){//部署
-        var flashVars = "&src=";
-        flashVars += rtmpSource; //视频文件
-        flashVars += "&autoHideControlBar=true";
-        flashVars += "&streamType=";
-        flashVars += "live";// vod点播 live直播
-        flashVars += "&autoPlay=true";
-        flashVars += "&verbose=true";
-
-        var embedCode =  '<object id="flashPlayer" name="flashPlayer" width="100%" height="100%" type="application/x-shockwave-flash"> ';
-        embedCode += '<param name="movie" value="static/swf/StrobeMediaPlayback.swf"></param>';
-        embedCode += '<param name="flashvars" value="' + flashVars + '"></param>';
-        embedCode += '<param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param>';
-        embedCode += '<param name="wmode" value="opaque"></param>';
-        embedCode += '<embed  id="flashPlayer" name="flashPlayer" src="static/swf/StrobeMediaPlayback.swf" type="application/x-shockwave-flash"';
-        embedCode += ' allowscriptaccess="always" allowfullscreen="true" ';
-        embedCode += ' wmode="opaque" ';
-        embedCode += ' width="100%" height="100%" ';
-        embedCode += 'flashvars="' + flashVars + '">';
-        embedCode += '</embed></object>';
-        document.getElementById("cmsplayer").innerHTML = embedCode;
       },
       initSocket(){
           if(typeof(WebSocket) === "undefined"){
@@ -401,6 +399,11 @@
   }
 </script>
 
+<style>
+  .monitor-video .vjs-custom-skin > .video-js .vjs-big-play-button{
+    font-size: 1em;
+  }
+</style>
 <style scoped>
   .monitor-right{
     width: 300px;
@@ -503,4 +506,5 @@
     width: 16px;
     height: 24px;
   }
+
 </style>
