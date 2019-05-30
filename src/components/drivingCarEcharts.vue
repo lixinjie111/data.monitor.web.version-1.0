@@ -1,7 +1,14 @@
 <template>
-  <div class="c-circle-wrap clearfix">
+  <div class="c-relative">
     <h3 class="c-title">{{title}}</h3>
     <div class="c-echarts-box" :id="id"></div>
+    <div class="c-echarts-x">
+        <span>0</span>
+        <span>6</span>
+        <span>12</span>
+        <span>18</span>
+        <span>24</span>
+    </div>
   </div>
 </template>
 
@@ -10,11 +17,11 @@ import { getHisVehStat } from '@/api/dataMonitor'
 export default {
 	name: 'DrivingCarEcharts',
 	props: {
-	    title: String,
-        id: String
+	    title: String
 	},
 	data () {
 		return {
+            id: "driving-car-echarts",
             // 获取在驶车辆实时数据（辆）
             webSocket:{},
             webSocketData: {
@@ -29,18 +36,13 @@ export default {
 			echarts: null
 		}
 	},
-	watch: {
-	},
-	created() {
-		
-	},
 	mounted() {
         this.getHisVehStat();
 		this.echarts = this.$echarts.init(document.getElementById(this.id));
 	},
 	methods: {
 		getHisVehStat() {
-            console.log('获取上周当天在驶车辆分布数量（分钟）以及获取当天0点到目前的分布数量');
+            // console.log('获取上周当天在驶车辆分布数量（分钟）以及获取当天0点到目前的分布数量');
             getHisVehStat().then(res => {
                 let _resultLast = res.data.last,
                     _resultCurDay = res.data.curDay;
@@ -53,7 +55,7 @@ export default {
                     this.responseData.curDay.push(item.count);
                 });
                 this.echarts.setOption(this.defaultOption());
-                this.initWebSocket();
+                // this.initWebSocket();
             });
         },
         initWebSocket(){
@@ -121,7 +123,7 @@ export default {
                         textStyle: {
                             color: "#918d84"
                         }
-                    },
+                    }
                     // data: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]
                 },
                 yAxis:  {
@@ -162,5 +164,21 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-
+@import "@/assets/scss/theme.scss";
+.c-echarts-x {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 167px;
+    font-size: 12px;
+    color: #918d84;
+    line-height: 20px;
+    letter-spacing: 0;
+    @include layoutMode(between);
+    span {
+        display: inline-block;
+        width: 15px;
+        text-align: center;
+    }
+}
 </style>

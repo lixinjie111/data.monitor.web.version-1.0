@@ -1,5 +1,5 @@
 <template>
-  <div class="c-circle-wrap clearfix">
+  <div class="c-relative">
     <h3 class="c-title">{{title}}<span class="c-sub-title">累计数量：{{responseData.total || '--'}}</span></h3>
     <div class="c-echarts-box" :id="id"></div>
   </div>
@@ -28,7 +28,6 @@ export default {
                 RcuReport: [],
                 ThirdPartReport: []
             },
-            wholeResponseData: [],
             id: 'echarts',
 			echarts: null		
 		}
