@@ -1,6 +1,6 @@
 <template>
   <ul class="right-list-wrap">
-    <router-link tag="li" :to="'/singleCarMonitor/'+item.vehicleId" class="c-car-list" v-for="(item, index) in responseData" :key="item.vehicleId">
+    <router-link tag="li" :to="'/singleCarMonitor/'+item.vehicleId" class="c-car-list" v-for="item in responseData" :key="item.vehicleId">
     	<div class="right-list-head">
     		<div class="left clearfix">
 	    		<span class="model c-left">L{{item.autoLevel}}</span>
@@ -20,9 +20,11 @@
     	</div>
     	<div class="car-middle-info">
     		<!-- <img :src="item.vehicleLogo" class="car-img" /> -->
-    		<img src="@/assets/images/develop/car-1.png" class="car-img" v-if="index%3 == 0" />
-    		<img src="@/assets/images/develop/car-2.png" class="car-img" v-if="index%3 == 1" />
-    		<img src="@/assets/images/develop/car-3.png" class="car-img" v-if="index%3 == 2" />
+    		<!-- <img src="@/assets/images/develop/car-1.png" class="car-img" /> -->
+    		<img src="@/assets/images/develop/car-1.png" class="car-img" v-if="item.vehicleId == 'B21E-00-017'" />
+    		<img src="@/assets/images/develop/car-2.png" class="car-img" v-if="item.vehicleId == 'B21E-00-018'" />
+    		<img src="@/assets/images/develop/car-3.png" class="car-img" v-if="item.vehicleId == 'B21E-00-019'" />
+    		<img src="@/assets/images/develop/car-1.png" class="car-img" v-if="item.vehicleId == 'B21E-00-020'" />
     		<div class="speed">{{item.speed || 0}}</div>
     		<div class="echarts-wrap" :id="item.id"></div>
     	</div>
@@ -31,16 +33,17 @@
 </template>
 
 <script>
-// import { requestGetShareData } from '@/api/carMoniter'
+import { getGpsRealList } from '@/api/carMonitor'
 export default {
 	name: 'RightList',
 	data () {
 		return {
+			vehicleIds: 'B21E-00-017,B21E-00-018,B21E-00-019,B21E-00-020',
 			responseData: [],
-			// responseData: [
-			// 	{
+			// responseData: {
+			// 	'B21E-00-017': {
 			// 		vehicleId: 'B21E-00-017',
-			// 		// vehicleLogo: 'static/images/develop/car-1.png',
+			// 		vehicleLogo: 'static/images/develop/car-1.png',
 			// 		platNo: '沪A090901',
 			// 		autoLevel: '1',
 			// 		transmission: 'D',
@@ -52,9 +55,9 @@ export default {
 			// 		echarts: null,
 			// 		echartsData: ['45.1']
 			// 	},
-			// 	{
+			// 	'B21E-00-018': {
 			// 		vehicleId: 'B21E-00-018',
-			// 		// vehicleLogo: 'static/images/develop/car-2.png',
+			// 		vehicleLogo: 'static/images/develop/car-2.png',
 			// 		platNo: '沪A090902',
 			// 		autoLevel: '2',
 			// 		transmission: 'P',
@@ -66,9 +69,9 @@ export default {
 			// 		echarts: null,
 			// 		echartsData: ['45.2']
 			// 	},
-			// 	{
+			// 	'B21E-00-019': {
 			// 		vehicleId: 'B21E-00-019',
-			// 		// vehicleLogo: 'static/images/develop/car-3.png',
+			// 		vehicleLogo: 'static/images/develop/car-3.png',
 			// 		platNo: '沪A090903',
 			// 		autoLevel: '3',
 			// 		transmission: 'D',
@@ -80,7 +83,7 @@ export default {
 			// 		echarts: null,
 			// 		echartsData: ['45.3']
 			// 	},
-			// 	{
+			// 	'B21E-00-020': {
 			// 		vehicleId: 'B21E-00-020',
 			// 		// vehicleLogo: 'static/images/develop/car-3.png',
 			// 		platNo: '沪A090904',
@@ -94,21 +97,61 @@ export default {
 			// 		echarts: null,
 			// 		echartsData: ['45.4']
 			// 	}
-			// ],
+			// },
 			// 获取指定车辆实时信息
             webSocket:{},
             webSocketData: {
                 action: 'vehicleList',
                 token: 'fpx',
-                vehicleIds: 'B21E-00-017,B21E-00-018,B21E-00-019,B21E-00-020'
+                vehicleIds: ''
             }		
 		}
 	},
+	created() {
+		console.log([1,2,3,4] == [1,2,3,4]);
+		this.webSocketData.vehicleIds = this.vehicleIds;
+	},
 	mounted() {
-
-        this.initWebSocket();
+        this.getGpsRealList();
 	},
 	methods: {
+		getGpsRealList() {
+            // console.log('初始化页面，获取典型车辆列表实时信息');
+			getGpsRealList({
+				vehicleId: this.vehicleIds
+			}).then(res => {
+				let _responseData = res.data;
+				_responseData.forEach(item => {
+					this.initResult(item.vehicleId, item);
+				});
+				setTimeout(() => {
+        			this.initWebSocket();
+        		}, 1000);
+			});
+		},
+        initResult(attr, result) {
+    		let _filterResult = {};
+			_filterResult.vehicleId = result.vehicleId;
+			_filterResult.transmission = result.transmission;
+			_filterResult.speed = result.speed;
+			_filterResult.headingAngle = result.headingAngle;
+			_filterResult.turnLight = result.turnLight;
+			_filterResult.autoLevel = result.autoLevel;
+			_filterResult.vehicleLogo = result.vehicleLogo;
+			_filterResult.platNo = result.platNo;
+
+			_filterResult.id = "echarts-" + attr;
+			_filterResult.echarts = null;
+			_filterResult.echartsData = [];
+			_filterResult.echartsData.push(result.speed);
+			this.responseData.push(_filterResult);
+			// setTimeout(() => {
+			// 	let _handlerObj = this.responseData[this.responseData.length-1],
+			// 		_option = this.defaultOption(_handlerObj.echartsData);
+	  //       	_handlerObj.echarts = this.$echarts.init(document.getElementById(_handlerObj.id));
+	  //       	_handlerObj.echarts.setOption(_option);
+		 //    }, 0);
+        },
         initWebSocket(){
             console.log('websocket获取指定车辆实时信息');
             if ('WebSocket' in window) {
@@ -121,45 +164,31 @@ export default {
         },
         onmessage(message){
             let _json = JSON.parse(message.data),
-            	_result = _json.result;
-			if(!this.responseData.length) {
-				this.initResult(_result);
-			}else {
-				let _isLoad = false;
-	            this.responseData.forEach((item, index) => {
-	            	if(item.vehicleId == _result.vehicleId ) {
-	            		_isLoad = true
-		            	item.speed = _result.speed || 0;
-		            	item.transmission = _result.transmission;
-		            	item.headingAngle = _result.headingAngle || 0;
-		            	item.turnLight = _result.turnLight || '';
+            	_result = _json.result,
+            	_vehicleId = _result.vehicleId;
+
+            this.responseData.forEach((item, index) => {
+            	if(item.vehicleId == _vehicleId ) {
+		            item.transmission = _result.transmission;
+            		if(_result.transmission != 'P') {
+		            	item.speed = _result.speed;
+		            	item.headingAngle = _result.headingAngle;
+		            	item.turnLight = _result.turnLight;
 
 		            	if(item.echartsData.length >= 180) {
 		            		item.echartsData.shift();
 		            	}
 		            	item.echartsData.push(_result.speed);
-		        		let _option = this.defaultOption(item.echartsData);
-		            	item.echarts.setOption(_option);
-	            	}
-	            });
-	            if(!_isLoad) {
-	            	this.initResult(_result);
-	            }
-			}
-        },
-        initResult(result) {
-        	let _filterResult = result;
-				_filterResult.id = "echarts-"+this.responseData.length;
-				_filterResult.echarts = null;
-				_filterResult.echartsData = [];
-				_filterResult.echartsData.push(_filterResult.speed);
-			this.responseData.push(_filterResult);
-			setTimeout(() => {
-				let _handlerObj = this.responseData[this.responseData.length-1],
-					_option = this.defaultOption(_handlerObj.echartsData);
-		        	_handlerObj.echarts = this.$echarts.init(document.getElementById(_handlerObj.id));
-		        	_handlerObj.echarts.setOption(_option);
-		    }, 0);
+		        		setTimeout(() => {
+							if(!item.echarts) {
+								item.echarts = this.$echarts.init(document.getElementById(item.id));
+							}
+		        			let _option = this.defaultOption(item.echartsData);
+		            		item.echarts.setOption(_option);
+		            	}, 0);
+            		}
+            	}
+            });
         },
         onclose(data){
             console.log("结束--trackAll--连接");

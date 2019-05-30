@@ -92,6 +92,13 @@ img {
   display: none;
 }
 
+.c-relative {
+  position: relative;
+}
+.c-absolute {
+  position: absolute;
+}
+
 .c-pos-wrap {
   position: relative;
   overflow: hidden;
