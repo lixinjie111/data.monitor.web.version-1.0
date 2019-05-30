@@ -37,7 +37,7 @@ export default {
             }
 
             ,modelPersonArr:[]
-            ,cacheModelNum:15
+            ,cacheModelNum:200
 
             // ,websocketUrl:"ws://10.0.1.57:9999/ws"
             // ,websocketUrl:"ws://192.168.1.132:9998/ws"
