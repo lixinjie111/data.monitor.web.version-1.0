@@ -103,7 +103,6 @@ class Curve{
   drawImgs(random,type,order,i,start,end,color){
     var imgCanvas = document.getElementById(order+'Img'+i);
     var imgCtx = imgCanvas.getContext( '2d' );
-
     imgCanvas.width=1200;
     imgCanvas.height=400;
     imgCanvas.style.width='600px';
@@ -177,7 +176,7 @@ class Curve{
 
     var b = [ q0[ 0 ] + v[ 0 ] * t, q0[ 1 ] + v[ 1 ] * t ];
 
-    ctx.drawImage(img,(b[ 0 ]-5),(b[ 1 ]-5),10,10);
+    ctx.drawImage(img,(b[ 0 ]-10),(b[ 1 ]-10),20,20);
 
 
     ctx.strokeStyle= color;
