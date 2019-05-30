@@ -78,7 +78,8 @@
         whetherData:{},
         vehicleCount:0,
         cloudCount:0,
-        headingAngle:0
+        headingAngle:0,
+        isInit:true
       }
     },
     props:{
@@ -143,6 +144,16 @@
         AMap.convertFrom(position, 'gps', function (status, result) {
           if (result.info === 'ok') {
             newPosition = result.locations[0];
+            if(_this.isInit){
+              _this.marker = new AMap.Marker({
+                position: newPosition,
+                icon: 'static/images/car/car-6.png', // 添加 Icon 图标 URL
+                title: '北京',
+                zIndex:500
+              });
+              _this.distanceMap.add(_this.marker);
+              _this.isInit=false;
+            }
             /*console.log("longitude:"+data.longitude+"-----"+"latitude:"+data.latitude);*/
             /*this.wholePath.push(to);*/
             //设置车的位置
@@ -637,13 +648,6 @@
         zoom:18,
         rotateEnable:'true'
       });
-      this.marker = new AMap.Marker({
-        position: new AMap.LngLat(116.482362,39.997718),
-        icon: 'static/images/car/car-6.png', // 添加 Icon 图标 URL
-        title: '北京',
-        zIndex:500
-      });
-      this.distanceMap.add(this.marker);
       this.initWebSocket();
       this.initSideWebSocket();
       this.initDeviceWebSocket();

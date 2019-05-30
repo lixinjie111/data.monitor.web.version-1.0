@@ -83,7 +83,14 @@
         <img id="downPlan14" src="@/assets/images/car/circle.png" style="display: none;" >
 
       </div>
-      <div class="legend">
+      <div class="legend-style">
+        <p><span class="legend-size" style="background: #d47b24"></span>GPS+CAN</p>
+        <p><span class="legend-size" style="background: #595450"></span>EVENT</p>
+        <p><span class="legend-size" style="background: #2acdc2"></span>BSM</p>
+        <p><span class="legend-size" style="background: #d3d12d"></span>PER</p>
+        <p><span class="legend-size" style="background: #f75b30"></span>RSI</p>
+        <p><span class="legend-size" style="background: #6ec9fd"></span>SPAT</p>
+        <p><span class="legend-size" style="background: #41c66d"></span>RSM/RCU</p>
 
       </div>
     </div>
@@ -473,13 +480,13 @@
             //开始画gps的第一条线
             if(_this.gpsIsFirst){
               console.log("canGps-----"+_this.upRandom);
-              curve1.drawLines(_this.upRandom,'#d47b24','up',0,[110, 142], [300, 58]);
-              curve1.drawImgs(_this.upRandom,'GPS+CAN','up',12,[110, 142], [300, 58],'#6ec9fd');
+              curve1.drawLines(_this.upRandom,'#d47b24','up',0,[130, 142], [320, 58]);
+              curve1.drawImgs(_this.upRandom,'GPS+CAN','up',12,[130, 142], [320, 58],'#6ec9fd');
               _this.gpsRandom = _this.upRandom;
               _this.upRandom=_this.upRandom+0.2;
               _this.gpsIsFirst=false;
             }else {
-              curve1.drawImgs(_this.gpsRandom,'GPS+CAN','up',_this.i,[110, 142], [300, 58],'#6ec9fd');
+              curve1.drawImgs(_this.gpsRandom,'GPS+CAN','up',_this.i,[130, 142], [320, 58],'#6ec9fd');
               _this.i++;
             }
           }
@@ -487,13 +494,13 @@
             var curve2 = new Curve();
             //开始画can的第一条线
             if(_this.bsmIsFirst){
-              curve2.drawLines(_this.upRandom,'#2acdc2','up',1,[110, 142], [300, 58]);
-              curve2.drawImgs(_this.upRandom,'BSM','up',13,[110, 142], [300, 58],'#3db765');
+              curve2.drawLines(_this.upRandom,'#2acdc2','up',1,[130, 142], [320, 58]);
+              curve2.drawImgs(_this.upRandom,'BSM','up',13,[130, 142], [320, 58],'#3db765');
               _this.canRandom = _this.upRandom;
               _this.upRandom=_this.upRandom+0.2;
               _this.bsmIsFirst=false;
             }else{
-              curve2.drawImgs(_this.canRandom,'BSM','up',_this.k,[110, 142], [300, 58],'#3db765');
+              curve2.drawImgs(_this.canRandom,'BSM','up',_this.k,[130, 142], [320, 58],'#3db765');
               _this.k++;
             }
           }
@@ -502,13 +509,13 @@
             var curve3 = new Curve();
             //开始画perception的第一条线
             if(_this.perIsFirst){
-              curve3.drawLines(_this.upRandom,'#d3d12d','up',2,[110, 142], [300, 58]);
-              curve3.drawImgs(_this.upRandom,'PER','up',14,[110, 142], [300, 58],'#d47b24');
+              curve3.drawLines(_this.upRandom,'#d3d12d','up',2,[130, 142], [320, 58]);
+              curve3.drawImgs(_this.upRandom,'PER','up',14,[130, 142], [320, 58],'#d47b24');
               _this.perRandom = _this.upRandom;
               _this.upRandom=_this.upRandom+0.2;
               _this.perIsFirst=false;
             }else {
-              curve3.drawImgs(_this.perRandom,'PER','up',_this.m,[110, 142], [300, 58],'#d47b24');
+              curve3.drawImgs(_this.perRandom,'PER','up',_this.m,[130, 142], [320, 58],'#d47b24');
               _this.m++;
             }
           }
@@ -517,13 +524,13 @@
             var curve4 = new Curve();
             //开始画perception的第一条线
             if(_this.eventIsFirst){
-              curve4.drawLines(_this.upRandom,'#595450','up',3,[110, 142], [300, 58]);
-              curve4.drawImgs(_this.upRandom,'EVENT','up',15,[110, 142], [300, 58],'#59d44f');
+              curve4.drawLines(_this.upRandom,'#595450','up',3,[130, 142], [320, 58]);
+              curve4.drawImgs(_this.upRandom,'EVENT','up',15,[130, 142], [320, 58],'#59d44f');
               _this.eventRandom = _this.upRandom;
               _this.upRandom=_this.upRandom+0.2;
               _this.eventIsFirst=false;
             }else {
-              curve4.drawImgs(_this.eventRandom,'EVENT','up',_this.n,[110, 142], [300, 58],'#59d44f');
+              curve4.drawImgs(_this.eventRandom,'EVENT','up',_this.n,[130, 142], [320, 58],'#59d44f');
               _this.n++;
             }
           }
@@ -534,13 +541,13 @@
             var downCurve1 = new Curve();
             //开始画spat的第一条线
             if(_this.spatIsFirst){
-              downCurve1.drawLines(_this.downRandom,'#6ec9fd','down',0,[345, 60], [540, 155]);
-              downCurve1.drawImgs(_this.downRandom,'SPAT','down',12,[345, 60], [540, 155],'#59d44f');//信号灯
+              downCurve1.drawLines(_this.downRandom,'#6ec9fd','down',0,[366, 60], [560, 156]);
+              downCurve1.drawImgs(_this.downRandom,'SPAT','down',12,[366, 60], [560, 156],'#59d44f');//信号灯
               _this.spatRandom = _this.downRandom;
               _this.downRandom=_this.downRandom+0.2;
               _this.spatIsFirst=false;
             }else {
-              downCurve1.drawImgs(_this.spatRandom,'SPAT','down',_this.j,[345, 60], [540, 155],'#59d44f');//信号灯
+              downCurve1.drawImgs(_this.spatRandom,'SPAT','down',_this.j,[366, 60], [560, 156],'#59d44f');//信号灯
               _this.j++;
             }
           }
@@ -550,13 +557,13 @@
             var downCurve2 = new Curve();
             //开始画v2x的第一条线
             if(_this.v2xIsFirst){
-              downCurve2.drawLines(_this.downRandom,'#41c66d','down',1,[345, 60], [540, 155]);
-              downCurve2.drawImgs(_this.downRandom,'RSM/RCU','down',13,[345, 60], [540, 155],'#59d44f');
+              downCurve2.drawLines(_this.downRandom,'#41c66d','down',1,[366, 60], [560, 156]);
+              downCurve2.drawImgs(_this.downRandom,'RSM/RCU','down',13,[366, 60], [560, 156],'#59d44f');
               _this.v2xRandom = _this.downRandom;
               _this.downRandom=_this.downRandom+0.2;
               _this.v2xIsFirst=false;
             }else{
-              downCurve2.drawImgs(_this.v2xRandom,'RSM/RCU','down',_this.k1,[345, 60], [540, 155],'#59d44f');
+              downCurve2.drawImgs(_this.v2xRandom,'RSM/RCU','down',_this.k1,[366, 60], [560, 156],'#59d44f');
               _this.k1++;
             }
           }
@@ -566,13 +573,13 @@
             var downCurve3 = new Curve();
             //开始画can的第一条线
             if(_this.rsiIsFirst){
-              downCurve3.drawLines(_this.downRandom,'#f75b30','down',2,[345, 60], [540, 155]);
-              downCurve3.drawImgs(_this.downRandom,'RSI','down',14,[345, 60], [540, 155],'#59d44f');//有大雾  road side information  信息预报
+              downCurve3.drawLines(_this.downRandom,'#f75b30','down',2,[366, 60], [560, 156]);
+              downCurve3.drawImgs(_this.downRandom,'RSI','down',14,[366, 60], [560, 156],'#59d44f');//有大雾  road side information  信息预报
               _this.rsiRandom = _this.downRandom;
               _this.downRandom=_this.downRandom+0.2;
               _this.rsiIsFirst=false;
             }else {
-              downCurve3.drawImgs(_this.rsiRandom,'RSI','down',_this.m1,[345, 60], [540, 155],'#59d44f');//有大雾  road side information  信息预报
+              downCurve3.drawImgs(_this.rsiRandom,'RSI','down',_this.m1,[366, 60], [560, 156],'#59d44f');//有大雾  road side information  信息预报
               _this.m1++;
             }
           }
@@ -733,19 +740,19 @@
   }
   .img1{
     position: absolute;
-    left:80px;
+    left:100px;
     top: 140px;
-    width: 35px;
+    width: 36px;
   }
   .img2{
     position: absolute;
-    left: 290px;
+    left: 310px;
     top: 35px;
     width: 55px;
   }
   .img3{
     position: absolute;
-    left: 530px;
+    left: 550px;
     top: 145px;
     width: 30px;
   }
@@ -763,15 +770,31 @@
     position: absolute;
   }
   .chart-title-img{
-    width: 3px;
+    width: 4px;
     height: 8px;
   }
   .title1{
     left:0;
-    top: 15px;
+    top: 16px;
   }
   .title2{
     right: 160px;
-    top: 15px;
+    top: 16px;
+  }
+  .legend-style{
+    position: absolute;
+    left: 6px;
+    top: 26px;
+  }
+  .legend-style p{
+    margin-bottom: 6px;
+    font-size: 12px;
+    transform:scale(0.8);
+  }
+  .legend-size{
+    width: 16px;
+    height: 10px;
+    display: inline-block;
+    margin-right: 6px;
   }
 </style>
