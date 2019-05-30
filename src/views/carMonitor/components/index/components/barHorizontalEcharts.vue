@@ -40,7 +40,7 @@ export default {
 	},
 	methods: {
 		getRouteStat() {
-            console.log('获取行程分析（近30天）');
+            // console.log('获取行程分析（近30天）');
 			getRouteStat().then(res => {
 				let _responseData = res.data.data,
 					_defaultOption = this.defaultOption();

@@ -42,7 +42,7 @@ export default {
 	},
 	methods: {
 		getActiveVehStat() {
-            console.log('获取活跃车辆（近30天）');
+            // console.log('获取活跃车辆（近30天）');
 			getActiveVehStat().then(res => {
 
 				let _responseData = res.data.data,

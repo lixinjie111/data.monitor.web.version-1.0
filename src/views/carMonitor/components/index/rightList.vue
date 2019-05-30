@@ -40,64 +40,6 @@ export default {
 		return {
 			vehicleIds: 'B21E-00-017,B21E-00-018,B21E-00-019,B21E-00-020',
 			responseData: [],
-			// responseData: {
-			// 	'B21E-00-017': {
-			// 		vehicleId: 'B21E-00-017',
-			// 		vehicleLogo: 'static/images/develop/car-1.png',
-			// 		platNo: '沪A090901',
-			// 		autoLevel: '1',
-			// 		transmission: 'D',
-			// 		headingAngle: 0,
-			// 		speed: '45.1',
-			// 		turnLight: 'left',
-
-			// 		id: "echarts-0",
-			// 		echarts: null,
-			// 		echartsData: ['45.1']
-			// 	},
-			// 	'B21E-00-018': {
-			// 		vehicleId: 'B21E-00-018',
-			// 		vehicleLogo: 'static/images/develop/car-2.png',
-			// 		platNo: '沪A090902',
-			// 		autoLevel: '2',
-			// 		transmission: 'P',
-			// 		headingAngle: 70,
-			// 		speed: '45.2',
-			// 		turnLight: 'right',
-
-			// 		id: "echarts-1",
-			// 		echarts: null,
-			// 		echartsData: ['45.2']
-			// 	},
-			// 	'B21E-00-019': {
-			// 		vehicleId: 'B21E-00-019',
-			// 		vehicleLogo: 'static/images/develop/car-3.png',
-			// 		platNo: '沪A090903',
-			// 		autoLevel: '3',
-			// 		transmission: 'D',
-			// 		headingAngle: 240,
-			// 		speed: '45.3',
-			// 		turnLight: '',
-
-			// 		id: "echarts-2",
-			// 		echarts: null,
-			// 		echartsData: ['45.3']
-			// 	},
-			// 	'B21E-00-020': {
-			// 		vehicleId: 'B21E-00-020',
-			// 		// vehicleLogo: 'static/images/develop/car-3.png',
-			// 		platNo: '沪A090904',
-			// 		autoLevel: '4',
-			// 		transmission: 'D',
-			// 		headingAngle: 300,
-			// 		speed: '45.4',
-			// 		turnLight: '',
-
-			// 		id: "echarts-3",
-			// 		echarts: null,
-			// 		echartsData: ['45.4']
-			// 	}
-			// },
 			// 获取指定车辆实时信息
             webSocket:{},
             webSocketData: {
@@ -108,7 +50,6 @@ export default {
 		}
 	},
 	created() {
-		console.log([1,2,3,4] == [1,2,3,4]);
 		this.webSocketData.vehicleIds = this.vehicleIds;
 	},
 	mounted() {
@@ -145,12 +86,6 @@ export default {
 			_filterResult.echartsData = [];
 			_filterResult.echartsData.push(result.speed);
 			this.responseData.push(_filterResult);
-			// setTimeout(() => {
-			// 	let _handlerObj = this.responseData[this.responseData.length-1],
-			// 		_option = this.defaultOption(_handlerObj.echartsData);
-	  //       	_handlerObj.echarts = this.$echarts.init(document.getElementById(_handlerObj.id));
-	  //       	_handlerObj.echarts.setOption(_option);
-		 //    }, 0);
         },
         initWebSocket(){
             console.log('websocket获取指定车辆实时信息');
@@ -191,19 +126,19 @@ export default {
             });
         },
         onclose(data){
-            console.log("结束--trackAll--连接");
+            // console.log("结束--trackAll--连接");
         },
         onopen(data){
-            console.log("建立--trackAll--连接");
+            // console.log("建立--trackAll--连接");
             //行程
             this.sendMsg(JSON.stringify(this.webSocketData));
         },
         sendMsg(msg) {
-            console.log("trackAll--连接状态："+this.webSocket.readyState);
+            // console.log("trackAll--连接状态："+this.webSocket.readyState);
             if(window.WebSocket){
                 if(this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
                     this.webSocket.send(msg); //send()发送消息
-                    console.log("trackAll--已发送消息:"+ msg);
+                    // console.log("trackAll--已发送消息:"+ msg);
                 }
             }else{
                 return;

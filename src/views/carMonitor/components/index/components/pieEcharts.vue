@@ -40,7 +40,7 @@ export default {
 	},
 	methods: {
 		getVehStat() {
-            console.log('获取车辆分析');
+            // console.log('获取车辆分析');
 			getVehStat().then(res => {
 
 				let _responseData = res.data.data,

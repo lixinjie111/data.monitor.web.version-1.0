@@ -59,7 +59,7 @@ export default {
             });
         },
         initWebSocket(){
-            console.log('websocket获取当前时间节点的车辆分布数量');
+            // console.log('websocket获取当前时间节点的车辆分布数量');
             if ('WebSocket' in window) {
                 this.webSocket = new WebSocket(window.cfg.socketUrl);  //获得WebSocket对象
             }
@@ -79,19 +79,19 @@ export default {
             this.echarts.setOption(this.defaultOption());
         },
         onclose(data){
-            console.log("结束--vehicleOLCount--连接");
+            // console.log("结束--vehicleOLCount--连接");
         },
         onopen(data){
-            console.log("建立--vehicleOLCount--连接");
+            // console.log("建立--vehicleOLCount--连接");
             //行程
             this.sendMsg(JSON.stringify(this.webSocketData));
         },
         sendMsg(msg) {
-            console.log("vehicleOLCount--连接状态："+this.webSocket.readyState);
+            // console.log("vehicleOLCount--连接状态："+this.webSocket.readyState);
             if(window.WebSocket){
                 if(this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
                     this.webSocket.send(msg); //send()发送消息
-                    console.log("vehicleOLCount--已发送消息:"+ msg);
+                    // console.log("vehicleOLCount--已发送消息:"+ msg);
                 }
             }else{
                 return;
