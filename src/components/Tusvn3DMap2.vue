@@ -404,7 +404,7 @@ export default {
                 // this.addModel(d.objId,"./static/map3d/map_photo/car.3DS",dUTM[0],dUTM[1],this.defualtZ);
                 // if(d.type == 3 || d.type == 6 || d.type ==8)
                 // {
-                    if(d.type!=1&&d.type!=2&&d.type!=4)
+                    if(d.type!=0&&d.type!=1&&d.type!=3)
                     {
                         if(i<this.deviceModels[deviceid].persons.length)
                         {
