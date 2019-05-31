@@ -296,6 +296,9 @@ export default {
                 traffic.position.z = this.defualtZ+6;
                 dl.scene.add(traffic);
 
+                // this.addModel("trafficligth01","./static/map3d/map_photo/trafficlight.3DS",442535.6,4427317.6,this.defualtZ);
+                // this.addModel("streetligth01","./static/map3d/map_photo/streetlight.3DS",442496.8,4427295.6,this.defualtZ);
+
             },500);
 
 
