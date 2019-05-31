@@ -111,7 +111,7 @@ export default {
                     zIndex: 50
                 });
                 let _random = Math.floor(Math.random()*2);
-                console.log(_random);
+                // console.log(_random);
                 _data.platNoMarker = new AMap.Text({
                     // text: curData.platNo,
                     text: '京N123456',
@@ -127,7 +127,8 @@ export default {
                         'line-height': '16px',
                         'letter-spacing': '0',
                         // 'margin-top': '-16px',  //车尾
-                        'margin-top': _random ? '-16px' : '14px',  //车头
+                        'margin-top': '14px',  //车头
+                        // 'margin-top': _random ? '-16px' : '14px',
                         // 'margin': '16px 80px 0 0',
                         'color': '#ccc'
                     },
