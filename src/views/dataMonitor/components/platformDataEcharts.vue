@@ -24,6 +24,11 @@ export default {
             maxNum: 30,
             maxGroup: 10,
             curGroup: 0,
+            totalData: {
+                VehReport: 0,
+                RcuReport: 0,
+                ThirdPartReport: 0
+            },
             responseData: {
                 total: 0,
                 VehReport: [],
@@ -60,24 +65,50 @@ export default {
         },
         onmessage(message){
             let _json = JSON.parse(message.data),
-                _result = _json.result.flow;
+                _result = _json.result.flow,
+                _curTime = this.$dateUtil.formatTime(parseInt(_json.result.curTime)).split(" ")[1];
+            // console.log(_json.result.curTime);
+            // console.log(_curTime);
             this.responseData.total = _json.result.total != undefined ? _json.result.total : this.responseData.total;
             // countNum: 0, maxNum: 30, maxGroup: 10, curGroup: 0,
-            if(this.countNum < this.maxNum) {
-
-            }else {
-                // if(this.curGroup < ) {
-
-                // }
+            if(this.countNum >= this.maxNum) {
                 this.countNum = 0;
-                this.curGroup ++;
+                this.curGroup ++ ;
+                // console.log('换组', this.curGroup);
+                if(this.curGroup >= this.maxGroup) {
+                    // console.log('移除一组数据');
+                    for(let attr in this.responseData) {
+                        console.log();
+                        if(attr != 'total') {
+                            let _obj = this.responseData[attr];
+                            _obj.shift();
+                        }
+                    }
+                    this.xData.shift();
+                    this.curGroup -- ;
+                    // console.log('删除后当前组：', this.curGroup);
+                }
             }
+            _result.forEach((item, index) => {
+                let _type = item.type,
+                    _obj = this.responseData[_type],
+                    _value = _obj[this.curGroup] || 0;
+                // _obj[this.curGroup] = parseInt(_value + item.flow).toFixed(2);
+                _obj[this.curGroup] = _value + item.flow;
 
-            // _result.forEach((item, index) => {
-            //     let _type = item.type;
-                
-            // });
-            // this.count ++;
+                if(this.countNum == 0) {
+                    this.xData[this.curGroup] = _curTime+'~';
+                }else {
+                    let _firstTime = this.xData[this.curGroup].split('~')[0];
+                    this.xData[this.curGroup] = _firstTime+'~'+_curTime;
+                }
+                // if(_type == 'VehReport') {
+                //     // console.log('每一组的数据长度：', _obj.length);
+                //     console.log(item.flow, _value, _obj[this.curGroup]);
+                // }
+            });
+            // console.log('当前组：'+this.curGroup, '当前数：'+this.countNum);
+            this.countNum ++ ;
             this.echarts.setOption(this.defaultOption());
         },
         onclose(data){

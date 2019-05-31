@@ -113,8 +113,8 @@ export default {
                 let _random = Math.floor(Math.random()*2);
                 // console.log(_random);
                 _data.platNoMarker = new AMap.Text({
-                    // text: curData.platNo,
-                    text: '京N123456',
+                    text: curData.platNo,
+                    // text: '京N123456',
                     anchor: 'center', // 设置文本标记锚点
                     // angle: curData.angle,
                     style: {
