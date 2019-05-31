@@ -20,8 +20,10 @@ export default {
                 action: "flow",
                 token: 'fpx'
             },
-            count: 0,
-            maxNum: 300,
+            countNum: 0,
+            maxNum: 30,
+            maxGroup: 10,
+            curGroup: 0,
             responseData: {
                 total: 0,
                 VehReport: [],
@@ -29,15 +31,10 @@ export default {
                 ThirdPartReport: []
             },
             id: 'echarts',
-			echarts: null		
+			echarts: null,
+            xData: new Array(10)
 		}
 	},
-    watch: {
-        deep: true,
-        countNum(newVal, oldVal) {
-
-        }
-    },
 	mounted() {
         this.getTotalFlow();
         this.echarts = this.$echarts.init(document.getElementById(this.id));
@@ -64,14 +61,23 @@ export default {
         onmessage(message){
             let _json = JSON.parse(message.data),
                 _result = _json.result.flow;
-            _result.forEach((item, index) => {
-                let _type = item.type;
-                if(this.count >= this.maxNum) {
-                    this.responseData[_type].shift();
-                }
-                this.responseData[_type].push(item.flow);
-            });
-            this.count ++;
+            this.responseData.total = _json.result.total != undefined ? _json.result.total : this.responseData.total;
+            // countNum: 0, maxNum: 30, maxGroup: 10, curGroup: 0,
+            if(this.countNum < this.maxNum) {
+
+            }else {
+                // if(this.curGroup < ) {
+
+                // }
+                this.countNum = 0;
+                this.curGroup ++;
+            }
+
+            // _result.forEach((item, index) => {
+            //     let _type = item.type;
+                
+            // });
+            // this.count ++;
             this.echarts.setOption(this.defaultOption());
         },
         onclose(data){
@@ -101,10 +107,16 @@ export default {
                     x2: 0,
                     y2: 50
                 },
+                tooltip : {
+                    trigger: 'axis',
+                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                        type : 'shadow'        // 默认为直线，可选为：'line'
+                    }
+                },
                 legend: {
                     left: '0%',
                     right: '0%',
-                    bottom: 15,
+                    bottom: 12,
                     itemGap: 40,
                     icon: "rect",
                     itemWidth: 10,
@@ -117,8 +129,21 @@ export default {
                 color: ['#dc8c00', '#37ba7b', '#41cdff'],
                 xAxis: {
                     type: 'category',
-                    boundaryGap: false,
-                    show: false
+                    axisLine:{
+                        lineStyle:{
+                            color:'rgba(211, 134, 0 , 0.4)'
+                        }
+                    },
+                    axisTick:{
+                        show: false
+                    },
+                    axisLabel:{
+                        color:'#ccc',
+                        fontSize: 14,
+                        fontFamily: 'MicrosoftYaHei',
+                        show: false
+                    },
+                    data: this.xData
                 },
                 yAxis:  {
                     type: 'value',
@@ -126,31 +151,25 @@ export default {
                 },
                 series: [{
                     name: '车辆上报',
-                    type: 'line',
-                    smooth: true,
-                    symbol: 'none',
-                    lineStyle: {
-                        width: 1
-                    },
+                    type: 'bar',
+                    stack: '总量',
+                    barCategoryGap: '50%',
                     data: this.responseData.VehReport
+                    // data: [1,2,3,4,5,6,7,8,9,10]
                 },{
                     name: '路侧上报',
-                    type: 'line',
-                    smooth: true,
-                    symbol: 'none',
-                    lineStyle: {
-                        width: 1
-                    },
+                    type: 'bar',
+                    stack: '总量',
+                    barCategoryGap: '50%',
                     data: this.responseData.RcuReport
+                    // data: [11,12,13,14,15,16,17,18,19,20]
                 },{
                     name: '第三方平台上报',
-                    type: 'line',
-                    smooth: true,
-                    symbol: 'none',
-                    lineStyle: {
-                        width: 1
-                    },
+                    type: 'bar',
+                    stack: '总量',
+                    barCategoryGap: '50%',
                     data: this.responseData.ThirdPartReport
+                    // data: [5,6,7,8,9,10,11,12,13,14]
                 }]
             };
             return option;

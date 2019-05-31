@@ -17,7 +17,7 @@
                     <div class="c-car-list">
                         <circle-progress title="设备良好率" type="2" :requestUrl="getDevStatusStat"></circle-progress>
                     </div>
-                    <div class="c-car-list" style="padding-bottom: 20px;">
+                    <div class="c-car-list">
                         <driving-car-echarts title="在驶车辆"></driving-car-echarts>
                     </div>
                     <div class="c-car-list">

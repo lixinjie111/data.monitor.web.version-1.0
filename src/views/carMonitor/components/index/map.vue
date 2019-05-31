@@ -58,9 +58,11 @@ export default {
                 //     source: ["bsm"]
                 //     speed: 100.75319017246728
                 //     vehicleId: "B21E-00-024"
+                //     platNo: "京N123456"
                 // }
             let _option = {
                 vehicleId: _vehicleId,
+                platNo: _result.platNo,
                 angle: _result.heading,
                 position: new AMap.LngLat(_result.longitude, _result.latitude)
             };
@@ -75,7 +77,8 @@ export default {
                 let _filterCurData = this.wholeData[this.count];
                 if(!_this.responseData[_filterCurData.vehicleId]) {
                     _this.responseData[_filterCurData.vehicleId] = {
-                        marker: null
+                        marker: null,
+                        platNoMarker: null
                     }
                 }
                 AMap.convertFrom(this.wholeData[this.count].position, 'gps', function (status, result){
@@ -97,6 +100,7 @@ export default {
             if(_data.marker) {
                 _data.marker.setPosition(point);
                 _data.marker.setAngle(curData.angle);
+                _data.platNoMarker.setPosition(point);
             }else {
                 _data.marker = new AMap.Marker({
                     map: _this.AMap,
@@ -106,6 +110,30 @@ export default {
                     angle: curData.angle,
                     zIndex: 50
                 });
+                let _random = Math.floor(Math.random()*2);
+                console.log(_random);
+                _data.platNoMarker = new AMap.Text({
+                    // text: curData.platNo,
+                    text: '京N123456',
+                    anchor: 'center', // 设置文本标记锚点
+                    // angle: curData.angle,
+                    style: {
+                        'padding': '0 5px',
+                        'border-radius': '4px',
+                        'background-color': 'rgba(55, 186, 123, .2)',
+                        'border-width': 0,
+                        'text-align': 'center',
+                        'font-size': '10px',
+                        'line-height': '16px',
+                        'letter-spacing': '0',
+                        // 'margin-top': '-16px',  //车尾
+                        'margin-top': _random ? '-16px' : '14px',  //车头
+                        // 'margin': '16px 80px 0 0',
+                        'color': '#ccc'
+                    },
+                    position: point
+                });
+                _data.platNoMarker.setMap(this.AMap);
             }
             // 缩放地图到合适的视野级别
             this.AMap.setFitView();

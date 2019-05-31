@@ -2,13 +2,7 @@
   <div class="c-relative">
     <h3 class="c-title">{{title}}</h3>
     <div class="c-echarts-box" :id="id"></div>
-    <div class="c-echarts-x">
-        <span>0</span>
-        <span>6</span>
-        <span>12</span>
-        <span>18</span>
-        <span>24</span>
-    </div>
+    <div class="c-dirving-num">{{responseData.total}}</div>
   </div>
 </template>
 
@@ -30,6 +24,7 @@ export default {
             },
             dataLength: 0,
             responseData: {
+                total: 0,
                 last: [],
                 curDay: []
             },
@@ -44,10 +39,12 @@ export default {
 		getHisVehStat() {
             // console.log('获取上周当天在驶车辆分布数量（分钟）以及获取当天0点到目前的分布数量');
             getHisVehStat().then(res => {
-                let _resultLast = res.data.last,
+                let _total = res.data.total,
+                    _resultLast = res.data.last,
                     _resultCurDay = res.data.curDay;
                 this.dataLength = _resultLast.length;
-                // console.log(this.dataLength);
+                this.responseData.total = _total != undefined ? _total : this.responseData.total;
+
                 _resultLast.forEach(item => {
                     this.responseData.last.push(item.count);
                 });
@@ -55,7 +52,7 @@ export default {
                     this.responseData.curDay.push(item.count);
                 });
                 this.echarts.setOption(this.defaultOption());
-                // this.initWebSocket();
+                this.initWebSocket();
             });
         },
         initWebSocket(){
@@ -71,6 +68,7 @@ export default {
         onmessage(message){
             let _json = JSON.parse(message.data),
                 _result = _json.result;
+            this.responseData.total = _result.total != undefined ? _result.total : this.responseData.total;
             if(this.responseData.curDay.length >= this.dataLength) {
                 this.responseData.curDay.shift();
             }
@@ -103,28 +101,11 @@ export default {
                     x: 0,
                     y: 0,
                     x2: 0,
-                    y2: 20
+                    y2: 0
                 },
                 xAxis: {
                     type: 'category',
-                    splitLine: {
-                        show:false
-                    },
-                    axisLine:{
-                        lineStyle:{
-                            color:'rgba(211, 134, 0 , 0.4)'
-                        }
-                    },
-                    axisTick:{
-                        show:false
-                    },
-                    axisLabel:{
-                        interval: 5,
-                        textStyle: {
-                            color: "#918d84"
-                        }
-                    }
-                    // data: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]
+                    show: false
                 },
                 yAxis:  {
                     type: 'value',
@@ -137,10 +118,11 @@ export default {
                     symbol: 'none',
                     lineStyle: {
                         color: '#575757',
-                        width: 1
+                        width: 1,
+                        opacity: 0
                     },
                     areaStyle: {
-                        color: 'rgba(87, 87, 87, .1)'
+                        color: 'rgba(87, 87, 87, 0)'
                     },
                     data: this.responseData.last
                 },{
@@ -153,7 +135,7 @@ export default {
                         width: 1
                     },
                     areaStyle: {
-                        color: 'rgba(55, 186, 123, .1)'
+                        color: 'rgba(55, 186, 123, .8)'
                     },
                     data: this.responseData.curDay
                 }]
@@ -165,20 +147,19 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "@/assets/scss/theme.scss";
-.c-echarts-x {
+.c-echarts-box {
+    height: 30px;
+    margin: 100px 0 20px;
+}
+.c-dirving-num {
     position: absolute;
     left: 0;
+    top: 55px;
     right: 0;
-    top: 167px;
-    font-size: 12px;
-    color: #918d84;
-    line-height: 20px;
-    letter-spacing: 0;
-    @include layoutMode(between);
-    span {
-        display: inline-block;
-        width: 15px;
-        text-align: center;
-    }
+    bottom: 0;
+    font-family: carfont;
+    font-size: 38px;
+    color: #ccc;
+    @include layoutMode();
 }
 </style>
