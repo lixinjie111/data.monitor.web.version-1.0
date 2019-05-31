@@ -13,7 +13,8 @@ import { getRouteStat } from '@/api/carMonitor'
 export default {
 	name: 'BarHorizontalEcharts',
 	props: {
-		dialogVisible: Boolean
+		dialogVisible: Boolean,
+		resizeFlag: Boolean
 	},
 	data () {
 		return {
@@ -36,26 +37,48 @@ export default {
 					this.getRouteStat();
 				}
 			}
+		},
+		resizeFlag: {
+			handler(newVal, oldVal) {
+				if(newVal) {
+					// console.log('改变窗口');
+					this.responseData.forEach(item => {
+		            	if(item.echarts) {
+							item.echarts.resize();
+		            	}else {
+		            		if(item.data.length > 0) {
+								item.echarts = this.$echarts.init(document.getElementById(item.id));
+								let _option = this.defaultOption(item.data);
+								item.echarts.setOption(_option);
+							}
+						}
+					});
+					this.$emit("alreadyRender", 'resizeFlagHorizontal');
+				}
+			}
 		}
 	},
 	methods: {
 		getRouteStat() {
-            console.log('获取行程分析（近30天）');
+            // console.log('获取行程分析（近30天）');
 			getRouteStat().then(res => {
 				let _responseData = res.data.data,
 					_defaultOption = this.defaultOption();
 
 				this.responseData = _responseData.map((item, index) => {
 					item.id = "echarts-bar-horizontal-" + index;
+					item.echarts = null;
 					return item;
 				});
 
 				setTimeout(() => {
 					this.responseData.forEach(item => {
 						if(item.data.length > 0) {
-							let _echarts = this.$echarts.init(document.getElementById(item.id)),
-								_option = this.defaultOption(item.data);
-							_echarts.setOption(_option);
+							if(!item.echarts) {
+								item.echarts = this.$echarts.init(document.getElementById(item.id));
+							}
+							let _option = this.defaultOption(item.data);
+							item.echarts.setOption(_option);
 						}
 					});
 				}, 0);

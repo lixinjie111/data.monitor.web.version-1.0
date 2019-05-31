@@ -13,7 +13,8 @@ import { getActiveVehStat } from '@/api/carMonitor'
 export default {
 	name: 'BarVerticalEcharts',
 	props: {
-		dialogVisible: Boolean
+		dialogVisible: Boolean,
+		resizeFlag: Boolean
 	},
 	data () {
 		return {
@@ -36,13 +37,30 @@ export default {
 					this.getActiveVehStat();
 				}
 			}
+		},
+		resizeFlag: {
+			handler(newVal, oldVal) {
+				if(newVal) {
+					// console.log('改变窗口');
+					this.responseData.forEach(item => {
+		            	if(item.echarts) {
+							item.echarts.resize();
+		            	}else {
+		            		if(item.data.length > 0) {
+								item.echarts = this.$echarts.init(document.getElementById(item.id));
+								let _option = this.defaultOption(item.data);
+								item.echarts.setOption(_option);
+							}
+						}
+					});
+					this.$emit("alreadyRender", 'resizeFlagVertical');
+				}
+			}
 		}
-	},
-	mounted() {
 	},
 	methods: {
 		getActiveVehStat() {
-            console.log('获取活跃车辆（近30天）');
+            // console.log('获取活跃车辆（近30天）');
 			getActiveVehStat().then(res => {
 
 				let _responseData = res.data.data,
@@ -50,15 +68,18 @@ export default {
 
 				this.responseData = _responseData.map((item, index) => {
 					item.id = "echarts-bar-vertical-" + index;
+					item.echarts = null;
 					return item;
 				});
 
 				setTimeout(() => {
 					this.responseData.forEach(item => {
 						if(item.data.length > 0) {
-							let _echarts = this.$echarts.init(document.getElementById(item.id)),
-								_option = this.defaultOption(item.data);
-							_echarts.setOption(_option);
+							if(!item.echarts) {
+								item.echarts = this.$echarts.init(document.getElementById(item.id));
+							}
+							let _option = this.defaultOption(item.data);
+							item.echarts.setOption(_option);
 						}
 					});
 				}, 0);
@@ -118,7 +139,7 @@ export default {
 			    			show: true,
 			    			distance: 10,
 			    			position: 'right',
-			    			color: '#fff'
+			    			color: '#ccc'
 			    		}
 			        }
 				}

@@ -21,6 +21,10 @@ export default {
                 vehicleId: 'trackAll'
             },
             responseData: {},
+
+            wholeData: [],
+            count: 0,
+            flag: true
         }
     },
     mounted() {
@@ -55,55 +59,71 @@ export default {
                 //     speed: 100.75319017246728
                 //     vehicleId: "B21E-00-024"
                 // }
-            AMap.convertFrom(new AMap.LngLat(_result.longitude, _result.latitude), 'gps', function (status, result){
-                if (result.info === 'ok') {
-                    let gaodePosition = result.locations[0];
-                    if(!_this.responseData[_vehicleId]) {
-                        _this.responseData[_vehicleId] = {
-                            angle: _result.heading,
-                            position: gaodePosition,
-                            marker: null
-                        }
-                    }else {
-                        _this.responseData[_vehicleId].position = gaodePosition;
-                    }
-                    _this.drawMarker(_vehicleId);
-                }
-            });
+            let _option = {
+                vehicleId: _vehicleId,
+                angle: _result.heading,
+                position: new AMap.LngLat(_result.longitude, _result.latitude)
+            };
+            this.wholeData.push(_option);
+
+            this.changeLngLat();
         },
-        drawMarker(carId) {
+        changeLngLat(){
+            var _this = this;
+            if(this.flag && this.count < this.wholeData.length){
+                this.flag = false;
+                let _filterCurData = this.wholeData[this.count];
+                if(!_this.responseData[_filterCurData.vehicleId]) {
+                    _this.responseData[_filterCurData.vehicleId] = {
+                        marker: null
+                    }
+                }
+                AMap.convertFrom(this.wholeData[this.count].position, 'gps', function (status, result){
+                    if (result.info === 'ok') {
+                        let _point = result.locations[0];
+                        //绘制线的轨迹
+                        _this.drawMarker(_filterCurData, _point);
+
+                        _this.count++;
+                        _this.flag = true;
+                        _this.changeLngLat();
+                    }
+                });
+            }
+        },
+        drawMarker(curData, point) {
             let _this = this,
-                _data = this.responseData[carId];
+                _data = this.responseData[curData.vehicleId];
             if(_data.marker) {
-                _data.marker.setPosition(_data.position);
-                _data.marker.setAngle(_data.angle);
+                _data.marker.setPosition(point);
+                _data.marker.setAngle(curData.angle);
             }else {
                 _data.marker = new AMap.Marker({
                     map: _this.AMap,
-                    position: _data.position,
+                    position: point,
                     icon: "static/images/car/point.png",
-                    offset: new AMap.Pixel(-2, -37),
-                    angle: _data.angle,
+                    offset: new AMap.Pixel(-2, -2),
+                    angle: curData.angle,
                     zIndex: 50
                 });
             }
-            // // 缩放地图到合适的视野级别
+            // 缩放地图到合适的视野级别
             this.AMap.setFitView();
         },
         onclose(data){
             console.log("结束--trackAll--连接");
         },
         onopen(data){
-            console.log("建立--trackAll--连接");
+            // console.log("建立--trackAll--连接");
             //行程
             this.sendMsg(JSON.stringify(this.webSocketData));
         },
         sendMsg(msg) {
-            console.log("trackAll--连接状态："+this.webSocket.readyState);
+            // console.log("trackAll--连接状态："+this.webSocket.readyState);
             if(window.WebSocket){
                 if(this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
                     this.webSocket.send(msg); //send()发送消息
-                    console.log("trackAll--已发送消息:"+ msg);
+                    // console.log("trackAll--已发送消息:"+ msg);
                 }
             }else{
                 return;
