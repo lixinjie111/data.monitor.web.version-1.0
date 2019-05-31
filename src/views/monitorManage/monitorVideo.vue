@@ -1,6 +1,7 @@
 <template>
 <div  class="monitor-manage">
-  <div id="cmsplayer" class="monitor-vedio"></div>
+    <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions">
+    </video-player>
 </div>
 </template>
 <script>
@@ -8,9 +9,33 @@
     export default {
         data() {
             return {
-              deviceStatus:{}
+              deviceStatus:{},
+              playerOptions: {
+                overNative: true,
+                autoplay: true,
+                controls: true,
+                techOrder: ['flash', 'html5'],
+                sourceOrder: true,
+                flash: {
+                  swf:  '/static/media/video-js.swf'
+                },
+                sources: [
+                  {
+                    type: 'rtmp/mp4',
+                    src: ''
+                  }
+                ],
+                muted:true,
+                width:'1024',
+                height:'900'
+              }
             }
         },
+      computed: {
+        player() {
+          return this.$refs.videoPlayer.player
+        }
+      },
         methods: {
           findBaseData(){
             findBaseData({
@@ -28,7 +53,8 @@
             }).then(res => {
               //获取视频地址并赋值
               let videoUrl = res.data.rtmp;
-              this.embedFlash(videoUrl);
+              this.playerOptions.sources[0].src=videoUrl;
+             /* this.embedFlash(videoUrl);*/
             });
           },
           embedFlash(rtmpSource){//部署
@@ -80,7 +106,7 @@
   }
   .monitor-vedio{
     width: 100%;
-    height: 900px;
+    height: 100%;
     position: absolute;
     top: 50%;
     margin-top: -450px;

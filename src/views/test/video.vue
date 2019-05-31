@@ -71,7 +71,7 @@
         console.log('currentTime', e.cache_.currentTime)
       },
       setProgress(){
-        this.$refs.videoPlayer.player.currentTime(300);
+        this.$refs.videoPlayer.player.currentTime(300.23);
       },
       mounted() {
         console.log("获取播放时长"+this.player.currentTime())
