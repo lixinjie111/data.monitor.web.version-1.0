@@ -57,7 +57,7 @@ export default {
 	methods: {
 		alreadyRender(classifyFlag) {
 			this[classifyFlag] = false;
-			console.log(classifyFlag+'监听完毕');
+			// console.log(classifyFlag+'监听完毕');
 		}
 	}
 }

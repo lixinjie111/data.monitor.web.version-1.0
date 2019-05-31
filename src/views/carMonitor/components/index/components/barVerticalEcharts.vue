@@ -41,11 +41,17 @@ export default {
 		resizeFlag: {
 			handler(newVal, oldVal) {
 				if(newVal) {
-					console.log('改变窗口');
+					// console.log('改变窗口');
 					this.responseData.forEach(item => {
 		            	if(item.echarts) {
 							item.echarts.resize();
-		            	}
+		            	}else {
+		            		if(item.data.length > 0) {
+								item.echarts = this.$echarts.init(document.getElementById(item.id));
+								let _option = this.defaultOption(item.data);
+								item.echarts.setOption(_option);
+							}
+						}
 					});
 					this.$emit("alreadyRender", 'resizeFlagVertical');
 				}
