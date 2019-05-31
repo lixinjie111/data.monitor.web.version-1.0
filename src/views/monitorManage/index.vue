@@ -1,14 +1,14 @@
 <template>
 <div class="monitor-manage">
   <div class="monitor-manage-title">
-    <img src="@/assets/images/monitorShow/monitor-1.png" class="monitor-title-img"/>
+    <img src="@/assets/images/monitorManage/monitor-1.png" class="monitor-title-img"/>
     <span class="monitor-title-style">云控智能路网系统</span>
   </div>
   <div class="crossing-info">
     <p class="crossing-number">路口编号：110108-335</p>
     <div class="crossing-overview">
       <div class="crossing-position" @click="restore">
-        <img src="@/assets/images/monitorShow/monitor-2.png" class="crossing-position-img"/>
+        <img src="@/assets/images/monitorManage/monitor-2.png" class="crossing-position-img"/>
       </div>
       <span>双清路与中关村东路交叉口</span>
       <ul class="monitor-device">
@@ -21,37 +21,37 @@
         </li>-->
         <li>
           <span class="monitor-device-line"></span>
-          <img src="@/assets/images/monitorShow/monitor-3.png" class="monitor-device-img-1"/>
+          <img src="@/assets/images/monitorManage/monitor-3.png" class="monitor-device-img-1"/>
           <span class="monitor-device-text">N-191-302</span>
           <span class="monitor-device-symbol"></span>
         </li>
         <li>
           <span class="monitor-device-line"></span>
-          <img src="@/assets/images/monitorShow/monitor-3.png" class="monitor-device-img-1"/>
+          <img src="@/assets/images/monitorManage/monitor-3.png" class="monitor-device-img-1"/>
           <span class="monitor-device-text">N-191-303</span>
           <span class="monitor-device-symbol"></span>
         </li>
         <li>
           <span class="monitor-device-line"></span>
-          <img src="@/assets/images/monitorShow/monitor-4.png" class="monitor-device-img-2"/>
+          <img src="@/assets/images/monitorManage/monitor-4.png" class="monitor-device-img-2"/>
           <span class="monitor-device-text">M-452-121</span>
           <span class="monitor-device-symbol"></span>
         </li>
         <li>
           <span class="monitor-device-line"></span>
-          <img src="@/assets/images/monitorShow/monitor-3.png" class="monitor-device-img-1"/>
+          <img src="@/assets/images/monitorManage/monitor-3.png" class="monitor-device-img-1"/>
           <span class="monitor-device-text">N-191-304</span>
           <span class="monitor-device-symbol"></span>
         </li>
         <li>
           <span class="monitor-device-line"></span>
-          <img src="@/assets/images/monitorShow/monitor-3.png" class="monitor-device-img-1"/>
+          <img src="@/assets/images/monitorManage/monitor-3.png" class="monitor-device-img-1"/>
           <span class="monitor-device-text">N-191-305</span>
           <span class="monitor-device-symbol"></span>
         </li>
         <li>
           <span class="monitor-device-line"></span>
-          <img src="@/assets/images/monitorShow/monitor-4.png" class="monitor-device-img-2"/>
+          <img src="@/assets/images/monitorManage/monitor-4.png" class="monitor-device-img-2"/>
           <span class="monitor-device-text">M-452-122</span>
           <span class="monitor-device-symbol"></span>
         </li>
