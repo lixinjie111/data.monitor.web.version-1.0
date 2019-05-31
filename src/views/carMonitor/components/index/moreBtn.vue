@@ -13,15 +13,15 @@
 						<ul class="c-scroll-inner">
 							<li class="echarts-classify-wrap">
 								<p class="title">车辆分析</p>
-								<pie-echarts :dialogVisible="dialogVisible"></pie-echarts>
+								<pie-echarts :dialogVisible="dialogVisible" :resizeFlag="resizeFlagPie" @alreadyRender="alreadyRender"></pie-echarts>
 							</li>
 							<li class="echarts-classify-wrap">
 								<p class="title">活跃车辆（近30天）</p>
-								<bar-vertical-echarts :dialogVisible="dialogVisible"></bar-vertical-echarts>
+								<bar-vertical-echarts :dialogVisible="dialogVisible" :resizeFlag="resizeFlagVertical" @alreadyRender="alreadyRender"></bar-vertical-echarts>
 							</li>
 							<li class="echarts-classify-wrap">
 								<p class="title">行程分析（近30天）</p>
-								<bar-horizontal-echarts :dialogVisible="dialogVisible"></bar-horizontal-echarts>
+								<bar-horizontal-echarts :dialogVisible="dialogVisible" :resizeFlag="resizeFlagHorizontal" @alreadyRender="alreadyRender"></bar-horizontal-echarts>
 							</li>
 						</ul>
 					</div>
@@ -40,17 +40,25 @@ export default {
     components: { pieEcharts, BarVerticalEcharts, BarHorizontalEcharts },
 	data () {
 		return {
-			dialogVisible: false
+			dialogVisible: false,
+			resizeFlagPie: false,
+			resizeFlagVertical: false,
+			resizeFlagHorizontal: false
 		}
 	},
-	watch: {
-	},
-	created() {
-	},
 	mounted() {
+		let _this = this;
+		window.onresize = function(){ // 定义窗口大小变更通知事件
+            _this.resizeFlagPie = true;
+            _this.resizeFlagVertical = true;
+            _this.resizeFlagHorizontal = true;
+        };
 	},
 	methods: {
-		
+		alreadyRender(classifyFlag) {
+			this[classifyFlag] = false;
+			console.log(classifyFlag+'监听完毕');
+		}
 	}
 }
 </script>
