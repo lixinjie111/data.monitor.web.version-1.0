@@ -121,7 +121,7 @@ export default {
             setTimeout(()=>{
                 // 442454.32658246456,4427227.8078830885, 37.73509248844059, 0.0000028926452461693342,-0.5081018518518544,-0.7385192219746066
                 // 442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606
-                this.updateCameraPosition(442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606);
+                // this.updateCameraPosition(442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606);
                 var matStdObjects = new THREE.MeshStandardMaterial( { color: 0x7337E3, roughness: 1, metalness: 0 } );
                 var person = new THREE.MeshStandardMaterial( { color: 0xC4B17A, roughness: 1, metalness: 0 } );
                 for(let m = 0;m<this.cacheModelNum;m++)
@@ -288,6 +288,14 @@ export default {
 
                 // dl.scene.add(pmodel6);
                 // console.log(this.modelArr.length);
+
+                // 添加路灯
+                let traffic =new dl.TrafficLight();
+                traffic.position.x = 442535.6;
+                traffic.position.y = 4427317.6;
+                traffic.position.z = this.defualtZ+6;
+                dl.scene.add(traffic);
+
             },500);
 
 
@@ -457,7 +465,7 @@ export default {
                 // this.addModel(d.objId,"./static/map3d/map_photo/car.3DS",dUTM[0],dUTM[1],this.defualtZ);
                 // if(d.type == 3 || d.type == 6 || d.type ==8)
                 // {
-                    if(d.type!=1&&d.type!=2&&d.type!=4)
+                    if(d.type!=0&&d.type!=1&&d.type!=3)
                     {
                         if(i<this.deviceModels[deviceid].persons.length)
                         {
