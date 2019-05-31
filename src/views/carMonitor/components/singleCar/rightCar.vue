@@ -94,6 +94,7 @@
               src: ''
             }
           ],
+          muted:true,
           width:'270',
           height:'180'
         }
@@ -223,7 +224,7 @@
           this.streamInfo = res.streamInfoRes;
           //获取视频地址并赋值
           let videoUrl = this.streamInfo.rtmp;
-          this.playerOptions.sources[0].src=videoUrl;
+          this.playerOptions.sources[0].src='';
           //直播报活调用
           this.repeatFn();//拉取流后，保活
         });
