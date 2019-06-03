@@ -87,6 +87,14 @@
         }
     }
 </script>
+<style>
+  .monitor-manage .vjs-custom-skin > .video-js .vjs-big-play-button{
+    display: none;
+  }
+  .monitor-manage .vjs-custom-skin > .video-js .vjs-control-bar .vjs-time-control{
+    min-width: 4em;
+  }
+</style>
 <style scoped>
   .monitor-manage{
     position: fixed;
