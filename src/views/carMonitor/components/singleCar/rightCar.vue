@@ -403,7 +403,7 @@
 
 <style>
   .monitor-video .vjs-custom-skin > .video-js .vjs-big-play-button{
-    font-size: 1em;
+    display: none;
   }
 </style>
 <style scoped>
