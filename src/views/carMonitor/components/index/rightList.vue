@@ -53,7 +53,8 @@ export default {
 		this.webSocketData.vehicleIds = this.vehicleIds;
 	},
 	mounted() {
-        this.getGpsRealList();
+		this.initWebSocket();
+        // this.getGpsRealList();
 	},
 	methods: {
 		getGpsRealList() {
@@ -65,9 +66,9 @@ export default {
 				_responseData.forEach(item => {
 					this.initResult(item.vehicleId, item);
 				});
-				setTimeout(() => {
-        			this.initWebSocket();
-        		}, 1000);
+				// setTimeout(() => {
+    //     			this.initWebSocket();
+    //     		}, 1000);
 			});
 		},
         initResult(attr, result) {
@@ -139,6 +140,7 @@ export default {
                 if(this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
                     this.webSocket.send(msg); //send()发送消息
                     // console.log("trackAll--已发送消息:"+ msg);
+        			this.getGpsRealList();
                 }
             }else{
                 return;
