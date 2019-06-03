@@ -94,7 +94,7 @@ export default {
                     _obj = this.responseData[_type],
                     _value = _obj[this.curGroup] || 0;
                 // _obj[this.curGroup] = parseInt(_value + item.flow).toFixed(2);
-                _obj[this.curGroup] = _value + item.flow;
+                _obj[this.curGroup] = (Number(_value) + Number(item.flow)).toFixed(2);
 
                 if(this.countNum == 0) {
                     this.xData[this.curGroup] = _curTime+'~';
