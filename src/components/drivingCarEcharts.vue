@@ -2,7 +2,7 @@
   <div class="c-relative">
     <h3 class="c-title">{{title}}</h3>
     <div class="c-echarts-box" :id="id"></div>
-    <div class="c-dirving-num">{{responseData.total}}</div>
+    <div class="c-dirving-num">{{responseData.curTotal}}</div>
   </div>
 </template>
 
@@ -22,10 +22,10 @@ export default {
                 action: "vehicleOLCount",
                 token: 'fpx'
             },
-            dataLength: 0,
+            dataLength: 1440,
             responseData: {
-                total: 0,
-                last: [],
+                curTotal: 0,
+                // last: [],
                 curDay: []
             },
 			echarts: null
@@ -39,15 +39,9 @@ export default {
 		getHisVehStat() {
             // console.log('获取上周当天在驶车辆分布数量（分钟）以及获取当天0点到目前的分布数量');
             getHisVehStat().then(res => {
-                let _total = res.data.total,
-                    _resultLast = res.data.last,
-                    _resultCurDay = res.data.curDay;
-                this.dataLength = _resultLast.length;
-                this.responseData.total = _total != undefined ? _total : this.responseData.total;
+                let _resultCurDay = res.data.curDay;
+                this.responseData.curTotal = _resultCurDay[_resultCurDay.length-1].count;
 
-                _resultLast.forEach(item => {
-                    this.responseData.last.push(item.count);
-                });
                 _resultCurDay.forEach(item => {
                     this.responseData.curDay.push(item.count);
                 });
@@ -68,7 +62,7 @@ export default {
         onmessage(message){
             let _json = JSON.parse(message.data),
                 _result = _json.result;
-            this.responseData.total = _result.total != undefined ? _result.total : this.responseData.total;
+            this.responseData.curTotal = _result.count;
             if(this.responseData.curDay.length >= this.dataLength) {
                 this.responseData.curDay.shift();
             }
@@ -105,27 +99,14 @@ export default {
                 },
                 xAxis: {
                     type: 'category',
-                    show: false
+                    show: false,
+                    data: new Array(this.dataLength)
                 },
                 yAxis:  {
                     type: 'value',
                     show: false
                 },
-                series: [{
-                    name: "昨日在使车辆",
-                    type: 'line',
-                    smooth: true,
-                    symbol: 'none',
-                    lineStyle: {
-                        color: '#575757',
-                        width: 1,
-                        opacity: 0
-                    },
-                    areaStyle: {
-                        color: 'rgba(87, 87, 87, 0)'
-                    },
-                    data: this.responseData.last
-                },{
+                series: {
                     name: "今日在使车辆",
                     type: 'line',
                     smooth: true,
@@ -138,7 +119,7 @@ export default {
                         color: 'rgba(55, 186, 123, .8)'
                     },
                     data: this.responseData.curDay
-                }]
+                }
             };
             return option;
         }

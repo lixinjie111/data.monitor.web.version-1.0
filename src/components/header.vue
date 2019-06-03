@@ -92,6 +92,8 @@ export default {
     padding: 24px 30px;
     text-align: center;
     letter-spacing: 1px;
+    // background-color: rgba(255, 255, 255, .1);
+    // background-color: rgba(0, 0, 0, .2);
     .logo-wrap {
         float: left;
         padding: 5px 0;
