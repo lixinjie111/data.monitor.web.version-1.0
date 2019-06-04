@@ -203,7 +203,11 @@ export default {
 			};
 			return option;
 		}
-	}
+	},
+    destroyed(){
+        //销毁Socket
+        this.webSocket.close();
+    }
 }
 </script>
 <style lang="scss" scoped>

@@ -154,6 +154,10 @@ export default {
                 return;
             }
         }
+    },
+    destroyed(){
+        //销毁Socket
+        this.webSocket.close();
     }
 }
 </script>
