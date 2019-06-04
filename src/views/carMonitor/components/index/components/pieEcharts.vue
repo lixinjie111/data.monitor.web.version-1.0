@@ -99,10 +99,13 @@ export default {
 			let option = {
 					tooltip: {
 				        trigger: 'item',
-				        formatter: "{b}: {c} <br/>占比: {d}%",
-				        textStyle: {
-				        	color: "#dc8c00"
+				        formatter: function(params) {
+				        	return '<div>'+params.name+': <span style="color: #dc8c00;">'+params.value+'</span></div><div>占比: <span style="color: #dc8c00;">'+params.percent+'%</span></div>'
 				        }
+				        // formatter: "{b}: {c} <br/>占比: {d}%",
+				        // textStyle: {
+				        // 	color: "#dc8c00"
+				        // }
 				    },
 				 	grid: {
 				 		right: "10%"

@@ -116,6 +116,9 @@ export default {
 				        trigger: 'axis',
 				        axisPointer: {
 				            type: 'shadow'
+				        },
+				        formatter: function(params) {
+				        	return '<div>区间: <span style="color: #dc8c00;">'+params[0].name+'</span></div><div>行程数: <span style="color: #dc8c00;">'+params[0].data.count+'个</span></div>';
 				        }
 				    },
 				    color: "#41b27e",
@@ -130,8 +133,9 @@ export default {
 	                    },
 	                    axisLabel:{
 	                        color:'#ccc',
-	                        fontSize: 12,
-	                        fontFamily: 'MicrosoftYaHei'
+	                        // fontSize: 12,
+	                        fontFamily: 'MicrosoftYaHei',
+	                        letterSpacing: 0
 	                    }
 				    },
 				    yAxis: {

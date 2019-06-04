@@ -36,6 +36,11 @@ import {HTTPURL} from '../requestUrl';
  */
  export const getRouteStat = params => {return axios.post(`${HTTPURL}vl/routeStat/getRouteStat`, params).then(res => res.data); };
 /**
+ * 获取典型车辆列表初始化配置数据
+ * I_VL3_01
+ */
+ export const getGpsRealConfig = params => {return axios.post(`${HTTPURL}vl/actVehStat/getGpsRealConfig`, params).then(res => res.data); };
+/**
  * 初始化页面，获取典型车辆列表实时信息
  * I_VL3_01
  */

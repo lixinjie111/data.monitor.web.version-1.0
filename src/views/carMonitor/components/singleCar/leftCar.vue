@@ -120,7 +120,7 @@
 
         distanceMap:{}, //创建的地图对象
         prevLastPointPath:[],//上次请求的终点，
-        carStartPoint:this.$parent.defalutCenterPoint,
+        carStartPoint:this.$parent.defaultCenterPoint,
         routeId: "",
         pointPath:[],//整个行程路径
         markers: {
@@ -229,7 +229,7 @@
       //重绘形成初始化
       initDistanceMap(){
         this.prevLastPointPath = [];//上次请求的终点，
-        this.carStartPoint = this.$parent.defalutCenterPoint;
+        this.carStartPoint = this.$parent.defaultCenterPoint;
         this.routeId = "";
         this.pointPath = [];
         // this.direction = 0;

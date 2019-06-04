@@ -8,19 +8,16 @@ export default {
         return {
             id: "car-map-container",
             AMap: null,
-            mapOption: {  
-                center: this.$parent.defalutCenterPoint,
-                zoom: 11,
-                mapStyle: "amap://styles/7b007636f01d8a19e9cc2841a85dc083"
-            },
             // 获取在驶车辆实时数据（辆）
             webSocket:{},
             webSocketData: {
-                action: "trackAll",
+                action: "vehicleOnline",
                 token: 'fpx',
-                vehicleId: 'trackAll'
+                vehicleId: 'vehicleOnline'
             },
-            responseData: {},
+            // responseData: [],
+            responseDataDraw: [],
+            setFitViewFlag: true,
 
             wholeData: [],
             count: 0,
@@ -29,7 +26,7 @@ export default {
     },
     mounted() {
         this.initWebSocket();
-        this.AMap = new AMap.Map(this.id, this.mapOption);
+        this.AMap = new AMap.Map(this.id, this.$parent.$parent.defaultMapOption);
     },
     methods: {
         initWebSocket(){
@@ -45,78 +42,70 @@ export default {
         onmessage(message){
             let _this = this,
                 _json = JSON.parse(message.data),
-                _result = _json.result,
-                _vehicleId = _result.vehicleId;
-                // _result = {
-                //     acceleration: 0
-                //     alt: 0
-                //     gpsTime: 1559185216693
-                //     heading: 180.01354098548435
-                //     icon: ""
-                //     latitude: 31.2938845750231
-                //     longitude: 120.76585657889538
-                //     source: ["bsm"]
-                //     speed: 100.75319017246728
-                //     vehicleId: "B21E-00-024"
-                //     platNo: "京N123456"
-                // }
-            let _option = {
-                vehicleId: _vehicleId,
-                platNo: _result.platNo,
-                angle: _result.heading,
-                position: new AMap.LngLat(_result.longitude, _result.latitude)
-            };
-            this.wholeData.push(_option);
-
-            this.changeLngLat();
-        },
-        changeLngLat(){
-            var _this = this;
-            if(this.flag && this.count < this.wholeData.length){
-                this.flag = false;
-                let _filterCurData = this.wholeData[this.count];
-                if(!_this.responseData[_filterCurData.vehicleId]) {
-                    _this.responseData[_filterCurData.vehicleId] = {
-                        marker: null,
-                        platNoMarker: null
-                    }
-                }
-                AMap.convertFrom(this.wholeData[this.count].position, 'gps', function (status, result){
-                    if (result.info === 'ok') {
-                        let _point = result.locations[0];
-                        //绘制线的轨迹
-                        _this.drawMarker(_filterCurData, _point);
-
-                        _this.count++;
-                        _this.flag = true;
-                        _this.changeLngLat();
-                    }
+                _result = _json.result.allVehicle;
+            if(_this.flag) {
+                // console.log("绘制前--------");
+                _this.flag = false;
+                let _responseData = _result.map( item => {
+                    let _option = {
+                        vehicleId: item.vehicleId,
+                        platNo: item.platNo,
+                        heading: item.heading,
+                        position: new AMap.LngLat(item.longitude, item.latitude)
+                    };
+                    return _option;
                 });
+                // console.log(_responseData.length);
+                _this.changeLngLat(_responseData);
             }
         },
-        drawMarker(curData, point) {
+        changeLngLat(_allPointData){
+            let _this = this;
+            _allPointData.forEach((item, index, arr) => {
+                AMap.convertFrom(_allPointData[index].position, 'gps', function (status, result){
+                    // console.log(result.info);
+                    if (result.info === 'ok') {
+                        let _point = result.locations[0];
+                        _allPointData[index].position = _point;
+                        _this.count ++;
+                        if(_this.count == arr.length) {
+                            //绘制线的轨迹
+                            _this.drawMarker(_allPointData);
+                        }
+                    }
+                });
+            });
+        },
+        drawMarker(allPointData) {
             let _this = this,
-                _data = this.responseData[curData.vehicleId];
-            if(_data.marker) {
-                _data.marker.setPosition(point);
-                _data.marker.setAngle(curData.angle);
-                _data.platNoMarker.setPosition(point);
-            }else {
-                _data.marker = new AMap.Marker({
+                _responseDataDrawLength = _this.responseDataDraw.length,
+                _allPointDataLength = allPointData.length;
+            if(_responseDataDrawLength > 0) {
+                for(let m = 0; m < _this.responseDataDraw.length; m++) {
+                    _this.AMap.remove(_this.responseDataDraw[m].marker);
+                    _this.AMap.remove(_this.responseDataDraw[m].platNoMarker);
+                }
+                _this.responseDataDraw = [];
+            }
+            for(let i = 0; i < _allPointDataLength; i++) {
+                let _data = allPointData[i],
+                    _markerObj = {
+                        marker: null,
+                        platNoMarker: null
+                    };
+                _markerObj.marker = new AMap.Marker({
                     map: _this.AMap,
-                    position: point,
+                    position: _data.position,
                     icon: "static/images/car/point.png",
                     offset: new AMap.Pixel(-2, -2),
-                    angle: curData.angle,
+                    angle: _data.heading,
                     zIndex: 50
                 });
-                let _random = Math.floor(Math.random()*2);
-                // console.log(_random);
-                _data.platNoMarker = new AMap.Text({
-                    text: curData.platNo,
+                _markerObj.platNoMarker = new AMap.Text({
+                    map: _this.AMap,
+                    text: _data.platNo,
                     // text: '京N123456',
                     anchor: 'center', // 设置文本标记锚点
-                    // angle: curData.angle,
                     style: {
                         'padding': '0 5px',
                         'border-radius': '4px',
@@ -126,18 +115,25 @@ export default {
                         'font-size': '10px',
                         'line-height': '16px',
                         'letter-spacing': '0',
-                        // 'margin-top': '-16px',  //车尾
                         'margin-top': '14px',  //车头
-                        // 'margin-top': _random ? '-16px' : '14px',
-                        // 'margin': '16px 80px 0 0',
                         'color': '#ccc'
                     },
-                    position: point
+                    position: _data.position
                 });
-                _data.platNoMarker.setMap(this.AMap);
+                _this.responseDataDraw.push(_markerObj);
+
+                if(i == _allPointDataLength - 1) {
+                    if(_this.setFitViewFlag) {
+                        this.AMap.setFitView();
+                        _this.setFitViewFlag = false;
+                    }
+                    setTimeout(() => {
+                        _this.count = 0;
+                        _this.flag = true;
+                        // console.log("绘制结束--------");
+                    }, 0);
+                }
             }
-            // 缩放地图到合适的视野级别
-            this.AMap.setFitView();
         },
         onclose(data){
             console.log("结束--trackAll--连接");

@@ -110,12 +110,12 @@ export default {
 				    	top: 40,
 				    	bottom: 40
 				    },
-				    tooltip: {
-				        trigger: 'axis',
-				        axisPointer: {
-				            type: 'shadow'
-				        }
-				    },
+				    // tooltip: {
+				    //     trigger: 'axis',
+				    //     axisPointer: {
+				    //         type: 'shadow'
+				    //     }
+				    // },
 				    color: "#41b27e",
 				    xAxis: {
 				    	show: false
@@ -132,7 +132,8 @@ export default {
 	                    axisLabel:{
 	                        color:'#ccc',
 	                        fontSize: 14,
-	                        fontFamily: 'MicrosoftYaHei'
+	                        fontFamily: 'MicrosoftYaHei',
+	                        letterSpacing: 0
 	                    }
 				    },
 				    series: {
@@ -146,7 +147,8 @@ export default {
 			    			show: true,
 			    			distance: 10,
 			    			position: 'right',
-			    			color: '#ccc'
+			    			color: '#ccc',
+	                        letterSpacing: 0
 			    		}
 			        }
 				}
