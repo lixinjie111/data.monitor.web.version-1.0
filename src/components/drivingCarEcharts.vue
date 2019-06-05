@@ -1,7 +1,7 @@
 <template>
   <div class="c-relative">
     <h3 class="c-title">{{title}}</h3>
-    <div class="c-echarts-box" :id="id"></div>
+    <div class="echarts-box" :id="id"></div>
     <div class="c-dirving-num">{{responseData.curTotal}}</div>
   </div>
 </template>
@@ -123,14 +123,18 @@ export default {
             };
             return option;
         }
-	}
+	},
+    destroyed(){
+        //销毁Socket
+        this.webSocket.close();
+    }
 }
 </script>
 <style lang="scss" scoped>
 @import "@/assets/scss/theme.scss";
-.c-echarts-box {
+.echarts-box {
     height: 30px;
-    margin: 100px 0 20px;
+    margin: 96px 0 20px;
 }
 .c-dirving-num {
     position: absolute;

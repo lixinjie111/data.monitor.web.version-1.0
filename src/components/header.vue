@@ -9,7 +9,8 @@
         <div class="sub-info clearfix">
             <span class="tip">{{formatTime || '--'}}</span>
             <span class="tip">
-                <img src="@/assets/images/weather/default.png" class="weather-icon" /><em class="c-middle" v-if="responseData.weather">{{responseData.weather.wendu || '--'}}°</em>
+                <em class="c-middle">{{city.province}}{{city.district}}</em>
+                <img src="@/assets/images/weather/default.png" class="weather-icon" /><em class="c-middle">{{weather.wendu || '--'}}°</em>
             </span>
             <span class="tip">预警<em class="num">{{responseData.warningNum || '--'}}</em></span>
             <span class="tip">故障<em class="num">{{responseData.faultNum || '--'}}</em></span>
@@ -20,10 +21,13 @@
     </div>
 </template>
 <script>
-import { getTopHead } from '@/api/header';
+import { getTopHead, getTopWeather } from '@/api/header';
 import { mapActions } from 'vuex';
 export default {
 	name: "Header",
+    props: {
+        changeCenterPoint: [Array, Object]
+    },
     data() {
         return {
             sysAdminName: this.$store.state.admin.adminName,
@@ -35,6 +39,11 @@ export default {
             ],
             responseData: {
                 timestamp: new Date().getTime()
+            },
+            city: {},
+            weather: {},
+            requestData: {
+                disCode: ''
             }
         }
     },
@@ -47,9 +56,19 @@ export default {
             }
         }
     },
+    watch: {
+        deep: true,
+        changeCenterPoint: {
+            handler(newVal, oldVal) {
+                this.getAddress(newVal);
+            }
+        }
+    },
     mounted(){
         this.getTopHead();
         this.changeTime();
+
+        this.getAddress(this.changeCenterPoint);
     },
     methods: {
         getTopHead() {
@@ -62,6 +81,26 @@ export default {
             setInterval(() => {
                 this.responseData.timestamp += 1000;
             }, 1000);
+        },
+        getAddress(lnglat) {
+            let _this = this,
+                geocoder = new AMap.Geocoder();
+            geocoder.getAddress(lnglat, function(status, result) {
+                if (status === 'complete' && result.regeocode) {
+                    let _data = result.regeocode.addressComponent;
+                    _this.city.province = _data.province;
+                    _this.city.district = _data.district;
+                    _this.requestData.disCode = _data.adcode;
+                    _this.getTopWeather();
+                }else{
+                    console.log('根据经纬度查询地址失败')
+                }
+            });
+        },
+        getTopWeather() {
+            getTopWeather(this.requestData).then(res => {
+                this.weather = res.data;
+            });
         },
         ...mapActions(['goLogOut']),
         //退出登录
@@ -94,6 +133,8 @@ export default {
     letter-spacing: 1px;
     // background-color: rgba(255, 255, 255, .1);
     // background-color: rgba(0, 0, 0, .2);
+    background: linear-gradient(rgba(0, 0 ,0 , .4) 50%, rgba(0, 0 ,0 , 0)); /* 标准的语法 */
+    
     .logo-wrap {
         float: left;
         padding: 5px 0;

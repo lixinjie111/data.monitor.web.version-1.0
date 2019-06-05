@@ -752,6 +752,14 @@
       this.initDeviceWebSocket();
       this.initWarningWebSocket();
       this.initLightWebSocket();
+    },
+    destroyed(){
+      //销毁Socket
+      this.hostWebsocket.close();
+      this.sideWebsocket.close();
+      this.deviceWebsocket.close();
+      this.lightWebsocket.close();
+      this.warningWebsocket.close();
     }
   }
 </script>

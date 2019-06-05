@@ -1,7 +1,7 @@
 <template>
   <div class="c-relative">
     <h3 class="c-title">{{title}}<span class="c-sub-title">累计数量：{{responseData.total || '--'}}</span></h3>
-    <div class="c-echarts-box" :id="id"></div>
+    <div class="echarts-box" :id="id"></div>
   </div>
 </template>
 
@@ -68,7 +68,7 @@ export default {
                 _result = _json.result.flow,
                 _curTime = this.$dateUtil.formatTime(parseInt(_json.result.curTime)).split(" ")[1];
             // console.log(_json.result.curTime);
-            // console.log(_curTime);
+            console.log(_curTime);
             this.responseData.total = _json.result.total != undefined ? _json.result.total : this.responseData.total;
             // countNum: 0, maxNum: 30, maxGroup: 10, curGroup: 0,
             if(this.countNum >= this.maxNum) {
@@ -148,7 +148,7 @@ export default {
                     left: '0%',
                     right: '0%',
                     bottom: 12,
-                    itemGap: 40,
+                    itemGap: 37,
                     icon: "rect",
                     itemWidth: 10,
                     itemHeight: 10,
@@ -178,36 +178,45 @@ export default {
                 },
                 yAxis:  {
                     type: 'value',
-                    show: false
+                    show: false,
+                    max: 2
                 },
+                animation: false,
                 series: [{
                     name: '车辆上报',
                     type: 'bar',
-                    stack: '总量',
-                    barCategoryGap: '50%',
+                    // stack: '总量',
+                    barCategoryGap: '25%',
                     data: this.responseData.VehReport
                     // data: [1,2,3,4,5,6,7,8,9,10]
                 },{
                     name: '路侧上报',
                     type: 'bar',
-                    stack: '总量',
-                    barCategoryGap: '50%',
+                    // stack: '总量',
+                    barCategoryGap: '25%',
                     data: this.responseData.RcuReport
                     // data: [11,12,13,14,15,16,17,18,19,20]
                 },{
                     name: '第三方平台上报',
                     type: 'bar',
-                    stack: '总量',
-                    barCategoryGap: '50%',
+                    // stack: '总量',
+                    barCategoryGap: '25%',
                     data: this.responseData.ThirdPartReport
                     // data: [5,6,7,8,9,10,11,12,13,14]
                 }]
             };
             return option;
         }
-	}
+	},
+    destroyed(){
+        //销毁Socket
+        this.webSocket.close();
+    }
 }
 </script>
 <style lang="scss" scoped>
-
+.echarts-box {
+    margin-top: 20px;
+    height: 126px;
+}
 </style>

@@ -210,6 +210,10 @@
     },
     mounted () {
       this.initWebSocket();
+    },
+    destroyed(){
+      //销毁Socket
+      this.websocket.close();
     }
   }
 </script>

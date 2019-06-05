@@ -51,7 +51,8 @@
         },
         liveData:{},
         speedData:{},
-        vehicleId:'B21E-00-017'
+        vehicleId:'B21E-00-017',
+        webSocket:{}
       }
     },
     methods: {
@@ -110,6 +111,10 @@
     },
     mounted () {
       this.initWebSocket();
+    },
+    destroyed(){
+      //销毁Socket
+      this.webSocket.close();
     }
   }
 </script>

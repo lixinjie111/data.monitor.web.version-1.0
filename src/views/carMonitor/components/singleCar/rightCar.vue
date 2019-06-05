@@ -397,7 +397,7 @@
     },
     destroyed(){
         //销毁Socket
-        this.socket.onclose = this.close
+        this.socket.close();
     }
   }
 </script>

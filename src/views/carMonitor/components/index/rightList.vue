@@ -1,6 +1,6 @@
 <template>
   <ul class="right-list-wrap">
-    <router-link tag="li" :to="'/singleCarMonitor/'+item.vehicleId" class="c-car-list" v-for="item in responseData" :key="item.vehicleId">
+    <li class="c-car-list" v-for="item in responseData" :key="item.vehicleId" @click="showView(item.vehicleId)">
     	<div class="right-list-head">
     		<div class="left clearfix">
 	    		<span class="model c-left">L{{item.autoLevel}}</span>
@@ -19,21 +19,16 @@
 	    	</div>
     	</div>
     	<div class="car-middle-info">
-    		<!-- <img :src="item.vehicleLogo" class="car-img" /> -->
-    		<!-- <img src="@/assets/images/develop/car-1.png" class="car-img" /> -->
-    		<img src="@/assets/images/develop/car-1.png" class="car-img" v-if="item.vehicleId == 'B21E-00-017'" />
-    		<img src="@/assets/images/develop/car-2.png" class="car-img" v-if="item.vehicleId == 'B21E-00-018'" />
-    		<img src="@/assets/images/develop/car-3.png" class="car-img" v-if="item.vehicleId == 'B21E-00-019'" />
-    		<img src="@/assets/images/develop/car-1.png" class="car-img" v-if="item.vehicleId == 'B21E-00-020'" />
+    		<img :src="item.vehicleLogo" class="car-img" />
     		<div class="speed">{{item.speed || 0}}</div>
     		<div class="echarts-wrap" :id="item.id"></div>
     	</div>
-    </router-link>
+    </li>
   </ul>
 </template>
 
 <script>
-import { getGpsRealList } from '@/api/carMonitor'
+import { getGpsRealConfig, getGpsRealList } from '@/api/carMonitor'
 export default {
 	name: 'RightList',
 	data () {
@@ -45,18 +40,23 @@ export default {
             webSocketData: {
                 action: 'vehicleList',
                 token: 'fpx',
-                vehicleIds: ''
+                vehicleIds: 'B21E-00-017,B21E-00-018,B21E-00-019,B21E-00-020'
             }
 		}
 	},
-	created() {
-		this.webSocketData.vehicleIds = this.vehicleIds;
-	},
 	mounted() {
-		this.initWebSocket();
-        // this.getGpsRealList();
+		this.getGpsRealConfig();
+		// this.initWebSocket();
 	},
 	methods: {
+		getGpsRealConfig() {
+            // console.log('获取典型车辆列表初始化配置数据');
+			getGpsRealConfig().then(res => {
+				this.vehicleIds = res.data;
+				this.webSocketData.vehicleIds = res.data;
+				this.initWebSocket();
+			});
+		},
 		getGpsRealList() {
             // console.log('初始化页面，获取典型车辆列表实时信息');
 			getGpsRealList({
@@ -66,9 +66,6 @@ export default {
 				_responseData.forEach(item => {
 					this.initResult(item.vehicleId, item);
 				});
-				// setTimeout(() => {
-    //     			this.initWebSocket();
-    //     		}, 1000);
 			});
 		},
         initResult(attr, result) {
@@ -89,7 +86,7 @@ export default {
 			this.responseData.push(_filterResult);
         },
         initWebSocket(){
-            console.log('websocket获取指定车辆实时信息');
+            // console.log('websocket获取指定车辆实时信息');
             if ('WebSocket' in window) {
                 this.webSocket = new WebSocket(window.cfg.websocketUrl);  //获得WebSocket对象
             }
@@ -146,6 +143,15 @@ export default {
                 return;
             }
         },
+        showView(carId) {
+        	const { href } = this.$router.resolve({
+                name: 'SingleCarMonitor',
+                params: {
+                    vehicleId: carId
+                }
+            })
+            window.open(href, '_blank')
+        },
 		defaultOption(data) {
 			let option = {
 				grid:{
@@ -197,7 +203,11 @@ export default {
 			};
 			return option;
 		}
-	}
+	},
+    destroyed(){
+        //销毁Socket
+        this.webSocket.close();
+    }
 }
 </script>
 <style lang="scss" scoped>
@@ -213,7 +223,8 @@ export default {
 				.model {
 					display: inline-block;
 					text-align: center;
-					width: 26px;
+					// width: 26px;
+					padding: 0 4px 0 5px;
 					height: 26px;
 					font-size: 14px;
 					letter-spacing: 1px;
@@ -278,7 +289,7 @@ export default {
 			.car-img {
 				width: 110px;
 				height: 100%;
-				object-fit: contain;
+				object-fit: cover;
 			}
 			.speed {
 				position: relative;

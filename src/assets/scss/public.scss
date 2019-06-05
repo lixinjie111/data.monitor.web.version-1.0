@@ -140,7 +140,8 @@ img {
     left: 0;
     padding-left: 50px;
     padding-right: 68px;
-    background-image: url("../images/public/mask-left.png");
+    // background-image: url("../images/public/mask-left.png");
+    background: linear-gradient(to right, rgba(0, 0 ,0 , .4) 30%, rgba(0, 0 ,0 , 0)); /* 标准的语法 */
     .c-scroll-wrap {
       width: 398px;
       left: 50px;
@@ -150,7 +151,10 @@ img {
     right: 0;
     padding-right: 22px;
     padding-left: 96px;
-    background-image: url("../images/public/mask-right.png");
+    // background-image: url("../images/public/mask-right.png");
+    // background-size: 150% auto;
+    // background-position: right top;
+    background: linear-gradient(90deg, rgba(0, 0 ,0 , 0), rgba(0, 0 ,0 , .5) 70%); /* 标准的语法 */
     .c-scroll-wrap {
       width: 388px;
       right: 22px;
@@ -212,11 +216,6 @@ img {
     margin-top: 10px;
     color: #ccc;
   }
-}
-
-.c-echarts-box {
-  margin-top: 20px;
-  height: 110px;
 }
 
 .c-car-list {

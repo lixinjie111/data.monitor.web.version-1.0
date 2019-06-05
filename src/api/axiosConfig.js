@@ -33,47 +33,47 @@ function axiosFilter(vm) {
         let returnStatus = response.data.status || response.data.code;
         switch (returnStatus.toString()) {
             case '200': {
-                return response;
+                return Promise.resolve(response);
                 break;
             }
-            case '403': {
-                vm.$message.error('无权限');
-                reject();
-                break;
-            }
-            case '407': {
-                vm.$message.error('需要身份验证');
-                reject();
-                break;
-            }
-            case '500': {
-                vm.$message.error('服务器出错，操作失败');
-                reject();
-                break;
-            }
+            // case '403': {
+            //     vm.$message.error('无权限');
+            //     return Promise.reject(response);
+            //     break;
+            // }
+            // case '407': {
+            //     vm.$message.error('需要身份验证');
+            //     return Promise.reject(response);
+            //     break;
+            // }
+            // case '500': {
+            //     vm.$message.error('服务器出错，操作失败');
+            //     return Promise.reject(response);
+            //     break;
+            // }
             default: {
                 vm.$message.error('操作失败');
-                reject();
+                return Promise.reject(response);
             }
         }
 
         // 失去效果登录
-        if(isOutLogin && (response.data.status == '204')) {
-            isOutLogin = false;
-            vm.$confirm(response.data.msg, '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                removeAuthInfo();
-                window.location.href = '/'
-                isOutLogin = true;
-            }).catch(() => {
-                removeAuthInfo();
-                window.location.href = '/'
-                isOutLogin = true;
-            });
-        }
+        // if(isOutLogin && (response.data.status == '204')) {
+        //     isOutLogin = false;
+        //     vm.$confirm(response.data.msg, '提示', {
+        //         confirmButtonText: '确定',
+        //         cancelButtonText: '取消',
+        //         type: 'warning'
+        //     }).then(() => {
+        //         removeAuthInfo();
+        //         window.location.href = '/'
+        //         isOutLogin = true;
+        //     }).catch(() => {
+        //         removeAuthInfo();
+        //         window.location.href = '/'
+        //         isOutLogin = true;
+        //     });
+        // }
         // return response;
     }, function(error) {
         vm.$message.error('error!');

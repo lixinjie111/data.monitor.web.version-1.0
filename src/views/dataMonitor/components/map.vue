@@ -9,30 +9,25 @@ export default {
         return {
             id: "data-map-container",
             AMap: null,
-            mapOption: {  
-                center: this.$parent.defalutCenterPoint,
-                zoom: 11,
-                mapStyle: "amap://styles/7b007636f01d8a19e9cc2841a85dc083"
-            },
             linePath: [
-                [new AMap.LngLat(116.41, 39.93), new AMap.LngLat(116.43, 39.91)],
-                [new AMap.LngLat(116.380823,39.944022), new AMap.LngLat(116.370438,39.929083)]
+                [new AMap.LngLat(121.458138,31.230116), new AMap.LngLat(121.466721,31.215583)],
+                [new AMap.LngLat(121.508606,31.229676), new AMap.LngLat(121.498821,31.187685)]
             ],
             linePolygon: [
                 [
-                    new AMap.LngLat(116.40654,39.946872),
-                    new AMap.LngLat(116.404191,39.932851),
-                    new AMap.LngLat(116.413053,39.936289)
+                    new AMap.LngLat(121.467064,31.20002),
+                    new AMap.LngLat(121.487148,31.193266),
+                    new AMap.LngLat(121.467064,31.189888)
                 ],
                 [
-                    new AMap.LngLat(116.40786,39.95251),
-                    new AMap.LngLat(116.401079,39.939415),
-                    new AMap.LngLat(116.429146,39.938692)
+                    new AMap.LngLat(121.477707,31.213675),
+                    new AMap.LngLat(121.471012,31.19958),
+                    new AMap.LngLat(121.498135,31.201342)
                 ],
                 [
-                    new AMap.LngLat(116.46, 39.93),
-                    new AMap.LngLat(116.44, 39.91),
-                    new AMap.LngLat(116.49, 39.91)
+                    new AMap.LngLat(121.502426,31.21573),
+                    new AMap.LngLat(121.499165,31.203691),
+                    new AMap.LngLat(121.514614,31.206187)
                 ]
             ],
             polygonStyle: [
@@ -60,7 +55,7 @@ export default {
         }
     },
     mounted() {
-        this.AMap = new AMap.Map(this.id, this.mapOption);
+        this.AMap = new AMap.Map(this.id, this.$parent.$parent.defaultMapOption);
         this.getRoadData();
     },
     methods: {
@@ -97,6 +92,7 @@ export default {
             });
             // 缩放地图到合适的视野级别
             this.AMap.setFitView();
+            this.$parent.$parent.changeCenterPoint = this.AMap.getCenter();
         },
         drawPolygon(i) {
             let _this = this,
