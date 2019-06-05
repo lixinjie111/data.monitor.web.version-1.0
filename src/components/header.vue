@@ -35,7 +35,7 @@ export default {
               {id:1,name:'概览',path:'/dataMonitor'},
               {id:2,name:'车辆',path:'/carMonitor'},
               {id:3,name:'路网',path:'/roadMonitor'},
-              {id:4,name:'路测设备',path:'/sideDeviceMonitor'}
+              {id:4,name:'路测设备',path:'/sideDevice'}
             ],
             responseData: {
                 timestamp: new Date().getTime()
@@ -134,7 +134,7 @@ export default {
     // background-color: rgba(255, 255, 255, .1);
     // background-color: rgba(0, 0, 0, .2);
     background: linear-gradient(rgba(0, 0 ,0 , .4) 50%, rgba(0, 0 ,0 , 0)); /* 标准的语法 */
-    
+
     .logo-wrap {
         float: left;
         padding: 5px 0;

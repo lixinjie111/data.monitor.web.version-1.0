@@ -10,6 +10,7 @@
   </div>
 </template>
 <script>
+  import { getDevDis } from '@/api/sideDeviceMonitor'
   export default {
     name: "MapContainer",
     data() {
@@ -31,31 +32,122 @@
         responseData: {},
         options:[
           {
-            'id':1,
+            'id':3,
             'text':'红绿灯',
             'isActive':true
           },
           {
-            'id':2,
+            'id':4,
             'text':'RSU',
             'isActive':false
           },
           {
-            'id':3,
+            'id':6,
             'text':'路侧点',
             'isActive':false
           }
-        ]
+        ],
+        disParams:[],
+        lightList:[],
+        rcuList:[],
+        sideList:[]
       }
     },
     methods: {
       getMarkers(item) {
-        item.isActive=!item.isActive;
+        if(item.id==1){
+          this.disParams.push(3);
+        }else{
+          item.isActive=!item.isActive;
+          if(item.isActive){
+            this.disParams.push(item.id);
+          }else{
+            var index = this.disParams.indexOf(item.id);
+            if (index > -1) {
+              this.disParams.splice(index, 1);
+              //取消选中，将设备从地图中消除
+              this.removeDevice(item.id);
+            }
+          }
+        }
+        getDevDis({
+          'devTypes': this.disParams,
+        }).then(res => {
+
+        });
+      },
+      deviceMap(data){
+        var _this = this;
+        if(data.length>0) {
+          var position;
+          data.forEach(function (item) {
+            position = new AMap.LngLat(item.longitude, item.latitude);
+            var newPosition;
+            var marker;
+            AMap.convertFrom(position, 'gps', function (status, result) {
+              if (result.info === 'ok') {
+                newPosition = result.locations[0];
+              }
+              //如果地图上有该设备，无需重新绘制
+              /*var flag = false;
+              _this.deviceMarkerList.forEach(function (item) {
+                if(item.getPosition()[0] == newPosition[0] &&item.getPosition()[1] == newPosition[1]){
+                  flag=true;
+                }
+              })*/
+              //红绿灯
+              if(item.type==3){
+                marker = new AMap.Marker({
+                  position: newPosition,
+                  icon: 'static/images/sideDevice/1.png', // 添加 Icon 图标 URL
+                });
+                _this.AMap.add(marker);
+                 _this.lightList.push(marker)
+              }
+              //rcu
+              if(item.type==4){
+                marker = new AMap.Marker({
+                  position: newPosition,
+                  icon: 'static/images/sideDevice/2.png', // 添加 Icon 图标 URL
+                });
+                _this.AMap.add(marker);
+                _this.rcuList.push(marker)
+              }
+              if(item.type==6){
+                marker = new AMap.Marker({
+                  position: newPosition,
+                  icon: 'static/images/sideDevice/3.png', // 添加 Icon 图标 URL
+                });
+                _this.AMap.add(marker);
+                _this.sideList.push(marker)
+              }
+
+            })
+          })
+        }
+      },
+      removeDevice(type){
+        if(type==3&&this.lightList.length>0){
+          this.AMap.remove(this.lightList);
+          this.lightList=[];
+        }
+        if(type==4&&this.rcuList.length>0){
+          this.AMap.remove(this.rcuList);
+          this.rcuList=[];
+        }
+        if(type==6&&this.sideList.length>0){
+          this.AMap.remove(this.sideList);
+          this.sideList=[];
+        }
       }
     },
     mounted() {
      /* this.initWebSocket();*/
       this.AMap = new AMap.Map(this.id, this.mapOption);
+      var item = {
+        'id':'1'
+      };
+      this.getMarkers(item);
     }
   }
 </script>
