@@ -46,7 +46,7 @@ export default {
                 action: 'vehicleList',
                 token: 'fpx',
                 vehicleIds: ''
-            }		
+            }
 		}
 	},
 	created() {
@@ -201,8 +201,8 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-@import '@/assets/scss/theme.scss'; 
-.right-list-wrap {                  
+@import '@/assets/scss/theme.scss';
+.right-list-wrap {
 	.c-car-list {
 		cursor: pointer;
 		padding: 14px 12px;
@@ -273,7 +273,7 @@ export default {
 			height: 55px;
 			margin-top: 42px;
 			margin-bottom: 27px;
-			line-height: 26px;    
+			line-height: 26px;
 			@include layoutMode(all);
 			.car-img {
 				width: 110px;

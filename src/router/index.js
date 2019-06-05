@@ -11,7 +11,7 @@ const DataMonitor = resolve => require(['@/views/dataMonitor/index'], resolve)
 const CarMonitor = resolve => require(['@/views/carMonitor/index'], resolve)
 const SingleCarMonitor = resolve => require(['@/views/carMonitor/singleCarMonitor'], resolve)
 const RoadMonitor = resolve => require(['@/views/roadMonitor/index'], resolve)
-const EquipmentMonitor = resolve => require(['@/views/equipmentMonitor/index'], resolve)
+const SideDeviceMonitor = resolve => require(['@/views/sideDeviceMonitor/index'], resolve)
 const MonitorManage = resolve => require(['@/views/monitorManage/index'], resolve)
 const MonitorVideo = resolve => require(['@/views/monitorManage/monitorVideo.vue'], resolve)
 
@@ -69,9 +69,9 @@ export default new Router({
       showHeader: true
     }
   },{
-    path: '/equipmentMonitor',
-    name: 'EquipmentMonitor',
-    component: EquipmentMonitor,
+    path: '/sideDeviceMonitor',
+    name: 'SideDeviceMonitor',
+    component: SideDeviceMonitor,
     meta: {
       showHeader: true
     }

@@ -47,7 +47,7 @@
          </li>
          <li>
            <span class="text-font">{{drivingStatistics.avgSpeed}}</span>
-           <span class="text-style">KM/h</span>
+           <span class="text-style">KM/H</span>
          </li>
          <li>
            <span class="text-style">平均速度</span>

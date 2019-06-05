@@ -34,7 +34,7 @@ export default {
 	},
 	data () {
 		return {
-			responseData: []	
+			responseData: []
 		}
 	},
 	computed: {
@@ -56,6 +56,7 @@ export default {
 	},
 	methods: {
 		requestFunc() {
+		  debugger
 			// console.log("获取--"+ this.title +"--数据");
 			this.requestUrl({}).then(res => {
 				this.responseData = res.data.data;
@@ -88,7 +89,7 @@ export default {
 		}
 		.c-circle-inner {
 			position: absolute;
-			top: 0; 
+			top: 0;
 			left: 0;
 			width: 100%;
 			height: 100%;

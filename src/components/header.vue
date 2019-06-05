@@ -1,6 +1,6 @@
 <template>
 	<div class="header clearfix">
-        <router-link tag="a" class="logo-wrap" to="/">  
+        <router-link tag="a" class="logo-wrap" to="/">
             <img class="logo" src="@/assets/images/logo.png">
         </router-link>
         <ul class="menu-box clearfix">
@@ -31,7 +31,7 @@ export default {
               {id:1,name:'概览',path:'/dataMonitor'},
               {id:2,name:'车辆',path:'/carMonitor'},
               {id:3,name:'路网',path:'/roadMonitor'},
-              {id:4,name:'路测设备',path:'/equipmentMonitor'}
+              {id:4,name:'路测设备',path:'/sideDeviceMonitor'}
             ],
             responseData: {
                 timestamp: new Date().getTime()
@@ -79,8 +79,8 @@ export default {
     }
 }
 </script>
-<style scoped lang="scss"> 
-@import '@/assets/scss/theme.scss'; 
+<style scoped lang="scss">
+@import '@/assets/scss/theme.scss';
 .header {
     position: absolute;
     left: 0;

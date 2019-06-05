@@ -28,17 +28,80 @@
         <span>{{vehicleCount}}</span>
       </div>
     </div>
-    <div class="pre-warning" v-show="warningData.show">
-      <div class="pre-warning-img pre-warning-info" v-bind:style="{background:warningData.warningColor}">
+    <!--v-show="warningData.show"-->
+
+    <div class="pre-warning" v-for="item in warningList">
+      <div v-show="item.type==1" class="warning-position" :style="{top:item.top+'px'}">
+        <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
+          <img src="@/assets/images/car/car-19.png"/>
+        </div>
+        <div class="pre-warning-style pre-warning-info">
+          <p>
+            <span class="pre-warning-font">60</span>米
+          </p>
+          <p>向前碰撞预警</p>
+        </div>
+      </div>
+      <div v-show="item.type==2" class="warning-position" :style="{top:item.top+'px'}">
+        <div class="pre-warning-img pre-warning-info" style="background: #fd8610">
+          <img src="@/assets/images/car/car-24.png"/>
+        </div>
+        <div class="pre-warning-style pre-warning-info">
+          <p>低光照度开灯提醒</p>
+        </div>
+      </div>
+      <div v-show="item.type==3" class="warning-position" :style="{top:item.top+'px'}">
+        <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
+          <img src="@/assets/images/car/car-25.png"/>
+        </div>
+        <div class="pre-warning-style pre-warning-info">
+          <p>车道偏离预警</p>
+        </div>
+      </div>
+      <div v-show="item.type==4" class="warning-position" :style="{top:item.top+'px'}">
+        <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
+          <img src="@/assets/images/car/car-26.png"/>
+        </div>
+        <div class="pre-warning-style pre-warning-info">
+          <p>前车启动提醒</p>
+        </div>
+      </div>
+    </div>
+    <!--<div class="pre-warning knock-warning" :style="{display:isShow}" v-for="item in warningList">
+      <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
         <img src="@/assets/images/car/car-19.png"/>
       </div>
       <div class="pre-warning-style pre-warning-info">
         <p>
-          <span class="pre-warning-font">{{warningData.dist}}</span>米
+          <span class="pre-warning-font">60</span>米
         </p>
-        <p>{{warningData.msg}}</p>
+        <p>向前碰撞预警</p>
       </div>
     </div>
+    <div class="pre-warning light-warning" >
+      <div class="pre-warning-img pre-warning-info" style="background: #fd8610">
+        <img src="@/assets/images/car/car-24.png"/>
+      </div>
+      <div class="pre-warning-style pre-warning-info">
+        <p>低光照度开灯提醒</p>
+      </div>
+    </div>
+    <div class="pre-warning deviate-warning" >
+      <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
+        <img src="@/assets/images/car/car-25.png"/>
+      </div>
+      <div class="pre-warning-style pre-warning-info">
+        <p>车道偏离预警</p>
+      </div>
+    </div>
+    <div class="pre-warning start-warning"  >
+      <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
+        <img src="@/assets/images/car/car-26.png"/>
+      </div>
+      <div class="pre-warning-style pre-warning-info">
+        <p>前车启动提醒</p>
+      </div>
+    </div>-->
     <!--<img src="@/assets/images/car/car-23.png" class="host-car"/>-->
     <div class="real-traffic" id="realTraffic">
 
@@ -79,7 +142,27 @@
         vehicleCount:0,
         cloudCount:0,
         headingAngle:0,
-        isInit:true
+        isInit:true,
+        k:0,
+        isShow:'none',
+        warningList:[
+          {
+            "type":"1",
+            "top":130
+          },
+          {
+            "type":"2",
+            "top":246
+          },
+          {
+            "type":"3",
+            "top":360
+          },
+          {
+            "type":"4",
+            "top":476
+          }
+        ]
       }
     },
     props:{
@@ -139,6 +222,22 @@
         var json = JSON.parse(mesasge.data);
         var data = json.result;
         var type = json.action;
+        _this.k++;
+        console.log(_this.k)
+        if(_this.k==10){
+//          $('#addBox').show().fadeIn();
+//          $('#addBox').delay (3000).fadeOut ();
+          _this.isShow = 'block';
+          var time = setTimeout(function () {
+            _this.isShow='none';
+            //后面所有的上移
+            var warningList = document.querySelectorAll('.pre-warning');
+            warningList.forEach(function (item) {
+
+            })
+
+          },3000)
+        }
         var position = new AMap.LngLat(data.longitude,data.latitude);
         var newPosition;
         AMap.convertFrom(position, 'gps', function (status, result) {
@@ -753,11 +852,25 @@
   .pre-warning{
     position: absolute;
     right: 0px;
-    top: 130px;
+    /*width: 0px;*/
     width: 250px;
-    height: 100px;
+   /* height: 100px;*/
     color: #fff;
     z-index: 2;
+    transition:width 2s;
+  }
+  .knock-warning{
+    top: 130px;
+  }
+  .light-warning{
+    top: 246px;
+    display: none;
+  }
+  .deviate-warning{
+    top: 360px;
+  }
+  .start-warning{
+    top: 476px;
   }
   .pre-warning-img{
     background: #ae3717;
@@ -787,5 +900,8 @@
     width: 18px;
     margin-left: -9px;
     z-index: 999;
+  }
+  .warning-position{
+    position: relative;
   }
 </style>
