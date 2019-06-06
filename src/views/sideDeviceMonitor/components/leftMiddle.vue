@@ -22,37 +22,24 @@
   </div>
 </template>
 <script>
+  import { getDevStatus } from '@/api/sideDeviceMonitor'
     export default {
         data() {
             return {
               type:1,
-              filterData:[
-                {
-                  'name':'高速公路',
-                  'angle':'270',
-                  'count':15
-                },
-                {
-                  'name':'二级公路',
-                  'angle':'200',
-                  'count':12
-                },
-                {
-                  'name':'三级公路',
-                  'angle':'270',
-                  'count':23
-                },
-                {
-                  'name':'封闭道路',
-                  'angle':'270',
-                  'count':13
-                }
-              ]
+              filterData:[]
             }
         },
-        methods: {},
+        methods: {
+          getDevStatus() {
+            var _this = this;
+            getDevStatus().then(res => {
+              this.filterData = res.data;
+            });
+          }
+        },
         mounted() {
-
+          this.getDevStatus();
         }
     }
 </script>

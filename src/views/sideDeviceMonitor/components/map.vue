@@ -143,7 +143,7 @@
     },
     mounted() {
      /* this.initWebSocket();*/
-      this.AMap = new AMap.Map(this.id, this.mapOption);
+      /*this.AMap = new AMap.Map(this.id, this.mapOption);*/
       var item = {
         'id':'1'
       };

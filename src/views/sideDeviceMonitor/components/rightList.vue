@@ -1,7 +1,7 @@
 <template>
   <div class="side-device-info">
     <div class="side-device-style">
-      <div class="side-device-size" @click="dialogVisible=true">
+      <div class="side-device-size" @click="queryDeviceDetail">
         <video-player class="vjs-custom-skin" :options="option1" :width="330" :height="210"></video-player>
       </div>
       <div class="side-device-size">
@@ -20,22 +20,22 @@
           <div class="side-device-left">
             <ul class="device-left-ul clearfix">
               <li>
-                <el-select v-model="provinceValue" placeholder="请选择" :size="mini">
+                <el-select v-model="provinceValue" placeholder="请选择"  @change="getCitys" >
                   <el-option
                     v-for="item in provinceOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code">
                   </el-option>
                 </el-select>
               </li>
-              <li>
-                <el-select v-model="cityValue" placeholder="请选择" :size="mini">
+              <li >
+                <el-select v-model="cityValue" placeholder="请选择" @change="getTree">
                   <el-option
                     v-for="item in cityOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code">
                   </el-option>
                 </el-select>
               </li>
@@ -51,13 +51,15 @@
               </div>
             </div>
             <div class="device-distribute">
-              <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+              <el-tree :props="props"
+                       :load="loadNode"
+                       lazy></el-tree>
             </div>
           </div>
           <div class="side-device-right">
-            <tusvn-map :target-id="'deviceMap'" ref="tusvnMap" >
+            <!--<tusvn-map :target-id="'deviceMap'" ref="tusvnMap" >
 
-            </tusvn-map>
+            </tusvn-map>-->
             <div class="side-device-list">
               <p class="side-device-title">设备列表</p>
               <div class="device-list-style">
@@ -69,23 +71,26 @@
                   </ul>
                 </div>
                 <div class="table-row-group">
-                  <ul class="table-row">
+                  <ul class="table-row" v-for="(item,index) in deviceList" :key="item.deviceId">
                     <li class="table-cell device-num">
-                      <img src="@/assets/images/monitorManage/monitor-3.png" class="monitor-device-img-1"/>
-                      <span class="monitor-device-text">N-191-302</span>
+                      <img src="@/assets/images/monitorManage/monitor-3.png" class="monitor-device-img-1" v-show="item.type==1"/>
+                      <img src="@/assets/images/monitorManage/monitor-4.png" class="monitor-device-img-2" v-show="item.type==2"/>
+                      <span class="monitor-device-text">{{item.deviceId}}</span>
                     </li>
                     <li class="table-cell">
                       <span class="monitor-device-symbol"></span>
                     </li>
                     <li class="table-cell">
-                      <el-switch
-                        v-model="value"
+                      <!--<el-switch
                         active-color="#13ce66"
-                        inactive-color="#ff4949">
-                      </el-switch>
+                        inactive-color="#5e5970"  v-model="item.value" :change='switchChange(item)'>
+                      </el-switch>-->
+                      <div class="c-switch-style" :class="[item.value?active:unActive]" @click="switchChange(item)" v-show="item.type==1">
+                        <i></i>
+                      </div>
                     </li>
                   </ul>
-                  <ul class="table-row">
+                  <!--<ul class="table-row">
                     <li class="table-cell device-num">
                       <img src="@/assets/images/monitorManage/monitor-4.png" class="monitor-device-img-2"/>
                       <span class="monitor-device-text">N-191-302</span>
@@ -100,7 +105,7 @@
                         inactive-color="#ff4949">
                       </el-switch>
                     </li>
-                  </ul>
+                  </ul>-->
                 </div>
               </div>
               <p class="side-device-title">监控视频</p>
@@ -116,7 +121,7 @@
 </template>
 <script>
   import VideoPlayer from "../../../../node_modules/vue-video-player/src/player.vue";
-
+  import {getDeviceList,getVideoByNum,getSideTree} from '@/api/sideDeviceMonitor'
   const isProduction = process.env.NODE_ENV === 'production'
   import TusvnMap from '@/components/Tusvn3DMap2'
     export default {
@@ -125,55 +130,20 @@
               option1:{},
               option2:{},
               option3:{},
-              provinceOptions: [{
-                value: '1',
-                label: '上海'
-              }],
+              provinceOptions: [],
               provinceValue: '',
-              cityOptions:[{
-                value: '1',
-                label: '黄浦区'
-              },{
-                value: '2',
-                label: '徐汇区'
-              },{
-                value: '3',
-                label: '长宁区'
-              },{
-                value: '4',
-                label: '静安区'
-              }],
+              cityOptions:[],
+              treeList:[],
               cityValue:'',
               dialogVisible:false,
-              data: [{
-                id: 1,
-                label: '一级 1',
-                children: [{
-                  id: 4,
-                  label: '二级 1-1',
-                  children: [{
-                    id: 9,
-                    label: '三级 1-1-1'
-                  }, {
-                    id: 10,
-                    label: '三级 1-1-2'
-                  }]
-                }]
-              }, {
-                id: 2,
-                label: '一级 2',
-                children: [{
-                  id: 5,
-                  label: '二级 2-1'
-                }, {
-                  id: 6,
-                  label: '二级 2-2'
-                }]
-              }],
-              defaultProps: {
+              props:{
+                label: 'name',
                 children: 'children',
-                label: 'label'
+                isLeaf: 'leaf'
               },
+              deviceList:[],
+              active:'active',
+              unActive:'close-active'
 
             }
         },
@@ -204,10 +174,100 @@
               height:'100%'
             }
             return option;
+          },
+          getDeviceList(){
+            console.log('查询设备列表');
+            var _this = this;
+            _this.deviceList=[];
+            getDeviceList({
+              'roadSiderId': '130101_001',
+            }).then(res => {
+              _this.deviceList = res.data;
+              _this.deviceList.forEach(function (item, index) {
+                if(index%2==0){
+                  item.type=1;
+                }else{
+                  item.type=2;
+                }
+                if(index==0){
+                  _this.$set(item, 'value', true);
+                  _this.getVideoByNum();
+                }else{
+                  _this.$set(item, 'value', false);
+                }
+                /*_this.flagObj.push(true);*/
+
+               /* item.value=true;*/
+              })
+            })
+          },
+          switchChange(item){
+            item.value=!item.value
+            if(item.value&&item.value==1){
+              //根据摄像头调取视频
+              this.getVideoByNum();
+            }
+          },
+          getVideoByNum(){
+            getVideoByNum({
+              "protocal": 1,
+              "serialNum": "3402000000132000001401"
+            }).then(res => {
+              var options = this.getPlayerOptions();
+              options.sources[0].src =  res.data.rtmp;;
+              this.option3 =options;
+            })
+          },
+          queryDeviceDetail(){
+            var _this = this;
+            this.dialogVisible=true;
+            this.getDeviceList();
+            this.getSideTree();
+            /*_this.provinceOptions.forEach(function (item) {
+              console.log(item.value+"-----"+item.label)
+            })*/
+          },
+          loadNode(node, resolve){
+
+          },
+          getSideTree(){
+            var _this = this;
+            _this.treeList=[];
+            getSideTree().then(res=>{
+              _this.treeList = res.data;
+              _this.provinceOptions=[];
+              if(_this.treeList.length>0){
+                _this.treeList.forEach(function (item) {
+                  var obj={};
+                  obj.code = item.code;
+                  obj.name = item.name;
+                  _this.provinceOptions.push(obj);
+                })
+              }
+            });
+
+          },
+          getCitys(code){
+            var _this = this;
+            _this.cityValue='';
+            _this.cityOptions=[];
+            _this.treeList.forEach(function (item) {
+              if(item.code==code){
+                var cityList = item.dataList;
+                cityList.forEach(function (e) {
+                  var obj={};
+                  obj.code = e.code;
+                  obj.name = e.name;
+                  _this.cityOptions.push(obj);
+                })
+              }
+            })
+          },
+          getTree(){
+
           }
         },
         mounted() {
-
          /* var options = this.getPlayerOptions();
           options.sources[0].src = 'rtmp://113.208.118.61:11935/hls/34020000001320000002_3402000000132000000201_0200000002';
           this.option3 =options;*/
@@ -231,12 +291,29 @@
     height: 240px;
   }
   .device-left-ul .el-input__inner{
-    backgound-color:#5e5970;
+    background-color: #262626 ;
     border:1px solid #5e5970;
     -webkit-border-radius: 0px;
     -moz-border-radius: 0px;
     border-radius: 0px;
+    width: 90px;
+    height: 30px;
   }
+   .device-left-ul .el-select .el-input.is-focus .el-input__inner,.el-select .el-input__inner:focus{
+     border-color: #5e5970;
+   }
+   .el-popper .popper__arrow, .el-popper .popper__arrow::after{
+     border-style:none!important;
+   }
+   .el-select-dropdown{
+     background-color: #262626!important;
+     border:1px solid #535457!important;
+     margin-top: -2px !important;
+   }
+
+   .el-select-dropdown__list{
+     padding: 0px !important;
+   }
   .device-distribute .el-tree{
     background: #262626;
     color: #cccccc;
@@ -252,7 +329,34 @@
   }
 </style>
 <style lang="scss" scoped>
-
+  .active{
+    background: #dc8c00;
+    i{
+      right:0;
+    }
+  }
+  .close-active{
+    background: #5e5970;
+    i{
+      left:0;
+    }
+  }
+  .c-switch-style{
+    width: 36px;
+    height: 14px;
+    border-radius: 7px;
+    /*background: #5e5970;*/
+    position: relative;
+    display: inline-block;
+    i{
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      position: absolute;
+     /* left:0;*/
+    }
+  }
   .side-device-info{
     position: absolute;
     right:20px;
@@ -274,7 +378,7 @@
         float: left;
         width: 90px;
         margin-right:10px;
-        height:30px;
+        line-height: 40px;
       }
     }
     .side-device-detail{

@@ -1,17 +1,23 @@
 <template>
   <div>
-    <h3 class="c-title">累计数据</h3>
-    <div id="sideTotalId" class="side-total-echarts"></div>
+
+      <h3 class="c-title">累计数据
+        <span class="c-sub-title">累计:{{count}}GB</span>
+      </h3>
+      <div id="sideTotalId" class="side-total-echarts"></div>
+
     <h3 class="c-title">设备实时数据</h3>
     <div id="sideRealId" class="side-real-echarts"></div>
   </div>
 </template>
 <script>
+  import {getTotalData} from '@/api/sideDeviceMonitor'
     export default {
         data() {
             return {
               sideTotalEcharts:{},
-              sideRealEcharts:{}
+              sideRealEcharts:{},
+              count:0
             }
         },
         methods: {
@@ -123,6 +129,11 @@
                 }]
             };
             return option;
+          },
+          getTotalData(){
+            getTotalData().then(res => {
+              this.count = res.data[0].total;
+            })
           }
         },
         mounted() {
@@ -132,6 +143,7 @@
           this.sideRealEcharts = this.$echarts.init(document.getElementById("sideRealId"));
           var realOption = this.realOption();
           this.sideRealEcharts.setOption(realOption);
+          this.getTotalData();
         }
     }
 </script>

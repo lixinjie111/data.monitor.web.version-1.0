@@ -14,14 +14,16 @@
 <script>
   import LeftTop from './components/leftTop.vue'
   import LeftMiddle from './components/leftMiddle.vue'
+  import CircleProgress from '@/components/circleProgress.vue'
   import LeftBottom from './components/leftBottom.vue'
   import MapContainer from './components/map.vue'
   import RightList from './components/rightList.vue'
   export default {
     data() {
-      return {}
+      return {
+      }
     },
-    components: { LeftTop,LeftMiddle,LeftBottom,MapContainer,RightList},
+    components: { LeftTop,CircleProgress,LeftMiddle,LeftBottom,MapContainer,RightList},
     methods: {},
     mounted() {
 
