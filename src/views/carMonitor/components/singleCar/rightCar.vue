@@ -13,8 +13,7 @@
       <!--<video src="movie.ogg" controls="controls" autoplay width="270" height="200">
         您的浏览器不支持 video 标签。
       </video>-->
-      <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions">
-      </video-player>
+      <video-player class="vjs-custom-skin" :options="playerOptions"></video-player>
       <!--<div id="cmsplayer" style="width:100%;height:100%"></div>-->
     </div>
     <p class="monitor-title right-title">感知数据</p>
@@ -275,6 +274,7 @@
           console.log('Socked连接失败',msg);
       },
       getMessage(msg){
+//        console.log("感知事件----")
           var that = this;
           var res = JSON.parse(msg.data);
           this.currentCar = res.result;
@@ -379,6 +379,7 @@
           // console.log(this.carsData.length);
           if(this.carsData && this.carsData.length > 0) {
             var carsDataformate = this.carsData.map(function(item,index,self){
+//              console.log("经度---"+item.longitude+"维度"+item.latitude)
                 var formateItem = that.mapPtToScrPt(item.longitude,item.latitude);
                /* //模拟动态数据
                 var numx = Math.random()*100,
@@ -396,7 +397,7 @@
     },
     destroyed(){
         //销毁Socket
-        this.socket.onclose = this.close
+        this.socket.close();
     }
   }
 </script>

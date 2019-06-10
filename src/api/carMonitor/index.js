@@ -1,6 +1,12 @@
 import axios from 'axios';
 import {HTTPURL} from '../requestUrl';
 
+
+/**
+ * 路侧设备
+ */
+
+
 /**
  * 车辆列表监控
  */

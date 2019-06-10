@@ -618,72 +618,6 @@
 
       var _this = this;
      _this.container = document.getElementById('canvasContainer');
-     /* var random=0.1;
-      //画上行三条线 random,color,order,i,start,end
-      var curve1 = new Curve();
-      curve1.drawLines(0.1,'#9D589D','up',0,[110, 142], [300, 58]);
-      var curve2 = new Curve();
-      curve2.drawLines(0.2,'#2e9d27','up',1,[110, 142], [300, 58]);
-      var curve3 = new Curve();
-      curve3.drawLines(0.3,'#d27a3a','up',2,[110, 142], [300, 58]);
-
-      //画下行三条线
-      var downCurve1 = new Curve();
-      downCurve1.drawLines(0.1,'#9D589D','down',0,[345, 60], [540, 155]);
-      var downCurve2 = new Curve();
-      downCurve2.drawLines(0.2,'#2e9d27','down',1,[345, 60], [540, 155]);
-      var downCurve3 = new Curve();
-      downCurve3.drawLines(0.3,'#d27a3a','down',2,[345, 60], [540, 155]);
-      var i=0;
-      var k=4;
-      var m = 8;
-
-      var j=0;
-      var k1=4;
-      var m1=8;
-      setInterval(function (e) {
-
-        if(i>=4){
-          i=0;
-          console.log('释放--');
-        }
-        if(k>=8){
-          k=4;
-        }
-        if(m>=12){
-          m=8;
-        }
-        if(j>=4){
-          j=0;
-          console.log('释放--');
-        }
-        if(k1>=8){
-          k1=4;
-        }
-        if(m1>=12){
-          m1=8;
-        }
-        //画上行的图片
-        var curve1 = new Curve();
-        curve1.drawImgs(0.1,'GPS','up',i,[110, 142], [300, 58]);
-        var curve2 = new Curve();
-        curve2.drawImgs(0.2,'CAN','up',k,[110, 142], [300, 58]);
-        var curve3 = new Curve();
-        curve3.drawImgs(0.3,'perception','up',m,[110, 142], [300, 58]);
-        i++;
-        k++;
-        m++;
-        //下行图片
-        var down1 = new Curve();
-        down1.drawImgs(0.1,'spat','down',j,[345, 60], [540, 155]);//信号灯
-        var down2 = new Curve()
-        down2.drawImgs(0.2,'v2x','down',k1,[345, 60], [540, 155]);
-        var down3 = new Curve()
-        down3.drawImgs(0.3,'rsi','down',m1,[345, 60], [540, 155]);//有大雾  road side information  信息预报
-        j++;
-        k1++;
-        m1++;
-      },1000)*/
       //速度和加速度
       _this.speedChart = _this.$echarts.init(document.getElementById('speedChart'));
       _this.accelerateChart = _this.$echarts.init(document.getElementById('accelerateChart'));
@@ -692,9 +626,10 @@
       _this.realReportWebSocket();
 
     },
-    beforeDestroy(){
-
-
+    destroyed(){
+      //销毁Socket
+      this.reportWebSocket.close();
+      this.websocket.close();
     }
   }
 </script>

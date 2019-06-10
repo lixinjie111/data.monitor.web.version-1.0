@@ -11,7 +11,7 @@ const DataMonitor = resolve => require(['@/views/dataMonitor/index'], resolve)
 const CarMonitor = resolve => require(['@/views/carMonitor/index'], resolve)
 const SingleCarMonitor = resolve => require(['@/views/carMonitor/singleCarMonitor'], resolve)
 const RoadMonitor = resolve => require(['@/views/roadMonitor/index'], resolve)
-const EquipmentMonitor = resolve => require(['@/views/equipmentMonitor/index'], resolve)
+const SideDeviceMonitor = resolve => require(['@/views/sideDeviceMonitor/index'], resolve)
 const MonitorManage = resolve => require(['@/views/monitorManage/index'], resolve)
 const MonitorVideo = resolve => require(['@/views/monitorManage/monitorVideo.vue'], resolve)
 
@@ -20,6 +20,7 @@ const EchartsTest = resolve => require(['@/views/test/echarts'], resolve)
 const MapTest = resolve => require(['@/views/test/map'], resolve)
 const videoTest = resolve => require(['@/views/test/video'], resolve)
 const MarkerTest = resolve => require(['@/views/test/marker'], resolve)
+const TreeTest = resolve => require(['@/views/test/tree'], resolve)
 
 
 Vue.use(Router)
@@ -69,9 +70,9 @@ export default new Router({
       showHeader: true
     }
   },{
-    path: '/equipmentMonitor',
-    name: 'EquipmentMonitor',
-    component: EquipmentMonitor,
+    path: '/sideDeviceMonitor',
+    name: 'SideDeviceMonitor',
+    component: SideDeviceMonitor,
     meta: {
       showHeader: true
     }
@@ -100,6 +101,13 @@ export default new Router({
     path: '/markerTest',
     name: 'MarkerTest',
     component: MarkerTest,
+    meta: {
+      showHeader: false
+    }
+  },{
+    path: '/treeTest',
+    name: 'TreeTest',
+    component: TreeTest,
     meta: {
       showHeader: false
     }
