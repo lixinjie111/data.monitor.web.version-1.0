@@ -3,7 +3,7 @@ import axios from 'axios'
 // Element-ui
 import ElementUI from 'element-ui'
 
-axios.defaults.withCredentials = true;
+// axios.defaults.withCredentials = true;
 Vue.prototype.$http = axios;
 
 // 避免在账号登录失效后提示多次
@@ -15,9 +15,9 @@ function axiosFilter(vm) {
     // request
     axios.create({
       baseURL: cfg.url,
-      withCredentials: true,
+      // withCredentials: true,
       headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
+        'Content-Type': 'application/json;charset=UTF-8'
       },
       responseType: 'json',
       transformResponse: [function(data) { //后端发送过来的数据
@@ -30,8 +30,12 @@ function axiosFilter(vm) {
 
     // response
     axios.interceptors.response.use(function(response) {
-        let returnStatus = response.data.status || response.data.code;
+        let returnStatus = response.data.status || response.data.code || response.data.state;
         switch (returnStatus.toString()) {
+            case '1': {
+                return Promise.resolve(response);
+                break;
+            }
             case '200': {
                 return Promise.resolve(response);
                 break;

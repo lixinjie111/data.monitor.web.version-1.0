@@ -10,7 +10,14 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+        // '/apiUrl': {
+        //     target: 'http://10.0.1.22:8085', //迪路地图道路点
+        //     pathRewrite: {'^/apiUrl' : ''},//路径的重写
+        //     changeOrigin: true,     // target是域名的话，需要这个参数，
+        //     secure: false          // 设置支持https协议的代理
+        // }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

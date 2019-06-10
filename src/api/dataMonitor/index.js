@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {HTTPURL} from '../requestUrl';
+import {HTTPURL, DLURL} from '../requestUrl';
 
 /**
  * 车辆列表监控
@@ -11,10 +11,15 @@ import {HTTPURL} from '../requestUrl';
  */
  export const getBaseStat = params => {return axios.post(`${HTTPURL}g/baseStat/getBaseStat`, params).then(res => res.data); };
 /**
+ * 获取路网信息（地图呈现）道路ID数据
+ * I_G1_02
+ */
+ export const getRoadCenterIds = params => {return axios.get(`${DLURL}dl/getRoadCenterIds.do`, {params: params}).then(res => res.data); };
+/**
  * 获取路网信息（地图呈现）数据
  * I_G1_02
  */
- export const getRoadData = params => {return axios.post(`${HTTPURL}getRoadData`, params).then(res => res.data); };
+ export const getRoadCenterPoints = params => {return axios.get(`${DLURL}dl/getRoadCenterPoints.do`, {params: params}).then(res => res.data); };
 /**
  * 获取道路级别统计信息
  * I_G1_03
