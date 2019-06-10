@@ -3,8 +3,6 @@
 </template>
 <script>
 import { getRoadCenterIds, getRoadCenterPoints } from '@/api/dataMonitor'
-import result from '@/views/test/dlMapData.js'
-// import result from '@/views/test/dlMapData2.js'
 export default {
     name: "MapContainer",
     data () {
@@ -15,8 +13,6 @@ export default {
     },
     mounted() {
         this.AMap = new AMap.Map(this.id, this.$parent.$parent.defaultMapOption);
-        // this.getRoadCenterIds();
-        // this.getRoadCenterPoints();
         this.getWms();
     },
     methods: {
@@ -28,41 +24,6 @@ export default {
                 params:{'LAYERS': 'shanghai_qcc:gd_road_centerline',VERSION:'1.1.0'}
             })
             wms.setMap(this.AMap)
-        },
-        getRoadCenterIds() {
-            // console.log('获取路网信息（地图呈现）道路ID数据');
-            getRoadCenterIds().then(res => {
-                // console.log(res);
-                // 画线
-                // if(this.linePath && this.linePath.length) {
-                //     this.linePath.forEach((item, index) => {
-                //         this.drawLine(index);
-                //     });
-                // }
-                // // 画区域
-                // if(this.polygonPoint && this.polygonPoint.length) {
-                //     this.polygonPoint.forEach((item, index) => {
-                //         this.drawPolygon(index);
-                //     });
-                // }
-            });
-        },
-        getRoadCenterPoints() {
-            // console.log('获取路网信息（地图呈现）数据');
-            getRoadCenterPoints({
-                roadCenterId: ''
-            }).then(res => {
-                console.log(res);
-                this.linePath = res.data;
-                // 画线
-                for(let attr in this.linePath) {
-                    this.drawLine(attr);
-                }
-                // 画区域
-                // for(let attr in this.polygonPoint) {
-                //     this.drawPolygon(attr);
-                // }
-            });
         },
         drawLine(attr) {
             let _this = this;
