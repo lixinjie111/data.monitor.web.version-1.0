@@ -48,3 +48,46 @@ export const getVideoByNum = params => {return axios.post(`${HTTPURL}lc/realData
 */
 export const getSideTree = params => {return axios.post(`${HTTPURL}lc/baseStat/getRoadSiderTree`, params).then(res => res.data); };
 
+/**
+ * 异步请求设备列表
+ * **/
+export const getDevListByRoadId = params => {return axios.post(`${HTTPURL}lc/baseStat/getAllRoadSideList`, params).then(res => res.data); };
+
+/**
+ * 查找路侧设备列表
+ * **/
+
+export const getRoadList = params => {return axios.post(`${HTTPURL}lc/baseStat/getPriorRoadSider`, params).then(res => res.data); };
+
+/**
+ * 根据城市编码查询设备总数和路侧点总数
+ * **/
+export const getDeviceCountByCity = params => {return axios.post(`${HTTPURL}lc/baseStat/getRspAndBindDevCount`, params).then(res => res.data); };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,7 +1,7 @@
 <template>
   <!-- <div class="c-circle-wrap clearfix c-car-list"> -->
   <div class="c-circle-wrap clearfix">
-    <h3 class="c-title">道路级别</h3>
+    <h3 class="c-title">设备状态</h3>
     <ul class="c-circle-ul clearfix" :class="filterData.length > 4 ? 'c-circle-more' : ''">
       <li class="c-circle-list" v-for="item of filterData" :key="item.name">
         <div class="c-circle">

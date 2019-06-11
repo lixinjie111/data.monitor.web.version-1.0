@@ -16,7 +16,7 @@
     data() {
       return {
         id: "device-map-container",
-        AMap: null,
+        map: null,
         mapOption: {
           center: this.$parent.defalutCenterPoint,
           zoom: 11,
@@ -32,18 +32,18 @@
         responseData: {},
         options:[
           {
-            'id':3,
+            'id':1,
             'text':'红绿灯',
             'isActive':true
           },
           {
-            'id':4,
-            'text':'RSU',
+            'id':2,
+            'text':'路侧点',
             'isActive':false
           },
           {
-            'id':6,
-            'text':'路侧点',
+            'id':3,
+            'text':'RSU',
             'isActive':false
           }
         ],
@@ -55,99 +55,131 @@
     },
     methods: {
       getMarkers(item) {
-        if(item.id==1){
-          this.disParams.push(3);
+        var disParams=[];
+        if(item.id==0){
+          disParams.push(1);
+          this.getDevDis(disParams);
         }else{
           item.isActive=!item.isActive;
+          //当选中后才进行请求
           if(item.isActive){
-            this.disParams.push(item.id);
+            disParams.push(item.id);
+            console.log("选中的参数----"+disParams);
+            this.getDevDis(disParams);
           }else{
-            var index = this.disParams.indexOf(item.id);
+            /*var index = this.disParams.indexOf(item.id);
             if (index > -1) {
-              this.disParams.splice(index, 1);
+              this.disParams.splice(index, 1);*/
               //取消选中，将设备从地图中消除
               this.removeDevice(item.id);
             }
           }
-        }
+      },
+      getDevDis(disParams){
         getDevDis({
-          'devTypes': this.disParams,
+          'devTypes': disParams,
         }).then(res => {
-
+          console.log("长度-----"+res.data.length)
+          this.deviceMap(res.data);
         });
       },
       deviceMap(data){
         var _this = this;
         if(data.length>0) {
-          var position;
-          data.forEach(function (item) {
-            position = new AMap.LngLat(item.longitude, item.latitude);
-            var newPosition;
-            var marker;
-            AMap.convertFrom(position, 'gps', function (status, result) {
+          var resultData=[];
+          data.forEach(item=>{
+            let option;
+            if(item.longitude|| item.latitude){
+              option={
+                position:new AMap.LngLat(item.longitude, item.latitude),
+                type:item.type
+              }
+              resultData.push(option);
+            }
+          });
+          var count=0;
+          //转成高德地图的坐标
+          resultData.forEach((item, index, arr)=>{
+            AMap.convertFrom(resultData[index].position, 'gps', function (status, result){
+              /*console.log("============="+status);*/
               if (result.info === 'ok') {
-                newPosition = result.locations[0];
-              }
-              //如果地图上有该设备，无需重新绘制
-              /*var flag = false;
-              _this.deviceMarkerList.forEach(function (item) {
-                if(item.getPosition()[0] == newPosition[0] &&item.getPosition()[1] == newPosition[1]){
-                  flag=true;
-                }
-              })*/
-              //红绿灯
-              if(item.type==3){
-                marker = new AMap.Marker({
-                  position: newPosition,
-                  icon: 'static/images/sideDevice/1.png', // 添加 Icon 图标 URL
-                });
-                _this.AMap.add(marker);
-                 _this.lightList.push(marker)
-              }
-              //rcu
-              if(item.type==4){
-                marker = new AMap.Marker({
-                  position: newPosition,
-                  icon: 'static/images/sideDevice/2.png', // 添加 Icon 图标 URL
-                });
-                _this.AMap.add(marker);
-                _this.rcuList.push(marker)
-              }
-              if(item.type==6){
-                marker = new AMap.Marker({
-                  position: newPosition,
-                  icon: 'static/images/sideDevice/3.png', // 添加 Icon 图标 URL
-                });
-                _this.AMap.add(marker);
-                _this.sideList.push(marker)
-              }
+                let _point = result.locations[0];
+                resultData[index].position = _point;
+                count ++;
+//                console.log("count-------"+count);
+                if(count == arr.length) {
+                  //绘制线的轨迹
+                  resultData.forEach(function (item) {
+                    if(item.type==1){
+                     /* console.log("红绿灯----"+item.position);*/
+                      var marker = new AMap.Marker({
+                        position: item.position,
+                        icon: 'static/images/sideDevice/1.png', // 添加 Icon 图标 URL
+                      });
+                      _this.map.add(marker);
+                      _this.lightList.push(marker)
+                    }
+                    //路侧点
+                    if(item.type==2){
+                     /* console.log("路测点----"+item.position);*/
+                      var marker = new AMap.Marker({
+                        position: item.position,
+                        icon: 'static/images/sideDevice/3.png', // 添加 Icon 图标 URL
+                      });
+                      _this.map.add(marker);
+                      _this.sideList.push(marker)
+                    }
+                    //rcu
+                    if(item.type==3){
+                      var marker = new AMap.Marker({
+                        position: item.position,
+                        icon: 'static/images/sideDevice/2.png', // 添加 Icon 图标 URL
+                      });
+                      _this.map.add(marker);
+                      _this.rcuList.push(marker)
 
-            })
+                    }
+                  })
+                }
+              }
+            });
           })
         }
       },
       removeDevice(type){
-        if(type==3&&this.lightList.length>0){
-          this.AMap.remove(this.lightList);
+        if(type==1&&this.lightList.length>0){
+          this.map.remove(this.lightList);
           this.lightList=[];
         }
-        if(type==4&&this.rcuList.length>0){
-          this.AMap.remove(this.rcuList);
+        if(type==3&&this.rcuList.length>0){
+          this.map.remove(this.rcuList);
           this.rcuList=[];
         }
-        if(type==6&&this.sideList.length>0){
-          this.AMap.remove(this.sideList);
+        if(type==2&&this.sideList.length>0){
+          this.map.remove(this.sideList);
           this.sideList=[];
         }
       }
     },
     mounted() {
-     /* this.initWebSocket();*/
-      /*this.AMap = new AMap.Map(this.id, this.mapOption);*/
+      this.map = new AMap.Map(this.id, this.mapOption);
+      /*var marker = new AMap.Marker({
+        position: [120.774007,31.286014],
+        icon: 'static/images/sideDevice/1.png', // 添加 Icon 图标 URL
+      });
+      120.774005,31.285981
+      this.map.add(marker);
+      var marker1 = new AMap.Marker({
+        position: [120.774005,31.285981],
+        icon: 'static/images/sideDevice/1.png', // 添加 Icon 图标 URL
+      });
+      this.map.add(marker1);*/
       var item = {
-        'id':'1'
+        'id':'0'
       };
       this.getMarkers(item);
+     /* var data=[{"type":'3','longitude':120.7688836,'latitude':31.2880208}]
+      this.deviceMap(data);*/
     }
   }
 </script>

@@ -21,6 +21,7 @@ const MapTest = resolve => require(['@/views/test/map'], resolve)
 const videoTest = resolve => require(['@/views/test/video'], resolve)
 const MarkerTest = resolve => require(['@/views/test/marker'], resolve)
 const TreeTest = resolve => require(['@/views/test/tree'], resolve)
+const SelectTest = resolve => require(['@/views/test/select'], resolve)
 
 
 Vue.use(Router)
@@ -108,6 +109,13 @@ export default new Router({
     path: '/treeTest',
     name: 'TreeTest',
     component: TreeTest,
+    meta: {
+      showHeader: false
+    }
+  },{
+    path: '/selectTest',
+    name: 'SelectTest',
+    component: SelectTest,
     meta: {
       showHeader: false
     }
