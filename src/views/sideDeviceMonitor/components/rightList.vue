@@ -16,8 +16,8 @@
           <span class="c-dialog-title">路侧点数据</span>
           <i class="c-dialog-close" @click="dialogVisible = false"></i>
         </div>
-        <div class="c-dialog-content">
-          <div class="c-scroll-wrap" style="top: 0px;">
+        <div class="device-dialog-content">
+
             <div class="side-device-left">
               <ul class="device-left-ul clearfix">
                 <li>
@@ -56,7 +56,7 @@
                          highlight-current node-key="code" ref="tree" :default-expanded-keys="defaultArr"></el-tree>
               </div>
             </div>
-            <div class="side-device-right">
+            <div class="side-device-right c-scroll-wrap">
               <!--<tusvn-map :target-id="'deviceMap'" ref="tusvnMap" >
 
               </tusvn-map>-->
@@ -114,7 +114,6 @@
                 </div>
               </div>
             </div>
-          </div>
         </div>
       </div>
     </div>
@@ -608,9 +607,16 @@
       margin-bottom: 30px;
     }
   }
+.device-dialog-content{
+  position: absolute;
+  left:0;
+  right:0;
+  top: 69px;
+  bottom:0;
+  padding:20px 0px 0px 20px;
   .side-device-left{
     width: 264px;
-    height: 650px;
+    height: 100%;
 
     .device-left-ul{
       margin-bottom: 20px;
@@ -633,9 +639,9 @@
   }
   .side-device-right{
     position: absolute;
-    top: 0;
+    top: 0!important;
     left: 296px;
-    bottom: 0;
+    bottom: 0!important;
     right: 0;
   }
   .side-device-list{
@@ -694,7 +700,7 @@
         width: 10px;
         height: 10px;
         border-radius: 50%;
-       /* background-color: #19cd2e;*/
+        /* background-color: #19cd2e;*/
         display: inline-block;
       }
       .monitor-device-img-1{
@@ -715,4 +721,6 @@
       border:1px solid #5e5970;
     }
   }
+}
+
 </style>

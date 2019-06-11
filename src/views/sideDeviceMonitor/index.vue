@@ -6,7 +6,7 @@
       <left-bottom></left-bottom>
     </div>
     <map-container></map-container>
-    <div class="c-view-side side-device-right">
+    <div class="c-view-side side-device-right  c-scroll-wrap">
       <right-list></right-list>
     </div>
   </div>
