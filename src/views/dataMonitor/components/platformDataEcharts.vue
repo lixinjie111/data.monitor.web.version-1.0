@@ -68,7 +68,7 @@ export default {
                 _result = _json.result.flow,
                 _curTime = this.$dateUtil.formatTime(parseInt(_json.result.curTime)).split(" ")[1];
             // console.log(_json.result.curTime);
-            console.log(_curTime);
+            // console.log(_curTime);
             this.responseData.total = _json.result.total != undefined ? _json.result.total : this.responseData.total;
             // countNum: 0, maxNum: 30, maxGroup: 10, curGroup: 0,
             if(this.countNum >= this.maxNum) {
