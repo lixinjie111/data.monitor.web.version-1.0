@@ -8,11 +8,15 @@ export default {
     data () {
         return {
             id: "data-map-container",
-            AMap: null
+            AMap: null,
+            // setCenter: [121.262939,31.245149]
         }
     },
     mounted() {
         this.AMap = new AMap.Map(this.id, this.$parent.$parent.defaultMapOption);
+        // this.AMap.on( 'click',  function (e) {
+        //     console.log(e.lnglat.toString());
+        // });
         this.getWms();
     },
     methods: {
@@ -23,7 +27,11 @@ export default {
                 tileSize: 256,
                 params:{'LAYERS': 'shanghai_qcc:gd_road_centerline',VERSION:'1.1.0'}
             })
-            wms.setMap(this.AMap)
+            wms.setMap(this.AMap);
+            this.AMap.setZoom(12);
+            // this.AMap.setCenter(this.setCenter);
+            this.$parent.$parent.changeCenterPoint = this.setCenter;
+            // this.$parent.$parent.changeCenterPoint = this.AMap.getCenter();
         }
     }
 }
