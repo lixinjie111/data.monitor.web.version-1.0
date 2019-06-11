@@ -25,7 +25,7 @@ export default {
                 url:'http://10.0.1.22:8080/geoserver/shanghai_qcc/wms',
                 blend: false,
                 tileSize: 256,
-                params:{'LAYERS': 'shanghai_qcc:gd_road_centerline',VERSION:'1.1.0'}
+                params:{'LAYERS': 'shanghai_qcc:gd_dlzc',VERSION:'1.1.0'}
             })
             wms.setMap(this.AMap);
             this.AMap.setZoom(12);
