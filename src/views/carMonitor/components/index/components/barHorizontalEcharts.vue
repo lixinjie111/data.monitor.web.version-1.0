@@ -13,7 +13,8 @@ import { getRouteStat } from '@/api/carMonitor'
 export default {
 	name: 'BarHorizontalEcharts',
 	props: {
-		dialogVisible: Boolean
+		dialogVisible: Boolean,
+		resizeFlag: Boolean
 	},
 	data () {
 		return {
@@ -26,7 +27,11 @@ export default {
 		dialogVisible: {
 			handler(newVal, oldVal) {
 				if(newVal) {
-					this.loaded = true;
+					if(this.loaded) {
+						this.changeRander();
+					}else {
+						this.loaded = true;
+					}
 				}
 			}
 		},
@@ -36,29 +41,54 @@ export default {
 					this.getRouteStat();
 				}
 			}
+		},
+		resizeFlag: {
+			handler(newVal, oldVal) {
+				if(newVal) {
+					// console.log('改变窗口');
+					this.changeRander();
+					this.$emit("alreadyRender", 'resizeFlagHorizontal');
+				}
+			}
 		}
 	},
 	methods: {
 		getRouteStat() {
-            console.log('获取行程分析（近30天）');
+            // console.log('获取行程分析（近30天）');
 			getRouteStat().then(res => {
 				let _responseData = res.data.data,
 					_defaultOption = this.defaultOption();
 
 				this.responseData = _responseData.map((item, index) => {
 					item.id = "echarts-bar-horizontal-" + index;
+					item.echarts = null;
 					return item;
 				});
 
 				setTimeout(() => {
 					this.responseData.forEach(item => {
 						if(item.data.length > 0) {
-							let _echarts = this.$echarts.init(document.getElementById(item.id)),
-								_option = this.defaultOption(item.data);
-							_echarts.setOption(_option);
+							if(!item.echarts) {
+								item.echarts = this.$echarts.init(document.getElementById(item.id));
+							}
+							let _option = this.defaultOption(item.data);
+							item.echarts.setOption(_option);
 						}
 					});
 				}, 0);
+			});
+		},
+		changeRander() {
+			this.responseData.forEach(item => {
+            	if(item.echarts) {
+					item.echarts.resize();
+            	}else {
+            		if(item.data.length > 0) {
+						item.echarts = this.$echarts.init(document.getElementById(item.id));
+						let _option = this.defaultOption(item.data);
+						item.echarts.setOption(_option);
+					}
+				}
 			});
 		},
 		defaultOption(data) {
@@ -86,6 +116,9 @@ export default {
 				        trigger: 'axis',
 				        axisPointer: {
 				            type: 'shadow'
+				        },
+				        formatter: function(params) {
+				        	return '<div>区间: <span style="color: #dc8c00;">'+params[0].name+'</span></div><div>行程数: <span style="color: #dc8c00;">'+params[0].data.count+'个</span></div>';
 				        }
 				    },
 				    color: "#41b27e",
@@ -100,8 +133,9 @@ export default {
 	                    },
 	                    axisLabel:{
 	                        color:'#ccc',
-	                        fontSize: 12,
-	                        fontFamily: 'MicrosoftYaHei'
+	                        // fontSize: 12,
+	                        fontFamily: 'MicrosoftYaHei',
+	                        letterSpacing: 0
 	                    }
 				    },
 				    yAxis: {

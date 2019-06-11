@@ -6,84 +6,94 @@
         <img src="@/assets/images/car/car-7.png" class="img1"/>
         <img src="@/assets/images/car/car-8.png" class="img2"/>
         <img src="@/assets/images/car/car-22.png" class="img3"/>
-        <canvas id="up0" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
-        <canvas id="upImg0" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
-        <img id="upPlan0" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="up1" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
-        <canvas id="upImg1" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="up0" class="upCanvas"></canvas>
+        <canvas id="upImg0" class="upCanvas"></canvas>
+        <img id="upPlan0" src="@/assets/images/car/circle.png"style="display: none;">
+        <canvas id="up1" class="upCanvas" ></canvas>
+        <canvas id="upImg1" class="upCanvas"></canvas>
         <img id="upPlan1" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="up2" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
-        <canvas id="upImg2" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="up2" class="upCanvas" ></canvas>
+        <canvas id="upImg2" class="upCanvas" ></canvas>
         <img id="upPlan2" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="up3" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
-        <canvas id="upImg3" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="up3" class="upCanvas" ></canvas>
+        <canvas id="upImg3" class="upCanvas"></canvas>
         <img id="upPlan3" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="upImg4" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="upImg4" class="upCanvas" ></canvas>
         <img id="upPlan4" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="upImg5" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="upImg5" class="upCanvas" ></canvas>
         <img id="upPlan5" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="upImg6" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="upImg6" class="upCanvas" ></canvas>
         <img id="upPlan6" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="upImg7" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="upImg7" class="upCanvas" ></canvas>
         <img id="upPlan7" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="upImg8" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="upImg8" class="upCanvas" ></canvas>
         <img id="upPlan8" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="upImg9" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="upImg9" class="upCanvas"></canvas>
         <img id="upPlan9" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="upImg10" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="upImg10" class="upCanvas" ></canvas>
         <img id="upPlan10" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="upImg11" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="upImg11" class="upCanvas"></canvas>
         <img id="upPlan11" src="@/assets/images/car/circle.png" style="display: none;">
 
-        <canvas id="upImg12" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;" ></canvas>
+        <canvas id="upImg12" class="upCanvas"></canvas>
         <img id="upPlan12" src="@/assets/images/car/circle.png" style="display: none;" >
-        <canvas id="upImg13" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="upImg13" class="upCanvas"></canvas>
         <img id="upPlan13" src="@/assets/images/car/circle.png" style="display: none;" >
-        <canvas id="upImg14" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="upImg14" class="upCanvas"></canvas>
         <img id="upPlan14" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="upImg15" class="upCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="upImg15" class="upCanvas"></canvas>
         <img id="upPlan15" src="@/assets/images/car/circle.png" style="display: none;">
 
 
 
-        <canvas id="down0" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
-        <canvas id="downImg0" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="down0" class="downCanvas" ></canvas>
+        <canvas id="downImg0" class="downCanvas" ></canvas>
         <img id="downPlan0" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="down1" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
-        <canvas id="downImg1" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="down1" class="downCanvas" ></canvas>
+        <canvas id="downImg1" class="downCanvas" ></canvas>
         <img id="downPlan1" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="down2" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
-        <canvas id="downImg2" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="down2" class="downCanvas"></canvas>
+        <canvas id="downImg2" class="downCanvas"></canvas>
         <img id="downPlan2" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="down3" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
-        <canvas id="downImg3" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="down3" class="downCanvas"></canvas>
+        <canvas id="downImg3" class="downCanvas"></canvas>
         <img id="downPlan3" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="downImg4" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="downImg4" class="downCanvas"></canvas>
         <img id="downPlan4" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="downImg5" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="downImg5" class="downCanvas"></canvas>
         <img id="downPlan5" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="downImg6" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="downImg6" class="downCanvas"></canvas>
         <img id="downPlan6" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="downImg7" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="downImg7" class="downCanvas"></canvas>
         <img id="downPlan7" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="downImg8" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="downImg8" class="downCanvas" ></canvas>
         <img id="downPlan8" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="downImg9" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="downImg9" class="downCanvas" ></canvas>
         <img id="downPlan9" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="downImg10" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="downImg10" class="downCanvas" ></canvas>
         <img id="downPlan10" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="downImg11" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="downImg11" class="downCanvas" ></canvas>
         <img id="downPlan11" src="@/assets/images/car/circle.png" style="display: none;">
 
-        <canvas id="downImg12" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;" ></canvas>
+        <canvas id="downImg12" class="downCanvas" ></canvas>
         <img id="downPlan12" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="downImg13" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="downImg13" class="downCanvas"></canvas>
         <img id="downPlan13" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="downImg14" class="downCanvas" width="1200" height="400" style="width: 600px; height: 200px;"></canvas>
+        <canvas id="downImg14" class="downCanvas"></canvas>
         <img id="downPlan14" src="@/assets/images/car/circle.png" style="display: none;" >
 
       </div>
 
+      <div class="legend-style">
+        <p><span class="legend-size" style="background: #d47b24"></span>GPS+CAN</p>
+        <p><span class="legend-size" style="background: #595450"></span>EVENT</p>
+        <p><span class="legend-size" style="background: #2acdc2"></span>BSM</p>
+        <p><span class="legend-size" style="background: #d3d12d"></span>PER</p>
+        <p><span class="legend-size" style="background: #f75b30"></span>RSI</p>
+        <p><span class="legend-size" style="background: #6ec9fd"></span>SPAT</p>
+        <p><span class="legend-size" style="background: #41c66d"></span>RSM/RCU</p>
+
+      </div>
     </div>
     <div class="chart-region">
       <div class="chart-title title1">
@@ -121,7 +131,7 @@
         webSocket:{},
         reportWebSocket:{},
 
-        canIsFirst:true,
+        gpsIsFirst:true,
         bsmIsFirst:true,
         perIsFirst:true,
         eventIsFirst:true,
@@ -427,7 +437,7 @@
           _this.m=6;
         }
         if(_this.n>=12){
-          _this.m=9;
+          _this.n=9;
         }
 
         if(_this.j>=4){
@@ -470,13 +480,14 @@
             var curve1 = new Curve();
             //开始画gps的第一条线
             if(_this.gpsIsFirst){
-              curve1.drawLines(_this.upRandom,'#9D589D','up',0,[110, 142], [300, 58]);
-              curve1.drawImgs(_this.upRandom,'GPS+CAN','up',12,[110, 142], [300, 58],'#6ec9fd');
+              console.log("canGps-----"+_this.upRandom);
+              curve1.drawLines(_this.upRandom,'#d47b24','up',0,[130, 142], [320, 58]);
+              curve1.drawImgs(_this.upRandom,'GPS+CAN','up',12,[130, 142], [320, 58],'#6ec9fd');
               _this.gpsRandom = _this.upRandom;
-              _this.upRandom=_this.upRandom+0.1;
+              _this.upRandom=_this.upRandom+0.2;
               _this.gpsIsFirst=false;
             }else {
-              curve1.drawImgs(_this.gpsRandom,'GPS+CAN','up',_this.i,[110, 142], [300, 58],'#6ec9fd');
+              curve1.drawImgs(_this.gpsRandom,'GPS+CAN','up',_this.i,[130, 142], [320, 58],'#6ec9fd');
               _this.i++;
             }
           }
@@ -484,13 +495,13 @@
             var curve2 = new Curve();
             //开始画can的第一条线
             if(_this.bsmIsFirst){
-              curve2.drawLines(_this.upRandom,'#2e9d27','up',1,[110, 142], [300, 58]);
-              curve2.drawImgs(_this.upRandom,'BSM','up',13,[110, 142], [300, 58],'#3db765');
+              curve2.drawLines(_this.upRandom,'#2acdc2','up',1,[130, 142], [320, 58]);
+              curve2.drawImgs(_this.upRandom,'BSM','up',13,[130, 142], [320, 58],'#3db765');
               _this.canRandom = _this.upRandom;
-              _this.upRandom=_this.upRandom+0.1;
+              _this.upRandom=_this.upRandom+0.2;
               _this.bsmIsFirst=false;
             }else{
-              curve2.drawImgs(_this.canRandom,'BSM','up',_this.k,[110, 142], [300, 58],'#3db765');
+              curve2.drawImgs(_this.canRandom,'BSM','up',_this.k,[130, 142], [320, 58],'#3db765');
               _this.k++;
             }
           }
@@ -499,14 +510,13 @@
             var curve3 = new Curve();
             //开始画perception的第一条线
             if(_this.perIsFirst){
-              curve3.drawLines(_this.upRandom,'#d27a3a','up',2,[110, 142], [300, 58]);
-              curve3.drawImgs(_this.upRandom,'PER','up',14,[110, 142], [300, 58],'#d47b24');
+              curve3.drawLines(_this.upRandom,'#d3d12d','up',2,[130, 142], [320, 58]);
+              curve3.drawImgs(_this.upRandom,'PER','up',14,[130, 142], [320, 58],'#d47b24');
               _this.perRandom = _this.upRandom;
-              _this.upRandom=_this.upRandom+0.1;
-
+              _this.upRandom=_this.upRandom+0.2;
               _this.perIsFirst=false;
             }else {
-              curve3.drawImgs(_this.perRandom,'PER','up',_this.m,[110, 142], [300, 58],'#d47b24');
+              curve3.drawImgs(_this.perRandom,'PER','up',_this.m,[130, 142], [320, 58],'#d47b24');
               _this.m++;
             }
           }
@@ -515,13 +525,13 @@
             var curve4 = new Curve();
             //开始画perception的第一条线
             if(_this.eventIsFirst){
-              curve4.drawLines(_this.upRandom,'#d068d2','up',3,[110, 142], [300, 58]);
-              curve4.drawImgs(_this.upRandom,'EVENT','up',15,[110, 142], [300, 58],'#59d44f');
+              curve4.drawLines(_this.upRandom,'#595450','up',3,[130, 142], [320, 58]);
+              curve4.drawImgs(_this.upRandom,'EVENT','up',15,[130, 142], [320, 58],'#59d44f');
               _this.eventRandom = _this.upRandom;
-              _this.upRandom=_this.upRandom+0.1;
+              _this.upRandom=_this.upRandom+0.2;
               _this.eventIsFirst=false;
             }else {
-              curve4.drawImgs(_this.eventRandom,'EVENT','up',_this.n,[110, 142], [300, 58],'#59d44f');
+              curve4.drawImgs(_this.eventRandom,'EVENT','up',_this.n,[130, 142], [320, 58],'#59d44f');
               _this.n++;
             }
           }
@@ -532,13 +542,13 @@
             var downCurve1 = new Curve();
             //开始画spat的第一条线
             if(_this.spatIsFirst){
-              downCurve1.drawLines(_this.downRandom,'#9D589D','down',0,[345, 60], [540, 155]);
-              downCurve1.drawImgs(_this.downRandom,'SPAT','down',12,[345, 60], [540, 155],'#59d44f');//信号灯
+              downCurve1.drawLines(_this.downRandom,'#6ec9fd','down',0,[366, 60], [560, 156]);
+              downCurve1.drawImgs(_this.downRandom,'SPAT','down',12,[366, 60], [560, 156],'#59d44f');//信号灯
               _this.spatRandom = _this.downRandom;
-              _this.downRandom=_this.downRandom+0.1;
+              _this.downRandom=_this.downRandom+0.2;
               _this.spatIsFirst=false;
             }else {
-              downCurve1.drawImgs(_this.spatRandom,'SPAT','down',_this.j,[345, 60], [540, 155],'#59d44f');//信号灯
+              downCurve1.drawImgs(_this.spatRandom,'SPAT','down',_this.j,[366, 60], [560, 156],'#59d44f');//信号灯
               _this.j++;
             }
           }
@@ -548,13 +558,13 @@
             var downCurve2 = new Curve();
             //开始画v2x的第一条线
             if(_this.v2xIsFirst){
-              downCurve2.drawLines(_this.downRandom,'#2e9d27','down',1,[345, 60], [540, 155]);
-              downCurve2.drawImgs(_this.downRandom,'RSM/RCU','down',13,[345, 60], [540, 155],'#59d44f');
+              downCurve2.drawLines(_this.downRandom,'#41c66d','down',1,[366, 60], [560, 156]);
+              downCurve2.drawImgs(_this.downRandom,'RSM/RCU','down',13,[366, 60], [560, 156],'#59d44f');
               _this.v2xRandom = _this.downRandom;
-              _this.downRandom=_this.downRandom+0.1;
+              _this.downRandom=_this.downRandom+0.2;
               _this.v2xIsFirst=false;
             }else{
-              downCurve2.drawImgs(_this.v2xRandom,'RSM/RCU','down',_this.k1,[345, 60], [540, 155],'#59d44f');
+              downCurve2.drawImgs(_this.v2xRandom,'RSM/RCU','down',_this.k1,[366, 60], [560, 156],'#59d44f');
               _this.k1++;
             }
           }
@@ -564,13 +574,13 @@
             var downCurve3 = new Curve();
             //开始画can的第一条线
             if(_this.rsiIsFirst){
-              downCurve3.drawLines(_this.downRandom,'#d27a3a','down',2,[345, 60], [540, 155]);
-              downCurve3.drawImgs(_this.downRandom,'RSI','down',14,[345, 60], [540, 155],'#59d44f');//有大雾  road side information  信息预报
+              downCurve3.drawLines(_this.downRandom,'#f75b30','down',2,[366, 60], [560, 156]);
+              downCurve3.drawImgs(_this.downRandom,'RSI','down',14,[366, 60], [560, 156],'#59d44f');//有大雾  road side information  信息预报
               _this.rsiRandom = _this.downRandom;
-              _this.downRandom=_this.downRandom+0.1;
+              _this.downRandom=_this.downRandom+0.2;
               _this.rsiIsFirst=false;
             }else {
-              downCurve3.drawImgs(_this.rsiRandom,'RSI','down',_this.m1,[345, 60], [540, 155],'#59d44f');//有大雾  road side information  信息预报
+              downCurve3.drawImgs(_this.rsiRandom,'RSI','down',_this.m1,[366, 60], [560, 156],'#59d44f');//有大雾  road side information  信息预报
               _this.m1++;
             }
           }
@@ -609,72 +619,6 @@
 
       var _this = this;
      _this.container = document.getElementById('canvasContainer');
-     /* var random=0.1;
-      //画上行三条线 random,color,order,i,start,end
-      var curve1 = new Curve();
-      curve1.drawLines(0.1,'#9D589D','up',0,[110, 142], [300, 58]);
-      var curve2 = new Curve();
-      curve2.drawLines(0.2,'#2e9d27','up',1,[110, 142], [300, 58]);
-      var curve3 = new Curve();
-      curve3.drawLines(0.3,'#d27a3a','up',2,[110, 142], [300, 58]);
-
-      //画下行三条线
-      var downCurve1 = new Curve();
-      downCurve1.drawLines(0.1,'#9D589D','down',0,[345, 60], [540, 155]);
-      var downCurve2 = new Curve();
-      downCurve2.drawLines(0.2,'#2e9d27','down',1,[345, 60], [540, 155]);
-      var downCurve3 = new Curve();
-      downCurve3.drawLines(0.3,'#d27a3a','down',2,[345, 60], [540, 155]);
-      var i=0;
-      var k=4;
-      var m = 8;
-
-      var j=0;
-      var k1=4;
-      var m1=8;
-      setInterval(function (e) {
-
-        if(i>=4){
-          i=0;
-          console.log('释放--');
-        }
-        if(k>=8){
-          k=4;
-        }
-        if(m>=12){
-          m=8;
-        }
-        if(j>=4){
-          j=0;
-          console.log('释放--');
-        }
-        if(k1>=8){
-          k1=4;
-        }
-        if(m1>=12){
-          m1=8;
-        }
-        //画上行的图片
-        var curve1 = new Curve();
-        curve1.drawImgs(0.1,'GPS','up',i,[110, 142], [300, 58]);
-        var curve2 = new Curve();
-        curve2.drawImgs(0.2,'CAN','up',k,[110, 142], [300, 58]);
-        var curve3 = new Curve();
-        curve3.drawImgs(0.3,'perception','up',m,[110, 142], [300, 58]);
-        i++;
-        k++;
-        m++;
-        //下行图片
-        var down1 = new Curve();
-        down1.drawImgs(0.1,'spat','down',j,[345, 60], [540, 155]);//信号灯
-        var down2 = new Curve()
-        down2.drawImgs(0.2,'v2x','down',k1,[345, 60], [540, 155]);
-        var down3 = new Curve()
-        down3.drawImgs(0.3,'rsi','down',m1,[345, 60], [540, 155]);//有大雾  road side information  信息预报
-        j++;
-        k1++;
-        m1++;
-      },1000)*/
       //速度和加速度
       _this.speedChart = _this.$echarts.init(document.getElementById('speedChart'));
       _this.accelerateChart = _this.$echarts.init(document.getElementById('accelerateChart'));
@@ -683,9 +627,10 @@
       _this.realReportWebSocket();
 
     },
-    beforeDestroy(){
-
-
+    destroyed(){
+      //销毁Socket
+      this.reportWebSocket.close();
+      this.websocket.close();
     }
   }
 </script>
@@ -704,6 +649,7 @@
     width:50%;
     height:100%;
     float: left;
+    position: relative;
   }
   .chart-region{
     width: 50%;
@@ -730,19 +676,19 @@
   }
   .img1{
     position: absolute;
-    left:80px;
+    left:100px;
     top: 140px;
-    width: 35px;
+    width: 36px;
   }
   .img2{
     position: absolute;
-    left: 290px;
+    left: 310px;
     top: 35px;
     width: 55px;
   }
   .img3{
     position: absolute;
-    left: 530px;
+    left: 550px;
     top: 145px;
     width: 30px;
   }
@@ -760,15 +706,31 @@
     position: absolute;
   }
   .chart-title-img{
-    width: 3px;
+    width: 4px;
     height: 8px;
   }
   .title1{
     left:0;
-    top: 15px;
+    top: 16px;
   }
   .title2{
     right: 160px;
-    top: 15px;
+    top: 16px;
+  }
+  .legend-style{
+    position: absolute;
+    left: 6px;
+    top: 26px;
+  }
+  .legend-style p{
+    margin-bottom: 6px;
+    font-size: 12px;
+    transform:scale(0.8);
+  }
+  .legend-size{
+    width: 16px;
+    height: 10px;
+    display: inline-block;
+    margin-right: 6px;
   }
 </style>

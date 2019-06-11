@@ -51,7 +51,8 @@
         },
         liveData:{},
         speedData:{},
-        vehicleId:'B21E-00-017'
+        vehicleId:'B21E-00-017',
+        webSocket:{}
       }
     },
     methods: {
@@ -110,22 +111,33 @@
     },
     mounted () {
       this.initWebSocket();
+    },
+    destroyed(){
+      //销毁Socket
+      this.webSocket.close();
     }
   }
 </script>
 <style scoped>
   .car-view-wrapper{
-    position:relative;
-    display: flex;
+    /*position:relative;*/
+    /*display: flex;
     justify-content: center;
     flex-direction:column;
-    background: #17181c;
     width:1920px;
-    height: 1080px;
+    height: 1080px;*/
+    position: fixed;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    background: #17181c;
     overflow:hidden;
     line-height: 1.42857143;
     letter-spacing: 0;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    background-image:url("../../assets/images/car/background.png") ;
+    background-size: 100% 100%;
   }
   .single-top{
     width:100%;

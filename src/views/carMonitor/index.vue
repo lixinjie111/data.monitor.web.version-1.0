@@ -6,7 +6,7 @@
                     <left-top></left-top>
                     <circle-progress title="自动驾驶分布" :requestUrl="getAutoLevelStat"></circle-progress>
                     <circle-progress title="车辆用途" :requestUrl="getVehUsageStat"></circle-progress>
-                    <driving-car-echarts title="在驶车辆" id="driving-car-echarts-3"></driving-car-echarts>
+                    <driving-car-echarts title="在驶车辆"></driving-car-echarts>
                 </div>
             </div>
         </div>

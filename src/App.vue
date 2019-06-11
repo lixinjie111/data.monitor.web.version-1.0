@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- 头部 -->
-    <header-bar v-if="this.$route.meta.showHeader"></header-bar>
+    <header-bar v-if="this.$route.meta.showHeader" :changeCenterPoint='changeCenterPoint'></header-bar>
     
     <div class="app-container">
       <router-view></router-view>
@@ -17,8 +17,17 @@ export default {
         HeaderBar
     },
     data() {
+      let defaultCenterPoint = [121.262939,31.245149];
       return {
-        defalutCenterPoint: [116.395577, 39.892257]
+        // defaultCenterPoint: [116.395577, 39.892257] //北京
+        // defaultCenterPoint: [121.455372,31.249569], //上海
+        defaultCenterPoint: defaultCenterPoint,
+        defaultMapOption: {
+          center: defaultCenterPoint,
+          zoom: 11,
+          mapStyle: "amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8"
+        },
+        changeCenterPoint: defaultCenterPoint
       }
     },
     watch: {

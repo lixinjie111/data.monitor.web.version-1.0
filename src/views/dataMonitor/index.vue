@@ -18,7 +18,7 @@
                         <circle-progress title="设备良好率" type="2" :requestUrl="getDevStatusStat"></circle-progress>
                     </div>
                     <div class="c-car-list">
-                        <driving-car-echarts title="在驶车辆" id="driving-car-echarts-1"></driving-car-echarts>
+                        <driving-car-echarts title="在驶车辆"></driving-car-echarts>
                     </div>
                     <div class="c-car-list">
                         <platform-data-echarts title="平台数据"></platform-data-echarts>
@@ -29,8 +29,8 @@
     </div>
 </template>
 <script>
-import MapContainer from './components/map.vue'
 import LeftItem from './components/leftItem.vue'
+import MapContainer from './components/map.vue'
 import CircleProgress from '@/components/circleProgress.vue'
 import DrivingCarEcharts from '@/components/drivingCarEcharts.vue'
 import PlatformDataEcharts from './components/platformDataEcharts.vue'

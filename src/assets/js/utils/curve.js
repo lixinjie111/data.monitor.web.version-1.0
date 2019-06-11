@@ -103,7 +103,6 @@ class Curve{
   drawImgs(random,type,order,i,start,end,color){
     var imgCanvas = document.getElementById(order+'Img'+i);
     var imgCtx = imgCanvas.getContext( '2d' );
-
     imgCanvas.width=1200;
     imgCanvas.height=400;
     imgCanvas.style.width='600px';
@@ -177,10 +176,10 @@ class Curve{
 
     var b = [ q0[ 0 ] + v[ 0 ] * t, q0[ 1 ] + v[ 1 ] * t ];
 
-    ctx.drawImage(img,(b[ 0 ]-5),(b[ 1 ]-5),10,10);
+    ctx.drawImage(img,(b[ 0 ]-10),(b[ 1 ]-10),20,20);
 
 
-    ctx.strokeStyle= color;
+  /*  ctx.strokeStyle= color;
     if(type=='GPS'){
       ctx.strokeStyle= '#6ec9fd';
     }
@@ -194,9 +193,9 @@ class Curve{
       ctx.strokeStyle= '#f75b30';
     }
     ctx.font = '10px Adobe Ming Std';
-    /*console.log("x"+b[ 0 ]+"---y"+b[ 1 ]);*/
+    /!*console.log("x"+b[ 0 ]+"---y"+b[ 1 ]);*!/
     ctx.strokeText(type,(b[ 0 ]-5),(b[ 1 ]-10));
-    ctx.stroke();
+    ctx.stroke();*/
 
     /* img.onload = function () {
        ctx.drawImage(img,(b[ 0 ]),(b[ 1 ]),10,10);

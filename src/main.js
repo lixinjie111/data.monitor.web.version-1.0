@@ -23,6 +23,7 @@ import 'vue-video-player/src/custom-theme.css'
 import 'videojs-flash'
 
 
+import $ from 'jquery'
 Vue.use(VideoPlayer);
 //echarts
 import echarts from 'echarts'

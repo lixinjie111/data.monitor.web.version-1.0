@@ -13,7 +13,8 @@ import { getVehStat } from '@/api/carMonitor'
 export default {
 	name: 'PieEcharts',
 	props: {
-		dialogVisible: Boolean
+		dialogVisible: Boolean,
+		resizeFlag: Boolean
 	},
 	data () {
 		return {
@@ -26,7 +27,11 @@ export default {
 		dialogVisible: {
 			handler(newVal, oldVal) {
 				if(newVal) {
-					this.loaded = true;
+					if(this.loaded) {
+						this.changeRander();
+					}else {
+						this.loaded = true;
+					}
 				}
 			}
 		},
@@ -36,11 +41,20 @@ export default {
 					this.getVehStat();
 				}
 			}
+		},
+		resizeFlag: {
+			handler(newVal, oldVal) {
+				if(newVal) {
+					// console.log('改变窗口');
+					this.changeRander();
+					this.$emit("alreadyRender",'resizeFlagPie');
+				}
+			}
 		}
 	},
 	methods: {
 		getVehStat() {
-            console.log('获取车辆分析');
+            // console.log('获取车辆分析');
 			getVehStat().then(res => {
 
 				let _responseData = res.data.data,
@@ -48,31 +62,50 @@ export default {
 
 				this.responseData = _responseData.map((item, index) => {
 					item.id = "echarts-pie-" + index;
+					item.echarts = null;
+					item.data.forEach(items => {
+						items.value = items.count;
+					});
 					return item;
 				});
 
 				setTimeout(() => {
 					this.responseData.forEach(item => {
 						if(item.data.length > 0) {
-							item.data.forEach(items => {
-								items.value = items.count;
-							});
-							let _echarts = this.$echarts.init(document.getElementById(item.id)),
-								_option = this.defaultOption(item.data);
-							_echarts.setOption(_option);
+							if(!item.echarts) {
+								item.echarts = this.$echarts.init(document.getElementById(item.id));
+							}
+							let _option = this.defaultOption(item.data);
+							item.echarts.setOption(_option);
 						}
 					});
 				}, 0);
+			});
+		},
+		changeRander() {
+			this.responseData.forEach(item => {
+            	if(item.echarts) {
+					item.echarts.resize();
+            	}else {
+            		if(item.data.length > 0) {
+						item.echarts = this.$echarts.init(document.getElementById(item.id));
+						let _option = this.defaultOption(item.data);
+						item.echarts.setOption(_option);
+					}
+				}
 			});
 		},
 		defaultOption(data) {
 			let option = {
 					tooltip: {
 				        trigger: 'item',
-				        formatter: "{b}: {c} <br/>占比: {d}%",
-				        textStyle: {
-				        	color: "#dc8c00"
+				        formatter: function(params) {
+				        	return '<div>'+params.name+': <span style="color: #dc8c00;">'+params.value+'</span></div><div>占比: <span style="color: #dc8c00;">'+params.percent+'%</span></div>'
 				        }
+				        // formatter: "{b}: {c} <br/>占比: {d}%",
+				        // textStyle: {
+				        // 	color: "#dc8c00"
+				        // }
 				    },
 				 	grid: {
 				 		right: "10%"

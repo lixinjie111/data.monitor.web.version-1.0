@@ -3,6 +3,7 @@ const path = require('path')
 const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
+var webpack = require("webpack");
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -28,6 +29,18 @@ module.exports = {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
     }
+  },
+  devServer: {
+    // proxy: {
+    //   '/api': {
+    //     target: 'http://www.baidu.com/', //望京的地址
+    //     pathRewrite: {'^/api' : ''},//路径的重写
+    //     changeOrigin: true,     // target是域名的话，需要这个参数，
+    //     secure: false          // 设置支持https协议的代理
+    //   },
+    //   '/api2': {
+    //   }
+    // }
   },
   module: {
     rules: [
@@ -81,5 +94,12 @@ module.exports = {
     net: 'empty',
     tls: 'empty',
     child_process: 'empty'
-  }
+  },
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin('common.js'),
+    new webpack.ProvidePlugin({
+      jQuery: "jquery",
+      $: "jquery"
+    })
+  ]
 }

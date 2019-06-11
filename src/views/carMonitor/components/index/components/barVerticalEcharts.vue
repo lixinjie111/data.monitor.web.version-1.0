@@ -13,7 +13,8 @@ import { getActiveVehStat } from '@/api/carMonitor'
 export default {
 	name: 'BarVerticalEcharts',
 	props: {
-		dialogVisible: Boolean
+		dialogVisible: Boolean,
+		resizeFlag: Boolean
 	},
 	data () {
 		return {
@@ -26,7 +27,11 @@ export default {
 		dialogVisible: {
 			handler(newVal, oldVal) {
 				if(newVal) {
-					this.loaded = true;
+					if(this.loaded) {
+						this.changeRander();
+					}else {
+						this.loaded = true;
+					}
 				}
 			}
 		},
@@ -36,13 +41,20 @@ export default {
 					this.getActiveVehStat();
 				}
 			}
+		},
+		resizeFlag: {
+			handler(newVal, oldVal) {
+				if(newVal) {
+					// console.log('改变窗口');
+					this.changeRander();
+					this.$emit("alreadyRender", 'resizeFlagVertical');
+				}
+			}
 		}
-	},
-	mounted() {
 	},
 	methods: {
 		getActiveVehStat() {
-            console.log('获取活跃车辆（近30天）');
+            // console.log('获取活跃车辆（近30天）');
 			getActiveVehStat().then(res => {
 
 				let _responseData = res.data.data,
@@ -50,18 +62,34 @@ export default {
 
 				this.responseData = _responseData.map((item, index) => {
 					item.id = "echarts-bar-vertical-" + index;
+					item.echarts = null;
 					return item;
 				});
 
 				setTimeout(() => {
 					this.responseData.forEach(item => {
 						if(item.data.length > 0) {
-							let _echarts = this.$echarts.init(document.getElementById(item.id)),
-								_option = this.defaultOption(item.data);
-							_echarts.setOption(_option);
+							if(!item.echarts) {
+								item.echarts = this.$echarts.init(document.getElementById(item.id));
+							}
+							let _option = this.defaultOption(item.data);
+							item.echarts.setOption(_option);
 						}
 					});
 				}, 0);
+			});
+		},
+		changeRander() {
+			this.responseData.forEach(item => {
+            	if(item.echarts) {
+					item.echarts.resize();
+            	}else {
+            		if(item.data.length > 0) {
+						item.echarts = this.$echarts.init(document.getElementById(item.id));
+						let _option = this.defaultOption(item.data);
+						item.echarts.setOption(_option);
+					}
+				}
 			});
 		},
 		defaultOption(data) {
@@ -82,12 +110,12 @@ export default {
 				    	top: 40,
 				    	bottom: 40
 				    },
-				    tooltip: {
-				        trigger: 'axis',
-				        axisPointer: {
-				            type: 'shadow'
-				        }
-				    },
+				    // tooltip: {
+				    //     trigger: 'axis',
+				    //     axisPointer: {
+				    //         type: 'shadow'
+				    //     }
+				    // },
 				    color: "#41b27e",
 				    xAxis: {
 				    	show: false
@@ -104,7 +132,8 @@ export default {
 	                    axisLabel:{
 	                        color:'#ccc',
 	                        fontSize: 14,
-	                        fontFamily: 'MicrosoftYaHei'
+	                        fontFamily: 'MicrosoftYaHei',
+	                        letterSpacing: 0
 	                    }
 				    },
 				    series: {
@@ -118,7 +147,8 @@ export default {
 			    			show: true,
 			    			distance: 10,
 			    			position: 'right',
-			    			color: '#fff'
+			    			color: '#ccc',
+	                        letterSpacing: 0
 			    		}
 			        }
 				}
