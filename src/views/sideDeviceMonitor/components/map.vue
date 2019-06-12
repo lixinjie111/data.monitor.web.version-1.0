@@ -7,10 +7,12 @@
         {{item.text}}
       </li>
     </ul>
+    <side-dialog :dialog-visible.sync="dialogVisible" :selected-item="selectedItem"></side-dialog>
   </div>
 </template>
 <script>
   import { getDevDis } from '@/api/sideDeviceMonitor'
+  import SideDialog from '@/views/sideDeviceMonitor/components/dialog.vue'
   export default {
     name: "MapContainer",
     data() {
@@ -50,8 +52,13 @@
         disParams:[],
         lightList:[],
         rcuList:[],
-        sideList:[]
+        sideList:[],
+        dialogVisible:false,
+        selectedItem:{}
       }
+    },
+    components:{
+      SideDialog
     },
     methods: {
       getMarkers(item) {
@@ -64,7 +71,6 @@
           //当选中后才进行请求
           if(item.isActive){
             disParams.push(item.id);
-            console.log("选中的参数----"+disParams);
             this.getDevDis(disParams);
           }else{
             /*var index = this.disParams.indexOf(item.id);
@@ -127,6 +133,10 @@
                         icon: 'static/images/sideDevice/3.png', // 添加 Icon 图标 URL
                       });
                       _this.map.add(marker);
+                      marker.on('click', function(e) {
+                        _this.dialogVisible=true;
+                        /*_this.selectedItem=*/
+                      });
                       _this.sideList.push(marker)
                     }
                     //rcu
