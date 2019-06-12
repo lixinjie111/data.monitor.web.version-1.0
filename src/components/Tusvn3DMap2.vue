@@ -33,27 +33,17 @@ export default {
 
             ,shps:{}
             ,models:{}
-// 0019D1AA0424  0019EAFA0104  0019EAFA0102  0018EAFA0332
             ,deviceModels:{
-                "3402000000132000001001":{cars:[],persons:[]},
-                "3402000000132000001101":{cars:[],persons:[]},
-                "3402000000132000001201":{cars:[],persons:[]},
-                "3402000000132000001301":{cars:[],persons:[]},
-
-                "3402000000132000001401":{cars:[],persons:[]},
-                "3402000000132000001501":{cars:[],persons:[]},
-                "3402000000132000001601":{cars:[],persons:[]},
-                "3402000000132000001701":{cars:[],persons:[]},
             }
 
             ,modelPersonArr:[]
-            ,cacheModelNum:200
+            ,cacheModelNum:400
 
             // ,websocketUrl:"ws://10.0.1.57:9999/ws"
             // ,websocketUrl:"ws://192.168.1.132:9998/ws"
             // ,websocketUrl:"ws://120.133.21.14:29998/ws"
             // ,websocketUrl:"ws://10.0.1.57:9982/mon"
-            ,websocketUrl:"ws://192.168.1.177:9982/mon"
+            ,websocketUrl:"ws://192.168.1.68:9982/mon"
             ,hostWebsocket:null
             ,tweens: {}
 
@@ -64,6 +54,9 @@ export default {
             ,defualtRadius:100
             ,defualtPitch:-0.8
             ,defualtZ:12.816
+
+            ,matStdObjects : new THREE.MeshStandardMaterial( { color: 0x7337E3, roughness: 1, metalness: 0 } )
+            ,person : new THREE.MeshStandardMaterial( { color: 0xC4B17A, roughness: 1, metalness: 0 } )
 
             ,pitch:0
             ,yaw:0
@@ -142,200 +135,7 @@ export default {
                 this.updateCameraPosition(442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606);
                 //上海
                 // this.updateCameraPosition(326181.72659014474,3462354.6747002415,737.3642832288795,741.5052736914325,-1.5707963267948966,-0.05266622778143515);
-                var matStdObjects = new THREE.MeshStandardMaterial( { color: 0x7337E3, roughness: 1, metalness: 0 } );
-                var person = new THREE.MeshStandardMaterial( { color: 0xC4B17A, roughness: 1, metalness: 0 } );
-                for(let m = 0;m<this.cacheModelNum;m++)
-                {
-                    // let model = new dl.Model({url: "./static/map3d/map_photo/car.3DS"});
-                    // model.position.x = 0;
-                    // model.position.y = 0;
-                    // model.position.z = 0;
-
-                    //圆球
-                    // var geoSphere = new THREE.SphereBufferGeometry( 0.8, 15, 15 );
-                    // var model = new THREE.Mesh( geoSphere, matStdObjects );
-                    // model.position.set( 0, 0, 0 );
-                    // model.castShadow = true;
-                    // model.receiveShadow = true;
-                    // 0019D1AA0424  0019EAFA0104  0019EAFA0102  0018EAFA0332
-                    //车
-                    var geoBox1 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
-                    var model1 = new THREE.Mesh( geoBox1, matStdObjects );
-                    model1.position.set( 0, 0, 0 );
-                    model1.rotation.set( this.pitch,this.yaw,this.roll );
-                    model1.castShadow = true;
-                    model1.receiveShadow = true;
-
-                    dl.scene.add(model1);
-                    this.deviceModels["3402000000132000001001"].cars[m] = model1;
-
-                    var pBox1 = new THREE.BoxBufferGeometry(0.4, 0.4, 1.7);
-                    var pmodel1 = new THREE.Mesh( pBox1, person );
-                    pmodel1.position.set( 0, 0, 0 );
-                    pmodel1.rotation.set( 0, 0, 0 );
-                    pmodel1.castShadow = true;
-                    pmodel1.receiveShadow = true;
-
-                    this.deviceModels["3402000000132000001001"].persons[m]= pmodel1;
-                    dl.scene.add(pmodel1);
-
-
-
-
-
-                    // var geoBox2 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
-                    // var model2 = new THREE.Mesh( geoBox2, matStdObjects );
-                    // model2.position.set( 0, 0, 0 );
-                    // model2.rotation.set( this.pitch,this.yaw,this.roll );
-                    // model2.castShadow = true;
-                    // model2.receiveShadow = true;
-
-                    // dl.scene.add(model2);
-                    // this.deviceModels["3402000000132000001101"].cars[m] = model2;
-
-                    // var pBox2 = new THREE.BoxBufferGeometry(0.4, 0.4, 1.7);
-                    // var pmodel2 = new THREE.Mesh( pBox2, person );
-                    // pmodel2.position.set( 0, 0, 0 );
-                    // pmodel2.rotation.set( 0, 0, 0 );
-                    // pmodel2.castShadow = true;
-                    // pmodel2.receiveShadow = true;
-
-                    // this.deviceModels["3402000000132000001101"].persons[m]= pmodel2;
-                    // dl.scene.add(pmodel2);
-
-
-
-
-
-                    // var geoBox3 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
-                    // var model3 = new THREE.Mesh( geoBox3, matStdObjects );
-                    // model3.position.set( 0, 0, 0 );
-                    // model3.rotation.set( this.pitch,this.yaw,this.roll );
-                    // model3.castShadow = true;
-                    // model3.receiveShadow = true;
-
-                    // dl.scene.add(model3);
-                    // this.deviceModels["3402000000132000001201"].cars[m] = model3;
-
-                    // var pBox3 = new THREE.BoxBufferGeometry(0.4, 0.4, 1.7);
-                    // var pmodel3 = new THREE.Mesh( pBox3, person );
-                    // pmodel3.position.set( 0, 0, 0 );
-                    // pmodel3.rotation.set( 0, 0, 0 );
-                    // pmodel3.castShadow = true;
-                    // pmodel3.receiveShadow = true;
-
-                    // this.deviceModels["3402000000132000001201"].persons[m]= pmodel3;
-                    // dl.scene.add(pmodel3);
-
-
-
-
-
-
-
-                    // var geoBox4 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
-                    // var model4 = new THREE.Mesh( geoBox4, matStdObjects );
-                    // model4.position.set( 0, 0, 0 );
-                    // model4.rotation.set( this.pitch,this.yaw,this.roll );
-                    // model4.castShadow = true;
-                    // model4.receiveShadow = true;
-
-                    // dl.scene.add(model4);
-                    // this.deviceModels["3402000000132000001301"].cars[m] = model4;
-
-                    // var pBox4 = new THREE.BoxBufferGeometry(0.4, 0.4, 1.7);
-                    // var pmodel4 = new THREE.Mesh( pBox4, person );
-                    // pmodel4.position.set( 0, 0, 0 );
-                    // pmodel4.rotation.set( 0, 0, 0 );
-                    // pmodel4.castShadow = true;
-                    // pmodel4.receiveShadow = true;
-
-                    // this.deviceModels["3402000000132000001301"].persons[m]= pmodel4;
-                    // dl.scene.add(pmodel4);
-
-
-                    // var geoBox4 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
-                    // var model4 = new THREE.Mesh( geoBox4, matStdObjects );
-                    // model4.position.set( 0, 0, 0 );
-                    // model4.rotation.set( this.pitch,this.yaw,this.roll );
-                    // model4.castShadow = true;
-                    // model4.receiveShadow = true;
-
-                    // dl.scene.add(model4);
-                    // this.deviceModels["3402000000132000001401"].cars[m] = model4;
-
-                    // var pBox4 = new THREE.BoxBufferGeometry(0.4, 0.4, 1.7);
-                    // var pmodel4 = new THREE.Mesh( pBox4, person );
-                    // pmodel4.position.set( 0, 0, 0 );
-                    // pmodel4.rotation.set( 0, 0, 0 );
-                    // pmodel4.castShadow = true;
-                    // pmodel4.receiveShadow = true;
-
-                    // this.deviceModels["3402000000132000001401"].persons[m]= pmodel4;
-                    // dl.scene.add(pmodel4);
-
-                    // var geoBox4 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
-                    // var model4 = new THREE.Mesh( geoBox4, matStdObjects );
-                    // model4.position.set( 0, 0, 0 );
-                    // model4.rotation.set( this.pitch,this.yaw,this.roll );
-                    // model4.castShadow = true;
-                    // model4.receiveShadow = true;
-
-                    // dl.scene.add(model4);
-                    // this.deviceModels["3402000000132000001501"].cars[m] = model4;
-
-                    // var pBox4 = new THREE.BoxBufferGeometry(0.4, 0.4, 1.7);
-                    // var pmodel4 = new THREE.Mesh( pBox4, person );
-                    // pmodel4.position.set( 0, 0, 0 );
-                    // pmodel4.rotation.set( 0, 0, 0 );
-                    // pmodel4.castShadow = true;
-                    // pmodel4.receiveShadow = true;
-
-                    // this.deviceModels["3402000000132000001501"].persons[m]= pmodel4;
-                    // dl.scene.add(pmodel4);
-
-                    // var geoBox4 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
-                    // var model4 = new THREE.Mesh( geoBox4, matStdObjects );
-                    // model4.position.set( 0, 0, 0 );
-                    // model4.rotation.set( this.pitch,this.yaw,this.roll );
-                    // model4.castShadow = true;
-                    // model4.receiveShadow = true;
-
-                    // dl.scene.add(model4);
-                    // this.deviceModels["3402000000132000001601"].cars[m] = model4;
-
-                    // var pBox4 = new THREE.BoxBufferGeometry(0.4, 0.4, 1.7);
-                    // var pmodel4 = new THREE.Mesh( pBox4, person );
-                    // pmodel4.position.set( 0, 0, 0 );
-                    // pmodel4.rotation.set( 0, 0, 0 );
-                    // pmodel4.castShadow = true;
-                    // pmodel4.receiveShadow = true;
-
-                    // this.deviceModels["3402000000132000001601"].persons[m]= pmodel4;
-                    // dl.scene.add(pmodel4);
-
-
-                    // var geoBox4 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
-                    // var model4 = new THREE.Mesh( geoBox4, matStdObjects );
-                    // model4.position.set( 0, 0, 0 );
-                    // model4.rotation.set( this.pitch,this.yaw,this.roll );
-                    // model4.castShadow = true;
-                    // model4.receiveShadow = true;
-
-                    // dl.scene.add(model4);
-                    // this.deviceModels["3402000000132000001701"].cars[m] = model4;
-
-                    // var pBox4 = new THREE.BoxBufferGeometry(0.4, 0.4, 1.7);
-                    // var pmodel4 = new THREE.Mesh( pBox4, person );
-                    // pmodel4.position.set( 0, 0, 0 );
-                    // pmodel4.rotation.set( 0, 0, 0 );
-                    // pmodel4.castShadow = true;
-                    // pmodel4.receiveShadow = true;
-
-                    // this.deviceModels["3402000000132000001701"].persons[m]= pmodel4;
-                    // dl.scene.add(pmodel4);
-
-                }
+                
             },500);
 
 
@@ -424,26 +224,8 @@ export default {
           return Y+M+D+h+m+s+"."+ms;
         },
         onMessage:function(data){
-            console.log(data);
             this.models={};
-            // this.deviceModels
-
-            // for(let p=0;p<this.modelArr.length;p++)
-            // {
-            //     let mdl = this.modelArr[p];
-            //     mdl.position.x = 0;
-            //     mdl.position.y = 0;
-            //     mdl.position.z = 0;
-            // }
-            // let models = dl.models;
-            // if(models!=null)
-            // {
-            //     for(let n = 0;n<models.length;n++)
-            //     {
-            //         dl.removeModel(models[n]);
-            //     }
-            // }
-
+            
             let rsuDatas = JSON.parse(data.data);
             var deviceid = null;
             if(rsuDatas.result.length>0)
@@ -451,50 +233,81 @@ export default {
               var time = this.timetrans(rsuDatas.result[0].timestamp);
               this.$emit('showTimeStamp',time);
                 deviceid = rsuDatas.result[0].deviceId;
-                deviceid="3402000000132000001001";
-                for(let p=0;p<this.deviceModels[deviceid].cars.length;p++)
+                if(this.deviceModels[deviceid]==null)
                 {
-                    let car = this.deviceModels[deviceid].cars[p];
-                    car.position.x = 0;
-                    car.position.y = 0;
-                    car.position.z = 0;
+                    this.deviceModels[deviceid]={cars:[],persons:[]};
+                    for(let m = 0;m<this.cacheModelNum;m++)
+                    {
 
-                    let person = this.deviceModels[deviceid].persons[p];
-                    person.position.x = 0;
-                    person.position.y = 0;
-                    person.position.z = 0;
+                        //圆球
+                        // var geoSphere = new THREE.SphereBufferGeometry( 0.8, 15, 15 );
+                        // var model = new THREE.Mesh( geoSphere, matStdObjects );
+                        // model.position.set( 0, 0, 0 );
+                        // model.castShadow = true;
+                        // model.receiveShadow = true;
+                        // 0019D1AA0424  0019EAFA0104  0019EAFA0102  0018EAFA0332
+                        //车
+                        var geoBox1 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
+                        var model1 = new THREE.Mesh( geoBox1, this.matStdObjects );
+                        model1.position.set( 0, 0, 0 );
+                        model1.rotation.set( this.pitch,this.yaw,this.roll );
+                        model1.castShadow = true;
+                        model1.receiveShadow = true;
+
+                        dl.scene.add(model1);
+                        this.deviceModels[deviceid].cars[m] = model1;
+
+                        var pBox1 = new THREE.BoxBufferGeometry(0.4, 0.4, 1.7);
+                        var pmodel1 = new THREE.Mesh( pBox1, this.person );
+                        pmodel1.position.set( 0, 0, 0 );
+                        pmodel1.rotation.set( 0, 0, 0 );
+                        pmodel1.castShadow = true;
+                        pmodel1.receiveShadow = true;
+
+                        this.deviceModels[deviceid].persons[m]= pmodel1;
+                        dl.scene.add(pmodel1);
+                    }
+                }else{
+                    for(let p=0;p<this.deviceModels[deviceid].cars.length;p++)
+                    {
+                        let car = this.deviceModels[deviceid].cars[p];
+                        car.position.x = 0;
+                        car.position.y = 0;
+                        car.position.z = 0;
+
+                        let person = this.deviceModels[deviceid].persons[p];
+                        person.position.x = 0;
+                        person.position.y = 0;
+                        person.position.z = 0;
+                    }
                 }
+                
             }
             for(let i = 0;i<rsuDatas.result.length;i++)
             {
                 let d = rsuDatas.result[i];
                 // // console.log(rsuDatas[i]);
                 let dUTM = proj4(this.sourceProject,this.destinatePorject,[d.target.longitude,d.target.latitude]);
-                // console.log(dUTM);
-                // this.addModel(d.objId,"./static/map3d/map_photo/car.3DS",dUTM[0],dUTM[1],this.defualtZ);
-                // if(d.type == 3 || d.type == 6 || d.type ==8)
-                // {
-                    if(d.target.type==0||d.target.type==1||d.target.type==3)
+                
+                if(d.target.type==0||d.target.type==1||d.target.type==3)
+                {
+                    if(i<this.deviceModels[deviceid].persons.length)
                     {
-                        if(i<this.deviceModels[deviceid].persons.length)
-                        {
-                            let mdl = this.deviceModels[deviceid].persons[i];
-                            mdl.position.x = dUTM[0];
-                            mdl.position.y = dUTM[1];
-                            mdl.position.z = this.defualtZ+0;
-                        }
-                    }else{
-                        if(i<this.deviceModels[deviceid].cars.length)
-                        {
-                            let mdl = this.deviceModels[deviceid].cars[i];
-                            mdl.position.x = dUTM[0];
-                            mdl.position.y = dUTM[1];
-                            mdl.position.z = this.defualtZ+4;
-                        }
+                        let mdl = this.deviceModels[deviceid].persons[i];
+                        mdl.position.x = dUTM[0];
+                        mdl.position.y = dUTM[1];
+                        mdl.position.z = this.defualtZ+4;
                     }
+                }else{
+                    if(i<this.deviceModels[deviceid].cars.length)
+                    {
+                        let mdl = this.deviceModels[deviceid].cars[i];
+                        mdl.position.x = dUTM[0];
+                        mdl.position.y = dUTM[1];
+                        mdl.position.z = this.defualtZ+4;
+                    }
+                }
 
-
-                // }
 
             }
             // if(rsuDatas.length>0){
@@ -516,7 +329,7 @@ export default {
             // 2046A1035893
             // var hostVehicle = '{"action":"rcu","data":{"rcuId":"2046A1037E1F"},"token":"fpx"}';
             // var hostVehicleMsg = JSON.stringify(hostVehicle);
-            var hostVehicle = '{"action":"RCUPer","rcuId":"rcuid_xx"}';
+            var hostVehicle = '{"action":"RCUPer","rcuId":"2046A1037E1F"}';
             this.sendMsg(hostVehicle);
         },
         sendMsg:function(msg){
