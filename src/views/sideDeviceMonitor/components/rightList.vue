@@ -8,9 +8,9 @@
         </div>
       </div>
       <div class="side-device-size">
-        <!--<tusvn-map :target-id="'mapMonitor'" ref="tusvnMap" >
+        <tusvn-map :target-id="'mapMonitor'" ref="tusvnMap1" >
 
-        </tusvn-map>-->
+        </tusvn-map>
       </div>
     </div>
     <div class="side-device-style" >
@@ -21,9 +21,9 @@
         </div>
       </div>
       <div class="side-device-size">
-        <!--<tusvn-map :target-id="'mapMonitor'" ref="tusvnMap" >
+        <tusvn-map :target-id="'mapMonitor1'"  ref="tusvnMap2">
 
-        </tusvn-map>-->
+        </tusvn-map>
       </div>
     </div>
   </div>
@@ -128,10 +128,16 @@
                   if(index==0){
                     _this.option1.sources[0].src=res.data.rtmp;
                     _this.roadItem1=item;
+                    _this.$refs.tusvnMap1.changeRcuId(item.roadSiderId,window.cfg.websocketUrl);
+                    _this.$refs.tusvnMap1.updateCameraPosition(442694.03980794636,4427074.696229081,348.0686852189313,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606);
+//                    console.log("ref------"+ _this.$refs.tusvnMap1);
                   }
                   if(index==1){
                     _this.option2.sources[0].src=res.data.rtmp;
                     _this.roadItem2=item;
+                    _this.$refs.tusvnMap2.changeRcuId(item.roadSiderId,window.cfg.websocketUrl);
+                    _this.$refs.tusvnMap2.updateCameraPosition(432957.6545664083,4329707.890129204,330.36384870177665,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606);
+//                    console.log("ref------"+ _this.$refs.tusvnMap1);
                   }
                 })
               })

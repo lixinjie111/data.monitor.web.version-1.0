@@ -18,30 +18,32 @@ export default {
             mapoption:{
                 doc: this.targetId,
                 background:"black",
-                navMode: Pt.OrbitControls
+                navMode: Pt.earthControls
             }
             // ,viewVector1:{x:287406.0,y:3463772,z:50}
             // ,viewVector2:{x:287707.0,y:3463835.0,z:80.0}
-
+            //科技园
             ,viewVector1:{x:442350.475567611,y:4427186.352713934,z:50}
             ,viewVector2:{x:442637.284474562,y:4427363.359317946,z:80.0}
 
+
+            //上海
+            // ,viewVector1:{x:325694.8329,y:3462004.5056,z:50}
+            // ,viewVector2:{x:326765.6277,y:3462754.6978,z:80.0} 
+
             ,shps:{}
             ,models:{}
-// 0019D1AA0424  0019EAFA0104  0019EAFA0102  0018EAFA0332
             ,deviceModels:{
-                "0019D1AA0424":{cars:[],persons:[]},
-                "0019EAFA0104":{cars:[],persons:[]},
-                "0019EAFA0102":{cars:[],persons:[]},
-                "0018EAFA0332":{cars:[],persons:[]},
             }
 
             ,modelPersonArr:[]
-            ,cacheModelNum:15
+            ,cacheModelNum:400
 
             // ,websocketUrl:"ws://10.0.1.57:9999/ws"
             // ,websocketUrl:"ws://192.168.1.132:9998/ws"
-            ,websocketUrl:"ws://120.133.21.14:29998/ws"
+            // ,websocketUrl:"ws://120.133.21.14:29998/ws"
+            // ,websocketUrl:"ws://10.0.1.57:9982/mon"
+            ,websocketUrl:"ws://192.168.1.68:9982/mon"
             ,hostWebsocket:null
             ,tweens: {}
 
@@ -52,6 +54,12 @@ export default {
             ,defualtRadius:100
             ,defualtPitch:-0.8
             ,defualtZ:12.816
+            ,rcuId:"2046A1037E1F"
+
+            ,matStdObjects : new THREE.MeshStandardMaterial( { color: 0x7337E3, roughness: 1, metalness: 0 } )
+            ,person : new THREE.MeshStandardMaterial( { color: 0xC4B17A, roughness: 1, metalness: 0 } )
+            ,fontface:"宋体"
+            ,fontSize:60
 
             ,pitch:0
             ,yaw:0
@@ -79,10 +87,17 @@ export default {
             // this.addShape("Crosswalk2","./static/map3d/kjy/UTM/crosswalk.shp","#999999")
             // this.addShape("lane2","./static/map3d/kjy/UTM/lane.shp",dl.styles.lane_boundary.color)
             // this.addShape("roadline2","./static/map3d/kjy/UTM/roadline.shp",dl.styles.lane_boundary.color)
-
+          //科技园
           this.addShape("Crosswalk2","./static/map3d/newUTMData/crosswalk.shp","#999999")
           this.addShape("lane2","./static/map3d/newUTMData/lane.shp",dl.styles.lane_boundary.color)
           this.addShape("roadline2","./static/map3d/newUTMData/roadline.shp",dl.styles.lane_boundary.color)
+
+            //上海
+            // this.addShape("intersection","./static/map3d/dilu_zc/clip/Intersection.shp",dl.styles.intersection.color)
+            // this.addShape("Crosswalk","./static/map3d/dilu_zc/clip/Crosswalk.shp",dl.styles.crosswalk.color)
+            // // this.addShape("lane_marking","./static/map3d/20190531_utm51/clip/Lane_marking.shp",dl.styles.lane_marking.color)
+            // this.addShape("lane_arrow","./static/map3d/dilu_zc/clip/Direction_arrow.shp",dl.styles.lane_arrow.color)
+            // this.addShape("lane_boundary","./static/map3d/dilu_zc/clip/Lane_boundary.shp",dl.styles.lane_boundary.color)
 
           // this.addShape("1","./static/map3d/kjy/UTM/1.shp",dl.styles.lane_boundary.color)
           //   this.addShape("2","./static/map3d/kjy/UTM/2.shp",dl.styles.lane_boundary.color)
@@ -119,155 +134,21 @@ export default {
             setTimeout(()=>{
                 // 442454.32658246456,4427227.8078830885, 37.73509248844059, 0.0000028926452461693342,-0.5081018518518544,-0.7385192219746066
                 // 442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606
+                //科技园
                 this.updateCameraPosition(442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606);
-                var matStdObjects = new THREE.MeshStandardMaterial( { color: 0x7337E3, roughness: 1, metalness: 0 } );
-                var person = new THREE.MeshStandardMaterial( { color: 0xC4B17A, roughness: 1, metalness: 0 } );
-                for(let m = 0;m<this.cacheModelNum;m++)
-                {
-                    // let model = new dl.Model({url: "./static/map3d/map_photo/car.3DS"});
-                    // model.position.x = 0;
-                    // model.position.y = 0;
-                    // model.position.z = 0;
-
-                    //圆球
-                    // var geoSphere = new THREE.SphereBufferGeometry( 0.8, 15, 15 );
-                    // var model = new THREE.Mesh( geoSphere, matStdObjects );
-                    // model.position.set( 0, 0, 0 );
-                    // model.castShadow = true;
-                    // model.receiveShadow = true;
-                    // 0019D1AA0424  0019EAFA0104  0019EAFA0102  0018EAFA0332
-                    //车
-                    var geoBox1 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
-                    var model1 = new THREE.Mesh( geoBox1, matStdObjects );
-                    model1.position.set( 0, 0, 0 );
-                    model1.rotation.set( this.pitch,this.yaw,this.roll );
-                    model1.castShadow = true;
-                    model1.receiveShadow = true;
-
-                    dl.scene.add(model1);
-                    this.deviceModels["0019D1AA0424"].cars[m] = model1;
-
-                    var pBox1 = new THREE.BoxBufferGeometry(0.4, 0.4, 1.7);
-                    var pmodel1 = new THREE.Mesh( pBox1, person );
-                    pmodel1.position.set( 0, 0, 0 );
-                    pmodel1.rotation.set( 0, 0, 0 );
-                    pmodel1.castShadow = true;
-                    pmodel1.receiveShadow = true;
-
-                    this.deviceModels["0019D1AA0424"].persons[m]= pmodel1;
-                    dl.scene.add(pmodel1);
-
-
-
-
-
-                    var geoBox2 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
-                    var model2 = new THREE.Mesh( geoBox2, matStdObjects );
-                    model2.position.set( 0, 0, 0 );
-                    model2.rotation.set( this.pitch,this.yaw,this.roll );
-                    model2.castShadow = true;
-                    model2.receiveShadow = true;
-
-                    dl.scene.add(model2);
-                    this.deviceModels["0019EAFA0104"].cars[m] = model2;
-
-                    var pBox2 = new THREE.BoxBufferGeometry(0.4, 0.4, 1.7);
-                    var pmodel2 = new THREE.Mesh( pBox2, person );
-                    pmodel2.position.set( 0, 0, 0 );
-                    pmodel2.rotation.set( 0, 0, 0 );
-                    pmodel2.castShadow = true;
-                    pmodel2.receiveShadow = true;
-
-                    this.deviceModels["0019EAFA0104"].persons[m]= pmodel2;
-                    dl.scene.add(pmodel2);
-
-
-
-
-
-                    var geoBox3 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
-                    var model3 = new THREE.Mesh( geoBox3, matStdObjects );
-                    model3.position.set( 0, 0, 0 );
-                    model3.rotation.set( this.pitch,this.yaw,this.roll );
-                    model3.castShadow = true;
-                    model3.receiveShadow = true;
-
-                    dl.scene.add(model3);
-                    this.deviceModels["0019EAFA0102"].cars[m] = model3;
-
-                    var pBox3 = new THREE.BoxBufferGeometry(0.4, 0.4, 1.7);
-                    var pmodel3 = new THREE.Mesh( pBox3, person );
-                    pmodel3.position.set( 0, 0, 0 );
-                    pmodel3.rotation.set( 0, 0, 0 );
-                    pmodel3.castShadow = true;
-                    pmodel3.receiveShadow = true;
-
-                    this.deviceModels["0019EAFA0102"].persons[m]= pmodel3;
-                    dl.scene.add(pmodel3);
-
-
-
-
-
-
-
-                    var geoBox4 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
-                    var model4 = new THREE.Mesh( geoBox4, matStdObjects );
-                    model4.position.set( 0, 0, 0 );
-                    model4.rotation.set( this.pitch,this.yaw,this.roll );
-                    model4.castShadow = true;
-                    model4.receiveShadow = true;
-
-                    dl.scene.add(model4);
-                    this.deviceModels["0018EAFA0332"].cars[m] = model4;
-
-                    var pBox4 = new THREE.BoxBufferGeometry(0.4, 0.4, 1.7);
-                    var pmodel4 = new THREE.Mesh( pBox4, person );
-                    pmodel4.position.set( 0, 0, 0 );
-                    pmodel4.rotation.set( 0, 0, 0 );
-                    pmodel4.castShadow = true;
-                    pmodel4.receiveShadow = true;
-
-                    this.deviceModels["0018EAFA0332"].persons[m]= pmodel4;
-                    dl.scene.add(pmodel4);
-
-
-
-
-                    //ren
-                    // var pBox = new THREE.BoxBufferGeometry( 0.5, 1, 0.5);
-                    // var pmodel = new THREE.Mesh( pBox, matStdObjects );
-                    // pmodel.position.set( 0, 0, 0 );
-                    // pmodel.rotation.set( 0, Math.PI / 2.0, 0 );
-                    // pmodel.castShadow = true;
-                    // pmodel.receiveShadow = true;
-
-                    // this.modelPersonArr[m] = pmodel;
-                    // dl.scene.add(pmodel);
-
-
-                    // modelPersonArr
-                }
-
-                // var geoBox5 = new THREE.BoxBufferGeometry( 0.5, 1, 0.5);
-                // var model5 = new THREE.Mesh( geoBox5, matStdObjects );
-                // model5.position.set( 0, 0, 0 );
-                // model5.rotation.set( this.pitch,this.yaw,this.roll );
-                // model5.castShadow = true;
-                // model5.receiveShadow = true;
-
-                // dl.scene.add(model5);
-
-                // var pBox6 = new THREE.BoxBufferGeometry( 1, 0.5, 0.5);
-                // var pmodel6 = new THREE.Mesh( pBox6, person );
-                // pmodel6.position.set( 0, 0, 0 );
-                // pmodel6.rotation.set( 0, 0, 0 );
-                // pmodel6.castShadow = true;
-                // pmodel6.receiveShadow = true;
-
-                // dl.scene.add(pmodel6);
-                // console.log(this.modelArr.length);
+                //上海
+                // this.updateCameraPosition(326181.72659014474,3462354.6747002415,737.3642832288795,741.5052736914325,-1.5707963267948966,-0.05266622778143515);
+                
             },500);
+
+
+            setTimeout(()=>{
+                this.changeRcuId(this.websocketUrl,"aaaa");
+            },5000);
+
+            setTimeout(()=>{
+                this.changeRcuId(this.websocketUrl,"2046A1037E1F");
+            },8000);
 
 
         },
@@ -355,97 +236,137 @@ export default {
           return Y+M+D+h+m+s+"."+ms;
         },
         onMessage:function(data){
-            // console.log(data);
             this.models={};
-            // this.deviceModels
-
-            // for(let p=0;p<this.modelArr.length;p++)
-            // {
-            //     let mdl = this.modelArr[p];
-            //     mdl.position.x = 0;
-            //     mdl.position.y = 0;
-            //     mdl.position.z = 0;
-            // }
-            // let models = dl.models;
-            // if(models!=null)
-            // {
-            //     for(let n = 0;n<models.length;n++)
-            //     {
-            //         dl.removeModel(models[n]);
-            //     }
-            // }
-
+            
             let rsuDatas = JSON.parse(data.data);
             var deviceid = null;
-            if(rsuDatas.length>0)
+            if(rsuDatas.result.length>0)
             {
-              var time = this.timetrans(rsuDatas[0].timestamp);
+              var time = this.timetrans(rsuDatas.result[0].timestamp);
               this.$emit('showTimeStamp',time);
-                deviceid = rsuDatas[0].deviceId;
-                for(let p=0;p<this.deviceModels[deviceid].cars.length;p++)
+                deviceid = rsuDatas.result[0].deviceId;
+                if(this.deviceModels[deviceid]==null)
                 {
-                    let car = this.deviceModels[deviceid].cars[p];
-                    car.position.x = 0;
-                    car.position.y = 0;
-                    car.position.z = 0;
+                    this.deviceModels[deviceid]={cars:[],persons:[],texts:[]};
+                    for(let m = 0;m<this.cacheModelNum;m++)
+                    {
 
-                    let person = this.deviceModels[deviceid].persons[p];
-                    person.position.x = 0;
-                    person.position.y = 0;
-                    person.position.z = 0;
+                        //圆球
+                        // var geoSphere = new THREE.SphereBufferGeometry( 0.8, 15, 15 );
+                        // var model = new THREE.Mesh( geoSphere, matStdObjects );
+                        // model.position.set( 0, 0, 0 );
+                        // model.castShadow = true;
+                        // model.receiveShadow = true;
+                        // 0019D1AA0424  0019EAFA0104  0019EAFA0102  0018EAFA0332
+                        //车
+                        var geoBox1 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
+                        var model1 = new THREE.Mesh( geoBox1, this.matStdObjects );
+                        model1.position.set( 0, 0, 0 );
+                        model1.rotation.set( this.pitch,this.yaw,this.roll );
+                        model1.castShadow = true;
+                        model1.receiveShadow = true;
+
+                        dl.scene.add(model1);
+                        this.deviceModels[deviceid].cars[m] = model1;
+
+                        var pBox1 = new THREE.BoxBufferGeometry(0.4, 0.4, 1.7);
+                        var pmodel1 = new THREE.Mesh( pBox1, this.person );
+                        pmodel1.position.set( 0, 0, 0 );
+                        pmodel1.rotation.set( 0, 0, 0 );
+                        pmodel1.castShadow = true;
+                        pmodel1.receiveShadow = true;
+
+                        this.deviceModels[deviceid].persons[m]= pmodel1;
+                        dl.scene.add(pmodel1);
+
+
+                        var text1 = new dl.Text({
+                            text:"",
+                            fontsize:this.fontSize,
+                            borderThickness:0,
+                            textColor:{r: 0, g: 0, b: 0, a: 1.0}
+                        });
+
+                        this.deviceModels[deviceid].texts[m]=text1;
+                        dl.scene.add(text1);
+                        text1.setPositon([0,0,0]);
+                        text1.fontface=this.fontface;
+                        text1.update();
+                    }
+                }else{
+                    for(let p=0;p<this.deviceModels[deviceid].cars.length;p++)
+                    {
+                        let car = this.deviceModels[deviceid].cars[p];
+                        car.position.x = 0;
+                        car.position.y = 0;
+                        car.position.z = 0;
+
+                        let person = this.deviceModels[deviceid].persons[p];
+                        person.position.x = 0;
+                        person.position.y = 0;
+                        person.position.z = 0;
+                    }
+                }
+                
+            }
+            for(let i = 0;i<rsuDatas.result.length;i++)
+            {
+                let d = rsuDatas.result[i];
+                // // console.log(rsuDatas[i]);
+                let dUTM = proj4(this.sourceProject,this.destinatePorject,[d.target.longitude,d.target.latitude]);
+                
+                if(d.target.type==0||d.target.type==1||d.target.type==3)
+                {
+                    if(i<this.deviceModels[deviceid].persons.length)
+                    {
+                        let mdl = this.deviceModels[deviceid].persons[i];
+                        mdl.position.x = dUTM[0];
+                        mdl.position.y = dUTM[1];
+                        mdl.position.z = this.defualtZ+4;
+
+                        let text = this.deviceModels[deviceid].texts[i]; 
+                        text.setText(d.target.uuid.substr(0,8));                   
+                        text.setPositon([dUTM[0],dUTM[1],this.defualtZ+5]);
+                    }
+                }else{
+                    if(i<this.deviceModels[deviceid].cars.length)
+                    {
+                        let mdl = this.deviceModels[deviceid].cars[i];
+                        mdl.position.x = dUTM[0];
+                        mdl.position.y = dUTM[1];
+                        mdl.position.z = this.defualtZ+4;
+
+                        let text = this.deviceModels[deviceid].texts[i];
+                        text.setText(d.target.uuid.substr(0,8));                    
+                        text.setPositon([dUTM[0],dUTM[1],this.defualtZ+6]);
+                    }
                 }
             }
-            for(let i = 0;i<rsuDatas.length;i++)
-            {
-                let d = rsuDatas[i];
-                // // console.log(rsuDatas[i]);
-                let dUTM = proj4(this.sourceProject,this.destinatePorject,[d.longitude,d.latitude]);
-                // console.log(dUTM);
-                // this.addModel(d.objId,"./static/map3d/map_photo/car.3DS",dUTM[0],dUTM[1],this.defualtZ);
-                // if(d.type == 3 || d.type == 6 || d.type ==8)
-                // {
-                    if(d.type!=1&&d.type!=2&&d.type!=4)
-                    {
-                        if(i<this.deviceModels[deviceid].persons.length)
-                        {
-                            let mdl = this.deviceModels[deviceid].persons[i];
-                            mdl.position.x = dUTM[0];
-                            mdl.position.y = dUTM[1];
-                            mdl.position.z = this.defualtZ+4;
-                        }
-                    }else{
-                        if(i<this.deviceModels[deviceid].cars.length)
-                        {
-                            let mdl = this.deviceModels[deviceid].cars[i];
-                            mdl.position.x = dUTM[0];
-                            mdl.position.y = dUTM[1];
-                            mdl.position.z = this.defualtZ+4;
-                        }
-                    }
-
-
-                // }
-
-            }
-            // if(rsuDatas.length>0){
-            //     console.log("感知到"+rsuDatas.length+"个物体");
-            //     let d = rsuDatas[0];
-            //     // console.log(rsuDatas[i]);
-            //     let dUTM = proj4(this.sourceProject,this.destinatePorject,[d.longitude,d.latitude]);
-            //     this.addModel(d.objId,"./static/map3d/map_photo/car.3DS",dUTM[0],dUTM[1],this.defualtZ+10);
-            //     console.log(dUTM);
-            // }
-
-
         },
         onClose:function(data){
             console.log("结束连接");
         },
+        changeRcuId:function(url,rcuid)
+        {
+            this.websocketUrl = url;
+            this.rcuId = rcuid;
+            if(window.WebSocket){
+                if(this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+                    this.hostWebsocket.close();
+                }
+                this.hostWebsocket = new WebSocket(this.websocketUrl);
+                this.hostWebsocket.onmessage = this.onMessage;
+                this.hostWebsocket.onclose = this.onClose;
+                this.hostWebsocket.onopen = this.onOpen;
+                this.hostWebsocket.onerror = this.onError;
+            }
+        },
         onOpen:function(){
             console.log("建立连接");
             // 2046A1035893
-            var hostVehicle = '{"action":"rcu","data":{"rcuId":"2046A1037E1F"},"token":"fpx"}';
+            // var hostVehicle = '{"action":"rcu","data":{"rcuId":"2046A1037E1F"},"token":"fpx"}';
             // var hostVehicleMsg = JSON.stringify(hostVehicle);
+            var hostVehicle = '{"action":"RCUPer","rcuId":"'+this.rcuId+'"}';
             this.sendMsg(hostVehicle);
         },
         sendMsg:function(msg){
