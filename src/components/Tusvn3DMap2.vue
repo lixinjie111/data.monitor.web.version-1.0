@@ -143,11 +143,11 @@ export default {
 
 
             setTimeout(()=>{
-                this.changeRcuId("aaaa");
+                this.changeRcuId(this.websocketUrl,"aaaa");
             },5000);
 
             setTimeout(()=>{
-                this.changeRcuId("2046A1037E1F");
+                this.changeRcuId(this.websocketUrl,"2046A1037E1F");
             },8000);
 
 
