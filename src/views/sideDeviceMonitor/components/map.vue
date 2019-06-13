@@ -7,7 +7,7 @@
         {{item.text}}
       </li>
     </ul>
-    <side-dialog :dialog-visible.sync="dialogVisible" :selected-item="selectedItem"></side-dialog>
+    <side-dialog :dialog-visible.sync="dialogVisible" :selected-item="selectedItem" @closeDialog="dialogVisible=false"></side-dialog>
   </div>
 </template>
 <script>
@@ -36,12 +36,12 @@
           {
             'id':1,
             'text':'红绿灯',
-            'isActive':true
+            'isActive':false
           },
           {
             'id':2,
             'text':'路侧点',
-            'isActive':false
+            'isActive':true
           },
           {
             'id':3,
@@ -64,7 +64,7 @@
       getMarkers(item) {
         var disParams=[];
         if(item.id==0){
-          disParams.push(1);
+          disParams.push(2);
           this.getDevDis(disParams);
         }else{
           item.isActive=!item.isActive;
@@ -98,7 +98,9 @@
             if(item.longitude|| item.latitude){
               option={
                 position:new AMap.LngLat(item.longitude, item.latitude),
-                type:item.type
+                type:item.type,
+                deviceId:item.deviceId,
+                path:item.path
               }
               resultData.push(option);
             }
@@ -107,7 +109,8 @@
           //转成高德地图的坐标
           resultData.forEach((item, index, arr)=>{
             AMap.convertFrom(resultData[index].position, 'gps', function (status, result){
-              /*console.log("============="+status);*/
+//              console.log("status============="+status);
+//              console.log("count============="+count);
               if (result.info === 'ok') {
                 let _point = result.locations[0];
                 resultData[index].position = _point;
@@ -115,7 +118,7 @@
 //                console.log("count-------"+count);
                 if(count == arr.length) {
                   //绘制线的轨迹
-                  resultData.forEach(function (item) {
+                  resultData.forEach(function (item,index) {
                     if(item.type==1){
                      /* console.log("红绿灯----"+item.position);*/
                       var marker = new AMap.Marker({
@@ -133,9 +136,14 @@
                         icon: 'static/images/sideDevice/3.png', // 添加 Icon 图标 URL
                       });
                       _this.map.add(marker);
+                      var item={
+                        path:item.path,
+                        roadSiderId:item.deviceId,
+                        camSerialNum:""
+                      }
                       marker.on('click', function(e) {
                         _this.dialogVisible=true;
-                        /*_this.selectedItem=*/
+                        _this.selectedItem=item;
                       });
                       _this.sideList.push(marker)
                     }
@@ -147,9 +155,14 @@
                       });
                       _this.map.add(marker);
                       _this.rcuList.push(marker)
-
+                    }
+                    //绘制完后，重新设置
+                   /* console.log("index-------"+index);*/
+                    if(index==resultData.length-1){
+                      _this.map.setFitView();
                     }
                   })
+
                 }
               }
             });

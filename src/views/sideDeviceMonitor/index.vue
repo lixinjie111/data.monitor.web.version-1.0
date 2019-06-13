@@ -6,9 +6,14 @@
       <left-bottom></left-bottom>
     </div>
     <map-container></map-container>
-    <div class="c-view-side side-device-right  c-scroll-wrap">
-      <right-list></right-list>
+    <div class="c-view-side c-view-right">
+      <div class=" c-scroll-wrap">
+        <div class="c-scroll-inner">
+          <right-list @queryDeviceDetail="queryDeviceDetail"></right-list>
+        </div>
+      </div>
     </div>
+    <side-dialog :dialogVisible="dialogVisible" :selected-item="selectedItem" @closeDialog="closeDialog"></side-dialog>
   </div>
 </template>
 <script>
@@ -18,13 +23,25 @@
   import LeftBottom from './components/leftBottom.vue'
   import MapContainer from './components/map.vue'
   import RightList from './components/rightList.vue'
+  import SideDialog from './components/dialog.vue'
   export default {
     data() {
       return {
+        dialogVisible:false,
+        selectedItem:{}
       }
     },
-    components: { LeftTop,CircleProgress,LeftMiddle,LeftBottom,MapContainer,RightList},
-    methods: {},
+    components: { LeftTop,CircleProgress,LeftMiddle,LeftBottom,MapContainer,RightList,SideDialog},
+    methods: {
+      closeDialog() {
+        this.dialogVisible = false;
+      },
+      queryDeviceDetail(item){
+        this.dialogVisible=true;
+        this.selectedItem = item;
+        console.log(item);
+      }
+    },
     mounted() {
 
     }

@@ -188,15 +188,26 @@
               /*'roadSiderId': '130101_001',*/
               'roadSiderId': roadId,
             }).then(res => {
+
               _this.deviceList = res.data;
               var flag=true;
               _this.deviceList.forEach(function (item, index) {
                 //第一次默认并且是摄像头而且在线设置其打开状态
                 if(flag&&item.deviceType=='N'&&item.workStatus==1){
-                  flag=false;
-                  //设置默认的选中值
-                  _this.$set(item, 'value', true);
-                  _this.openVideoList.push(item);
+                  if(_this.selectedItem.camSerialNum==""){
+                    flag=false;
+                    //设置默认的选中值
+                    _this.$set(item, 'value', true);
+                    _this.openVideoList.push(item);
+                  }else{
+                    if(item.serialNum==_this.selectedItem.camSerialNum){
+                      flag=false;
+                      //设置默认的选中值
+                      _this.$set(item, 'value', true);
+                      _this.openVideoList.push(item);
+                    }
+                  }
+
                   getVideoByNum({
                     "protocal": 1,
                     /*"serialNum": "3402000000132000001401"*/
@@ -479,7 +490,6 @@
         },
         watch:{
           dialogVisible(){
-            console.log(this.dialogVisible+"---------------")
             if(this.dialogVisible){
               var _this = this;
               _this.selectAddr = _this.selectedItem.path.split("|");
@@ -498,10 +508,7 @@
 </script>
 <style>
   .vjs-custom-skin > .video-js .vjs-big-play-button{
-    display: none;
-  }
-  .side-device-size .video-js{
-    height: 210px;
+    display: none!important;
   }
   .device-video-style .video-js{
     height: 240px;

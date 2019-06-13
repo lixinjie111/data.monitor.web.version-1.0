@@ -19,11 +19,12 @@
       </div>
     </div>
     <div class="alert-event">
-      <div class="event-style">
-        <img src="@/assets/images/car/car-20.png" />
+      <div class="event-style" @click="cloudDialog=true">
+        <img src="@/assets/images/car/car-20.png"/>
         <span>{{cloudCount}}</span>
       </div>
-      <div class="event-style">
+
+      <div class="event-style" @click="vehicleDialog=true">
         <img src="@/assets/images/car/car-21.png" />
         <span>{{vehicleCount}}</span>
       </div>
@@ -31,7 +32,7 @@
     <!--v-show="warningData.show"-->
 
     <div class="pre-warning">
-      <div  class="pre-warning-item" v-for="item in warningObj">
+      <div  class="pre-warning-item" v-for="item in warningList" v-show="item.flag" :key="item.id">
        <!-- <p class="warning-position"> {{item.type}}</p>-->
         <div v-show="item.type==1" class="warning-position" >
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
@@ -81,10 +82,61 @@
       <span></span>
       <span class="ts1">{{nowTime}}</span>
     </div>
+    <single-dialog :dialogVisible="cloudDialog" :title="'预警信息'" @closeDialog="cloudDialog=false">
+      <table class="c-table">
+        <tr>
+          <th>序号</th>
+          <th>预警时间</th>
+          <th>预警类型</th>
+          <th>预警级别</th>
+          <th>预警位置</th>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2019-08-27 09:05:34:322</td>
+          <td>前向碰撞预警</td>
+          <td><p class="alert-level" style="background-color: #ae3717"><span class="alert-level-value">3</span></p></td>
+          <td>沪A5237490</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>2019-08-27 09:05:34:322</td>
+          <td>车道偏离预警</td>
+          <td><p class="alert-level" style="background-color: #fd8610"><span class="alert-level-value">5</span></p></td>
+          <td>沪A5237490</td>
+        </tr>
+      </table>
+    </single-dialog>
+    <single-dialog :dialogVisible="vehicleDialog" :title="'告警信息'" @closeDialog="vehicleDialog=false">
+      <table class="c-table">
+        <tr>
+          <th>序号</th>
+          <th>告警时间</th>
+          <th>告警名称</th>
+          <th>告警级别</th>
+          <th>告警车辆</th>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2019-08-27 09:05:34:322</td>
+          <td>前向碰撞预警</td>
+          <td><p class="alert-level" style="background-color: #ae3717"><span class="alert-level-value">3</span></p></td>
+          <td>沪A5237490</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>2019-08-27 09:05:34:322</td>
+          <td>前向碰撞预警</td>
+          <td><p class="alert-level" style="background-color: #fd8610"><span class="alert-level-value">5</span></p></td>
+          <td>沪A5237490</td>
+        </tr>
+      </table>
+    </single-dialog>
   </div>
 </template>
 <script>
   import AMap from 'AMap';
+  import SingleDialog from '@/views/carMonitor/components/singleCar/dialog.vue'
   export default {
     name:"main-car",
     data () {
@@ -113,37 +165,13 @@
         isInit:true,
         k:0,
         isShow:'none',
-        warningObj:{
-         /* 1:{
-            "type":1
-          },
-          2:{
-            "type":2
-          }*/
-        },
-        warningList:[
-          /*{
-            "id":"type1",
-            "type":"1",
-            "timer":null
-          }*//*,
-          {
-            "id":"type2",
-            "type":"2"
-          },
-          {
-            "id":"type3",
-            "type":"3"
-          },
-          {
-            "id":"type4",
-            "type":"4"
-          },
-          {
-            "id":"type5",
-            "type":"1"
-          }*/
-        ]
+        warningList:[],
+        count:0,
+        isAllClear:false,
+        cloudDialog:false,
+        vehicleDialog:false,
+        cloudList:[],
+        vehicleList:[]
       }
     },
     props:{
@@ -173,6 +201,9 @@
         }
       }
     },
+    components:{
+      SingleDialog
+    },
     methods: {
       getAngle(map,start, end) {
         var p_start = map.lngLatToContainer(start),
@@ -199,6 +230,7 @@
         _this.hostWebsocket.onerror = _this.onerror;
       },
       onmessage(mesasge){
+        console.log("本车---------")
         var _this=this;
         var json = JSON.parse(mesasge.data);
         var data = json.result;
@@ -631,32 +663,50 @@
         var bounds = new AMap.Bounds(minLnglat, maxLnglat);
         return bounds;
       }
+
+
     },
     mounted () {
       var i=1;
+      var isAllClear=false;
       var time = setInterval(()=>{
         if(i==5){
           clearInterval(time);
           return;
         }
         let _attr = i.toString();
-        /*warningObj:{
-          1:{
-            "type":1
-          },
-          2:{
-            "type":2
+        var obj = {type: i,timer: null, flag: true,id:'type'+i}
+        obj.timer=setTimeout(()=>{
+          obj.flag=false;
+          this.warningList.forEach(item=>{
+            if(item.flag){
+              isAllClear=true;
+            }
+          })
+          if(!isAllClear){
+            this.warningList=[];
           }
-        }*/
-        this.$set(this.warningObj, _attr, {type: i,timer: null, flag: true});
-       /* this.warningObj[_attr] = {type: i,timer: null, flag: true};*/
-        console.log(this.warningObj);
-       /* this.warningObj[_attr].timer = setTimeout(() => {
-            this.warningObj[_attr].flag = false;
-          }, 3000);*/
+        },3000)
+        this.warningList.unshift(obj);
+
         i++;
 
+        /*this.$set(this.warningObj, _attr, {type: i,timer: null, flag: true,id:'type'+i});
+       i++;
+       this.warningObj[_attr].timer = setTimeout(() => {
+         this.warningObj[_attr].flag=false;
+         for(var key in this.warningObj){
+           if(this.warningObj[key].flag){
+             isAllClear=true;
+           }
+         }
+         if(!isAllClear){
+           this.warningObj={};
+         }
+         }, 3000);*/
+
         },2000)
+
 
       this.distanceMap = new AMap.Map("realTraffic", {
         center: [116.482362,39.997718],
@@ -680,7 +730,36 @@
     }
   }
 </script>
-<style scoped>
+<style lang="scss" scoped>
+  .c-table{
+    border:1px solid #5e5970;
+    /*background-color: #5e5970;*/
+    width:96%;
+    text-align: center;
+    color: #ffffff;
+    font-family: MicrosoftYaHei;
+    letter-spacing: 1px;
+    tr{
+      line-height: 50px;
+      th,td{
+        border:1px solid #5e5970;
+        opacity: 0.6;
+        color: #ffffff;
+      }
+    }
+    .alert-level{
+      display: inline-block;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      vertical-align: middle;
+      position: relative;
+      .alert-level-value{
+        position: relative;
+        top: -12px;
+      }
+    }
+  }
   .monitor-traffic{
     width: 100%;
     /*height: 600px;*/
@@ -689,37 +768,39 @@
     background: #1c1c1c;
     color: #ccc8c6;
     font-size: 16px;
+    .travel-detail{
+      position: absolute;
+      left: 0px;
+      top: 20px;
+      background: #24212c;
+      z-index:1;
+      .detail1{
+        display: inline-block;
+        padding:5px 10px;
+        .detail2{
+          color: #37ba7b;
+          display: inline-block;
+          padding: 0px 2px;
+        }
+      }
+    }
+    .alert-event{
+      position: absolute;
+      top: 30px;
+      right: 25px;
+      z-index:1;
+      text-align: center;
+      .event-style{
+        text-align: center;
+        cursor: pointer;
+        img{
+          display: block;
+          margin: 0 auto;
+        }
+      }
+    }
   }
-  .travel-detail{
-    position: absolute;
-    left: 0px;
-    top: 20px;
-    background: #24212c;
-    z-index:1;
-  }
-  .detail1{
-    display: inline-block;
-    padding:5px 10px;
-  }
-  .detail2{
-    color: #37ba7b;
-    display: inline-block;
-    padding: 0px 2px;
-  }
-  .alert-event{
-    position: absolute;
-    top: 30px;
-    right: 25px;
-    z-index:1;
-    text-align: center;
-  }
-  .event-style{
-    text-align: center;
-  }
-  .event-style img{
-    display: block;
-    margin: 0 auto;
-  }
+
   .travel-time{
     position: absolute;
     bottom: 10px;

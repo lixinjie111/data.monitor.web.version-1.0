@@ -1,22 +1,35 @@
 <template>
   <div class="side-device-info">
-    <div class="side-device-style" v-for="(item,index) in roadList" >
+    <div class="side-device-style" >
       <div class="side-device-size" >
-        <video-player class="vjs-custom-skin" :options="playerOptions[index]" :width="330" :height="210"></video-player>
+        <video-player class="vjs-custom-skin" :options="option1" ></video-player>
+        <div class="side-device-mask" @click="queryDeviceDetail(roadItem1)">
+          <p>路侧点：{{roadItem1.roadSiderId}}</p>
+        </div>
       </div>
-      <div class="side-device-mask" @click="queryDeviceDetail(item)"></div>
       <div class="side-device-size">
         <!--<tusvn-map :target-id="'mapMonitor'" ref="tusvnMap" >
 
         </tusvn-map>-->
       </div>
     </div>
-    <side-dialog :dialogVisible="dialogVisible" :selected-item="selectedItem" @closeDialog="closeDialog"></side-dialog>
+    <div class="side-device-style" >
+      <div class="side-device-size" >
+        <video-player class="vjs-custom-skin" :options="option2" ></video-player>
+        <div class="side-device-mask" @click="queryDeviceDetail(roadItem2)">
+          <p>路侧点：{{roadItem2.roadSiderId}}</p>
+        </div>
+      </div>
+      <div class="side-device-size">
+        <!--<tusvn-map :target-id="'mapMonitor'" ref="tusvnMap" >
+
+        </tusvn-map>-->
+      </div>
+    </div>
   </div>
 </template>
 <script>
   import VideoPlayer from "../../../../node_modules/vue-video-player/src/player.vue";
-  import SideDialog from '@/views/sideDeviceMonitor/components/dialog.vue'
   import {getVideoByNum,getRoadList} from '@/api/sideDeviceMonitor'
   const isProduction = process.env.NODE_ENV === 'production'
 
@@ -24,17 +37,55 @@
     export default {
         data() {
             return {
-              playerOptions:[],
-              roadList:[],
-              dialogVisible:false,
-              selectedItem:{}
+              option1:{
+                overNative: true,
+                autoplay: true,
+                controls: true,
+                fluid: true,
+                techOrder: ['flash', 'html5'],
+                sourceOrder: true,
+                flash: {
+                  swf: isProduction ? '/dataMonitor/static/media/video-js.swf' : '/static/media/video-js.swf'
+                },
+                sources: [
+                  {
+                    type: 'rtmp/mp4',
+                    src: ''
+                  }
+                ],
+                muted:true,
+                width:'100%',
+                height:'100%'
+              },
+              option2:{
+                overNative: true,
+                autoplay: true,
+                controls: true,
+                fluid: true,
+                techOrder: ['flash', 'html5'],
+                sourceOrder: true,
+                flash: {
+                  swf: isProduction ? '/dataMonitor/static/media/video-js.swf' : '/static/media/video-js.swf'
+                },
+                sources: [
+                  {
+                    type: 'rtmp/mp4',
+                    src: ''
+                  }
+                ],
+                muted:true,
+                width:'100%',
+                height:'100%'
+              },
+              roadItem1:{},
+              roadItem2:{},
+              roadList:[]
 
             }
         },
         components:{
           VideoPlayer,
-          TusvnMap,
-          SideDialog
+          TusvnMap
         },
         methods: {
           getPlayerOptions(){
@@ -70,21 +121,27 @@
                   /*"serialNum": "3402000000132000001401"*/
                   "serialNum": item.camSerialNum
                 }).then(res => {
-                  var options = _this.getPlayerOptions();
-                  options.sources[0].src=res.data.rtmp;
+                  /*var options = _this.getPlayerOptions();
+                  options.sources[0].src=res.data.rtmp;*/
                   /*item.option = options;*/
-                  _this.playerOptions.push(options);
+                  /*_this.playerOptions.push(options);*/
+                  if(index==0){
+                    _this.option1.sources[0].src=res.data.rtmp;
+                    _this.roadItem1=item;
+                  }
+                  if(index==1){
+                    _this.option2.sources[0].src=res.data.rtmp;
+                    _this.roadItem2=item;
+                  }
                 })
               })
             });
           },
-          queryDeviceDetail(item){
+          queryDeviceDetail(item) {
             var _this = this;
-            _this.selectedItem = item;
-            this.dialogVisible=true;
-          },
-          closeDialog() {
-            this.dialogVisible = false;
+            this.$emit("queryDeviceDetail",item);
+            /*_this.selectedItem = item;
+            this.dialogVisible = true;*/
           }
         },
        watch:{
@@ -96,27 +153,51 @@
     }
 </script>
 
+<style>
+  .side-device-size .vjs-error .vjs-error-display .vjs-modal-dialog-content{
+    padding:50px 24px 30px;
+    color: #ccc;
+  }
+  .side-device-size .vjs-error .vjs-error-display:before{
+    font-size: 3em;
+    color: #ccc;
+    top:60%;
+  }
+  .side-device-size .video-js{
+    height: 200px;
+  }
+</style>
 <style lang="scss" scoped>
 
   .side-device-info{
     position: absolute;
     right:20px;
-    .side-device-style{
+    /*.side-device-style{
       position: relative;
-     /* margin-bottom: 30px;*/
-    }
+     !* margin-bottom: 30px;*!
+    }*/
     .side-device-size{
       width: 330px;
       height: 210px;
       margin-bottom: 30px;
+      position: relative;
+      padding: 5px;
+      border:1px solid #5e5970;
+      box-sizing: border-box;
     }
     .side-device-mask{
       position: absolute;
-      width: 330px;
-      height: 450px;
+      width: 310px;
+      height: 170px;
       top: 0;
       cursor: pointer;
       z-index:1;
+      p{
+        margin-top: 10px;
+        margin-left: 10px;
+        font-size: 12px;
+        color: #fff;
+      }
     }
   }
 

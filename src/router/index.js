@@ -22,6 +22,7 @@ const videoTest = resolve => require(['@/views/test/video'], resolve)
 const MarkerTest = resolve => require(['@/views/test/marker'], resolve)
 const TreeTest = resolve => require(['@/views/test/tree'], resolve)
 const SelectTest = resolve => require(['@/views/test/select'], resolve)
+const TableTest = resolve => require(['@/views/test/table'], resolve)
 
 
 Vue.use(Router)
@@ -116,6 +117,13 @@ export default new Router({
     path: '/selectTest',
     name: 'SelectTest',
     component: SelectTest,
+    meta: {
+      showHeader: false
+    }
+  },{
+    path: '/tableTest',
+    name: 'TableTest',
+    component: TableTest,
     meta: {
       showHeader: false
     }

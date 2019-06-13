@@ -35,7 +35,7 @@ export default {
               {id:1,name:'概览',path:'/dataMonitor'},
               {id:2,name:'车辆',path:'/carMonitor'},
               {id:3,name:'路网',path:'/roadMonitor'},
-              {id:4,name:'路测设备',path:'/sideDeviceMonitor'}
+              {id:4,name:'路侧设备',path:'/sideDeviceMonitor'}
             ],
             responseData: {
                 timestamp: new Date().getTime()
