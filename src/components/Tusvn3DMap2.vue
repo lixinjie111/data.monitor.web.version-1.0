@@ -54,9 +54,12 @@ export default {
             ,defualtRadius:100
             ,defualtPitch:-0.8
             ,defualtZ:12.816
+            ,rcuId:"2046A1037E1F"
 
             ,matStdObjects : new THREE.MeshStandardMaterial( { color: 0x7337E3, roughness: 1, metalness: 0 } )
             ,person : new THREE.MeshStandardMaterial( { color: 0xC4B17A, roughness: 1, metalness: 0 } )
+            ,fontface:"宋体"
+            ,fontSize:60
 
             ,pitch:0
             ,yaw:0
@@ -137,6 +140,15 @@ export default {
                 // this.updateCameraPosition(326181.72659014474,3462354.6747002415,737.3642832288795,741.5052736914325,-1.5707963267948966,-0.05266622778143515);
                 
             },500);
+
+
+            setTimeout(()=>{
+                this.changeRcuId("aaaa");
+            },5000);
+
+            setTimeout(()=>{
+                this.changeRcuId("2046A1037E1F");
+            },8000);
 
 
         },
@@ -235,7 +247,7 @@ export default {
                 deviceid = rsuDatas.result[0].deviceId;
                 if(this.deviceModels[deviceid]==null)
                 {
-                    this.deviceModels[deviceid]={cars:[],persons:[]};
+                    this.deviceModels[deviceid]={cars:[],persons:[],texts:[]};
                     for(let m = 0;m<this.cacheModelNum;m++)
                     {
 
@@ -266,6 +278,20 @@ export default {
 
                         this.deviceModels[deviceid].persons[m]= pmodel1;
                         dl.scene.add(pmodel1);
+
+
+                        var text1 = new dl.Text({
+                            text:"",
+                            fontsize:this.fontSize,
+                            borderThickness:0,
+                            textColor:{r: 0, g: 0, b: 0, a: 1.0}
+                        });
+
+                        this.deviceModels[deviceid].texts[m]=text1;
+                        dl.scene.add(text1);
+                        text1.setPositon([0,0,0]);
+                        text1.fontface=this.fontface;
+                        text1.update();
                     }
                 }else{
                     for(let p=0;p<this.deviceModels[deviceid].cars.length;p++)
@@ -297,6 +323,10 @@ export default {
                         mdl.position.x = dUTM[0];
                         mdl.position.y = dUTM[1];
                         mdl.position.z = this.defualtZ+4;
+
+                        let text = this.deviceModels[deviceid].texts[i]; 
+                        text.setText(d.target.uuid.substr(0,8));                   
+                        text.setPositon([dUTM[0],dUTM[1],this.defualtZ+5]);
                     }
                 }else{
                     if(i<this.deviceModels[deviceid].cars.length)
@@ -305,31 +335,38 @@ export default {
                         mdl.position.x = dUTM[0];
                         mdl.position.y = dUTM[1];
                         mdl.position.z = this.defualtZ+4;
+
+                        let text = this.deviceModels[deviceid].texts[i];
+                        text.setText(d.target.uuid.substr(0,8));                    
+                        text.setPositon([dUTM[0],dUTM[1],this.defualtZ+6]);
                     }
                 }
-
-
             }
-            // if(rsuDatas.length>0){
-            //     console.log("感知到"+rsuDatas.length+"个物体");
-            //     let d = rsuDatas[0];
-            //     // console.log(rsuDatas[i]);
-            //     let dUTM = proj4(this.sourceProject,this.destinatePorject,[d.longitude,d.latitude]);
-            //     this.addModel(d.objId,"./static/map3d/map_photo/car.3DS",dUTM[0],dUTM[1],this.defualtZ+10);
-            //     console.log(dUTM);
-            // }
-
-
         },
         onClose:function(data){
             console.log("结束连接");
+        },
+        changeRcuId:function(url,rcuid)
+        {
+            this.websocketUrl = url;
+            this.rcuId = rcuid;
+            if(window.WebSocket){
+                if(this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+                    this.hostWebsocket.close();
+                }
+                this.hostWebsocket = new WebSocket(this.websocketUrl);
+                this.hostWebsocket.onmessage = this.onMessage;
+                this.hostWebsocket.onclose = this.onClose;
+                this.hostWebsocket.onopen = this.onOpen;
+                this.hostWebsocket.onerror = this.onError;
+            }
         },
         onOpen:function(){
             console.log("建立连接");
             // 2046A1035893
             // var hostVehicle = '{"action":"rcu","data":{"rcuId":"2046A1037E1F"},"token":"fpx"}';
             // var hostVehicleMsg = JSON.stringify(hostVehicle);
-            var hostVehicle = '{"action":"RCUPer","rcuId":"2046A1037E1F"}';
+            var hostVehicle = '{"action":"RCUPer","rcuId":"'+this.rcuId+'"}';
             this.sendMsg(hostVehicle);
         },
         sendMsg:function(msg){
