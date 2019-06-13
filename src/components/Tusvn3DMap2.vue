@@ -138,17 +138,17 @@ export default {
                 this.updateCameraPosition(442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606);
                 //上海
                 // this.updateCameraPosition(326181.72659014474,3462354.6747002415,737.3642832288795,741.5052736914325,-1.5707963267948966,-0.05266622778143515);
-                
+                this.$emit("mapcomplete",this);
             },500);
 
 
-            setTimeout(()=>{
-                this.changeRcuId(this.websocketUrl,"aaaa");
-            },5000);
+            // setTimeout(()=>{
+            //     this.changeRcuId(this.websocketUrl,"aaaa");
+            // },5000);
 
-            setTimeout(()=>{
-                this.changeRcuId(this.websocketUrl,"2046A1037E1F");
-            },8000);
+            // setTimeout(()=>{
+            //     this.changeRcuId(this.websocketUrl,"2046A1037E1F");
+            // },8000);
 
 
         },
