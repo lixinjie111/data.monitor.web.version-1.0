@@ -125,11 +125,11 @@ export default {
 
 
             //初始化websocket连接
-            this.initWebsocket(this.websocketUrl);
-            setInterval(()=>{
-               let camera =  dl.viewer.scene.view;
+            // this.initWebsocket(this.websocketUrl);
+            // setInterval(()=>{
+            //    let camera =  dl.viewer.scene.view;
             //    console.log(camera);
-            },1000);
+            // },1000);
 
             setTimeout(()=>{
                 // 442454.32658246456,4427227.8078830885, 37.73509248844059, 0.0000028926452461693342,-0.5081018518518544,-0.7385192219746066
@@ -413,16 +413,21 @@ export default {
         {
             this.websocketUrl = url;
             this.rcuId = rcuid;
-            if(window.WebSocket){
-                if(this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-                    this.hostWebsocket.close();
+             if ('WebSocket' in window) {
+                if(window.WebSocket){
+                    if(this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+                        this.hostWebsocket.close();
+                    }
+                    this.hostWebsocket=null;
+                    this.hostWebsocket = new WebSocket(this.websocketUrl);
+                    this.hostWebsocket.onmessage = this.onMessage;
+                    this.hostWebsocket.onclose = this.onClose;
+                    this.hostWebsocket.onopen = this.onOpen;
+                    this.hostWebsocket.onerror = this.onError;
                 }
-                this.hostWebsocket = new WebSocket(this.websocketUrl);
-                this.hostWebsocket.onmessage = this.onMessage;
-                this.hostWebsocket.onclose = this.onClose;
-                this.hostWebsocket.onopen = this.onOpen;
-                this.hostWebsocket.onerror = this.onError;
-            }
+             }else{
+                 console.log("该浏览器不支持websocket");
+             }
         },
         onOpen:function(){
             console.log("建立连接");
