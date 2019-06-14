@@ -8,7 +8,7 @@
         </div>
       </div>
       <div class="side-device-size">
-        <tusvn-map target-id="mapMonitor" ref="tusvnMap1" >
+        <tusvn-map :target-id="mapMonitor" ref="tusvnMap1"  @mapcomplete="onMapComplete1">
 
         </tusvn-map>
       </div>
@@ -21,7 +21,7 @@
         </div>
       </div>
       <div class="side-device-size">
-        <tusvn-map target-id="mapMonitor1"  ref="tusvnMap2"  @mapcomplete="onMapComplete2">
+        <tusvn-map :target-id="mapMonitor1"  ref="tusvnMap2"  @mapcomplete="onMapComplete2">
 
         </tusvn-map>
       </div>
@@ -79,7 +79,9 @@
               },
               roadItem1:{},
               roadItem2:{},
-              roadList:[]
+              roadList:[],
+              mapMonitor:'mapMonitor',
+              mapMonitor1:"mapMonitor1"
 
             }
         },
@@ -90,11 +92,18 @@
         methods: {
           onMapComplete1:function(){
             // this.getRoadList();
+            console.log("onMapComplete1");
+            setTimeout(()=>{
+              // _this.$refs.tusvnMap1.changeRcuId(window.cfg.websocketUrl,item.roadSiderId);
+              this.$refs.tusvnMap1.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
+            },2000);
             // this.$refs.tusvnMap1.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
           },
           onMapComplete2:function(){
-            this.getRoadList();
-            // this.$refs.tusvnMap2.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
+            // this.getRoadList();
+            console.log("onMapComplete2");
+            // _this.$refs.tusvnMap2.changeRcuId(window.cfg.websocketUrl,item.roadSiderId);
+            this.$refs.tusvnMap2.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
           },
           getPlayerOptions(){
             var option={
@@ -164,6 +173,10 @@
        },
         mounted() {
           // this.getRoadList();
+          setTimeout(()=>{
+            console.log("设置aaa");
+            this.$refs.tusvnMap1.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
+          },10000);
         }
     }
 </script>

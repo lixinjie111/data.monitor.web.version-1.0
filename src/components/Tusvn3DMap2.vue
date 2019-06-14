@@ -18,7 +18,7 @@ export default {
             mapoption:{
                 doc: this.targetId,
                 background:"black",
-                navMode: Pt.oribtControls  //earthControls  oribtControls
+                navMode: Pt.OrbitControls   //earthControls  OrbitControls
             }
             // ,viewVector1:{x:287406.0,y:3463772,z:50}
             // ,viewVector2:{x:287707.0,y:3463835.0,z:80.0}
