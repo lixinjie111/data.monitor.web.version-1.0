@@ -239,7 +239,7 @@ export default {
         {
             var time = this.timetrans(data.timestamp);
             this.$emit('showTimeStamp',time);
-            deviceid = data.deviceId;
+            var deviceid = data.deviceId;
             if(this.deviceModels[deviceid]==null)
             {
                 this.deviceModels[deviceid]={cars:[],persons:[],texts:[]};
@@ -474,7 +474,7 @@ export default {
         //初始化地图
         setTimeout(() => {
             this.initMap();
-        }, 1000);
+        }, 0);
     },
     destroyed(){
 
