@@ -18,7 +18,7 @@ export default {
             mapoption:{
                 doc: this.targetId,
                 background:"black",
-                navMode: Pt.earthControls
+                navMode: Pt.earthControls //oribtControls   earthControls
             }
             // ,viewVector1:{x:287406.0,y:3463772,z:50}
             // ,viewVector2:{x:287707.0,y:3463835.0,z:80.0}
@@ -126,10 +126,10 @@ export default {
 
             //初始化websocket连接
             this.initWebsocket(this.websocketUrl);
-            // setInterval(()=>{
-            //    let camera =  dl.viewer.scene.view;
-            //    console.log(camera);
-            // },1000);
+            setInterval(()=>{
+               let camera =  dl.viewer.scene.view;
+               console.log(camera);
+            },1000);
 
             setTimeout(()=>{
                 // 442454.32658246456,4427227.8078830885, 37.73509248844059, 0.0000028926452461693342,-0.5081018518518544,-0.7385192219746066
