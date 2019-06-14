@@ -142,7 +142,7 @@ export default {
                 //上海
                 // this.updateCameraPosition(326181.72659014474,3462354.6747002415,737.3642832288795,741.5052736914325,-1.5707963267948966,-0.05266622778143515);
                 
-            },2000);
+            },500);
 
 
 
@@ -234,7 +234,7 @@ export default {
         {
             var time = this.timetrans(data.timestamp);
             this.$emit('showTimeStamp',time);
-            deviceid = data.deviceId;
+            var deviceid = data.deviceId;
             if(this.deviceModels[deviceid]==null)
             {
                 this.deviceModels[deviceid]={cars:[],persons:[],texts:[]};
@@ -469,7 +469,7 @@ export default {
         //初始化地图
         setTimeout(() => {
             this.initMap();
-        }, 1000);
+        }, 0);
     },
     destroyed(){
 
