@@ -18,7 +18,7 @@ export default {
             mapoption:{
                 doc: this.targetId,
                 background:"black",
-                navMode: Pt.earthControls
+                navMode: Pt.OrbitControls   //earthControls  OrbitControls
             }
             // ,viewVector1:{x:287406.0,y:3463772,z:50}
             // ,viewVector2:{x:287707.0,y:3463835.0,z:80.0}
@@ -125,7 +125,7 @@ export default {
 
 
             //初始化websocket连接
-            this.initWebsocket(this.websocketUrl);
+            // this.initWebsocket(this.websocketUrl);
             // setInterval(()=>{
             //    let camera =  dl.viewer.scene.view;
             //    console.log(camera);
@@ -135,20 +135,15 @@ export default {
                 // 442454.32658246456,4427227.8078830885, 37.73509248844059, 0.0000028926452461693342,-0.5081018518518544,-0.7385192219746066
                 // 442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606
                 //科技园
-                this.updateCameraPosition(442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606);
+                // this.updateCameraPosition(442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606);
+                //科技园 小图
+                this.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.6520903697733481,-0.5889099326599347);
+                this.$emit("mapcomplete",this);
                 //上海
                 // this.updateCameraPosition(326181.72659014474,3462354.6747002415,737.3642832288795,741.5052736914325,-1.5707963267948966,-0.05266622778143515);
                 
             },500);
 
-
-            setTimeout(()=>{
-                this.changeRcuId(this.websocketUrl,"aaaa");
-            },5000);
-
-            setTimeout(()=>{
-                this.changeRcuId(this.websocketUrl,"2046A1037E1F");
-            },8000);
 
 
         },
@@ -235,6 +230,74 @@ export default {
           var ms= date.getMilliseconds();
           return Y+M+D+h+m+s+"."+ms;
         },
+        showBData:function(data)
+        {   
+            var time = this.timetrans(data.timestamp);
+            this.$emit('showTimeStamp',time);
+            var deviceid = data.deviceId;
+            if(this.deviceModels[deviceid]==null)
+            {
+                this.deviceModels[deviceid]={cars:[],persons:[],texts:[]};
+                for(let m = 0;m<this.cacheModelNum;m++)
+                {
+
+                    //圆球
+                    // var geoSphere = new THREE.SphereBufferGeometry( 0.8, 15, 15 );
+                    // var model = new THREE.Mesh( geoSphere, matStdObjects );
+                    // model.position.set( 0, 0, 0 );
+                    // model.castShadow = true;
+                    // model.receiveShadow = true;
+                    // 0019D1AA0424  0019EAFA0104  0019EAFA0102  0018EAFA0332
+                    //车
+                    var geoBox1 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
+                    var model1 = new THREE.Mesh( geoBox1, this.matStdObjects );
+                    model1.position.set( 0, 0, 0 );
+                    model1.rotation.set( this.pitch,this.yaw,this.roll );
+                    model1.castShadow = true;
+                    model1.receiveShadow = true;
+
+                    dl.scene.add(model1);
+                    this.deviceModels[deviceid].cars[m] = model1;
+
+                    var pBox1 = new THREE.BoxBufferGeometry(0.4, 0.4, 1.7);
+                    var pmodel1 = new THREE.Mesh( pBox1, this.person );
+                    pmodel1.position.set( 0, 0, 0 );
+                    pmodel1.rotation.set( 0, 0, 0 );
+                    pmodel1.castShadow = true;
+                    pmodel1.receiveShadow = true;
+
+                    this.deviceModels[deviceid].persons[m]= pmodel1;
+                    dl.scene.add(pmodel1);
+
+
+                    var text1 = new dl.Text({
+                        text:"",
+                        fontsize:this.fontSize,
+                        borderThickness:0,
+                        textColor:{r: 0, g: 0, b: 0, a: 1.0}
+                    });
+
+                    this.deviceModels[deviceid].texts[m]=text1;
+                    dl.scene.add(text1);
+                    text1.setPositon([0,0,0]);
+                    text1.fontface=this.fontface;
+                    text1.update();
+                }
+            }else{
+                for(let p=0;p<this.deviceModels[deviceid].cars.length;p++)
+                {
+                    let car = this.deviceModels[deviceid].cars[p];
+                    car.position.x = 0;
+                    car.position.y = 0;
+                    car.position.z = 0;
+
+                    let person = this.deviceModels[deviceid].persons[p];
+                    person.position.x = 0;
+                    person.position.y = 0;
+                    person.position.z = 0;
+                }
+            }
+        },
         onMessage:function(data){
             this.models={};
             
@@ -242,8 +305,8 @@ export default {
             var deviceid = null;
             if(rsuDatas.result.length>0)
             {
-              var time = this.timetrans(rsuDatas.result[0].timestamp);
-              this.$emit('showTimeStamp',time);
+                var time = this.timetrans(rsuDatas.result[0].timestamp);
+                this.$emit('showTimeStamp',time);
                 deviceid = rsuDatas.result[0].deviceId;
                 if(this.deviceModels[deviceid]==null)
                 {
@@ -350,16 +413,21 @@ export default {
         {
             this.websocketUrl = url;
             this.rcuId = rcuid;
-            if(window.WebSocket){
-                if(this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-                    this.hostWebsocket.close();
+             if ('WebSocket' in window) {
+                if(window.WebSocket){
+                    if(this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+                        this.hostWebsocket.close();
+                    }
+                    this.hostWebsocket=null;
+                    this.hostWebsocket = new WebSocket(this.websocketUrl);
+                    this.hostWebsocket.onmessage = this.onMessage;
+                    this.hostWebsocket.onclose = this.onClose;
+                    this.hostWebsocket.onopen = this.onOpen;
+                    this.hostWebsocket.onerror = this.onError;
                 }
-                this.hostWebsocket = new WebSocket(this.websocketUrl);
-                this.hostWebsocket.onmessage = this.onMessage;
-                this.hostWebsocket.onclose = this.onClose;
-                this.hostWebsocket.onopen = this.onOpen;
-                this.hostWebsocket.onerror = this.onError;
-            }
+             }else{
+                 console.log("该浏览器不支持websocket");
+             }
         },
         onOpen:function(){
             console.log("建立连接");
@@ -399,9 +467,7 @@ export default {
             this.pageResize();
         }
         //初始化地图
-        setTimeout(() => {
-            this.initMap();
-        }, 1000);
+        this.initMap();        
     },
     destroyed(){
 

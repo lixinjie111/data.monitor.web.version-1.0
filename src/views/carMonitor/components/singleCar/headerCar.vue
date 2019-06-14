@@ -188,11 +188,9 @@
       },
       sendMsg(msg) {
         let _this=this;
-        console.log("连接状态："+_this.webSocket.readyState);
         if(window.WebSocket){
           if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
             _this.webSocket.send(msg); //send()发送消息
-            console.log("已发送消息:"+ msg);
           }
         }else{
           return;

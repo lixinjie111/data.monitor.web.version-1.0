@@ -260,7 +260,6 @@
           this.socket.onmessage = this.getMessage
       },
       openSocket(){
-          console.log('Socket建立连接');
           this.sendMsg();
       },
       sendMsg(){

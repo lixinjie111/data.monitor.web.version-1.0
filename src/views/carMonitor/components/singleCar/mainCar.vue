@@ -19,12 +19,12 @@
       </div>
     </div>
     <div class="alert-event">
-      <div class="event-style" @click="cloudDialog=true">
+      <div class="event-style" @click="getCloudEvent">
         <img src="@/assets/images/car/car-20.png"/>
         <span>{{cloudCount}}</span>
       </div>
 
-      <div class="event-style" @click="vehicleDialog=true">
+      <div class="event-style" @click="getVehicleEvent">
         <img src="@/assets/images/car/car-21.png" />
         <span>{{vehicleCount}}</span>
       </div>
@@ -116,20 +116,20 @@
           <th>告警级别</th>
           <th>告警车辆</th>
         </tr>
-        <tr>
-          <td>1</td>
-          <td>2019-08-27 09:05:34:322</td>
-          <td>前向碰撞预警</td>
-          <td><p class="alert-level" style="background-color: #ae3717"><span class="alert-level-value">3</span></p></td>
+        <tr v-for="(item,index) in cloudList">
+          <td>{{index+1}}</td>
+          <td>{{item.gpstime | dateFormat}}</td>
+          <td>{{item.alarmName}}</td>
+          <td><p class="alert-level" style="background-color: #ae3717"><span class="alert-level-value">{{item.alarmLvl}}</span></p></td>
           <td>沪A5237490</td>
         </tr>
-        <tr>
+        <!--<tr>
           <td>2</td>
           <td>2019-08-27 09:05:34:322</td>
           <td>前向碰撞预警</td>
           <td><p class="alert-level" style="background-color: #fd8610"><span class="alert-level-value">5</span></p></td>
           <td>沪A5237490</td>
-        </tr>
+        </tr>-->
       </table>
     </single-dialog>
   </div>
@@ -137,6 +137,8 @@
 <script>
   import AMap from 'AMap';
   import SingleDialog from '@/views/carMonitor/components/singleCar/dialog.vue'
+  import { getAlarmInformation } from '@/api/carMonitor'
+  import DateFormat from '@/assets/js/utils/date.js'
   export default {
     name:"main-car",
     data () {
@@ -145,6 +147,7 @@
         path:[],
         wholePath:[],
         marker:{},
+        platNoMarker:{},
         sideVehicleList:[],
         sideObjList:[],
         sideVehicleData:[],
@@ -171,7 +174,7 @@
         cloudDialog:false,
         vehicleDialog:false,
         cloudList:[],
-        vehicleList:[]
+        vehicleList:[],
       }
     },
     props:{
@@ -182,6 +185,9 @@
         }
       },
       time:{
+        type:String
+      },
+      routeStartTime:{
         type:String
       }
     },
@@ -199,6 +205,13 @@
         }else{
           return this.$dateUtil.formatTime(this.realData.gpsTime).split(" ")[1];
         }
+      }
+    },
+    filters: {
+      dateFormat: function (value) {
+        let ms = value%1000;
+        let time = DateFormat.formatTime(value);
+        return time+":"+ms;
       }
     },
     components:{
@@ -230,28 +243,59 @@
         _this.hostWebsocket.onerror = _this.onerror;
       },
       onmessage(mesasge){
-        console.log("本车---------")
         var _this=this;
         var json = JSON.parse(mesasge.data);
         var data = json.result;
         var type = json.action;
         var position = new AMap.LngLat(data.longitude,data.latitude);
         var newPosition;
+        var platNo;
+        var source="";
+        if(_this.isInit){
+          platNo=data.platNo;
+          data.source.forEach(item=>{
+            source+=item+",";
+          })
+          source = source.substring(0,source.lastIndexOf(","));
+        }
         AMap.convertFrom(position, 'gps', function (status, result) {
           if (result.info === 'ok') {
             newPosition = result.locations[0];
             if(_this.isInit){
               _this.marker = new AMap.Marker({
+                map:_this.distanceMap,
                 position: newPosition,
                 icon: 'static/images/car/car-6.png', // 添加 Icon 图标 URL
                 title: '北京',
                 zIndex:500
               });
+             /* _this.marker.setLabel({
+//                offset: new AMap.Pixel(20, 20),  //设置文本标注偏移量
+                content: "<div class='car-info'>京N123456</div>", //设置文本标注内容
+                direction: 'left' //设置文本标注方位
+              });*/
               _this.distanceMap.add(_this.marker);
+              _this.platNoMarker = new AMap.Text({
+                map: _this.distanceMap,
+                text: platNo+"<br/><span style='color:#e6a23c'>"+source+'</span>',
+                // text: '京N123456',
+                anchor: 'center', // 设置文本标记锚点
+                style: {
+                  'padding': '0 5px',
+                  'border-radius': '4px',
+                  'background-color': 'rgba(55, 186, 123, .2)',
+                  'border-width': 0,
+                  'text-align': 'center',
+                  'font-size': '10px',
+                  'line-height': '16px',
+                  'letter-spacing': '0',
+                  'margin-top': '-36px', //车头
+                  'color': '#ccc'
+                },
+                position: newPosition
+              });
               _this.isInit=false;
             }
-            /*console.log("longitude:"+data.longitude+"-----"+"latitude:"+data.latitude);*/
-            /*this.wholePath.push(to);*/
             //设置车的位置
             var lastPosition = [];
             if(_this.wholePath.length > 0 ) {
@@ -259,8 +303,6 @@
             }else{
               lastPosition = newPosition;
             }
-            /*var angle = this.getAngle(this.distanceMap,lastPosition,position);
-            this.marker.setAngle(angle);*/
             //存放整个路径
             _this.wholePath.push(newPosition);
             _this.marker.setPosition(lastPosition);
@@ -268,13 +310,11 @@
             _this.distanceMap.panTo(newPosition);
             //设置旋转角度
             _this.headingAngle = data.heading;
-            /*console.log("航向角-----"+_this.headingAngle);*/
-            /*_this.distanceMap.setRotation(-_this.headingAngle);*/
             _this.marker.setAngle(_this.headingAngle);
+           /* _this.platNoMarker.setAngle(_this.headingAngle);*/
             //所要移动的位置
             _this.marker.moveTo(newPosition,data.speed);
-            /*_this.distanceMap.setZoom(18);*/
-            /*_this.distanceMap.setFitView();*/
+            _this.platNoMarker.moveTo(newPosition,data.speed);
           }
         })
       },
@@ -282,7 +322,6 @@
         console.log("结束连接");
       },
       onopen(data){
-        console.log("建立连接,,,,,,");
         //自车
         var hostVehicle = {
           "action": "hostVehicle",
@@ -296,7 +335,6 @@
         if(window.WebSocket){
           if(_this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
             _this.hostWebsocket.send(msg); //send()发送消息
-            console.log("已发送消息:"+ msg);
           }
         }else{
           return;
@@ -416,7 +454,6 @@
         console.log("结束连接");
       },
       onSideOpen(data){
-        console.log("建立连接,,,,,,");
         //旁车
         var sideVehicle = {
           "action": "sideVehicle",
@@ -430,7 +467,6 @@
         if(window.WebSocket){
           if(_this.sideWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
             _this.sideWebsocket.send(msg); //send()发送消息
-            console.log("已发送消息:"+ msg);
           }
         }else{
           return;
@@ -524,7 +560,6 @@
         console.log("结束连接");
       },
       onDeviceOpen(data){
-        console.log("建立连接,,,,,,");
         //旁车
         var deviceVehicle = {
           "action": "rsb",
@@ -538,7 +573,6 @@
         if(window.WebSocket){
           if(_this.deviceWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
             _this.deviceWebsocket.send(msg); //send()发送消息
-            console.log("已发送消息:"+ msg);
           }
         }else{
           return;
@@ -583,7 +617,6 @@
         console.log("结束连接");
       },
       onLightOpen(data){
-        console.log("建立连接,,,,,,");
         //旁车
         var light = {
           "action": "spat",
@@ -597,7 +630,6 @@
         if(window.WebSocket){
           if(_this.lightWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
             _this.lightWebsocket.send(msg); //send()发送消息
-            console.log("已发送消息:"+ msg);
           }
         }else{
           return;
@@ -613,6 +645,7 @@
         _this.warningWebsocket.onopen = _this.onWarningOpen;
       },
       onWarningMessage(mesasge){
+        debugger
 
         var _this=this;
         var json = JSON.parse(mesasge.data);
@@ -631,7 +664,6 @@
         console.log("结束连接");
       },
       onWarningOpen(data){
-        console.log("建立连接,,,,,,");
         //旁车
         var warning = {
           "action": "warning",
@@ -662,9 +694,32 @@
         var maxLnglat = this.distanceMap.containerToLngLat(maxPixel,18);
         var bounds = new AMap.Bounds(minLnglat, maxLnglat);
         return bounds;
+      },
+      getAlarmInformation(){
+        var param = {
+          //"startTime": this.routeStartTime,
+          "startTime": 0,
+          "vehicleId": this.vehicleId
+        }
+        getAlarmInformation(param).then(res=>{
+          this.cloudList=res.alarmInfoList;
+        })
+      },
+      getCloudEvent(){
+        if(!this.routeStartTime||this.routeStartTime==""){
+          this.$message.error("本车行程未开始");
+          return;
+        }
+        this.cloudDialog=true;
+      },
+      getVehicleEvent(){
+        if(!this.routeStartTime||this.routeStartTime==""){
+          this.$message.error("本车行程未开始");
+          return;
+        }
+        this.vehicleDialog=true;
+        this.getAlarmInformation();
       }
-
-
     },
     mounted () {
       var i=1;
@@ -714,6 +769,23 @@
         zoom:18,
         rotateEnable:'true'
       });
+
+      /*this.marker = new AMap.Marker({
+        map:this.distanceMap,
+        position: [116.482362,39.997718],
+        icon: 'static/images/car/car-6.png', // 添加 Icon 图标 URL
+        title: '北京',
+        zIndex:500
+      });
+      this.marker.setAngle(180);
+      this.marker.setLabel({
+        offset: new AMap.Pixel(-20, -20),  //设置文本标注偏移量
+        content: "<div class='car-info'>京N123456</div>", //设置文本标注内容
+        direction: 'top' //设置文本标注方位
+      });
+      this.distanceMap.add(this.marker);*/
+
+
       this.initWebSocket();
       this.initSideWebSocket();
       this.initDeviceWebSocket();
@@ -730,6 +802,11 @@
     }
   }
 </script>
+<style>
+  .car-info{
+    color: #ccc;
+  }
+</style>
 <style lang="scss" scoped>
   .c-table{
     border:1px solid #5e5970;

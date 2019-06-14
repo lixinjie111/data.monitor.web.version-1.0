@@ -6,7 +6,7 @@
       </h3>
       <div id="sideTotalId" class="side-total-echarts"></div>
 
-    <h3 class="c-title">设备实时数据</h3>
+    <h3 class="c-title ">设备实时数据</h3>
     <div id="sideRealId" class="side-real-echarts"></div>
   </div>
 </template>
@@ -20,10 +20,6 @@
               count:0,
               webSocket:{},
               realWebSocket:{},
-              rsuWebsocket:{},
-              rcuWebsocket:{},
-              videoWebsocket:{},
-              lightWebsocket:{},
               totalData:[],
               rsuData:[],
               rcuData:[],
@@ -177,8 +173,9 @@
           onopen(data){
             //获取车辆状态
             var deviceCount = {
-              action: "deviceCount",
-              token: ''
+              'action': "deviceCount",
+              'devType':'0',
+              'token': ''
             }
             var deviceCountMsg = JSON.stringify(deviceCount);
             this.sendMsg(deviceCountMsg);
@@ -207,12 +204,18 @@
           onRealMessage(mesasge){
             let _this=this;
             var json = JSON.parse(mesasge.data);
-            _this.totalData.push(json.result.count);
-            if(_this.totalData.length>=300){
-              _this.totalData.shift();
+            _this.rsuData.push(json.result.count);
+            _this.rcuData.push(json.result.count);
+            _this.videoData.push(json.result.count);
+            _this.lightData.push(json.result.count);
+            if(_this.rsuData.length>=300||_this.rcuData.length>=300||_this.videoData.length>=300||_this.lightData.length>=300){
+              _this.rsuData.shift();
+              _this.rcuData.shift();
+              _this.videoData.shift();
+              _this.lightData.shift();
             }
-            var option = this.totalOption(_this.totalData);
-            this.sideTotalEcharts.setOption(option);
+            var option = this.realOption(_this.rsuData,_this.rcuData,_this.videoData,_this.lightData);
+            this.sideRealEcharts.setOption(option);
 
           },
           onRealClose(data){
@@ -239,210 +242,26 @@
               return;
             }
           },
-          initRsuWebSocket(){
-            let _this=this;
-            if ('WebSocket' in window) {
-              _this.rsuWebsocket = new WebSocket(window.cfg.websocketUrl);  //获得WebSocket对象
-            }
-            _this.rsuWebsocket.onmessage = _this.onRsuMessage;
-            _this.rsuWebsocket.onclose = _this.onRsuClose;
-            _this.rsuWebsocket.onopen = _this.onRsuOpen;
-          },
-          onRsuMessage(mesasge){
-            let _this=this;
-            var json = JSON.parse(mesasge.data);
-            _this.rsuData.push(json.result.count);
-            if(_this.rsuData.length>=300){
-              _this.rsuData.shift();
-            }
-            var option = this.realOption(_this.rsuData,null,null,null);
-            this.sideRealEcharts.setOption(option);
 
-          },
-          onRsuClose(data){
-            console.log("结束连接");
-          },
-          onRsuOpen(data){
-            //获取车辆状态
-            var deviceRsuCount = {
-              "action": "deviceCount",
-              "devType": "1"
-            }
-            var deviceRsuMsg = JSON.stringify(deviceRsuCount);
-            this.sendRsuMsg(deviceRsuMsg);
-          },
-          sendRsuMsg(msg) {
-            let _this=this;
-            console.log("连接状态："+_this.rsuWebsocket.readyState);
-            if(window.WebSocket){
-              if(_this.rsuWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-                _this.rsuWebsocket.send(msg); //send()发送消息
-                console.log("已发送消息:"+ msg);
-              }
-            }else{
-              return;
-            }
-          },
-          initRcuWebSocket(){
-            let _this=this;
-            if ('WebSocket' in window) {
-              _this.rcuWebsocket = new WebSocket(window.cfg.websocketUrl);  //获得WebSocket对象
-            }
-            _this.rcuWebsocket.onmessage = _this.onRcuMessage;
-            _this.rcuWebsocket.onclose = _this.onRcuClose;
-            _this.rcuWebsocket.onopen = _this.onRcuOpen;
-          },
-          onRcuMessage(mesasge){
-            let _this=this;
-            var json = JSON.parse(mesasge.data);
-            _this.rcuData.push(json.result.count);
-            if(_this.rcuData.length>=300){
-              _this.rcuData.shift();
-            }
-            var option = this.realOption(null,_this.rcuData,null,null);
-            this.sideRealEcharts.setOption(option);
-
-          },
-          onRcuClose(data){
-            console.log("结束连接");
-          },
-          onRcuOpen(data){
-            //获取车辆状态
-            var deviceRcuCount = {
-              "action": "deviceCount",
-              "devType": "2"
-            }
-            var deviceRcuMsg = JSON.stringify(deviceRcuCount);
-            this.sendRcuMsg(deviceRcuMsg);
-          },
-          sendRcuMsg(msg) {
-            let _this=this;
-            console.log("连接状态："+_this.rcuWebsocket.readyState);
-            if(window.WebSocket){
-              if(_this.rcuWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-                _this.rcuWebsocket.send(msg); //send()发送消息
-                console.log("已发送消息:"+ msg);
-              }
-            }else{
-              return;
-            }
-          },
-          initVideoWebSocket(){
-            let _this=this;
-            if ('WebSocket' in window) {
-              _this.videoWebsocket = new WebSocket(window.cfg.websocketUrl);  //获得WebSocket对象
-            }
-            _this.videoWebsocket.onmessage = _this.onVideoMessage;
-            _this.videoWebsocket.onclose = _this.onVideoClose;
-            _this.videoWebsocket.onopen = _this.onVideoOpen;
-          },
-          onVideoMessage(mesasge){
-            let _this=this;
-            var json = JSON.parse(mesasge.data);
-            _this.videoData.push(json.result.count);
-            if(_this.videoData.length>=300){
-              _this.videoData.shift();
-            }
-            var option = this.realOption(null,null,_this.videoData,null);
-            this.sideRealEcharts.setOption(option);
-
-          },
-          onVideoClose(data){
-            console.log("结束连接");
-          },
-          onVideoOpen(data){
-            //获取车辆状态
-            var deviceVideoCount = {
-              "action": "deviceCount",
-              "devType": "3"
-            }
-            var deviceVideoMsg = JSON.stringify(deviceVideoCount);
-            this.sendVideoMsg(deviceVideoMsg);
-          },
-          sendVideoMsg(msg) {
-            let _this=this;
-            console.log("连接状态："+_this.videoWebsocket.readyState);
-            if(window.WebSocket){
-              if(_this.videoWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-                _this.videoWebsocket.send(msg); //send()发送消息
-                console.log("已发送消息:"+ msg);
-              }
-            }else{
-              return;
-            }
-          },
-          initLightWebSocket(){
-            let _this=this;
-            if ('WebSocket' in window) {
-              _this.lightWebsocket = new WebSocket(window.cfg.websocketUrl);  //获得WebSocket对象
-            }
-            _this.lightWebsocket.onmessage = _this.onLightMessage;
-            _this.lightWebsocket.onclose = _this.onLightClose;
-            _this.lightWebsocket.onopen = _this.onLightOpen;
-          },
-          onLightMessage(mesasge){
-            let _this=this;
-            var json = JSON.parse(mesasge.data);
-            _this.lightData.push(json.result.count);
-            if(_this.lightData.length>=300){
-              _this.lightData.shift();
-            }
-            var option = this.realOption(null,null,null,_this.lightData);
-            this.sideRealEcharts.setOption(option);
-
-          },
-          onLightClose(data){
-            console.log("结束连接");
-          },
-          onLightOpen(data){
-            //获取车辆状态
-            var deviceLightCount = {
-              "action": "deviceCount",
-              "devType": "4"
-            }
-            var deviceLightMsg = JSON.stringify(deviceLightCount);
-            this.sendLightMsg(deviceLightMsg);
-          },
-          sendLightMsg(msg) {
-            let _this=this;
-            console.log("连接状态："+_this.lightWebsocket.readyState);
-            if(window.WebSocket){
-              if(_this.lightWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-                _this.lightWebsocket.send(msg); //send()发送消息
-                console.log("已发送消息:"+ msg);
-              }
-            }else{
-              return;
-            }
-          }
         },
         mounted() {
           this.sideTotalEcharts = this.$echarts.init(document.getElementById("sideTotalId"));
-        /*  var option = this.totalOption();
-          this.sideTotalEcharts.setOption(option);*/
           this.sideRealEcharts = this.$echarts.init(document.getElementById("sideRealId"));
-         /* var realOption = this.realOption();
-          this.sideRealEcharts.setOption(realOption);*/
-//          this.getTotalData();
-//          this.initWebSocket();
-          /*this.initRsuWebSocket();
-          this.initRcuWebSocket();*/
-//          this.initVideoWebSocket();
-//          this.initLightWebSocket();
+          this.getTotalData();
+          this.initWebSocket();
+//          this.initRealWebSocket();
         },
       destroyed(){
         //销毁Socket
         this.webSocket.close();
-        this.rsuWebsocket.close();
-        this.rcuWebsocket.close();
-        this.videoWebsocket.close();
-        this.lightWebsocket.close();
+        this.realWebSocket.close();
+
       }
     }
 </script>
 <style scoped>
   .side-total-echarts{
-    margin:28px 0px 58px 0px;
+    margin:28px 0px 50px 0px;
     height: 68px;
   }
   .side-real-echarts{

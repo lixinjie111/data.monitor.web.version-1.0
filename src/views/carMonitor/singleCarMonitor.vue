@@ -2,7 +2,7 @@
 <div class="car-view-wrapper">
     <div class="single-top">
         <div class="single-left">
-            <left-car ></left-car>
+            <left-car @getRouteStartTime="getRouteStartTime"></left-car>
         </div>
         <div class="single-main">
             <div class="single-header">
@@ -11,7 +11,7 @@
             <div class="single-content ">
                 <div class="single-content-left">
                     <div class="single-content-top">
-                        <main-car :real-data="realData"></main-car>
+                        <main-car :real-data="realData" :routeStartTime="routeStartTime"></main-car>
                     </div>
                     <div class="single-content-bottom">
                         <bottom-car ></bottom-car>
@@ -48,7 +48,9 @@
           turnLight:'',
           transmission:'P',
           gpsTime:''
+
         },
+        routeStartTime:'',
         liveData:{},
         speedData:{},
         vehicleId:'B21E-00-017',
@@ -76,9 +78,10 @@
           this.realData.transmission='P';
           this.realData.oilDoor=0;
           this.realData.brakePedal=0;
+          this.routeStartTime="";
         }else{
           this.realData = json.result;
-          console.log("转向灯---"+this.realData.turnLight)
+         /* console.log("转向灯---"+this.realData.turnLight)*/
         }
       },
       onclose(data){
@@ -95,11 +98,9 @@
       },
       sendMsg(msg) {
         let _this=this;
-        console.log("连接状态："+_this.webSocket.readyState);
         if(window.WebSocket){
           if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
             _this.webSocket.send(msg); //send()发送消息
-            console.log("已发送消息:"+ msg);
           }
         }else{
           return;
@@ -107,6 +108,9 @@
       },
       onerror(event){
         console.error("WebSocket error observed:", event);
+      },
+      getRouteStartTime(routeStartTime){
+        this.routeStartTime=routeStartTime.toString();
       }
     },
     mounted () {

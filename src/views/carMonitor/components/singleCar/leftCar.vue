@@ -389,8 +389,8 @@
           if(this.routeId != ""){
             if(this.routeId != json.data.routeId) {
               console.log("重新开启行程");
-              console.log(this.routeId);
-              console.log(json.data.routeId);
+//              console.log(this.routeId);
+//              console.log(json.data.routeId);
               this.all = 1;
               return false;
             }
@@ -495,7 +495,6 @@
         console.log("结束连接");
       },
       onopen(data){
-        console.log("建立连接,,,,,,");
         //行程
         this.webSocketData.vehicleId = this.vehicleId;
         this.webSocketData.scale = this.scale;
@@ -504,11 +503,9 @@
       },
       sendMsg(msg) {
         let _this=this;
-        console.log("连接状态："+_this.webSocket.readyState);
         if(window.WebSocket){
           if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
             _this.webSocket.send(msg); //send()发送消息
-            console.log("已发送消息:"+ msg);
           }
         }else{
           return;
@@ -526,6 +523,16 @@
         var bounds = new AMap.Bounds(minLnglat, maxLnglat);
         return bounds;
       }
+    },
+    watch:{
+
+      'routeInfo.routeStartTime': {
+        handler(newValue, oldValue) {
+          this.$emit("getRouteStartTime",newValue);
+        }
+
+      }
+
     },
     mounted () {
       var _this = this;

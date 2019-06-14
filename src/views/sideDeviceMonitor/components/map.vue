@@ -7,12 +7,11 @@
         {{item.text}}
       </li>
     </ul>
-    <side-dialog :dialog-visible.sync="dialogVisible" :selected-item="selectedItem" @closeDialog="dialogVisible=false"></side-dialog>
+
   </div>
 </template>
 <script>
   import { getDevDis } from '@/api/sideDeviceMonitor'
-  import SideDialog from '@/views/sideDeviceMonitor/components/dialog.vue'
   export default {
     name: "MapContainer",
     data() {
@@ -53,12 +52,7 @@
         lightList:[],
         rcuList:[],
         sideList:[],
-        dialogVisible:false,
-        selectedItem:{}
       }
-    },
-    components:{
-      SideDialog
     },
     methods: {
       getMarkers(item) {
@@ -142,8 +136,9 @@
                         camSerialNum:""
                       }
                       marker.on('click', function(e) {
-                        _this.dialogVisible=true;
-                        _this.selectedItem=item;
+                        _this.$parent.$emit("sideEvent",item);
+                        /*_this.dialogVisible=true;
+                        _this.selectedItem=item;*/
                       });
                       _this.sideList.push(marker)
                     }

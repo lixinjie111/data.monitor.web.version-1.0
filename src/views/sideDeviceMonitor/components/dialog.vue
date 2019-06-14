@@ -46,9 +46,9 @@
           </div>
         </div>
         <div class="side-device-right c-scroll-wrap">
-          <!--<tusvn-map :target-id="'deviceMap'" ref="tusvnMap" >
+          <tusvn-map :target-id="'deviceMap'" ref="tusvnMap3" >
 
-          </tusvn-map>-->
+          </tusvn-map>
           <div class="side-device-list">
             <p class="side-device-title">设备列表</p>
             <div class="device-list-style">
@@ -70,31 +70,12 @@
                     <span class="monitor-device-symbol" :class="[item.workStatus==1?'online':'offline']"></span>
                   </li>
                   <li class="table-cell">
-                    <!--<el-switch
-                      active-color="#13ce66"
-                      inactive-color="#5e5970"  v-model="item.value" :change='switchChange(item)'>
-                    </el-switch>-->
                     <div class="c-switch-style" :class="[item.value?active:unActive]" @click="switchChange(item)" v-show="item.deviceType=='N'">
                       <i></i>
                     </div>
                   </li>
                 </ul>
-                <!--<ul class="table-row">
-                  <li class="table-cell device-num">
-                    <img src="@/assets/images/monitorManage/monitor-4.png" class="monitor-device-img-2"/>
-                    <span class="monitor-device-text">N-191-302</span>
-                  </li>
-                  <li class="table-cell">
-                    <span class="monitor-device-symbol"></span>
-                  </li>
-                  <li class="table-cell">
-                    <el-switch
-                      v-model="value"
-                      active-color="#13ce66"
-                      inactive-color="#ff4949">
-                    </el-switch>
-                  </li>
-                </ul>-->
+
               </div>
             </div>
             <p class="side-device-title">监控视频</p>
@@ -109,6 +90,7 @@
 </template>
 <script>
   import {getDeviceList,getVideoByNum,getSideTree,getDevListByRoadId,getDeviceCountByCity} from '@/api/sideDeviceMonitor'
+  import TusvnMap from '@/components/Tusvn3DMap2'
   const isProduction = process.env.NODE_ENV === 'production'
     export default {
       name: "SideDialog",
@@ -142,6 +124,9 @@
               roadDevicePoint:{}
             }
         },
+      components:{
+        TusvnMap
+      },
 
         props:{
           dialogVisible: {
@@ -388,6 +373,8 @@
                 _this.getCitys(_this.provinceCode);
                 _this.cityCode=_this.selectAddr[1];
                 _this.cityValue=_this.selectAddr[1];
+                var childrenNodes = this.$refs.tree.children;
+                _this.removeTree(childrenNodes);
                 _this.getRegion();
               }
             });
@@ -491,13 +478,14 @@
         watch:{
           dialogVisible(){
             if(this.dialogVisible){
-              var _this = this;
-              _this.selectAddr = _this.selectedItem.path.split("|");
+              this.selectAddr = this.selectedItem.path.split("|");
              /* this.dialogVisible=true;*/
               //默认选中的
-              this.getDeviceList(_this.selectedItem.roadSiderId);
+              this.getDeviceList(this.selectedItem.roadSiderId);
               this.getSideTree();
               this.getDeviceCountByCity();
+              this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,this.selectedItem.roadSiderId);
+              this.$refs.tusvnMap3.updateCameraPosition( 442454.32657890377,4427227.807879115,37.7350947252935, 0.0000028926452461693342, -0.39699074074074336, -0.730706721974606);
             }
           }
         },
