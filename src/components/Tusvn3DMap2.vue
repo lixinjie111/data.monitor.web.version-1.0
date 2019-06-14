@@ -230,6 +230,74 @@ export default {
           var ms= date.getMilliseconds();
           return Y+M+D+h+m+s+"."+ms;
         },
+        showBData:function(data)
+        {
+            var time = this.timetrans(data.timestamp);
+            this.$emit('showTimeStamp',time);
+            deviceid = data.deviceId;
+            if(this.deviceModels[deviceid]==null)
+            {
+                this.deviceModels[deviceid]={cars:[],persons:[],texts:[]};
+                for(let m = 0;m<this.cacheModelNum;m++)
+                {
+
+                    //圆球
+                    // var geoSphere = new THREE.SphereBufferGeometry( 0.8, 15, 15 );
+                    // var model = new THREE.Mesh( geoSphere, matStdObjects );
+                    // model.position.set( 0, 0, 0 );
+                    // model.castShadow = true;
+                    // model.receiveShadow = true;
+                    // 0019D1AA0424  0019EAFA0104  0019EAFA0102  0018EAFA0332
+                    //车
+                    var geoBox1 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
+                    var model1 = new THREE.Mesh( geoBox1, this.matStdObjects );
+                    model1.position.set( 0, 0, 0 );
+                    model1.rotation.set( this.pitch,this.yaw,this.roll );
+                    model1.castShadow = true;
+                    model1.receiveShadow = true;
+
+                    dl.scene.add(model1);
+                    this.deviceModels[deviceid].cars[m] = model1;
+
+                    var pBox1 = new THREE.BoxBufferGeometry(0.4, 0.4, 1.7);
+                    var pmodel1 = new THREE.Mesh( pBox1, this.person );
+                    pmodel1.position.set( 0, 0, 0 );
+                    pmodel1.rotation.set( 0, 0, 0 );
+                    pmodel1.castShadow = true;
+                    pmodel1.receiveShadow = true;
+
+                    this.deviceModels[deviceid].persons[m]= pmodel1;
+                    dl.scene.add(pmodel1);
+
+
+                    var text1 = new dl.Text({
+                        text:"",
+                        fontsize:this.fontSize,
+                        borderThickness:0,
+                        textColor:{r: 0, g: 0, b: 0, a: 1.0}
+                    });
+
+                    this.deviceModels[deviceid].texts[m]=text1;
+                    dl.scene.add(text1);
+                    text1.setPositon([0,0,0]);
+                    text1.fontface=this.fontface;
+                    text1.update();
+                }
+            }else{
+                for(let p=0;p<this.deviceModels[deviceid].cars.length;p++)
+                {
+                    let car = this.deviceModels[deviceid].cars[p];
+                    car.position.x = 0;
+                    car.position.y = 0;
+                    car.position.z = 0;
+
+                    let person = this.deviceModels[deviceid].persons[p];
+                    person.position.x = 0;
+                    person.position.y = 0;
+                    person.position.z = 0;
+                }
+            }
+        },
         onMessage:function(data){
             this.models={};
             
@@ -237,8 +305,8 @@ export default {
             var deviceid = null;
             if(rsuDatas.result.length>0)
             {
-              var time = this.timetrans(rsuDatas.result[0].timestamp);
-              this.$emit('showTimeStamp',time);
+                var time = this.timetrans(rsuDatas.result[0].timestamp);
+                this.$emit('showTimeStamp',time);
                 deviceid = rsuDatas.result[0].deviceId;
                 if(this.deviceModels[deviceid]==null)
                 {
