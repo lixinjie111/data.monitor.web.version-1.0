@@ -8,7 +8,7 @@
         </div>
       </div>
       <div class="side-device-size">
-        <tusvn-map :target-id="'mapMonitor'" ref="tusvnMap1" >
+        <tusvn-map target-id="mapMonitor" ref="tusvnMap1" >
 
         </tusvn-map>
       </div>
@@ -21,7 +21,7 @@
         </div>
       </div>
       <div class="side-device-size">
-        <tusvn-map :target-id="'mapMonitor1'"  ref="tusvnMap2">
+        <tusvn-map target-id="mapMonitor1"  ref="tusvnMap2"  @mapcomplete="onMapComplete2">
 
         </tusvn-map>
       </div>
@@ -88,6 +88,14 @@
           TusvnMap
         },
         methods: {
+          onMapComplete1:function(){
+            // this.getRoadList();
+            // this.$refs.tusvnMap1.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
+          },
+          onMapComplete2:function(){
+            this.getRoadList();
+            // this.$refs.tusvnMap2.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
+          },
           getPlayerOptions(){
             var option={
               overNative: true,
@@ -126,18 +134,19 @@
                   /*item.option = options;*/
                   /*_this.playerOptions.push(options);*/
                   if(index==0){
+                    console.log("设置第一个三维地图");
                     _this.option1.sources[0].src=res.data.rtmp;
                     _this.roadItem1=item;
-                    _this.$refs.tusvnMap1.changeRcuId(item.roadSiderId,window.cfg.websocketUrl);
-                    _this.$refs.tusvnMap1.updateCameraPosition(442694.03980794636,4427074.696229081,348.0686852189313,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606);
+                    _this.$refs.tusvnMap1.changeRcuId(window.cfg.websocketUrl,item.roadSiderId);
+                    _this.$refs.tusvnMap1.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
 //                    console.log("ref------"+ _this.$refs.tusvnMap1);
                   }
                   if(index==1){
+                    console.log("设置第二个三维地图");
                     _this.option2.sources[0].src=res.data.rtmp;
                     _this.roadItem2=item;
-                    _this.$refs.tusvnMap2.changeRcuId(item.roadSiderId,window.cfg.websocketUrl);
-                    _this.$refs.tusvnMap2.updateCameraPosition(432957.6545664083,4329707.890129204,330.36384870177665,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606);
-//                    console.log("ref------"+ _this.$refs.tusvnMap1);
+                    _this.$refs.tusvnMap2.changeRcuId(window.cfg.websocketUrl,item.roadSiderId);
+                    _this.$refs.tusvnMap2.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
                   }
                 })
               })
@@ -154,7 +163,7 @@
 
        },
         mounted() {
-          this.getRoadList();
+          // this.getRoadList();
         }
     }
 </script>
