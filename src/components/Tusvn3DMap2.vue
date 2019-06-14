@@ -142,14 +142,6 @@ export default {
             },500);
 
 
-            setTimeout(()=>{
-                this.changeRcuId(this.websocketUrl,"aaaa");
-            },5000);
-
-            setTimeout(()=>{
-                this.changeRcuId(this.websocketUrl,"2046A1037E1F");
-            },8000);
-
 
         },
         initView:function(x1,y1,z1,x2,y2,z2){
