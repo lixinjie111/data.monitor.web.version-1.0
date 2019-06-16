@@ -179,7 +179,7 @@
     margin-bottom: 15px;
   }
   .single-content-top{
-    height: 700px;
+    height: 730px;
     /*height: 600px;*/
     width:100%;
   }

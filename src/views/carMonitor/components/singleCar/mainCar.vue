@@ -62,7 +62,7 @@
           </div>
           <div class="pre-warning-style pre-warning-info">
             <p>
-              <span class="pre-warning-font">{{item.type}}</span>米
+              <span class="pre-warning-font">{{item.dist}}</span>米
             </p>
             <p>向前碰撞预警</p>
           </div>
