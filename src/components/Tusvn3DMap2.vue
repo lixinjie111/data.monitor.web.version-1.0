@@ -29,7 +29,7 @@ export default {
 
             //上海
             // ,viewVector1:{x:325694.8329,y:3462004.5056,z:50}
-            // ,viewVector2:{x:326765.6277,y:3462754.6978,z:80.0} 
+            // ,viewVector2:{x:326765.6277,y:3462754.6978,z:80.0}
 
             ,shps:{}
             ,models:{}
@@ -141,7 +141,7 @@ export default {
                 this.$emit("mapcomplete",this);
                 //上海
                 // this.updateCameraPosition(326181.72659014474,3462354.6747002415,737.3642832288795,741.5052736914325,-1.5707963267948966,-0.05266622778143515);
-                
+
             },500);
 
 
@@ -231,7 +231,7 @@ export default {
           return Y+M+D+h+m+s+"."+ms;
         },
         showBData:function(data)
-        {   
+        {
             var time = this.timetrans(data.timestamp);
             this.$emit('showTimeStamp',time);
             var deviceid = data.deviceId;
@@ -300,7 +300,7 @@ export default {
         },
         onMessage:function(data){
             this.models={};
-            
+
             let rsuDatas = JSON.parse(data.data);
             var deviceid = null;
             if(rsuDatas.result.length>0)
@@ -370,14 +370,14 @@ export default {
                         person.position.z = 0;
                     }
                 }
-                
+
             }
             for(let i = 0;i<rsuDatas.result.length;i++)
             {
                 let d = rsuDatas.result[i];
                 // // console.log(rsuDatas[i]);
                 let dUTM = proj4(this.sourceProject,this.destinatePorject,[d.target.longitude,d.target.latitude]);
-                
+
                 if(d.target.type==0||d.target.type==1||d.target.type==3)
                 {
                     if(i<this.deviceModels[deviceid].persons.length)
@@ -387,8 +387,8 @@ export default {
                         mdl.position.y = dUTM[1];
                         mdl.position.z = this.defualtZ+4;
 
-                        let text = this.deviceModels[deviceid].texts[i]; 
-                        text.setText(d.target.uuid.substr(0,8));                   
+                        let text = this.deviceModels[deviceid].texts[i];
+                        text.setText(d.target.uuid.substr(0,8));
                         text.setPositon([dUTM[0],dUTM[1],this.defualtZ+5]);
                     }
                 }else{
@@ -400,7 +400,7 @@ export default {
                         mdl.position.z = this.defualtZ+4;
 
                         let text = this.deviceModels[deviceid].texts[i];
-                        text.setText(d.target.uuid.substr(0,8));                    
+                        text.setText(d.target.uuid.substr(0,8));
                         text.setPositon([dUTM[0],dUTM[1],this.defualtZ+6]);
                     }
                 }
@@ -467,7 +467,9 @@ export default {
             this.pageResize();
         }
         //初始化地图
-        this.initMap();        
+        setTimeout(() => {
+            this.initMap();
+        }, 1000);
     },
     destroyed(){
 

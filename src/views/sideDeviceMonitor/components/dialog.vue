@@ -46,7 +46,10 @@
           </div>
         </div>
         <div class="side-device-right c-scroll-wrap">
-          <tusvn-map :target-id="'deviceMap'" ref="tusvnMap3" >
+          <div class="time-style">
+            <span class="t-class">2019-06-14 16:59:57.439</span>
+          </div>
+          <tusvn-map :target-id="deviceMapId" ref="tusvnMap3" @showTimeStamp="showTimeStamp" @mapcomplete="mapcomplete" v-if="dialogVisible">
 
           </tusvn-map>
           <div class="side-device-list">
@@ -121,7 +124,8 @@
               defaultArr: [],//默认展开
               selectAddr:[],//第一次默认选中的地址
               isFirst:true,//第一次展开，
-              roadDevicePoint:{}
+              roadDevicePoint:{},
+              time:''
             }
         },
       components:{
@@ -140,6 +144,10 @@
 
               };
             }
+          },
+          deviceMapId:{
+            type:String,
+            default:""
           }
         },
         methods: {
@@ -473,6 +481,13 @@
             this.option =options;
 
             this.$emit("closeDialog");
+          },
+          showTimeStamp(time){
+            this.time = time;
+          },
+          mapcomplete:function(){
+            this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,this.selectedItem.roadSiderId);
+            this.$refs.tusvnMap3.updateCameraPosition(442454.32657890377,4427227.807879115,37.7350947252935, 0.0000028926452461693342, -0.39699074074074336, -0.730706721974606);
           }
         },
         watch:{
@@ -484,8 +499,7 @@
               this.getDeviceList(this.selectedItem.roadSiderId);
               this.getSideTree();
               this.getDeviceCountByCity();
-              this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,this.selectedItem.roadSiderId);
-              this.$refs.tusvnMap3.updateCameraPosition( 442454.32657890377,4427227.807879115,37.7350947252935, 0.0000028926452461693342, -0.39699074074074336, -0.730706721974606);
+
             }
           }
         },
@@ -596,7 +610,7 @@
       height: 100%;
 
       .device-left-ul{
-        margin-bottom: 20px;
+        /*margin-bottom: 20px;*/
         li{
           float: left;
           width: 90px;
@@ -606,12 +620,13 @@
       }
       .side-device-detail{
         display: inline-block;
+        font-size: 12px;
       }
       .device-detail-style{
         color: #dc8c00;
       }
       .device-distribute{
-        margin-top: 40px;
+        margin-top: 10px;
       }
     }
     .side-device-right{
@@ -620,16 +635,31 @@
       left: 296px;
       bottom: 0!important;
       right: 0;
+      .time-style{
+        position: absolute;
+        top: 20px;
+        left: 10px;
+        height:40px;
+        color: #736e6e;
+        z-index:1;
+        .t-class{
+          width: 250px;
+          text-align: left;
+          display: block;
+          font-size: 12px;
+        }
+      }
     }
     .side-device-list{
       position: absolute;
       right: 0;
       top:0;
       width: 400px;
+      background-color: #000;
       .side-device-title{
         position: relative;
         font-size: 16px;
-        margin-top: 36px;
+        margin-top: 14px;
         margin-bottom: 6px;
         color: #ffffff;
         padding-left: 10px;
@@ -650,6 +680,7 @@
         border-collapse:collapse;
         width: 370px;
         text-align: center;
+        margin-bottom: 20px;
         .table-header-group{
           display:table-header-group;
           font-weight:bold;
@@ -664,7 +695,6 @@
           }
           .device-num{
             width:40%;
-            text-align: left;
           }
           .device-style{
             width:30%;
@@ -672,6 +702,10 @@
         }
         .table-row-group{
           display:table-row-group;
+          .table-row{
+            line-height: 32px;
+          }
+
         }
         .monitor-device-symbol{
           width: 10px;
@@ -688,7 +722,7 @@
           padding: 0px 2px;
         }
         .monitor-device-text{
-          font-size: 14px;
+          font-size: 12px;
           color: #ccc;
         }
       }

@@ -159,12 +159,48 @@
           onmessage(mesasge){
             let _this=this;
             var json = JSON.parse(mesasge.data);
-            _this.totalData.push(json.result.count);
-            if(_this.totalData.length>=300){
-              _this.totalData.shift();
-            }
-            var option = this.totalOption(_this.totalData);
-            this.sideTotalEcharts.setOption(option);
+            var result = json.result;
+            result.forEach(item=>{
+              //total----0
+              if(item.devType==0){
+                _this.totalData.push(item.count);
+                if(_this.totalData.length>=300){
+                  _this.totalData.shift();
+                }
+                var option = this.totalOption(_this.totalData);
+                this.sideTotalEcharts.setOption(option);
+              }
+              //cam----1
+              if(item.devType==1){
+                _this.videoData.push(item.count);
+                if(_this.videoData.length>=300){
+                  _this.videoData.shift();
+                }
+              }
+              //spat----3
+              if(item.devType==3){
+                _this.lightData.push(item.count);
+                if(_this.lightData.length>=300){
+                  _this.lightData.shift();
+                }
+              }
+              //rcu----4
+              if(item.devType==4){
+                _this.rcuData.push(item.count);
+                if(_this.rcuData.length>=300){
+                  _this.rcuData.shift();
+                }
+              }
+              //rsu----5
+              if(item.devType==5){
+                _this.rsuData.push(item.count);
+                if(_this.rsuData.length>=300){
+                  _this.rsuData.shift();
+                }
+              }
+              var option = this.realOption(_this.rsuData,_this.rcuData,_this.videoData,_this.lightData);
+              this.sideRealEcharts.setOption(option);
+            })
 
           },
           onclose(data){
@@ -174,7 +210,6 @@
             //获取车辆状态
             var deviceCount = {
               'action': "deviceCount",
-              'devType':'0',
               'token': ''
             }
             var deviceCountMsg = JSON.stringify(deviceCount);
@@ -192,56 +227,7 @@
               return;
             }
           },
-          initRealWebSocket(){
-            let _this=this;
-            if ('WebSocket' in window) {
-              _this.realWebSocket = new WebSocket(window.cfg.websocketUrl);  //获得WebSocket对象
-            }
-            _this.realWebSocket.onmessage = _this.onRealMessage;
-            _this.realWebSocket.onclose = _this.onRealClose;
-            _this.realWebSocket.onopen = _this.onRealOpen;
-          },
-          onRealMessage(mesasge){
-            let _this=this;
-            var json = JSON.parse(mesasge.data);
-            _this.rsuData.push(json.result.count);
-            _this.rcuData.push(json.result.count);
-            _this.videoData.push(json.result.count);
-            _this.lightData.push(json.result.count);
-            if(_this.rsuData.length>=300||_this.rcuData.length>=300||_this.videoData.length>=300||_this.lightData.length>=300){
-              _this.rsuData.shift();
-              _this.rcuData.shift();
-              _this.videoData.shift();
-              _this.lightData.shift();
-            }
-            var option = this.realOption(_this.rsuData,_this.rcuData,_this.videoData,_this.lightData);
-            this.sideRealEcharts.setOption(option);
 
-          },
-          onRealClose(data){
-            console.log("结束连接");
-          },
-          onRealOpen(data){
-            //获取车辆状态
-            var deviceCount = {
-              action: "deviceCount",
-              token: ''
-            }
-            var deviceCountMsg = JSON.stringify(deviceCount);
-            this.sendRealMsg(deviceCountMsg);
-          },
-          sendRealMsg(msg) {
-            let _this=this;
-            console.log("连接状态："+_this.realWebSocket.readyState);
-            if(window.WebSocket){
-              if(_this.realWebSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-                _this.realWebSocket.send(msg); //send()发送消息
-                console.log("已发送消息:"+ msg);
-              }
-            }else{
-              return;
-            }
-          },
 
         },
         mounted() {
@@ -254,8 +240,6 @@
       destroyed(){
         //销毁Socket
         this.webSocket.close();
-        this.realWebSocket.close();
-
       }
     }
 </script>

@@ -17,8 +17,8 @@
         </div>
       </div>
     </div>
-    <side-dialog :dialogVisible="dialogVisible" :selected-item="selectedItem" @closeDialog="closeDialog"></side-dialog>
-    <side-dialog :dialog-visible.sync="mapDialogVisible" :selected-item="mapSelectedItem" @closeDialog="mapDialogVisible=false"></side-dialog>
+    <side-dialog :dialogVisible="dialogVisible" :selected-item="selectedItem" @closeDialog="closeDialog" :deviceMapId="'deviceMap1'"></side-dialog>
+    <side-dialog :dialog-visible.sync="mapDialogVisible" :selected-item="mapSelectedItem" @closeDialog="mapDialogVisible=false" :deviceMapId="'deviceMap2'"></side-dialog>
   </div>
 </template>
 <script>

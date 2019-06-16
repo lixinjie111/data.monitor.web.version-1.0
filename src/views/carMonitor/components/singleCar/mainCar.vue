@@ -18,6 +18,28 @@
         <span class="detail2">{{nowTime}}</span>
       </div>
     </div>
+    <div class="spat-detail">
+      <div class="spat-detail-style">
+        <div class="spat-detail-img">
+          <img src="@/assets/images/car/car-27.png"/>
+        </div>
+
+        <span class="spat-detail-font">20</span>
+      </div>
+      <div class="spat-detail-style">
+        <div class="spat-detail-img">
+          <img src="@/assets/images/car/car-28.png"/>
+        </div>
+
+        <span class="spat-detail-font spat-detail-color">43</span>
+      </div>
+      <div class="spat-detail-style">
+        <div class="spat-detail-img spat-right">
+          <img src="@/assets/images/car/car-28.png"/>
+        </div>
+        <span class="spat-detail-font spat-detail-color">10</span>
+      </div>
+    </div>
     <div class="alert-event">
       <div class="event-style" @click="getCloudEvent">
         <img src="@/assets/images/car/car-20.png"/>
@@ -34,7 +56,7 @@
     <div class="pre-warning">
       <div  class="pre-warning-item" v-for="item in warningList" v-show="item.flag" :key="item.id">
        <!-- <p class="warning-position"> {{item.type}}</p>-->
-        <div v-show="item.type==1" class="warning-position" >
+        <div v-show="item.type=='ADAS_1'" class="warning-position" >
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
             <img src="@/assets/images/car/car-19.png"/>
           </div>
@@ -45,15 +67,15 @@
             <p>向前碰撞预警</p>
           </div>
         </div>
-        <div v-show="item.type==2" class="warning-position">
-          <div class="pre-warning-img pre-warning-info" style="background: #fd8610">
-            <img src="@/assets/images/car/car-24.png"/>
+        <div v-show="item.type=='ADAS_2'" class="warning-position">
+          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
+            <img src="@/assets/images/car/car-26.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
-            <p>低光照度开灯提醒</p>
+            <p>前车启动提醒</p>
           </div>
         </div>
-        <div v-show="item.type==3" class="warning-position">
+        <div v-show="item.type=='ADAS_3'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
             <img src="@/assets/images/car/car-25.png"/>
           </div>
@@ -61,12 +83,12 @@
             <p>车道偏离预警</p>
           </div>
         </div>
-        <div v-show="item.type==4" class="warning-position">
-          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/car-26.png"/>
+        <div v-show="item.type=='ADAS_4'" class="warning-position">
+          <div class="pre-warning-img pre-warning-info" style="background: #fd8610">
+            <img src="@/assets/images/car/car-24.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
-            <p>前车启动提醒</p>
+            <p>低光照度开灯提醒</p>
           </div>
         </div>
       </div>
@@ -166,15 +188,15 @@
         cloudCount:0,
         headingAngle:0,
         isInit:true,
-        k:0,
         isShow:'none',
         warningList:[],
-        count:0,
+        i:0,
         isAllClear:false,
         cloudDialog:false,
         vehicleDialog:false,
         cloudList:[],
         vehicleList:[],
+        isAllClear:false
       }
     },
     props:{
@@ -306,6 +328,7 @@
             //存放整个路径
             _this.wholePath.push(newPosition);
             _this.marker.setPosition(lastPosition);
+            _this.platNoMarker.setPosition(lastPosition);
             //设置中心点
             _this.distanceMap.panTo(newPosition);
             //设置旋转角度
@@ -645,18 +668,40 @@
         _this.warningWebsocket.onopen = _this.onWarningOpen;
       },
       onWarningMessage(mesasge){
-        debugger
-
+        console.log("时间----"+new Date().getTime())
         var _this=this;
+        /*if(this.i>4){
+          return;
+        }*/
         var json = JSON.parse(mesasge.data);
-        var warning = json.result.data;
+        var warningData = json.result.data;
         var type = json.result.type;
-        var type1 = warning.event;
         if(type=='VEHICLE'){
           this.vehicleCount++;
         }
         if(type=='CLOUD'){
           this.cloudCount++;
+        }
+        console.log("vehicleCount-----"+this.vehicleCount)
+        if(warningData.length>0){
+          let _attr = _this.i.toString();
+          warningData.forEach(item=>{
+            var obj = {type: item.eventType,timer: null, flag: true,id:'type'+i};
+            obj.timer=setTimeout(()=>{
+              obj.flag=false;
+              _this.warningList.forEach(item=>{
+                if(item.flag){
+                  _this.isAllClear=true;
+                }
+              })
+              if(!_this.isAllClear){
+                this.warningList=[];
+              }
+            },3000)
+            console.log("obj----"+obj.toString());
+            _this.warningList.unshift(obj);
+          })
+          _this.i++;
         }
 
       },
@@ -722,7 +767,7 @@
       }
     },
     mounted () {
-      var i=1;
+     /* var i=1;
       var isAllClear=false;
       var time = setInterval(()=>{
         if(i==5){
@@ -746,7 +791,7 @@
 
         i++;
 
-        /*this.$set(this.warningObj, _attr, {type: i,timer: null, flag: true,id:'type'+i});
+        /!*this.$set(this.warningObj, _attr, {type: i,timer: null, flag: true,id:'type'+i});
        i++;
        this.warningObj[_attr].timer = setTimeout(() => {
          this.warningObj[_attr].flag=false;
@@ -758,9 +803,9 @@
          if(!isAllClear){
            this.warningObj={};
          }
-         }, 3000);*/
+         }, 3000);*!/
 
-        },2000)
+        },2000)*/
 
 
       this.distanceMap = new AMap.Map("realTraffic", {
@@ -808,6 +853,7 @@
   }
 </style>
 <style lang="scss" scoped>
+  @import "@/assets/scss/theme.scss";
   .c-table{
     border:1px solid #5e5970;
     /*background-color: #5e5970;*/
@@ -858,6 +904,51 @@
           color: #37ba7b;
           display: inline-block;
           padding: 0px 2px;
+        }
+      }
+    }
+    .spat-detail{
+      position: absolute;
+      top: 66px;
+      left: 0;
+      z-index: 1;
+      .spat-detail-style{
+        width: 130px;
+        height: 60px;
+        border-radius: 30px;
+        background-color: #313131;
+        box-sizing: border-box;
+        padding:6px 2px;
+        float: left;
+        margin-left: 20px;
+        @include layoutMode(align);
+        .spat-detail-img{
+          width: 48px;
+          height: 48px;
+          background-color: #454545;
+          border-radius: 50%;
+          display: inline-block;
+          position: relative;
+          img{
+            position: absolute;
+            top: 50%;
+            margin-top:-15px;
+            left: 50%;
+            margin-left: -14px;
+          }
+        }
+        .spat-detail-font{
+          letter-spacing: 4px;
+          color: #c8360f;
+          font-size: 36px;
+          display: inline-block;
+          margin-left: 12px;
+        }
+        .spat-detail-color{
+          color: #23b318;
+        }
+        .spat-right{
+          transform: rotate(90deg);
         }
       }
     }
