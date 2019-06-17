@@ -1,9 +1,13 @@
 <template>
   <div class="c-view-wrapper">
     <div class="c-view-side c-view-left">
-      <left-top></left-top>
-      <left-middle></left-middle>
-      <left-bottom></left-bottom>
+      <div class="c-scroll-wrap">
+        <div class="c-scroll-inner">
+          <left-top></left-top>
+          <left-middle></left-middle>
+          <left-bottom></left-bottom>
+        </div>
+      </div>
     </div>
     <map-container></map-container>
     <div class="c-view-side c-view-right">
@@ -13,7 +17,8 @@
         </div>
       </div>
     </div>
-    <side-dialog :dialogVisible="dialogVisible" :selected-item="selectedItem" @closeDialog="closeDialog"></side-dialog>
+    <side-dialog :dialogVisible="dialogVisible" :selected-item="selectedItem" @closeDialog="closeDialog" :deviceMapId="'deviceMap1'"></side-dialog>
+    <side-dialog :dialog-visible.sync="mapDialogVisible" :selected-item="mapSelectedItem" @closeDialog="mapDialogVisible=false" :deviceMapId="'deviceMap2'"></side-dialog>
   </div>
 </template>
 <script>
@@ -28,7 +33,9 @@
     data() {
       return {
         dialogVisible:false,
-        selectedItem:{}
+        selectedItem:{},
+        mapDialogVisible:false,
+        mapSelectedItem:{}
       }
     },
     components: { LeftTop,CircleProgress,LeftMiddle,LeftBottom,MapContainer,RightList,SideDialog},
@@ -43,10 +50,14 @@
       }
     },
     mounted() {
-
+      this.$on("sideEvent",(item) =>{
+          this.mapDialogVisible=true;
+          this.mapSelectedItem=item;
+      })
     }
   }
 </script>
+
 <style lang="scss" scoped>
   .side-device-right{
     right:0;

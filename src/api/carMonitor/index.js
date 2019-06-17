@@ -86,6 +86,12 @@ export const startStream = params => {return axios.post(`${HTTPURL}singleMoniter
  */
 export const sendStreamHeart = params => {return axios.post(`${HTTPURL}singleMoniter/sendStreamHeart`, params).then(res => res.data); };
 
+/**
+ * 告警的接口
+ * */
+export const getAlarmInformation = params => {return axios.post(`${HTTPURL}singleMoniter/getAlarmInformation`, params).then(res => res.data); };
+
+
 
 
 

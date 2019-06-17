@@ -18,13 +18,35 @@
         <span class="detail2">{{nowTime}}</span>
       </div>
     </div>
+    <div class="spat-detail">
+      <div class="spat-detail-style">
+        <div class="spat-detail-img">
+          <img src="@/assets/images/car/car-27.png"/>
+        </div>
+
+        <span class="spat-detail-font">20</span>
+      </div>
+      <div class="spat-detail-style">
+        <div class="spat-detail-img">
+          <img src="@/assets/images/car/car-28.png"/>
+        </div>
+
+        <span class="spat-detail-font spat-detail-color">43</span>
+      </div>
+      <div class="spat-detail-style">
+        <div class="spat-detail-img spat-right">
+          <img src="@/assets/images/car/car-28.png"/>
+        </div>
+        <span class="spat-detail-font spat-detail-color">10</span>
+      </div>
+    </div>
     <div class="alert-event">
-      <div class="event-style" @click="cloudDialog=true">
+      <div class="event-style" @click="getCloudEvent">
         <img src="@/assets/images/car/car-20.png"/>
         <span>{{cloudCount}}</span>
       </div>
 
-      <div class="event-style" @click="vehicleDialog=true">
+      <div class="event-style" @click="getVehicleEvent">
         <img src="@/assets/images/car/car-21.png" />
         <span>{{vehicleCount}}</span>
       </div>
@@ -34,26 +56,26 @@
     <div class="pre-warning">
       <div  class="pre-warning-item" v-for="item in warningList" v-show="item.flag" :key="item.id">
        <!-- <p class="warning-position"> {{item.type}}</p>-->
-        <div v-show="item.type==1" class="warning-position" >
+        <div v-show="item.type=='ADAS_1'" class="warning-position" >
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
             <img src="@/assets/images/car/car-19.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
             <p>
-              <span class="pre-warning-font">{{item.type}}</span>米
+              <span class="pre-warning-font">{{item.dist}}</span>米
             </p>
             <p>向前碰撞预警</p>
           </div>
         </div>
-        <div v-show="item.type==2" class="warning-position">
-          <div class="pre-warning-img pre-warning-info" style="background: #fd8610">
-            <img src="@/assets/images/car/car-24.png"/>
+        <div v-show="item.type=='ADAS_2'" class="warning-position">
+          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
+            <img src="@/assets/images/car/car-26.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
-            <p>低光照度开灯提醒</p>
+            <p>前车启动提醒</p>
           </div>
         </div>
-        <div v-show="item.type==3" class="warning-position">
+        <div v-show="item.type=='ADAS_3'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
             <img src="@/assets/images/car/car-25.png"/>
           </div>
@@ -61,12 +83,12 @@
             <p>车道偏离预警</p>
           </div>
         </div>
-        <div v-show="item.type==4" class="warning-position">
-          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/car-26.png"/>
+        <div v-show="item.type=='ADAS_4'" class="warning-position">
+          <div class="pre-warning-img pre-warning-info" style="background: #fd8610">
+            <img src="@/assets/images/car/car-24.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
-            <p>前车启动提醒</p>
+            <p>低光照度开灯提醒</p>
           </div>
         </div>
       </div>
@@ -116,20 +138,20 @@
           <th>告警级别</th>
           <th>告警车辆</th>
         </tr>
-        <tr>
-          <td>1</td>
-          <td>2019-08-27 09:05:34:322</td>
-          <td>前向碰撞预警</td>
-          <td><p class="alert-level" style="background-color: #ae3717"><span class="alert-level-value">3</span></p></td>
+        <tr v-for="(item,index) in cloudList">
+          <td>{{index+1}}</td>
+          <td>{{item.gpstime | dateFormat}}</td>
+          <td>{{item.alarmName}}</td>
+          <td><p class="alert-level" style="background-color: #ae3717"><span class="alert-level-value">{{item.alarmLvl}}</span></p></td>
           <td>沪A5237490</td>
         </tr>
-        <tr>
+        <!--<tr>
           <td>2</td>
           <td>2019-08-27 09:05:34:322</td>
           <td>前向碰撞预警</td>
           <td><p class="alert-level" style="background-color: #fd8610"><span class="alert-level-value">5</span></p></td>
           <td>沪A5237490</td>
-        </tr>
+        </tr>-->
       </table>
     </single-dialog>
   </div>
@@ -137,6 +159,8 @@
 <script>
   import AMap from 'AMap';
   import SingleDialog from '@/views/carMonitor/components/singleCar/dialog.vue'
+  import { getAlarmInformation } from '@/api/carMonitor'
+  import DateFormat from '@/assets/js/utils/date.js'
   export default {
     name:"main-car",
     data () {
@@ -145,6 +169,7 @@
         path:[],
         wholePath:[],
         marker:{},
+        platNoMarker:{},
         sideVehicleList:[],
         sideObjList:[],
         sideVehicleData:[],
@@ -163,15 +188,15 @@
         cloudCount:0,
         headingAngle:0,
         isInit:true,
-        k:0,
         isShow:'none',
         warningList:[],
-        count:0,
+        i:0,
         isAllClear:false,
         cloudDialog:false,
         vehicleDialog:false,
         cloudList:[],
-        vehicleList:[]
+        vehicleList:[],
+        isAllClear:false
       }
     },
     props:{
@@ -182,6 +207,9 @@
         }
       },
       time:{
+        type:String
+      },
+      routeStartTime:{
         type:String
       }
     },
@@ -199,6 +227,13 @@
         }else{
           return this.$dateUtil.formatTime(this.realData.gpsTime).split(" ")[1];
         }
+      }
+    },
+    filters: {
+      dateFormat: function (value) {
+        let ms = value%1000;
+        let time = DateFormat.formatTime(value);
+        return time+":"+ms;
       }
     },
     components:{
@@ -230,28 +265,59 @@
         _this.hostWebsocket.onerror = _this.onerror;
       },
       onmessage(mesasge){
-        console.log("本车---------")
         var _this=this;
         var json = JSON.parse(mesasge.data);
         var data = json.result;
         var type = json.action;
         var position = new AMap.LngLat(data.longitude,data.latitude);
         var newPosition;
+        var platNo;
+        var source="";
+        if(_this.isInit){
+          platNo=data.platNo;
+          data.source.forEach(item=>{
+            source+=item+",";
+          })
+          source = source.substring(0,source.lastIndexOf(","));
+        }
         AMap.convertFrom(position, 'gps', function (status, result) {
           if (result.info === 'ok') {
             newPosition = result.locations[0];
             if(_this.isInit){
               _this.marker = new AMap.Marker({
+                map:_this.distanceMap,
                 position: newPosition,
                 icon: 'static/images/car/car-6.png', // 添加 Icon 图标 URL
                 title: '北京',
                 zIndex:500
               });
+             /* _this.marker.setLabel({
+//                offset: new AMap.Pixel(20, 20),  //设置文本标注偏移量
+                content: "<div class='car-info'>京N123456</div>", //设置文本标注内容
+                direction: 'left' //设置文本标注方位
+              });*/
               _this.distanceMap.add(_this.marker);
+              _this.platNoMarker = new AMap.Text({
+                map: _this.distanceMap,
+                text: platNo+"<br/><span style='color:#e6a23c'>"+source+'</span>',
+                // text: '京N123456',
+                anchor: 'center', // 设置文本标记锚点
+                style: {
+                  'padding': '0 5px',
+                  'border-radius': '4px',
+                  'background-color': 'rgba(55, 186, 123, .2)',
+                  'border-width': 0,
+                  'text-align': 'center',
+                  'font-size': '10px',
+                  'line-height': '16px',
+                  'letter-spacing': '0',
+                  'margin-top': '-36px', //车头
+                  'color': '#ccc'
+                },
+                position: newPosition
+              });
               _this.isInit=false;
             }
-            /*console.log("longitude:"+data.longitude+"-----"+"latitude:"+data.latitude);*/
-            /*this.wholePath.push(to);*/
             //设置车的位置
             var lastPosition = [];
             if(_this.wholePath.length > 0 ) {
@@ -259,22 +325,19 @@
             }else{
               lastPosition = newPosition;
             }
-            /*var angle = this.getAngle(this.distanceMap,lastPosition,position);
-            this.marker.setAngle(angle);*/
             //存放整个路径
             _this.wholePath.push(newPosition);
             _this.marker.setPosition(lastPosition);
+            _this.platNoMarker.setPosition(lastPosition);
             //设置中心点
             _this.distanceMap.panTo(newPosition);
             //设置旋转角度
             _this.headingAngle = data.heading;
-            /*console.log("航向角-----"+_this.headingAngle);*/
-            /*_this.distanceMap.setRotation(-_this.headingAngle);*/
             _this.marker.setAngle(_this.headingAngle);
+           /* _this.platNoMarker.setAngle(_this.headingAngle);*/
             //所要移动的位置
             _this.marker.moveTo(newPosition,data.speed);
-            /*_this.distanceMap.setZoom(18);*/
-            /*_this.distanceMap.setFitView();*/
+            _this.platNoMarker.moveTo(newPosition,data.speed);
           }
         })
       },
@@ -282,7 +345,6 @@
         console.log("结束连接");
       },
       onopen(data){
-        console.log("建立连接,,,,,,");
         //自车
         var hostVehicle = {
           "action": "hostVehicle",
@@ -296,7 +358,6 @@
         if(window.WebSocket){
           if(_this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
             _this.hostWebsocket.send(msg); //send()发送消息
-            console.log("已发送消息:"+ msg);
           }
         }else{
           return;
@@ -416,7 +477,6 @@
         console.log("结束连接");
       },
       onSideOpen(data){
-        console.log("建立连接,,,,,,");
         //旁车
         var sideVehicle = {
           "action": "sideVehicle",
@@ -430,7 +490,6 @@
         if(window.WebSocket){
           if(_this.sideWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
             _this.sideWebsocket.send(msg); //send()发送消息
-            console.log("已发送消息:"+ msg);
           }
         }else{
           return;
@@ -524,7 +583,6 @@
         console.log("结束连接");
       },
       onDeviceOpen(data){
-        console.log("建立连接,,,,,,");
         //旁车
         var deviceVehicle = {
           "action": "rsb",
@@ -538,7 +596,6 @@
         if(window.WebSocket){
           if(_this.deviceWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
             _this.deviceWebsocket.send(msg); //send()发送消息
-            console.log("已发送消息:"+ msg);
           }
         }else{
           return;
@@ -583,7 +640,6 @@
         console.log("结束连接");
       },
       onLightOpen(data){
-        console.log("建立连接,,,,,,");
         //旁车
         var light = {
           "action": "spat",
@@ -597,7 +653,6 @@
         if(window.WebSocket){
           if(_this.lightWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
             _this.lightWebsocket.send(msg); //send()发送消息
-            console.log("已发送消息:"+ msg);
           }
         }else{
           return;
@@ -613,17 +668,40 @@
         _this.warningWebsocket.onopen = _this.onWarningOpen;
       },
       onWarningMessage(mesasge){
-
+        console.log("时间----"+new Date().getTime())
         var _this=this;
+        /*if(this.i>4){
+          return;
+        }*/
         var json = JSON.parse(mesasge.data);
-        var warning = json.result.data;
+        var warningData = json.result.data;
         var type = json.result.type;
-        var type1 = warning.event;
         if(type=='VEHICLE'){
           this.vehicleCount++;
         }
         if(type=='CLOUD'){
           this.cloudCount++;
+        }
+        console.log("vehicleCount-----"+this.vehicleCount)
+        if(warningData.length>0){
+          let _attr = _this.i.toString();
+          warningData.forEach(item=>{
+            var obj = {type: item.eventType,timer: null, flag: true,id:'type'+i};
+            obj.timer=setTimeout(()=>{
+              obj.flag=false;
+              _this.warningList.forEach(item=>{
+                if(item.flag){
+                  _this.isAllClear=true;
+                }
+              })
+              if(!_this.isAllClear){
+                this.warningList=[];
+              }
+            },3000)
+            console.log("obj----"+obj.toString());
+            _this.warningList.unshift(obj);
+          })
+          _this.i++;
         }
 
       },
@@ -631,7 +709,6 @@
         console.log("结束连接");
       },
       onWarningOpen(data){
-        console.log("建立连接,,,,,,");
         //旁车
         var warning = {
           "action": "warning",
@@ -662,12 +739,35 @@
         var maxLnglat = this.distanceMap.containerToLngLat(maxPixel,18);
         var bounds = new AMap.Bounds(minLnglat, maxLnglat);
         return bounds;
+      },
+      getAlarmInformation(){
+        var param = {
+          //"startTime": this.routeStartTime,
+          "startTime": 0,
+          "vehicleId": this.vehicleId
+        }
+        getAlarmInformation(param).then(res=>{
+          this.cloudList=res.alarmInfoList;
+        })
+      },
+      getCloudEvent(){
+        if(!this.routeStartTime||this.routeStartTime==""){
+          this.$message.error("本车行程未开始");
+          return;
+        }
+        this.cloudDialog=true;
+      },
+      getVehicleEvent(){
+        if(!this.routeStartTime||this.routeStartTime==""){
+          this.$message.error("本车行程未开始");
+          return;
+        }
+        this.vehicleDialog=true;
+        this.getAlarmInformation();
       }
-
-
     },
     mounted () {
-      var i=1;
+     /* var i=1;
       var isAllClear=false;
       var time = setInterval(()=>{
         if(i==5){
@@ -691,7 +791,7 @@
 
         i++;
 
-        /*this.$set(this.warningObj, _attr, {type: i,timer: null, flag: true,id:'type'+i});
+        /!*this.$set(this.warningObj, _attr, {type: i,timer: null, flag: true,id:'type'+i});
        i++;
        this.warningObj[_attr].timer = setTimeout(() => {
          this.warningObj[_attr].flag=false;
@@ -703,9 +803,9 @@
          if(!isAllClear){
            this.warningObj={};
          }
-         }, 3000);*/
+         }, 3000);*!/
 
-        },2000)
+        },2000)*/
 
 
       this.distanceMap = new AMap.Map("realTraffic", {
@@ -714,6 +814,23 @@
         zoom:18,
         rotateEnable:'true'
       });
+
+      /*this.marker = new AMap.Marker({
+        map:this.distanceMap,
+        position: [116.482362,39.997718],
+        icon: 'static/images/car/car-6.png', // 添加 Icon 图标 URL
+        title: '北京',
+        zIndex:500
+      });
+      this.marker.setAngle(180);
+      this.marker.setLabel({
+        offset: new AMap.Pixel(-20, -20),  //设置文本标注偏移量
+        content: "<div class='car-info'>京N123456</div>", //设置文本标注内容
+        direction: 'top' //设置文本标注方位
+      });
+      this.distanceMap.add(this.marker);*/
+
+
       this.initWebSocket();
       this.initSideWebSocket();
       this.initDeviceWebSocket();
@@ -730,7 +847,13 @@
     }
   }
 </script>
+<style>
+  .car-info{
+    color: #ccc;
+  }
+</style>
 <style lang="scss" scoped>
+  @import "@/assets/scss/theme.scss";
   .c-table{
     border:1px solid #5e5970;
     /*background-color: #5e5970;*/
@@ -781,6 +904,51 @@
           color: #37ba7b;
           display: inline-block;
           padding: 0px 2px;
+        }
+      }
+    }
+    .spat-detail{
+      position: absolute;
+      top: 66px;
+      left: 0;
+      z-index: 1;
+      .spat-detail-style{
+        width: 130px;
+        height: 60px;
+        border-radius: 30px;
+        background-color: #313131;
+        box-sizing: border-box;
+        padding:6px 2px;
+        float: left;
+        margin-left: 20px;
+        @include layoutMode(align);
+        .spat-detail-img{
+          width: 48px;
+          height: 48px;
+          background-color: #454545;
+          border-radius: 50%;
+          display: inline-block;
+          position: relative;
+          img{
+            position: absolute;
+            top: 50%;
+            margin-top:-15px;
+            left: 50%;
+            margin-left: -14px;
+          }
+        }
+        .spat-detail-font{
+          letter-spacing: 4px;
+          color: #c8360f;
+          font-size: 36px;
+          display: inline-block;
+          margin-left: 12px;
+        }
+        .spat-detail-color{
+          color: #23b318;
+        }
+        .spat-right{
+          transform: rotate(90deg);
         }
       }
     }
