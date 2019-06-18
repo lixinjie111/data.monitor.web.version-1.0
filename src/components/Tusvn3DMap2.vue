@@ -23,13 +23,13 @@ export default {
             // ,viewVector1:{x:287406.0,y:3463772,z:50}
             // ,viewVector2:{x:287707.0,y:3463835.0,z:80.0}
             //科技园
-            ,viewVector1:{x:442350.475567611,y:4427186.352713934,z:50}
-            ,viewVector2:{x:442637.284474562,y:4427363.359317946,z:80.0}
+            // ,viewVector1:{x:442350.475567611,y:4427186.352713934,z:50}
+            // ,viewVector2:{x:442637.284474562,y:4427363.359317946,z:80.0}
 
 
             //上海
-            // ,viewVector1:{x:325694.8329,y:3462004.5056,z:50}
-            // ,viewVector2:{x:326765.6277,y:3462754.6978,z:80.0}
+            ,viewVector1:{x:325694.8329,y:3462004.5056,z:50}
+            ,viewVector2:{x:326765.6277,y:3462754.6978,z:80.0}
 
             ,shps:{}
             ,models:{}
@@ -69,7 +69,7 @@ export default {
             // ,utmposition: null
 
             ,sourceProject:"EPSG:4326"
-            ,destinatePorject:"+proj=utm +zone=50 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+            ,destinatePorject:"+proj=utm +zone=51 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
         }
     },
     watch:{
@@ -88,16 +88,16 @@ export default {
             // this.addShape("lane2","./static/map3d/kjy/UTM/lane.shp",dl.styles.lane_boundary.color)
             // this.addShape("roadline2","./static/map3d/kjy/UTM/roadline.shp",dl.styles.lane_boundary.color)
           //科技园
-          this.addShape("Crosswalk2","./static/map3d/newUTMData/crosswalk.shp","#999999")
-          this.addShape("lane2","./static/map3d/newUTMData/lane.shp",dl.styles.lane_boundary.color)
-          this.addShape("roadline2","./static/map3d/newUTMData/roadline.shp",dl.styles.lane_boundary.color)
+          // this.addShape("Crosswalk2","./static/map3d/newUTMData/crosswalk.shp","#999999")
+          // this.addShape("lane2","./static/map3d/newUTMData/lane.shp",dl.styles.lane_boundary.color)
+          // this.addShape("roadline2","./static/map3d/newUTMData/roadline.shp",dl.styles.lane_boundary.color)
 
             //上海
-            // this.addShape("intersection","./static/map3d/dilu_zc/clip/Intersection.shp",dl.styles.intersection.color)
-            // this.addShape("Crosswalk","./static/map3d/dilu_zc/clip/Crosswalk.shp",dl.styles.crosswalk.color)
-            // // this.addShape("lane_marking","./static/map3d/20190531_utm51/clip/Lane_marking.shp",dl.styles.lane_marking.color)
-            // this.addShape("lane_arrow","./static/map3d/dilu_zc/clip/Direction_arrow.shp",dl.styles.lane_arrow.color)
-            // this.addShape("lane_boundary","./static/map3d/dilu_zc/clip/Lane_boundary.shp",dl.styles.lane_boundary.color)
+            this.addShape("intersection","./static/map3d/dilu_zc/clip/Intersection.shp",dl.styles.intersection.color)
+            this.addShape("Crosswalk","./static/map3d/dilu_zc/clip/Crosswalk.shp",dl.styles.crosswalk.color)
+            // this.addShape("lane_marking","./static/map3d/20190531_utm51/clip/Lane_marking.shp",dl.styles.lane_marking.color)
+            this.addShape("lane_arrow","./static/map3d/dilu_zc/clip/Direction_arrow.shp",dl.styles.lane_arrow.color)
+            this.addShape("lane_boundary","./static/map3d/dilu_zc/clip/Lane_boundary.shp",dl.styles.lane_boundary.color)
 
           // this.addShape("1","./static/map3d/kjy/UTM/1.shp",dl.styles.lane_boundary.color)
           //   this.addShape("2","./static/map3d/kjy/UTM/2.shp",dl.styles.lane_boundary.color)
@@ -123,34 +123,34 @@ export default {
             //添加模型
             // this.addModel("car","./static/map3d/map_photo/car.3DS",0,0,12.816);
 
-            this.addModel("lamppost_01","./static/map3d/models/lamppost_01.3ds",442496.96,4427294.44,16);
+            this.addModel("lamppost_01","./static/map3d/models/lamppost_01.3ds",326317.5,3462248.0,13.3);
             this.models["lamppost_01"].setHeading(30);
             this.models["lamppost_01"].setUpdate(true);
 
 
-            this.addModel("traffic_cone","./static/map3d/models/traffic_cone.3ds",442492.797,4427280.995,16);
+            this.addModel("traffic_cone","./static/map3d/models/traffic_cone.3ds",326336.2,3462251.5,13.3);
             this.models["traffic_cone"].setHeading(30);
             this.models["traffic_cone"].setUpdate(true);
 
 
-            this.addModel("street_lamp_two","./static/map3d/models/street_lamp_two.3ds",442501.99,4427272.65,16);
+            this.addModel("street_lamp_two","./static/map3d/models/street_lamp_two.3ds",326346.61,3462275.27,13.3);
             this.models["street_lamp_two"].setHeading(30);
             this.models["street_lamp_two"].setUpdate(true);
 
-            this.addModel("traffic_light","./static/map3d/models/traffic_light.3ds",442533.95,4427306.77,16);
+            this.addModel("traffic_light","./static/map3d/models/traffic_light.3ds",326349.23,3462287.11,13.3);
             this.models["traffic_light"].setHeading(30);
             this.models["traffic_light"].setUpdate(true);
 
-            this.addModel("traffic_sign_stop","./static/map3d/models/traffic_sign_stop.3ds",442529.62,4427323.70,16);
+            this.addModel("traffic_sign_stop","./static/map3d/models/traffic_sign_stop.3ds",326342.22,3462296.37,13.3);
             this.models["traffic_sign_stop"].setHeading(120);
             this.models["traffic_sign_stop"].setUpdate(true);
 
 
-            this.addModel("Girl walking N090814","./static/map3d/models/Girl walking N090814.3DS",442529.62,4427325.70,16);
+            this.addModel("Girl walking N090814","./static/map3d/models/Girl walking N090814.3DS",326343.69,3462295.55,13.3);
             this.models["Girl walking N090814"].setHeading(120);
             this.models["Girl walking N090814"].setUpdate(true);
 
-            this.addModel("Man N151016.3DS","./static/map3d/models/Man N151016.3DS",442531.62,4427325.70,16);
+            this.addModel("Man N151016.3DS","./static/map3d/models/Man N151016.3DS",326348.86,3462275.61,13.3);
             this.models["Man N151016.3DS"].setHeading(120);
             this.models["Man N151016.3DS"].setUpdate(true);
 
@@ -172,9 +172,9 @@ export default {
                 // 442454.32658246456,4427227.8078830885, 37.73509248844059, 0.0000028926452461693342,-0.5081018518518544,-0.7385192219746066
                 // 442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606
                 //科技园
-                this.updateCameraPosition(442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606);
+                // this.updateCameraPosition(442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606);
                 //上海
-                // this.updateCameraPosition(326181.72659014474,3462354.6747002415,737.3642832288795,741.5052736914325,-1.5707963267948966,-0.05266622778143515);
+                this.updateCameraPosition(326181.72659014474,3462354.6747002415,737.3642832288795,741.5052736914325,-1.5707963267948966,-0.05266622778143515);
                 this.$emit("mapcomplete",this);
             },500);
 
