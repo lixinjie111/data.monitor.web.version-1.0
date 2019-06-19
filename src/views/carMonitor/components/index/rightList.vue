@@ -124,19 +124,19 @@ export default {
             });
         },
         onclose(data){
-            // console.log("结束--trackAll--连接");
+            // console.log("结束--vehicleList--连接");
         },
         onopen(data){
-            // console.log("建立--trackAll--连接");
+            // console.log("建立--vehicleList--连接");
             //行程
             this.sendMsg(JSON.stringify(this.webSocketData));
         },
         sendMsg(msg) {
-            // console.log("trackAll--连接状态："+this.webSocket.readyState);
+            // console.log("vehicleList--连接状态："+this.webSocket.readyState);
             if(window.WebSocket){
                 if(this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
                     this.webSocket.send(msg); //send()发送消息
-                    // console.log("trackAll--已发送消息:"+ msg);
+                    // console.log("vehicleList--已发送消息:"+ msg);
         			this.getGpsRealList();
                 }
             }else{
