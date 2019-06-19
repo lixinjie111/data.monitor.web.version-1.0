@@ -124,6 +124,37 @@ export default {
             //添加模型
             // this.addModel("car","./static/map3d/map_photo/car.3DS",0,0,12.816);
 
+            this.addModel("lamppost_01","./static/map3d/models/lamppost_01.3ds",442496.96,4427294.44,16);
+            this.models["lamppost_01"].setHeading(30);
+            this.models["lamppost_01"].setUpdate(true);
+
+
+            this.addModel("traffic_cone","./static/map3d/models/traffic_cone.3ds",442492.797,4427280.995,16);
+            this.models["traffic_cone"].setHeading(30);
+            this.models["traffic_cone"].setUpdate(true);
+
+            //大路灯
+            this.addModel("street_lamp_two","./static/map3d/models/street_lamp_two.3ds",442501.99,4427272.65,16);
+            this.models["street_lamp_two"].setHeading(30);
+            this.models["street_lamp_two"].setUpdate(true);
+            //红绿灯
+            this.addModel("traffic_light","./static/map3d/models/traffic_light.3ds",442533.95,4427306.77,16);
+            this.models["traffic_light"].setHeading(30);
+            this.models["traffic_light"].setUpdate(true);
+
+            //标识牌
+            this.addModel("traffic_sign_stop","./static/map3d/models/traffic_sign_stop.3ds",442529.62,4427323.70,16);
+            this.models["traffic_sign_stop"].setHeading(120);
+            this.models["traffic_sign_stop"].setUpdate(true);
+
+
+            this.addModel("Girl walking N090814","./static/map3d/models/Girl walking N090814.3DS",442529.62,4427325.70,16);
+            this.models["Girl walking N090814"].setHeading(120);
+            this.models["Girl walking N090814"].setUpdate(true);
+
+            this.addModel("Man N151016.3DS","./static/map3d/models/Man N151016.3DS",442531.62,4427325.70,16);
+            this.models["Man N151016.3DS"].setHeading(120);
+            this.models["Man N151016.3DS"].setUpdate(true);
 
             //初始化websocket连接
             // this.initWebsocket(this.websocketUrl);
