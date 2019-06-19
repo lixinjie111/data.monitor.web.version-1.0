@@ -21,9 +21,14 @@
     <div class="spat-detail">
       <div class="spat-detail-style">
         <div class="spat-detail-img">
+          <img src="@/assets/images/car/turn-yellow.png"/>
+        </div>
+        <span class="spat-detail-font" style="color: #d99f04;">10</span>
+      </div>
+      <div class="spat-detail-style">
+        <div class="spat-detail-img">
           <img src="@/assets/images/car/car-27.png"/>
         </div>
-
         <span class="spat-detail-font">20</span>
       </div>
       <div class="spat-detail-style">
@@ -54,7 +59,7 @@
     <!--v-show="warningData.show"-->
 
     <div class="pre-warning">
-      <div  class="pre-warning-item" v-for="item in warningList" v-show="item.flag" :key="item.id">
+      <div  class="pre-warning-item" v-for="item in event" v-show="item.flag" >
        <!-- <p class="warning-position"> {{item.type}}</p>-->
         <div v-show="item.type=='ADAS_1'" class="warning-position" >
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
@@ -62,9 +67,10 @@
           </div>
           <div class="pre-warning-style pre-warning-info">
             <p>
-              <span class="pre-warning-font">{{item.dist}}</span>米
+              <span class="pre-warning-font">{{item.dist}}</span>米<br/>
+              前向碰撞预警
             </p>
-            <p>向前碰撞预警</p>
+            <!--<p></p>-->
           </div>
         </div>
         <div v-show="item.type=='ADAS_2'" class="warning-position">
@@ -72,7 +78,7 @@
             <img src="@/assets/images/car/car-26.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
-            <p>前车启动提醒</p>
+            <p>前车启动预警</p>
           </div>
         </div>
         <div v-show="item.type=='ADAS_3'" class="warning-position">
@@ -196,7 +202,8 @@
         vehicleDialog:false,
         cloudList:[],
         vehicleList:[],
-        isAllClear:false
+        isAllClear:false,
+        event:[]
       }
     },
     props:{
@@ -767,15 +774,16 @@
       }
     },
     mounted () {
-     /* var i=1;
+      var _this =this;
+      var i=0;
       var isAllClear=false;
-      var time = setInterval(()=>{
+      /*var time = setInterval(()=>{
         if(i==5){
           clearInterval(time);
           return;
         }
         let _attr = i.toString();
-        var obj = {type: i,timer: null, flag: true,id:'type'+i}
+        var obj = {type: 'ADAS_'+i,timer: null, flag: true,id:'type'+i}
         obj.timer=setTimeout(()=>{
           obj.flag=false;
           this.warningList.forEach(item=>{
@@ -788,25 +796,97 @@
           }
         },3000)
         this.warningList.unshift(obj);
-
         i++;
-
-        /!*this.$set(this.warningObj, _attr, {type: i,timer: null, flag: true,id:'type'+i});
-       i++;
-       this.warningObj[_attr].timer = setTimeout(() => {
-         this.warningObj[_attr].flag=false;
-         for(var key in this.warningObj){
-           if(this.warningObj[key].flag){
-             isAllClear=true;
-           }
-         }
-         if(!isAllClear){
-           this.warningObj={};
-         }
-         }, 3000);*!/
-
-        },2000)*/
-
+      },2000);*/
+      //v2v
+      //存储发生的事件
+     _this.event=[];
+      var data = [[{'vehicleId':'vehicleId1','type':'ADAS_1'},{'vehicleId':'vehicleId2','type':'ADAS_2'}],[{'vehicleId':'vehicleId1','type':'ADAS_1'}],[{'vehicleId':'vehicleId1','type':'ADAS_1'}],[{'vehicleId':'vehicleId1','type':'ADAS_1'}]];
+      var time = setInterval(()=>{
+        if(i>3){
+          clearInterval(time);
+          return false;
+        }
+        var res = data[i];
+        //控制事件的显示和消失
+        //如果发过来的数据存在，则进行计数,不存在的如果事件显示少于2s则3s后消失，事件显示大于2s，立刻消失
+        if(_this.event.length>0){
+          _this.event.forEach(item=>{
+            let flag=false;
+            res.forEach(item1=>{
+              if(item.vehicleId==item1.vehicleId){
+                flag=true;
+              }
+            });
+            if(flag){
+              item.count++;
+              //如果存在更新定时器
+              clearTimeout(item.timer);
+              item.timer = setTimeout(()=>{
+                item.flag = false;//控制隐藏
+                console.log('如果存在，更新定时器'+item.count)
+              },3000)
+            }/*else{
+              //如果不存在
+              if(item.count<2){
+                console.log('i====='+i);
+                console.log('vehicleId======'+item.vehicleId)
+                item.timer = setTimeout(()=>{
+                  item.flag = false;//控制隐藏
+                  console.log('我要消失了')
+                },3000)
+              }else{
+                item.flag = false;
+              }
+            }*/
+          })
+        }
+        //新推过来的数据中有新发生的事件，进行保存开始计时
+        var flag = true;
+        res.forEach(item=>{
+          let obj = {};
+          if(_this.event.length>0){
+            _this.event.forEach(item1=>{
+              if(item1.vehicleId==item.vehicleId){
+                flag= false;
+              }
+            })
+            //如果不存在，将车辆信息存储起来
+            if(flag){
+              /*_this.$set(obj,'vehicleId',item.vehicleId);
+              _this.$set(obj,'count',1);
+              _this.$set(obj,'timer',null);
+              _this.$set(obj,'flag',true);
+              _this.$set(obj,'type',item.type);*/
+              obj.vehicleId=item.vehicleId;
+              obj.count=1;
+              obj.timer=setTimeout(()=>{
+                obj.flag=false;
+                console.log('我要消失了====='+item.vehicleId);
+              },3000);
+              obj.flag=true;
+              obj.type=item.type
+            }
+            _this.event.unshift(obj);
+          }else {
+            /*_this.$set(obj,'vehicleId',item.vehicleId);
+            _this.$set(obj,'count',1);
+            _this.$set(obj,'timer',null);
+            _this.$set(obj,'flag',true);
+            _this.$set(obj,'type',item.type);*/
+            obj.vehicleId=item.vehicleId;
+            obj.count=1;
+            obj.timer=setTimeout(()=>{
+              obj.flag=false;
+              console.log('我要消失了===='+item.vehicleId);
+            },3000);
+            obj.flag=true;
+            obj.type=item.type
+            _this.event.unshift(obj);
+          }
+        });
+        i++;
+      },1000)
 
       this.distanceMap = new AMap.Map("realTraffic", {
         center: [116.482362,39.997718],
@@ -814,7 +894,6 @@
         zoom:18,
         rotateEnable:'true'
       });
-
       /*this.marker = new AMap.Marker({
         map:this.distanceMap,
         position: [116.482362,39.997718],
@@ -834,7 +913,7 @@
       this.initWebSocket();
       this.initSideWebSocket();
       this.initDeviceWebSocket();
-      this.initWarningWebSocket();
+      /*this.initWarningWebSocket();*/
       this.initLightWebSocket();
     },
     destroyed(){
@@ -843,7 +922,7 @@
       this.sideWebsocket.close();
       this.deviceWebsocket.close();
       this.lightWebsocket.close();
-      this.warningWebsocket.close();
+     /* this.warningWebsocket.close();*/
     }
   }
 </script>

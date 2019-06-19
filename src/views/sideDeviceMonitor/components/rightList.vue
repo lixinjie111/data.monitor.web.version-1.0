@@ -449,7 +449,7 @@
     top:60%;
   }
   .side-device-size .video-js{
-    height: 200px;
+    height: 200px!important;
   }
  /* .side-device-size .vjs-custom-skin > .video-js .vjs-control{
     width:4em;

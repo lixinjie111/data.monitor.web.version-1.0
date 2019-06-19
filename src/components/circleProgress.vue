@@ -58,7 +58,7 @@ export default {
 		requestFunc() {
 			// console.log("获取--"+ this.title +"--数据");
 			this.requestUrl({}).then(res => {
-				this.responseData = res.data.data;
+				this.responseData = res.data.data||res.data;
 			});
 		}
 	}
