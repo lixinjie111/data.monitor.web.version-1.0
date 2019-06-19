@@ -4,7 +4,8 @@
       <div class="c-scroll-wrap">
         <div class="c-scroll-inner">
           <left-top></left-top>
-          <left-middle></left-middle>
+          <!--<left-middle></left-middle>-->
+          <circle-progress title="设备状态" :requestUrl="getDevStatus"></circle-progress>
           <left-bottom></left-bottom>
         </div>
       </div>
@@ -29,13 +30,15 @@
   import MapContainer from './components/map.vue'
   import RightList from './components/rightList.vue'
   import SideDialog from './components/dialog.vue'
+  import { getDevStatus } from '@/api/sideDeviceMonitor'
   export default {
     data() {
       return {
         dialogVisible:false,
         selectedItem:{},
         mapDialogVisible:false,
-        mapSelectedItem:{}
+        mapSelectedItem:{},
+        getDevStatus:getDevStatus
       }
     },
     components: { LeftTop,CircleProgress,LeftMiddle,LeftBottom,MapContainer,RightList,SideDialog},

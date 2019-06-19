@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import axios from 'axios'
+import Qs from 'qs'
 // Element-ui
-import ElementUI from 'element-ui'
+// import ElementUI from 'element-ui'
 
 // axios.defaults.withCredentials = true;
 Vue.prototype.$http = axios;
@@ -21,7 +22,10 @@ function axiosFilter(vm) {
       },
       responseType: 'json',
       transformResponse: [function(data) { //后端发送过来的数据
-        return data;
+        // return data;
+        return Qs.stringify({
+            ...data
+        });
       }],
       transformRequest: [function(data) {
         return data;
@@ -31,35 +35,45 @@ function axiosFilter(vm) {
     // response
     axios.interceptors.response.use(function(response) {
         let returnStatus = response.data.status || response.data.code || response.data.state;
-        switch (returnStatus.toString()) {
-            case '1': {
-                return Promise.resolve(response);
-                break;
+        // console.log("--------------------------");
+        // console.log(response.data);
+        // console.log(typeof returnStatus);
+        // console.log(returnStatus.toString());
+        // if(returnStatus) {
+            switch (returnStatus.toString()) {
+                case '1': {
+                    return Promise.resolve(response);
+                    break;
+                }
+                case '200': {
+                    return Promise.resolve(response);
+                    break;
+                }
+                // case '403': {
+                //     vm.$message.error('无权限');
+                //     return Promise.reject(response);
+                //     break;
+                // }
+                // case '407': {
+                //     vm.$message.error('需要身份验证');
+                //     return Promise.reject(response);
+                //     break;
+                // }
+                // case '500': {
+                //     vm.$message.error('服务器出错，操作失败');
+                //     return Promise.reject(response);
+                //     break;
+                // }
+                default: {
+                    vm.$message.error(response.data.message || '操作失败');
+                    // vm.$message.error('操作失败');
+                    return Promise.reject(response);
+                }
             }
-            case '200': {
-                return Promise.resolve(response);
-                break;
-            }
-            // case '403': {
-            //     vm.$message.error('无权限');
-            //     return Promise.reject(response);
-            //     break;
-            // }
-            // case '407': {
-            //     vm.$message.error('需要身份验证');
-            //     return Promise.reject(response);
-            //     break;
-            // }
-            // case '500': {
-            //     vm.$message.error('服务器出错，操作失败');
-            //     return Promise.reject(response);
-            //     break;
-            // }
-            default: {
-                vm.$message.error('操作失败');
-                return Promise.reject(response);
-            }
-        }
+        // }else {
+        //     vm.$message.error(response.data);
+        //     return Promise.reject(response);
+        // }
 
         // 失去效果登录
         // if(isOutLogin && (response.data.status == '204')) {

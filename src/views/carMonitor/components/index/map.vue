@@ -50,6 +50,7 @@ export default {
                     let _option = {
                         vehicleId: item.vehicleId,
                         platNo: item.platNo,
+                        source: item.source.join(','),
                         heading: item.heading,
                         position: new AMap.LngLat(item.longitude, item.latitude)
                     };
@@ -103,7 +104,7 @@ export default {
                 });
                 _markerObj.platNoMarker = new AMap.Text({
                     map: _this.AMap,
-                    text: _data.platNo,
+                    text: _data.platNo+"<br/><span style='color:#e6a23c'>"+_data.source+'</span>',
                     // text: '京N123456',
                     anchor: 'center', // 设置文本标记锚点
                     style: {
@@ -136,19 +137,19 @@ export default {
             }
         },
         onclose(data){
-            console.log("结束--trackAll--连接");
+            // console.log("结束--vehicleOnline--连接");
         },
         onopen(data){
-            // console.log("建立--trackAll--连接");
+            // console.log("建立--vehicleOnline--连接");
             //行程
             this.sendMsg(JSON.stringify(this.webSocketData));
         },
         sendMsg(msg) {
-            // console.log("trackAll--连接状态："+this.webSocket.readyState);
+            // console.log("vehicleOnline--连接状态："+this.webSocket.readyState);
             if(window.WebSocket){
                 if(this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
                     this.webSocket.send(msg); //send()发送消息
-                    // console.log("trackAll--已发送消息:"+ msg);
+                    // console.log("vehicleOnline--已发送消息:"+ msg);
                 }
             }else{
                 return;

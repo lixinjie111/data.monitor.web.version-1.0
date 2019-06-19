@@ -155,6 +155,9 @@
                    /* console.log("index-------"+index);*/
                     if(index==resultData.length-1){
                       _this.map.setFitView();
+                      console.log("zoom===="+_this.map.getZoom())
+                      _this.map.setZoom(_this.map.getZoom()-4);
+                      console.log("zoom1===="+_this.map.getZoom())
                     }
                   })
 
@@ -212,6 +215,7 @@
     top: 100px;
     right:400px;
     color: #ccc;
+    z-index: 2;
     li{
       float: left;
       border:1px solid #5e5970;

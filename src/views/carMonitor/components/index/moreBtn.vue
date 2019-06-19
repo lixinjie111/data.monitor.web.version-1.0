@@ -70,11 +70,11 @@ export default {
     right: 417px;
     z-index: 3;
     width: 65px;
-    height: 36px;
+    height: 30px;
     @include layoutMode();
-    font-size: 20px;
+   /* font-size: 20px;*/
     color: #ccc;
-    padding: 0; 
+    padding: 0;
 }
 .echarts-classify-wrap {
 	margin-bottom: 18px;
