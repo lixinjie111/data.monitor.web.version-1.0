@@ -176,6 +176,7 @@ export default {
                 //上海
                 // this.updateCameraPosition(326181.72659014474,3462354.6747002415,737.3642832288795,741.5052736914325,-1.5707963267948966,-0.05266622778143515);
                 this.$emit("mapcomplete",this);
+                this.changeRcuId("ws://172.17.1.13:9982/mon","3402000000132000001401");
             },500);
 
 
@@ -563,9 +564,13 @@ export default {
             this.rcuId = rcuid;
              if ('WebSocket' in window) {
                 if(window.WebSocket){
-                    if(this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-                        this.hostWebsocket.close();
-                    }
+                  if(this.hostWebsocket!=null)
+                  {
+                      if(this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+                          this.hostWebsocket.close();
+                      }
+                  }
+
                     this.hostWebsocket=null;
                     this.hostWebsocket = new WebSocket(this.websocketUrl);
                     this.hostWebsocket.onmessage = this.onMessage;
@@ -582,7 +587,7 @@ export default {
             // 2046A1035893
             // var hostVehicle = '{"action":"rcu","data":{"rcuId":"2046A1037E1F"},"token":"fpx"}';
             // var hostVehicleMsg = JSON.stringify(hostVehicle);
-            var hostVehicle = '{"action":"RCUPer","rcuId":"'+this.rcuId+'"}';
+            var hostVehicle = '{"action":"RCUPer","devId":"'+this.rcuId+'"}';
             this.sendMsg(hostVehicle);
         },
         sendMsg:function(msg){
