@@ -124,6 +124,7 @@ export default {
             //添加模型
             // this.addModel("car","./static/map3d/map_photo/car.3DS",0,0,12.816);
 
+            //矮路灯
             this.addModel("lamppost_01","./static/map3d/models/lamppost_01.3ds",442496.96,4427294.44,16);
             this.models["lamppost_01"].setHeading(30);
             this.models["lamppost_01"].setUpdate(true);
