@@ -20,6 +20,7 @@ export default {
                 background:"black",
                 navMode: Pt.OrbitControls   //earthControls  OrbitControls
             }
+            ,viewer:null
             // ,viewVector1:{x:287406.0,y:3463772,z:50}
             // ,viewVector2:{x:287707.0,y:3463835.0,z:80.0}
             //科技园
@@ -76,7 +77,7 @@ export default {
     },
     methods: {
         initMap:function(){
-            dl.init(this.mapoption);
+            this.viewer = dl.init(this.mapoption);
             //添加数据
             // this.addShape("intersection","./static/map3d/suzhou_CityRoad_utm51/Intersection.shp",dl.styles.intersection.color)
             // this.addShape("Crosswalk","./static/map3d/suzhou_CityRoad_utm51/Crosswalk.shp",dl.styles.crosswalk.color)
@@ -149,7 +150,7 @@ export default {
         },
         initView:function(x1,y1,z1,x2,y2,z2){
             let bbox = new THREE.Box3(new THREE.Vector3(x1,y1,z1), new THREE.Vector3(x2,y2,z2));
-            dl.initView(bbox);
+            dl.initView(bbox,this.viewer);
         },
         addShape:function(name,url,color){
             let shp = new dl.Shape({
@@ -185,7 +186,8 @@ export default {
                 position: [x,y, z],
                 radius: radius,
                 yaw: yaw,
-                pitch: pitch
+                pitch: pitch,
+                viewer:this.viewer
             });
         },
         animate:function(time){
