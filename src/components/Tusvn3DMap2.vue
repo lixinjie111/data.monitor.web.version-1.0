@@ -563,8 +563,11 @@ export default {
             this.rcuId = rcuid;
              if ('WebSocket' in window) {
                 if(window.WebSocket){
-                    if(this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-                        this.hostWebsocket.close();
+                    if(this.hostWebsocket!=null)
+                    {
+                        if(this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+                            this.hostWebsocket.close();
+                        }
                     }
                     this.hostWebsocket=null;
                     this.hostWebsocket = new WebSocket(this.websocketUrl);
