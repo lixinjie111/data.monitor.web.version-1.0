@@ -370,14 +370,14 @@ export default {
                         person.position.z = 0;
                     }
                 }
-                
+
             }
             for(let i = 0;i<data.length;i++)
             {
                 let d = data[i];
                 // // console.log(rsuDatas[i]);
                 let dUTM = proj4(this.sourceProject,this.destinatePorject,[d.target.longitude,d.target.latitude]);
-                
+
                 if(d.target.type==0||d.target.type==1||d.target.type==3)
                 {
                     if(i<this.deviceModels[deviceid].persons.length)
@@ -387,8 +387,8 @@ export default {
                         mdl.position.y = dUTM[1];
                         mdl.position.z = this.defualtZ+4;
 
-                        let text = this.deviceModels[deviceid].texts[i]; 
-                        text.setText(d.target.uuid.substr(0,8));                   
+                        let text = this.deviceModels[deviceid].texts[i];
+                        text.setText(d.target.uuid.substr(0,8));
                         text.setPositon([dUTM[0],dUTM[1],this.defualtZ+5]);
                     }
                 }else{
@@ -400,7 +400,7 @@ export default {
                         mdl.position.z = this.defualtZ+4;
 
                         let text = this.deviceModels[deviceid].texts[i];
-                        text.setText(d.target.uuid.substr(0,8));                    
+                        text.setText(d.target.uuid.substr(0,8));
                         text.setPositon([dUTM[0],dUTM[1],this.defualtZ+6]);
                     }
                 }
@@ -523,8 +523,11 @@ export default {
             this.rcuId = rcuid;
              if ('WebSocket' in window) {
                 if(window.WebSocket){
-                    if(this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-                        this.hostWebsocket.close();
+                    if(this.hostWebsocket!=null)
+                    {
+                        if(this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+                            this.hostWebsocket.close();
+                        }
                     }
                     this.hostWebsocket=null;
                     this.hostWebsocket = new WebSocket(this.websocketUrl);
@@ -542,7 +545,7 @@ export default {
             // 2046A1035893
             // var hostVehicle = '{"action":"rcu","data":{"rcuId":"2046A1037E1F"},"token":"fpx"}';
             // var hostVehicleMsg = JSON.stringify(hostVehicle);
-            var hostVehicle = '{"action":"RCUPer","rcuId":"'+this.rcuId+'"}';
+            var hostVehicle = '{"action":"RCUPer","devId":"'+this.rcuId+'"}';
             this.sendMsg(hostVehicle);
         },
         sendMsg:function(msg){
