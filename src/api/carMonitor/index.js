@@ -3,7 +3,7 @@ import {HTTPURL} from '../requestUrl';
 
 
 /**
- * 路侧设备
+ * 车辆监控
  */
 
 
