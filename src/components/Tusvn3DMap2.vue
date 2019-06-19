@@ -129,7 +129,7 @@ export default {
             this.models["lamppost_01"].setHeading(30);
             this.models["lamppost_01"].setUpdate(true);
 
-
+            //障碍物
             this.addModel("traffic_cone","./static/map3d/models/traffic_cone.3ds",442492.797,4427280.995,16);
             this.models["traffic_cone"].setHeading(30);
             this.models["traffic_cone"].setUpdate(true);
@@ -148,11 +148,11 @@ export default {
             this.models["traffic_sign_stop"].setHeading(120);
             this.models["traffic_sign_stop"].setUpdate(true);
 
-
+            //女人
             this.addModel("Girl walking N090814","./static/map3d/models/Girl walking N090814.3DS",442529.62,4427325.70,16);
             this.models["Girl walking N090814"].setHeading(120);
             this.models["Girl walking N090814"].setUpdate(true);
-
+            //男人
             this.addModel("Man N151016.3DS","./static/map3d/models/Man N151016.3DS",442531.62,4427325.70,16);
             this.models["Man N151016.3DS"].setHeading(120);
             this.models["Man N151016.3DS"].setUpdate(true);
