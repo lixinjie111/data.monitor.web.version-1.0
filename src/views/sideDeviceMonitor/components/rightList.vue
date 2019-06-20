@@ -113,6 +113,7 @@
             // this.getRoadList();
             console.log("onMapComplete1");
             setTimeout(()=>{
+              console.log('roadItem1------'+this.roadItem1.camSerialNum);
               this.$refs.tusvnMap1.changeRcuId(window.cfg.websocketUrl,this.roadItem1.camSerialNum);
               this.$refs.tusvnMap1.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
             },2000);
@@ -122,8 +123,9 @@
             // this.getRoadList();
             console.log("onMapComplete2");
             setTimeout(()=> {
+              console.log('roadItem2------'+this.roadItem1.camSerialNum);
               this.$refs.tusvnMap2.changeRcuId(window.cfg.websocketUrl, this.roadItem2.camSerialNum);
-              this.$refs.tusvnMap2.updateCameraPosition(442483.4140577592, 4427251.954939776, 31.211585511525108, 31.559324326695666, -0.5889099326599347, -0.6520903697733481);
+              this.$refs.tusvnMap2.updateCameraPosition( 442486.3454129422,4427261.806106671, 47.90669656890555 , 34.88838511357024, -0.7656910059927339,  2.4898596954809307);
             },2000)
           },
           getPlayerOptions(){

@@ -764,10 +764,10 @@
         })
       },
       getCloudEvent(){
-        /*if(!this.routeStartTime||this.routeStartTime==""){
+        if(!this.routeStartTime||this.routeStartTime==""){
           this.$message.error("本车行程未开始");
           return;
-        }*/
+        }
         this.cloudDialog=true;
         this.getV2xInformation();
       },
