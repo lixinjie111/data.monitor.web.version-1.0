@@ -78,5 +78,10 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-
+  .c-info-wrap{
+    margin-top: 0px!important;
+  }
+.c-info-list{
+  padding:0!important;
+}
 </style>

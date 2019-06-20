@@ -27,6 +27,6 @@ a,ins,s,u,del{text-decoration:none}
 sup,sub{vertical-align:baseline}
 html {overflow-x: hidden;height: 100%;font-size: 12px;-webkit-tap-highlight-color: transparent;}
 /*body {font-family: Helvetica Neue,Helvetica,STHeiTi,sans-serif;-webkit-text-size-adjust: none;background-color:#fff;color: #000;-webkit-overflow-scrolling: touch;height: 100%;}*/
-body {font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;font-size: 14px;line-height: 1.42857143;-webkit-text-size-adjust: none;background-color:#fff;color: #000;-webkit-overflow-scrolling: touch;height: 100%;}
+body {font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;font-size: 14px;line-height: 1.42857143;-webkit-text-size-adjust: none;background-color:#fff;color: #000;-webkit-overflow-scrolling: touch;height: 100%;-webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none;}
 hr {height: 2px;margin: 1px 0;border: medium none;border-top: 2px solid #cacaca;}
 a {color: #25a4bb;text-decoration: none;}

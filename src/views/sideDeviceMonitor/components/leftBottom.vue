@@ -8,6 +8,20 @@
 
     <h3 class="c-title ">设备实时数据</h3>
     <div id="sideRealId" class="side-real-echarts"></div>
+    <div class="legend-show">
+      <div class="side-real-legend">
+        <span class="real-legend-style rsu-style"></span>
+        <span>RSU</span>
+      </div>
+      <div class="side-real-legend">
+        <span class="real-legend-style rcu-style"></span>
+        <span>RCU</span>
+      </div>
+      <div class="side-real-legend">
+        <span class="real-legend-style light-style"></span>
+        <span>红绿灯</span>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -243,13 +257,43 @@
       }
     }
 </script>
-<style scoped>
+<style scoped lang="scss">
   .side-total-echarts{
     margin:28px 0px 50px 0px;
     height: 68px;
   }
   .side-real-echarts{
-    height: 60px;
+    height: 68px;
     margin-top: 28px;
+  }
+  .legend-show{
+    margin-top:15px;
+    /*display: flex;
+    justify-content: center;*/
+    float: left;
+    .side-real-legend{
+      display: inline-block;
+      font-size: 12px;
+      /*padding:2px 22px;*/
+      opacity: 0.6;
+      .real-legend-style{
+        display: inline-block;
+        width: 10px;
+        height: 4px;
+        background-color: yellow;
+        vertical-align: middle;
+      }
+      .rsu-style{
+        background-color: #936314;
+      }
+      .rcu-style{
+        background-color:#2c815f ;
+        margin-left: 10px;
+      }
+      .light-style{
+        background-color:#ff0000 ;
+        margin-left: 10px;
+      }
+    }
   }
 </style>

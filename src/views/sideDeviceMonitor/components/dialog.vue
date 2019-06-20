@@ -184,7 +184,9 @@
 
               _this.deviceList = res.data;
               var flag=true;
+              var serialNum = "";
               _this.deviceList.forEach(function (item, index) {
+
                 //第一次默认并且是摄像头而且在线设置其打开状态
                 if(flag&&item.deviceType=='N'&&item.workStatus==1){
                   if(_this.selectedItem.camSerialNum==""){
@@ -192,24 +194,28 @@
                     //设置默认的选中值
                     _this.$set(item, 'value', true);
                     _this.openVideoList.push(item);
+                    serialNum = item.serialNum;
                   }else{
+                    _this.$set(item, 'value', false);
                     if(item.serialNum==_this.selectedItem.camSerialNum){
                       flag=false;
                       //设置默认的选中值
                       _this.$set(item, 'value', true);
                       _this.openVideoList.push(item);
+                      serialNum = item.serialNum;
                     }
                   }
-
-                  getVideoByNum({
-                    "protocal": 1,
-                    /*"serialNum": "3402000000132000001401"*/
-                    "serialNum": item.serialNum
-                  }).then(res => {
-                    var options = _this.getPlayerOptions();
-                    options.sources[0].src =  res.data.rtmp;
-                    _this.option =options;
-                  })
+                  if(serialNum!=""){
+                    getVideoByNum({
+                      "protocal": 1,
+                      /*"serialNum": "3402000000132000001401"*/
+                      "serialNum": serialNum
+                    }).then(res => {
+                      var options = _this.getPlayerOptions();
+                      options.sources[0].src =  res.data.rtmp;
+                      _this.option =options;
+                    })
+                  }
                 }else{
                   _this.$set(item, 'value', false);
                 }
@@ -240,17 +246,23 @@
               })
               _this.openVideoList.push(item);
               //根据摄像头调取视频
-              var rtmp = _this.getVideoByNum(item.serialNum);
-              var options = _this.getPlayerOptions();
-              options.sources[0].src =  rtmp;
-              _this.option =options;
+//              var rtmp = _this.getVideoByNum(item.serialNum);
+              getVideoByNum({
+                "protocal": 1,
+                /*"serialNum": "3402000000132000001401"*/
+                "serialNum": item.serialNum
+              }).then(res => {
+                var options = _this.getPlayerOptions();
+                options.sources[0].src =  res.data.rtmp;
+                _this.option =options;
+              })
+
             }else{
               var options = _this.getPlayerOptions();
               options.sources[0].src =  '';
               _this.option =options;
             }
           },
-
           loadNode(node, resolve){
             var _this = this;
             //懒加载路
@@ -589,6 +601,7 @@
     /*background: #5e5970;*/
     position: relative;
     display: inline-block;
+    cursor: pointer;
   i{
     width: 14px;
     height: 14px;
@@ -656,6 +669,7 @@
       top:0;
       width: 400px;
       background-color: #000;
+      cursor: pointer;
       .side-device-title{
         position: relative;
         font-size: 16px;
