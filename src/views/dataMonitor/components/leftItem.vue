@@ -48,11 +48,11 @@ export default {
     },
     computed: {
         filterData() {
-            let filterData = {};
+            let _filterData = {};
             for(let attr in this.responseData) {
-                filterData[attr] = parseFloat(this.responseData[attr]).toLocaleString() || '--';
+                _filterData[attr] = parseFloat(this.responseData[attr]).toLocaleString() || '--';
             }
-            return filterData;
+            return _filterData;
         }
     },
     mounted() {
