@@ -163,10 +163,10 @@ export default {
 
             //初始化websocket连接
             // this.initWebsocket(this.websocketUrl);
-            // setInterval(()=>{
-            //    let camera =  dl.viewer.scene.view;
-            //    console.log(camera);
-            // },1000);
+            setInterval(()=>{
+               let camera =  dl.viewer.scene.view;
+               console.log(camera);
+            },1000);
 
             setTimeout(()=>{
                 // 442454.32658246456,4427227.8078830885, 37.73509248844059, 0.0000028926452461693342,-0.5081018518518544,-0.7385192219746066
