@@ -60,10 +60,9 @@
 
     <div class="pre-warning">
       <div  class="pre-warning-item" v-for="item in event" v-show="item.flag" >
-       <!-- <p class="warning-position"> {{item.type}}</p>-->
         <div v-show="item.type=='ADAS_1'" class="warning-position" >
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/car-19.png"/>
+            <img src="@/assets/images/car/warning/car-1.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
             <p>
@@ -75,7 +74,7 @@
         </div>
         <div v-show="item.type=='ADAS_2'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/car-26.png"/>
+            <img src="@/assets/images/car/car-2.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
             <p>前车启动预警</p>
@@ -83,7 +82,7 @@
         </div>
         <div v-show="item.type=='ADAS_3'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/car-25.png"/>
+            <img src="@/assets/images/car/car-3.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
             <p>车道偏离预警</p>
@@ -91,7 +90,7 @@
         </div>
         <div v-show="item.type=='ADAS_4'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #fd8610">
-            <img src="@/assets/images/car/car-24.png"/>
+            <img src="@/assets/images/car/car-4.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
             <p>低光照度开灯提醒</p>

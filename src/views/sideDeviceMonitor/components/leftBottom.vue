@@ -251,6 +251,7 @@
                 }
                 if(item==5){
                   _this.rsuData.push(null);
+                  console.log("rsu的长度------"+_this.rsuData.length)
                 }
               }
             })
