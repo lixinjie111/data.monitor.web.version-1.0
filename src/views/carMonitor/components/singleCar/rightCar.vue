@@ -273,6 +273,7 @@
           console.log('Socked连接失败',msg);
       },
       getMessage(msg){
+          // console.log("感知数据 vehicleRadar %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 //        console.log("感知事件----")
           var that = this;
           var res = JSON.parse(msg.data);

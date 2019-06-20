@@ -72,7 +72,12 @@ export default {
     		let _filterResult = {};
 			_filterResult.vehicleId = result.vehicleId;
 			_filterResult.transmission = result.transmission;
-			_filterResult.speed = result.speed;
+			if(result.transmission != 'P') {
+				_filterResult.speed = result.speed;
+			}else {
+				_filterResult.speed = 0;
+			}
+			// _filterResult.speed = result.speed;
 			_filterResult.headingAngle = result.headingAngle;
 			_filterResult.turnLight = result.turnLight;
 			_filterResult.autoLevel = result.autoLevel;
@@ -119,6 +124,8 @@ export default {
 		        			let _option = this.defaultOption(item.echartsData);
 		            		item.echarts.setOption(_option);
 		            	}, 0);
+            		}else {
+            			item.speed = 0;
             		}
             	}
             });

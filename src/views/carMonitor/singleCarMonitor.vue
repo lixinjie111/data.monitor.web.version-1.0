@@ -1,25 +1,23 @@
 <template>
-<div class="car-view-wrapper">
-    <div class="single-top">
-        <div class="single-left">
-            <left-car @getRouteStartTime="getRouteStartTime"></left-car>
+<div class="car-view-wrapper clearfix">
+    <div class="single-left">
+        <left-car @getRouteStartTime="getRouteStartTime"></left-car>
+    </div>
+    <div class="single-main">
+        <div class="single-header">
+            <header-car :real-data="realData" ></header-car>
         </div>
-        <div class="single-main">
-            <div class="single-header">
-                <header-car :real-data="realData" ></header-car>
+        <div class="single-content ">
+            <div class="single-content-left">
+                <div class="single-content-top">
+                    <main-car :real-data="realData" :routeStartTime="routeStartTime"></main-car>
+                </div>
+                <div class="single-content-bottom">
+                    <bottom-car ></bottom-car>
+                </div>
             </div>
-            <div class="single-content ">
-                <div class="single-content-left">
-                    <div class="single-content-top">
-                        <main-car :real-data="realData" :routeStartTime="routeStartTime"></main-car>
-                    </div>
-                    <div class="single-content-bottom">
-                        <bottom-car ></bottom-car>
-                    </div>
-                </div>
-                <div class="single-content-right">
-                    <right-car></right-car>
-                </div>
+            <div class="single-content-right">
+                <right-car></right-car>
             </div>
         </div>
     </div>
@@ -124,12 +122,6 @@
 </script>
 <style scoped>
   .car-view-wrapper{
-    /*position:relative;*/
-    /*display: flex;
-    justify-content: center;
-    flex-direction:column;
-    width:1920px;
-    height: 1080px;*/
     position: fixed;
     top:0;
     left:0;
@@ -143,11 +135,6 @@
     background-image:url("../../assets/images/car/background.png") ;
     background-size: 100% 100%;
   }
-  .single-top{
-    width:100%;
-    height: 1030px;
-    display: flex;
-  }
   .single-bottom{
     width:100%;
     height: 50px;
@@ -157,35 +144,43 @@
     width: 300px;
     height:100%;
   }
+  .single-left {
+    float: left;
+  }
   .single-main{
-    width: 1620px;
+    position: relative;
+    margin-left: 300px;
     height:100%;
   }
-  @media screen and (max-width:1280px) {
-    .single-main{
-      width: 1000px;
-    }
-  }
+
   .single-header{
     height: 80px;
     width: 100%;
     margin-left: 15px;
   }
   .single-content-left{
-    width: 1305px;
-    height:100%;
-    margin-left: 15px;
-    margin-top: 15px;
-    margin-bottom: 15px;
+    position: absolute;
+    left: 15px;
+    right: 300px;
+    top: 15px;
+    bottom: 0;
+  }
+  .single-content-right {
+    float: right;
   }
   .single-content-top{
-    height: 730px;
-    /*height: 600px;*/
-    width:100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 220px;
   }
   .single-content-bottom{
+    position: absolute;
+    left: 15px;
+    bottom: 0;
+    right: 0;
     height: 220px;
-    width:100%;
   }
   .distance-detail{
     display: inline-block;
@@ -196,6 +191,11 @@
     padding-left: 20px;
   }
   .single-content{
-    display: flex;
+    position: absolute;
+    left: 0;
+    top: 80px;
+    right: 0;
+    bottom: 50px;
+    width: 100%;
   }
 </style>

@@ -95,8 +95,8 @@ function axiosFilter(vm) {
         // return response;
     }, function(error) {
         vm.$message.error('error!');
-        console.log(error);
-        return Promise.reject(error);
+        // console.log(error);
+        // return Promise.reject(error);
         // vm.$alert('登录已过期，请重新登录', '', {
         //     confirmButtonText: '确定',
         //     callback: action => {

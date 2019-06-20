@@ -218,7 +218,6 @@
 <style scoped>
 
   .real-detail{
-    width:1620px;
     overflow: hidden;
     color: #ddd9d1;
   }
