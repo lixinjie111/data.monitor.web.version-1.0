@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {HTTPURL} from '../requestUrl';
+import {HTTPURL, TESTHTTPURL} from '../requestUrl';
 
 
 /**
@@ -21,16 +21,19 @@ import {HTTPURL} from '../requestUrl';
  * I_V1L_02
  */
  export const getAutoLevelStat = params => {return axios.post(`${HTTPURL}vl/vehStat/getAutoLevelStat`, params).then(res => res.data); };
+ // export const getAutoLevelStat = params => {return axios.post(`${TESTHTTPURL}vl/vehStat/getAutoLevelStat`, params).then(res => res.data); };
 /**
  * 获取车辆用途分布数据
  * I_VL1_03
  */
  export const getVehUsageStat = params => {return axios.post(`${HTTPURL}vl/vehStat/getVehUsageStat`, params).then(res => res.data); };
+ // export const getVehUsageStat = params => {return axios.post(`${TESTHTTPURL}vl/vehStat/getVehUsageStat`, params).then(res => res.data); };
 /**
  * 获取车型品牌分布数据
  * I_VL4_01
  */
  export const getVehStat = params => {return axios.post(`${HTTPURL}vl/vehStat/getVehStat`, params).then(res => res.data); };
+ // export const getVehStat = params => {return axios.post(`${TESTHTTPURL}vl/vehStat/getVehStat`, params).then(res => res.data); };
 /**
  * 获取最近30天活跃车辆top5的车辆数据
  * I_VL4_02
