@@ -156,7 +156,7 @@
                     if(index==resultData.length-1){
                       _this.map.setFitView();
                       console.log("zoom===="+_this.map.getZoom())
-                      _this.map.setZoom(_this.map.getZoom()-4);
+                      _this.map.setZoom(_this.map.getZoom()-2);
                       console.log("zoom1===="+_this.map.getZoom())
                     }
                   })

@@ -84,6 +84,7 @@
                 symbolSize: 2,
                 lineStyle: {
                   color: 'rgba(55, 186, 123, .2)',
+                  width:1,
                   opacity: 0
                 },
                 areaStyle: {
