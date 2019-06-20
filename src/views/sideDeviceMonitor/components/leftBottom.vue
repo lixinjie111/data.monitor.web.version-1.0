@@ -113,7 +113,8 @@
                 splitLine: {
                   show:false
                 },
-                show:false
+                show:false,
+                min: 0,
               },
               series: [{
                 /*data: [820, 932, 901, 934, 1290, 1330, 1320], */
@@ -123,6 +124,7 @@
                 symbol: 'none',
                 lineStyle: {
                   color: '#936314',
+                  width: 1
                 }
               },
                 {
@@ -133,6 +135,7 @@
                   symbol: 'none',
                   lineStyle: {
                     color: '#2c815f',
+                    width: 1
                   }
                 },
                 {
@@ -143,6 +146,7 @@
                   symbol: 'none',
                   lineStyle: {
                     color: '#368099',
+                    width: 1
                   }
                 },
                 {
@@ -153,6 +157,7 @@
                   symbol: 'none',
                   lineStyle: {
                     color: '#ff0000',
+                    width: 1
                   }
                 }]
             };
