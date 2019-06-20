@@ -186,7 +186,6 @@
               var flag=true;
               var serialNum = "";
               _this.deviceList.forEach(function (item, index) {
-
                 //第一次默认并且是摄像头而且在线设置其打开状态
                 if(flag&&item.deviceType=='N'&&item.workStatus==1){
                   if(_this.selectedItem.camSerialNum==""){
