@@ -95,6 +95,11 @@ export const sendStreamHeart = params => {return axios.post(`${HTTPURL}singleMon
 export const getAlarmInformation = params => {return axios.post(`${HTTPURL}singleMoniter/getAlarmInformation`, params).then(res => res.data); };
 
 
+/**
+ * 预警的接口
+ * */
+export const getV2xInformation = params => {return axios.post(`${HTTPURL}singleMoniter/getEarlyWarningInformation`, params).then(res => res.data); };
+
 
 
 

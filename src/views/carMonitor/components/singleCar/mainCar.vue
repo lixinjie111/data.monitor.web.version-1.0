@@ -119,19 +119,12 @@
           <th>预警级别</th>
           <th>预警位置</th>
         </tr>
-        <tr>
-          <td>1</td>
-          <td>2019-08-27 09:05:34:322</td>
-          <td>前向碰撞预警</td>
-          <td><p class="alert-level" style="background-color: #ae3717"><span class="alert-level-value">3</span></p></td>
-          <td>沪A5237490</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>2019-08-27 09:05:34:322</td>
-          <td>车道偏离预警</td>
-          <td><p class="alert-level" style="background-color: #fd8610"><span class="alert-level-value">5</span></p></td>
-          <td>沪A5237490</td>
+        <tr v-for="(item,index) in cloudList">
+          <td>{{index+1}}</td>
+          <td>{{item.timestamp | dateFormat}}</td>
+          <td>{{item.earlyWarningName}}</td>
+          <td><p class="alert-level" style="background-color: #ae3717"><span class="alert-level-value">{{item.earlyWarningLvl}}</span></p></td>
+          <td>{{item.position}}</td>
         </tr>
       </table>
     </single-dialog>
@@ -144,7 +137,7 @@
           <th>告警级别</th>
           <th>告警车辆</th>
         </tr>
-        <tr v-for="(item,index) in cloudList">
+        <tr v-for="(item,index) in vehicleList">
           <td>{{index+1}}</td>
           <td>{{item.gpstime | dateFormat}}</td>
           <td>{{item.alarmName}}</td>
@@ -165,7 +158,7 @@
 <script>
   import AMap from 'AMap';
   import SingleDialog from '@/views/carMonitor/components/singleCar/dialog.vue'
-  import { getAlarmInformation } from '@/api/carMonitor'
+  import { getAlarmInformation,getV2xInformation } from '@/api/carMonitor'
   import DateFormat from '@/assets/js/utils/date.js'
   export default {
     name:"main-car",
@@ -757,15 +750,26 @@
           "vehicleId": this.vehicleId
         }
         getAlarmInformation(param).then(res=>{
-          this.cloudList=res.alarmInfoList;
+          this.vehicleList=res.alarmInfoList;
+        })
+      },
+      getV2xInformation(){
+        var param = {
+          //"startTime": this.routeStartTime,
+          "startTime": 0,
+          "vehicleId": this.vehicleId
+        }
+        getV2xInformation(param).then(res=>{
+          this.cloudList=res.earlyWarningInfoList;
         })
       },
       getCloudEvent(){
-        if(!this.routeStartTime||this.routeStartTime==""){
+        /*if(!this.routeStartTime||this.routeStartTime==""){
           this.$message.error("本车行程未开始");
           return;
-        }
+        }*/
         this.cloudDialog=true;
+        this.getV2xInformation();
       },
       getVehicleEvent(){
         if(!this.routeStartTime||this.routeStartTime==""){

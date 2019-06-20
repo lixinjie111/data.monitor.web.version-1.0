@@ -498,7 +498,7 @@
             this.time = time;
           },
           mapcomplete:function(){
-            this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,this.selectedItem.roadSiderId);
+            this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,this.selectedItem.camSerialNum);
             this.$refs.tusvnMap3.updateCameraPosition(442454.32657890377,4427227.807879115,37.7350947252935, 0.0000028926452461693342, -0.39699074074074336, -0.730706721974606);
           }
         },

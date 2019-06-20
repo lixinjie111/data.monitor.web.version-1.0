@@ -40,7 +40,7 @@ function axiosFilter(vm) {
         // console.log(typeof returnStatus);
         // console.log(returnStatus.toString());
         // if(returnStatus) {
-            switch (returnStatus.toString()) {
+            switch (returnStatus+"") {
                 case '1': {
                     return Promise.resolve(response);
                     break;

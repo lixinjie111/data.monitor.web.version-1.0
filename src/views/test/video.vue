@@ -40,7 +40,7 @@
           ],
           width:'600',
           height:'800'
-         /* poster: isProduction ? '/vue-videojs-demo/static/images/logo.png' : '/static/images/logo.png'*/
+         /* poster: isProduction ? '/vue-videojs-demo/static/images/favicon.png' : '/static/images/favicon.png'*/
           // controlBar: {
           //   timeDivider: false, // 时间分割线
           //   durationDisplay: false, // 总时间
