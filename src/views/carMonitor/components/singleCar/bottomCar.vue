@@ -692,7 +692,7 @@
   }
   .speed-chart{
     width: 250px;
-    height: 220px;
+    height: 100%;
     position: absolute;
   }
   .chart2{
