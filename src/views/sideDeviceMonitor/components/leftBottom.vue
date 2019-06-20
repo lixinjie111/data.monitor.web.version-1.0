@@ -187,9 +187,9 @@
             var typeArray = [1,3,4,5];
             result.forEach(item=>{
 //              将横坐标数据删除
-              if(_this.rsuData.length>=300||_this.rcuData.length>=300||_this.videoData.length>=300||_this.lightData.length){
+             /* if(_this.rsuData.length>=300||_this.rcuData.length>=300||_this.videoData.length>=300||_this.lightData.length){
                 _this.xData.shift();
-              }
+              }*/
               //total----0
               if(item.devType==0){
                 _this.totalData.push(item.count);

@@ -465,6 +465,9 @@
  /* .side-device-size .vjs-custom-skin > .video-js .vjs-control{
     width:4em;
   }*/
+  .vjs-custom-skin>.video-js .vjs-control-bar .vjs-time-control{
+    min-width: 2em!important;
+  }
 </style>
 <style lang="scss" scoped>
 
