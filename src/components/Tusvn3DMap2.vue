@@ -337,11 +337,11 @@ export default {
         },
         showBData2:function(data){
              var deviceid = null;
-            if(data.length>0)
+            if(data!=null)
             {
-                var time = this.timetrans(data[0].timestamp);
+                var time = this.timetrans(data.timestamp);
                 this.$emit('showTimeStamp',time);
-                deviceid = data[0].deviceId;
+                deviceid = data.deviceId;
                 if(this.deviceModels[deviceid]==null)
                 {
                     this.deviceModels[deviceid]={cars:[],persons:[],texts:[]};
@@ -406,13 +406,13 @@ export default {
                 }
 
             }
-            for(let i = 0;i<data.length;i++)
+            for(let i = 0;i<data.data.targets.length;i++)
             {
-                let d = data[i];
+                let d = data.data.targets[i];
                 // // console.log(rsuDatas[i]);
-                let dUTM = proj4(this.sourceProject,this.destinatePorject,[d.target.longitude,d.target.latitude]);
+                let dUTM = proj4(this.sourceProject,this.destinatePorject,[d.longitude,d.latitude]);
 
-                if(d.target.type==0||d.target.type==1||d.target.type==3)
+                if(d.type==0||d.type==1||d.type==3)
                 {
                     if(i<this.deviceModels[deviceid].persons.length)
                     {
@@ -422,7 +422,7 @@ export default {
                         mdl.position.z = this.defualtZ+4;
 
                         let text = this.deviceModels[deviceid].texts[i];
-                        text.setText(d.target.uuid.substr(0,8));
+                        text.setText(d.uuid.substr(0,8));
                         text.setPositon([dUTM[0],dUTM[1],this.defualtZ+5]);
                     }
                 }else{
@@ -434,7 +434,7 @@ export default {
                         mdl.position.z = this.defualtZ+4;
 
                         let text = this.deviceModels[deviceid].texts[i];
-                        text.setText(d.target.uuid.substr(0,8));
+                        text.setText(d.uuid.substr(0,8));
                         text.setPositon([dUTM[0],dUTM[1],this.defualtZ+6]);
                     }
                 }
