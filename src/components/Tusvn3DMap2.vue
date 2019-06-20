@@ -18,7 +18,7 @@ export default {
             mapoption:{
                 doc: this.targetId,
                 background:"black",
-                navMode: Pt.OrbitControls   //earthControls  OrbitControls
+                navMode: Pt.earthControls   //earthControls  OrbitControls
             }
             ,viewer:null
             ,scene:null
