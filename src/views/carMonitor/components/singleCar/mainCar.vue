@@ -280,6 +280,9 @@
         var newPosition;
         var platNo;
         var source="";
+        // console.log("单车监控地图获取数据---------------------------------------------");
+        // let _nowtime = new Date().getTime();
+        // console.log(_nowtime, json.time, data.gpsTime, json.time-_nowtime, data.gpsTime-_nowtime);
         if(_this.isInit){
           platNo=data.platNo;
           data.source.forEach(item=>{

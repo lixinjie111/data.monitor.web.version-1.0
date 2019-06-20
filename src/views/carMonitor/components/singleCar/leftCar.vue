@@ -22,7 +22,7 @@
            <img src="@/assets/images/car/car-1.png" class="statistic-img"/>
          </li>
          <li>
-           <span class="text-font">{{drivingStatistics.cumulatedMiles}}</span>
+           <span class="text-font">{{filterData.cumulatedMiles || '--'}}</span>
            <span class="text-style">KM</span>
          </li>
          <li>
@@ -34,7 +34,7 @@
            <img src="@/assets/images/car/car-2.png" class="statistic-img"/>
          </li>
          <li>
-           <span class="text-font">{{drivingStatistics.cumulatedTime}}</span>
+           <span class="text-font">{{filterData.cumulatedTime || '--'}}</span>
            <span class="text-style">H</span>
          </li>
          <li>
@@ -46,7 +46,7 @@
            <img src="@/assets/images/car/car-3.png" class="statistic-img"/>
          </li>
          <li>
-           <span class="text-font">{{drivingStatistics.avgSpeed}}</span>
+           <span class="text-font">{{filterData.avgSpeed || '--'}}</span>
            <span class="text-style">KM/H</span>
          </li>
          <li>
@@ -58,7 +58,7 @@
            <img src="@/assets/images/car/car-4.png" class="statistic-img"/>
          </li>
          <li>
-           <span class="text-font">{{drivingStatistics.tripNums}}</span>
+           <span class="text-font">{{filterData.tripNums || '--'}}</span>
          </li>
          <li>
            <span class="text-style">行程数量</span>
@@ -153,6 +153,15 @@
         }
       }
     },
+    computed: {
+        filterData() {
+            let _filterData = {};
+            for(let attr in this.drivingStatistics) {
+                _filterData[attr] = parseFloat(this.drivingStatistics[attr]).toLocaleString() || '--';
+            }
+            return _filterData;
+        }
+    },
     watch: {
       deep: true,
       handleZoom(newVal, oldVal){
@@ -213,8 +222,8 @@
           'vehicleId': this.vehicleId,
         }).then(res => {
           this.drivingStatistics = res.vehicleBaseDetail[0];
-          this.drivingStatistics.cumulatedMiles = this.drivingStatistics.cumulatedMiles.toFixed(1);
-          this.drivingStatistics.avgSpeed = this.drivingStatistics.avgSpeed.toFixed(1);
+          // this.drivingStatistics.cumulatedMiles = this.drivingStatistics.cumulatedMiles.toFixed(1);
+          // this.drivingStatistics.avgSpeed = this.drivingStatistics.avgSpeed.toFixed(1);
         });
       },
       getBaseData(){
@@ -355,6 +364,7 @@
         _this.webSocket.onerror = _this.onerror;
       },
       onmessage(message){
+        // console.log("行程概览 route *********************************************");
         var _this=this;
         var json = JSON.parse(message.data);
         var pointList = [];

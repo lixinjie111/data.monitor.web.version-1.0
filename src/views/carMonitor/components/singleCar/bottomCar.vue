@@ -336,6 +336,9 @@
             speed = json.result.speed,
             acceleration = json.result.acceleration;
         if(gpsTime){
+          // console.log("速度加速度 speedAcceleration ？？？？？？？？？？？？？？？？？？？？？？？？");
+          // let _nowtime = new Date().getTime();
+          // console.log(_nowtime, json.time, gpsTime, json.time-_nowtime, gpsTime-_nowtime);
           //动态数据
           this.isStop = false;
           if(_this.data.length>4){
@@ -410,6 +413,7 @@
         _this.reportWebSocket.onopen = _this.onReportOpen;
       },
       onReportMessage(message){
+        // console.log("动画 vehicleDataCount @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         let _this=this;
         var json = JSON.parse(message.data);
         var data = json.result.reportItems;
@@ -477,7 +481,7 @@
             var curve1 = new Curve();
             //开始画gps的第一条线
             if(_this.gpsIsFirst){
-              console.log("canGps-----"+_this.upRandom);
+              // console.log("canGps-----"+_this.upRandom);
               curve1.drawLines(_this.upRandom,'#d47b24','up',0,[130, 142], [320, 58]);
               curve1.drawImgs(_this.upRandom,'GPS+CAN','up',12,[130, 142], [320, 58],'#6ec9fd');
               _this.gpsRandom = _this.upRandom;
