@@ -1,6 +1,6 @@
 <template>
 	<div class="road-monitor">
-        <el-button class="c-view-btn" type="primary">这是"路网"</el-button>
+       <!-- <el-button class="c-view-btn" type="primary">这是"路网"</el-button>-->
     </div>
 </template>
 <script>
