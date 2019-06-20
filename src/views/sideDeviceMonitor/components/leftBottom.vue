@@ -38,7 +38,8 @@
               rsuData:[],
               rcuData:[],
               videoData:[],
-              lightData:[]
+              lightData:[],
+              xData:Array(300)
             }
         },
         methods: {
@@ -68,7 +69,8 @@
                   textStyle: {
                     color: "#918d84"
                   }
-                }
+                },
+                data:this.xData
               },
               yAxis:  {
                 type: 'value',
@@ -103,7 +105,8 @@
               },
               xAxis: {
                 type: 'category',
-                show:false
+                show:false,
+                data: this.xData,
               },
               yAxis: {
                 type: 'value',
@@ -174,7 +177,19 @@
             let _this=this;
             var json = JSON.parse(mesasge.data);
             var result = json.result;
+            //设置横坐标
+            let date = new Date();
+            /*result.forEach(item=>{
+
+            })*/
+//            _this.xData.push(date);
+            var typeData=[];
+            var typeArray = [1,3,4,5];
             result.forEach(item=>{
+//              将横坐标数据删除
+              if(_this.rsuData.length>=300||_this.rcuData.length>=300||_this.videoData.length>=300||_this.lightData.length){
+                _this.xData.shift();
+              }
               //total----0
               if(item.devType==0){
                 _this.totalData.push(item.count);
@@ -186,6 +201,7 @@
               }
               //cam----1
               if(item.devType==1){
+                typeData.push(1);
                 _this.videoData.push(item.count);
                 if(_this.videoData.length>=300){
                   _this.videoData.shift();
@@ -193,6 +209,7 @@
               }
               //spat----3
               if(item.devType==3){
+                typeData.push(3);
                 _this.lightData.push(item.count);
                 if(_this.lightData.length>=300){
                   _this.lightData.shift();
@@ -200,6 +217,7 @@
               }
               //rcu----4
               if(item.devType==4){
+                typeData.push(4);
                 _this.rcuData.push(item.count);
                 if(_this.rcuData.length>=300){
                   _this.rcuData.shift();
@@ -207,15 +225,31 @@
               }
               //rsu----5
               if(item.devType==5){
+                typeData.push(5);
                 _this.rsuData.push(item.count);
                 if(_this.rsuData.length>=300){
                   _this.rsuData.shift();
                 }
               }
-              var option = this.realOption(_this.rsuData,_this.rcuData,_this.videoData,_this.lightData);
-              this.sideRealEcharts.setOption(option);
             })
-
+            typeArray.forEach(item=>{
+              if(typeData.indexOf(item)==-1){
+                if(item==1){
+                  _this.videoData.push(null);
+                }
+                if(item==3){
+                  _this.lightData.push(null);
+                }
+                if(item==4){
+                  _this.rcuData.push(null);
+                }
+                if(item==5){
+                  _this.rsuData.push(null);
+                }
+              }
+            })
+            var option = this.realOption(_this.rsuData,_this.rcuData,_this.videoData,_this.lightData);
+            this.sideRealEcharts.setOption(option);
           },
           onclose(data){
             console.log("结束连接");
@@ -240,7 +274,7 @@
             }else{
               return;
             }
-          },
+          }
 
 
         },
