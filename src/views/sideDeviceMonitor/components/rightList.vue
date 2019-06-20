@@ -8,7 +8,7 @@
         </div>
       </div>
       <div class="side-device-size">
-        <tusvn-map :target-id="'mapMonitor'" ref="tusvnMap1" >
+        <tusvn-map :target-id="'mapMonitor'" ref="tusvnMap1" @mapcomplete="onMapComplete1">
 
         </tusvn-map>
        <!-- <div id="map1" class="side-road-map"></div>-->
@@ -22,7 +22,7 @@
         </div>
       </div>
       <div class="side-device-size">
-        <tusvn-map :target-id="'mapMonitor1'"  ref="tusvnMap2" >
+        <tusvn-map :target-id="'mapMonitor1'"  ref="tusvnMap2" @mapcomplete="onMapComplete2">
 
         </tusvn-map>
         <!--<div id="map2" class="side-road-map"></div>-->
@@ -106,7 +106,7 @@
             // this.getRoadList();
             console.log("onMapComplete1");
             setTimeout(()=>{
-              this.$refs.tusvnMap1.changeRcuId(window.cfg.websocketUrl,item.roadSiderId);
+              this.$refs.tusvnMap1.changeRcuId(window.cfg.websocketUrl,this.roadItem1.camSerialNum);
               this.$refs.tusvnMap1.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
             },2000);
             // this.$refs.tusvnMap1.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
@@ -115,7 +115,7 @@
             // this.getRoadList();
             console.log("onMapComplete2");
             setTimeout(()=> {
-              this.$refs.tusvnMap2.changeRcuId(window.cfg.websocketUrl, item.roadSiderId);
+              this.$refs.tusvnMap2.changeRcuId(window.cfg.websocketUrl, this.roadItem2.camSerialNum);
               this.$refs.tusvnMap2.updateCameraPosition(442483.4140577592, 4427251.954939776, 31.211585511525108, 31.559324326695666, -0.5889099326599347, -0.6520903697733481);
             },2000)
           },
@@ -160,16 +160,16 @@
                     _this.option1.sources[0].src=res.data.rtmp;
                     _this.roadItem1=item;
 //                    _this.initWebSocket1();
-                    _this.$refs.tusvnMap1.changeRcuId(window.cfg.websocketUrl,item.roadSiderId);//2046A1037E1F   item.roadSiderId
-                    _this.$refs.tusvnMap1.updateCameraPosition( 442454.32657890377,4427227.807879115,37.7350947252935, 0.0000028926452461693342, -0.39699074074074336, -0.730706721974606);
+                    // _this.$refs.tusvnMap1.changeRcuId(window.cfg.websocketUrl,item.roadSiderId);//2046A1037E1F   item.roadSiderId
+                    // _this.$refs.tusvnMap1.updateCameraPosition( 442454.32657890377,4427227.807879115,37.7350947252935, 0.0000028926452461693342, -0.39699074074074336, -0.730706721974606);
 //                    console.log("ref------"+ _this.$refs.tusvnMap1);
                   }
                   if(index==1){
                     _this.option2.sources[0].src=res.data.rtmp;
                     _this.roadItem2=item;
 //                    _this.initWebSocket2();
-                    _this.$refs.tusvnMap2.changeRcuId(window.cfg.websocketUrl,item.roadSiderId);
-                    _this.$refs.tusvnMap2.updateCameraPosition( 442454.32657890377,4427227.807879115,37.7350947252935, 0.0000028926452461693342, -0.39699074074074336, -0.730706721974606);
+                    // _this.$refs.tusvnMap2.changeRcuId(window.cfg.websocketUrl,item.roadSiderId);
+                    // _this.$refs.tusvnMap2.updateCameraPosition( 442454.32657890377,4427227.807879115,37.7350947252935, 0.0000028926452461693342, -0.39699074074074336, -0.730706721974606);
 //                    console.log("ref------"+ _this.$refs.tusvnMap1);
                   }
                 })
