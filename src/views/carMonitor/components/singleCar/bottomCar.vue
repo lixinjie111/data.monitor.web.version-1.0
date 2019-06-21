@@ -614,16 +614,13 @@
 
     },
     mounted () {
-
       var _this = this;
-     _this.container = document.getElementById('canvasContainer');
+      _this.container = document.getElementById('canvasContainer');
       //速度和加速度
       _this.speedChart = _this.$echarts.init(document.getElementById('speedChart'));
       _this.accelerateChart = _this.$echarts.init(document.getElementById('accelerateChart'));
-
       _this.initWebSocket();
       _this.realReportWebSocket();
-
     },
     destroyed(){
       //销毁Socket
