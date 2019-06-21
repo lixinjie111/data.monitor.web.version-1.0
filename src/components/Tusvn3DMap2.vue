@@ -566,7 +566,7 @@ export default {
                     person.position.z = 0;
 
 
-                    this.deviceModels[key].texts[p]=text1;
+                    var text1 = this.deviceModels[key].texts[p];
                     this.scene.add(text1);
                     text1.setPositon([0,0,0]);
                     text1.fontface=this.fontface;
