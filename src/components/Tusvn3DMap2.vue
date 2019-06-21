@@ -551,6 +551,35 @@ export default {
         onClose:function(data){
             console.log("结束连接");
         },
+        reset3DMap:function(){
+            for(var key in this.deviceModels){
+                for(let p=0;p<this.deviceModels[key].cars.length;p++)
+                {
+                    let car = this.deviceModels[key].cars[p];
+                    car.position.x = 0;
+                    car.position.y = 0;
+                    car.position.z = 0;
+
+                    let person = this.deviceModels[key].persons[p];
+                    person.position.x = 0;
+                    person.position.y = 0;
+                    person.position.z = 0;
+                }
+        　　}
+            if ('WebSocket' in window) {
+                if(window.WebSocket){
+                    if(this.hostWebsocket!=null)
+                    {
+                        if(this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+                            this.hostWebsocket.close();
+                        }
+                    }
+                    this.hostWebsocket=null;
+                }
+             }else{
+                 console.log("该浏览器不支持websocket");
+             }
+        },
         changeRcuId:function(url,rcuid)
         {
             this.websocketUrl = url;
