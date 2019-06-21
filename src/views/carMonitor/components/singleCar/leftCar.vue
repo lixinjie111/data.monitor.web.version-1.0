@@ -84,7 +84,7 @@
         <span class="distance-detail">行驶开始时间：{{routeInfo.routeStartTime ? $dateUtil.formatTime(routeInfo.routeStartTime) : "--"}}</span>
         <span class="distance-detail">累计行驶时长：{{routeInfo.durationTime ? getRunTime(routeInfo.durationTime) : "--"}}</span>
         <span class="distance-detail">累计行驶里程：{{routeInfo.mileage ? routeInfo.mileage.toFixed(1) : "--"}}km</span>
-        <span class="distance-detail">平均测速：{{routeInfo.avgSpd ? routeInfo.avgSpd.toFixed(1) : "--"}}km/h</span>
+        <span class="distance-detail">平均车速：{{routeInfo.avgSpd ? routeInfo.avgSpd.toFixed(1) : "--"}}km/h</span>
 
     </div>
 
