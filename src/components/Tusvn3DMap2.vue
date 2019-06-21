@@ -505,11 +505,20 @@ export default {
                         car.position.x = 0;
                         car.position.y = 0;
                         car.position.z = 0;
+                    }
 
+                    for(let p=0;p<this.deviceModels[deviceid].persons.length;p++)
+                    {
                         let person = this.deviceModels[deviceid].persons[p];
                         person.position.x = 0;
                         person.position.y = 0;
                         person.position.z = 0;
+                    }
+
+                    for(let p=0;p<this.deviceModels[deviceid].texts.length;p++){
+                        var text1 = this.deviceModels[deviceid].texts[p];
+                        text1.setPositon([0,0,0]);
+                        text1.update();
                     }
                 }
 
@@ -559,17 +568,19 @@ export default {
                     car.position.x = 0;
                     car.position.y = 0;
                     car.position.z = 0;
+                }
 
+                for(let p=0;p<this.deviceModels[key].persons.length;p++)
+                {
                     let person = this.deviceModels[key].persons[p];
                     person.position.x = 0;
                     person.position.y = 0;
                     person.position.z = 0;
+                }
 
-
+                for(let p=0;p<this.deviceModels[key].texts.length;p++){
                     var text1 = this.deviceModels[key].texts[p];
-                    this.scene.add(text1);
                     text1.setPositon([0,0,0]);
-                    text1.fontface=this.fontface;
                     text1.update();
                 }
         　　}
