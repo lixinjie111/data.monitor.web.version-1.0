@@ -90,7 +90,7 @@
         <p><span class="legend-size" style="background: #d3d12d"></span>PER</p>
         <p><span class="legend-size" style="background: #f75b30"></span>RSI</p>
         <p><span class="legend-size" style="background: #6ec9fd"></span>SPAT</p>
-        <p><span class="legend-size" style="background: #41c66d"></span>RSM/RCU</p>
+        <p><span class="legend-size" style="background: #41c66d"></span>RSM</p>
 
       </div>
     </div>

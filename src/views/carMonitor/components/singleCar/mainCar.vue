@@ -18,7 +18,7 @@
         <span class="detail2">{{nowTime}}</span>
       </div>
     </div>
-    <div class="spat-detail">
+    <!--<div class="spat-detail">
       <div class="spat-detail-style">
         <div class="spat-detail-img">
           <img src="@/assets/images/car/turn-yellow.png"/>
@@ -44,7 +44,7 @@
         </div>
         <span class="spat-detail-font spat-detail-color">10</span>
       </div>
-    </div>
+    </div>-->
     <div class="alert-event">
       <div class="event-style" @click="getCloudEvent">
         <img src="@/assets/images/car/car-20.png"/>

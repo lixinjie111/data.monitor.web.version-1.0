@@ -63,7 +63,7 @@
         streamInfo:{},
         timer:{},
         vehicleId: this.$route.params.vehicleId,//车辆id
-        socketPath: 'ws://10.0.1.57:9982/mon',
+       /* socketPath: 'ws://10.0.1.57:9982/mon',*/
         socket:'',
         screenConfig:{
             scrWidth: 270, //屏幕宽 px
@@ -251,7 +251,7 @@
               return;
           }
           // 实例化socket
-          this.socket = new WebSocket(this.socketPath)
+          this.socket = new WebSocket(window.cfg.websocketUrl)
           // 监听socket连接
           this.socket.onopen = this.openSocket
           // 监听socket错误信息
