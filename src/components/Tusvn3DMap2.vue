@@ -564,6 +564,13 @@ export default {
                     person.position.x = 0;
                     person.position.y = 0;
                     person.position.z = 0;
+
+
+                    this.deviceModels[key].texts[p]=text1;
+                    this.scene.add(text1);
+                    text1.setPositon([0,0,0]);
+                    text1.fontface=this.fontface;
+                    text1.update();
                 }
         　　}
             if ('WebSocket' in window) {
