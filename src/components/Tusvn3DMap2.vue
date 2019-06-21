@@ -132,9 +132,9 @@ export default {
             this.models["lamppost_01"].setUpdate(true);
 
             //障碍物
-            this.addModel("traffic_cone","./static/map3d/models/traffic_cone.3ds",442492.797,4427280.995,16);
-            this.models["traffic_cone"].setHeading(30);
-            this.models["traffic_cone"].setUpdate(true);
+            // this.addModel("traffic_cone","./static/map3d/models/traffic_cone.3ds",442492.797,4427280.995,16);
+            // this.models["traffic_cone"].setHeading(30);
+            // this.models["traffic_cone"].setUpdate(true);
 
             //大路灯
             this.addModel("street_lamp_two","./static/map3d/models/street_lamp_two.3ds",442501.99,4427272.65,16);

@@ -157,7 +157,7 @@
         filterData() {
             let _filterData = {};
             for(let attr in this.drivingStatistics) {
-                _filterData[attr] = parseFloat(this.drivingStatistics[attr]).toLocaleString() || '--';
+                _filterData[attr] = parseFloat(this.drivingStatistics[attr]).toFixed(1).toLocaleString() || '--';
             }
             return _filterData;
         }
