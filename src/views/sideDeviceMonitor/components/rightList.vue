@@ -466,7 +466,7 @@
     width:4em;
   }*/
   .vjs-custom-skin>.video-js .vjs-control-bar .vjs-time-control{
-    min-width: 2em!important;
+    min-width: 3.2em!important;
   }
 </style>
 <style lang="scss" scoped>
