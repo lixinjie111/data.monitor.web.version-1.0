@@ -131,7 +131,6 @@
       components:{
         TusvnMap
       },
-
         props:{
           dialogVisible: {
             type: Boolean,
@@ -218,10 +217,13 @@
                 }else{
                   _this.$set(item, 'value', false);
                 }
-                /*_this.flagObj.push(true);*/
-
-                /* item.value=true;*/
               })
+              if(serialNum==""){
+                var options = _this.getPlayerOptions();
+                options.sources[0].src =  "";
+                _this.option =options;
+                _this.$refs.tusvnMap3.initMap();
+              }
             })
           },
           switchChange(item){
@@ -369,6 +371,7 @@
           handleNodeClick(node,resolve){
             //当切换树的时候，设备列表，感知结果进行切换
             this.getDeviceList(node.code);
+            this.getDeviceCountByCity();
           },
           getSideTree(){
             var _this = this;
@@ -387,10 +390,10 @@
                 })
               }
               if(_this.isFirst){
-                _this.provinceCode=_this.selectAddr[0];
+               /* _this.provinceCode=_this.selectAddr[0];*/
                 _this.provinceValue=_this.selectAddr[0];
                 _this.getCitys(_this.provinceCode);
-                _this.cityCode=_this.selectAddr[1];
+               /* _this.cityCode=_this.selectAddr[1];*/
                 _this.cityValue=_this.selectAddr[1];
                 var childrenNodes = this.$refs.tree.children;
                 _this.removeTree(childrenNodes);
@@ -498,13 +501,20 @@
           },
           mapcomplete:function(){
             this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,this.selectedItem.camSerialNum);
-            this.$refs.tusvnMap3.updateCameraPosition(442454.32657890377,4427227.807879115,37.7350947252935, 0.0000028926452461693342, -0.39699074074074336, -0.730706721974606);
+            if(this.selectedItem.roadSiderId=='130101_001'){
+              this.$refs.tusvnMap3.updateCameraPosition( 442486.3454129422,4427261.806106671, 47.90669656890555 , 34.88838511357024, -0.7656910059927339,  2.4898596954809307);
+            }else{
+              this.$refs.tusvnMap3.updateCameraPosition(442454.32657890377,4427227.807879115,37.7350947252935, 0.0000028926452461693342, -0.39699074074074336, -0.730706721974606);
+            }
           }
         },
         watch:{
           dialogVisible(){
             if(this.dialogVisible){
+              this.isFirst=true;
               this.selectAddr = this.selectedItem.path.split("|");
+              this.provinceCode=this.selectAddr[0];
+              this.cityCode=this.selectAddr[1];
              /* this.dialogVisible=true;*/
               //默认选中的
               this.getDeviceList(this.selectedItem.roadSiderId);

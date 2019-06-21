@@ -6,7 +6,11 @@
         <i class="c-dialog-close" @click="closeDialog"></i>
       </div>
       <div class="c-dialog-content">
-        <slot></slot>
+        <div class="c-scroll-wrap">
+          <div class="c-scroll-inner">
+            <slot></slot>
+          </div>
+        </div>
       </div>
     </div>
   </div>

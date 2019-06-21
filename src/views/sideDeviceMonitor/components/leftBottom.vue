@@ -125,7 +125,8 @@
                 symbol: 'none',
                 lineStyle: {
                   color: '#936314',
-                  width: 1
+                  width: 1,
+                  opacity:0.5
                 }
               },
                 {
@@ -136,7 +137,8 @@
                   symbol: 'none',
                   lineStyle: {
                     color: '#2c815f',
-                    width: 1
+                    width: 1,
+                    opacity:0.5
                   }
                 },
                 {
@@ -147,7 +149,8 @@
                   symbol: 'none',
                   lineStyle: {
                     color: '#368099',
-                    width: 1
+                    width: 1,
+                    opacity:0.5
                   }
                 },
                 {
@@ -158,7 +161,8 @@
                   symbol: 'none',
                   lineStyle: {
                     color: '#ff0000',
-                    width: 1
+                    width: 1,
+                    opacity:0.5
                   }
                 }]
             };
@@ -251,7 +255,7 @@
                 }
                 if(item==5){
                   _this.rsuData.push(null);
-                  console.log("rsu的长度------"+_this.rsuData.length)
+                /*  console.log("rsu的长度------"+_this.rsuData.length)*/
                 }
               }
             })

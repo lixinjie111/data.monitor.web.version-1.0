@@ -59,7 +59,8 @@
     <!--v-show="warningData.show"-->
 
     <div class="pre-warning">
-      <div  class="pre-warning-item" v-for="item in event" v-show="item.flag" >
+      <div  class="pre-warning-item" v-for="item in warningList" v-show="item.flag" >
+        <!--ADAS-->
         <div v-show="item.type=='ADAS_1'" class="warning-position" >
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
             <img src="@/assets/images/car/warning/car-1.png"/>
@@ -74,7 +75,7 @@
         </div>
         <div v-show="item.type=='ADAS_2'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/car-2.png"/>
+            <img src="@/assets/images/car/warning/car-2.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
             <p>前车启动预警</p>
@@ -82,7 +83,7 @@
         </div>
         <div v-show="item.type=='ADAS_3'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/car-3.png"/>
+            <img src="@/assets/images/car/warning/car-3.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
             <p>车道偏离预警</p>
@@ -90,12 +91,86 @@
         </div>
         <div v-show="item.type=='ADAS_4'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #fd8610">
-            <img src="@/assets/images/car/car-4.png"/>
+            <img src="@/assets/images/car/warning/car-4.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
             <p>低光照度开灯提醒</p>
           </div>
         </div>
+        <!--V2X-->
+        <div v-show="item.type=='VEHICLE_V2X_1'" class="warning-position">
+          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
+            <img src="@/assets/images/car/car-2.png"/>
+          </div>
+          <div class="pre-warning-style pre-warning-info">
+            <p>前车启动预警</p>
+          </div>
+        </div>
+        <div v-show="item.type=='VEHICLE_V2X_2'" class="warning-position">
+          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
+            <img src="@/assets/images/car/car-5.png"/>
+          </div>
+          <div class="pre-warning-style pre-warning-info">
+            <p>交叉路口碰撞预警</p>
+          </div>
+        </div>
+        <div v-show="item.type=='VEHICLE_V2X_3'" class="warning-position">
+          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
+            <img src="@/assets/images/car/car-6.png"/>
+          </div>
+          <div class="pre-warning-style pre-warning-info">
+            <p>左转辅助</p>
+          </div>
+        </div>
+        <div v-show="item.type=='VEHICLE_V2X_4'" class="warning-position">
+          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
+            <img src="@/assets/images/car/car-7.png"/>
+          </div>
+          <div class="pre-warning-style pre-warning-info">
+            <p>变道预警</p>
+          </div>
+        </div>
+        <div v-show="item.type=='VEHICLE_V2X_8'" class="warning-position">
+          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
+            <img src="@/assets/images/car/car-7.png"/>
+          </div>
+          <div class="pre-warning-style pre-warning-info">
+            <p>变道预警</p>
+          </div>
+        </div>
+        <div v-show="item.type=='VEHICLE_V2X_5'" class="warning-position">
+          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
+            <img src="@/assets/images/car/car-8.png"/>
+          </div>
+          <div class="pre-warning-style pre-warning-info">
+            <p>逆向超车预警</p>
+          </div>
+        </div>
+        <div v-show="item.type=='VEHICLE_V2X_6'" class="warning-position">
+          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
+            <img src="@/assets/images/car/car-9.png"/>
+          </div>
+          <div class="pre-warning-style pre-warning-info">
+            <p>紧急制动预警</p>
+          </div>
+        </div>
+        <div v-show="item.type=='VEHICLE_V2X_7'" class="warning-position">
+          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
+            <img src="@/assets/images/car/car-10.png"/>
+          </div>
+          <div class="pre-warning-style pre-warning-info">
+            <p>紧急车辆预警</p>
+          </div>
+        </div>
+        <div v-show="item.type=='VEHICLE_V2X_9'" class="warning-position">
+          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
+            <img src="@/assets/images/car/car-10.png"/>
+          </div>
+          <div class="pre-warning-style pre-warning-info">
+            <p>车辆失控预警</p>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -684,11 +759,11 @@
         if(type=='CLOUD'){
           this.cloudCount++;
         }
-        console.log("vehicleCount-----"+this.vehicleCount)
         if(warningData.length>0){
           let _attr = _this.i.toString();
           warningData.forEach(item=>{
-            var obj = {type: item.eventType,timer: null, flag: true,id:'type'+i};
+            var dist = parseInt(item.dis);
+            var obj = {type: item.eventType,timer: null, flag: true,id:'type'+i,dist:dist};
             obj.timer=setTimeout(()=>{
               obj.flag=false;
               _this.warningList.forEach(item=>{
@@ -700,7 +775,6 @@
                 this.warningList=[];
               }
             },3000)
-            console.log("obj----"+obj.toString());
             _this.warningList.unshift(obj);
           })
           _this.i++;
@@ -919,7 +993,7 @@
       this.initWebSocket();
       this.initSideWebSocket();
       this.initDeviceWebSocket();
-      /*this.initWarningWebSocket();*/
+      this.initWarningWebSocket();
       this.initLightWebSocket();
     },
     destroyed(){
@@ -928,7 +1002,7 @@
       this.sideWebsocket.close();
       this.deviceWebsocket.close();
       this.lightWebsocket.close();
-     /* this.warningWebsocket.close();*/
+      this.warningWebsocket.close();
     }
   }
 </script>

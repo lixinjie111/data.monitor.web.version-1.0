@@ -2,27 +2,27 @@
   <ul class="c-info-wrap clearfix">
     <li class="c-info-list">
     	<p class="c-info-title">路测点</p>
-    	<p class="c-info-text">{{filterData.sideCount|| '--'}}</p>
+    	<p class="c-info-text">{{responseData.sideCount|| '--'}}</p>
     </li>
     <li class="c-info-list">
     	<p class="c-info-title">RSU</p>
-    	<p class="c-info-text">{{filterData.rsuCount|| '--'}}</p>
+    	<p class="c-info-text">{{responseData.rsuCount|| '--'}}</p>
     </li>
     <li class="c-info-list">
     	<p class="c-info-title">红绿灯</p>
-    	<p class="c-info-text">{{filterData.lightCount|| '--'}}</p>
+    	<p class="c-info-text">{{responseData.lightCount|| '--'}}</p>
     </li>
     <li class="c-info-list">
     	<p class="c-info-title">路侧雷达</p>
-    	<p class="c-info-text">{{filterData.radarCount|| '--'}}</p>
+    	<p class="c-info-text">{{responseData.radarCount|| '--'}}</p>
     </li>
     <li class="c-info-list">
       <p class="c-info-title">RCU</p>
-      <p class="c-info-text">{{filterData.rcuCount|| '--'}}</p>
+      <p class="c-info-text">{{responseData.rcuCount|| '--'}}</p>
     </li>
     <li class="c-info-list">
       <p class="c-info-title">摄像头</p>
-      <p class="c-info-text">{{filterData.videoCount|| '--'}}</p>
+      <p class="c-info-text">{{responseData.videoCount|| '--'}}</p>
     </li>
   </ul>
 </template>
@@ -33,18 +33,16 @@ export default {
 	name: 'LeftTop',
 	data () {
 		return {
-			responseData: {}
+			responseData: {
+        sideCount:'',
+        rsuCount:'',
+        lightCount:'',
+        radarCount:'',
+        rcuCount:'',
+        videoCount:'',
+      }
 		}
 	},
-  computed: {
-    filterData() {
-      let _filterData = {};
-      for(let attr in this.responseData) {
-        _filterData[attr] = parseFloat(this.responseData[attr]).toLocaleString() || '--';
-      }
-      return _filterData;
-    }
-  },
 	mounted() {
 		this.getDevCount();
 	},
@@ -55,22 +53,22 @@ export default {
           var result = res.data;
           result.forEach(function (item) {
             if(item.type==1){
-              _this.responseData.videoCount = item.count;
+              _this.responseData.videoCount = item.count+'';
             }
             if(item.type==2){
-              _this.responseData.radarCount = item.count;
+              _this.responseData.radarCount = item.count+'';
             }
             if(item.type==3){
-              _this.responseData.lightCount = item.count;
+              _this.responseData.lightCount = item.count+'';
             }
             if(item.type==4){
-              _this.responseData.rcuCount = item.count;
+              _this.responseData.rcuCount = item.count+'';
             }
             if(item.type==5){
-              _this.responseData.rsuCount = item.count;
+              _this.responseData.rsuCount = item.count+'';
             }
-            if(item.type==5){
-              _this.responseData.sideCount = item.count;
+            if(item.type==6){
+              _this.responseData.sideCount = item.count+'';
             }
           })
 
