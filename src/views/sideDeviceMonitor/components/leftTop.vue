@@ -1,7 +1,7 @@
 <template>
   <ul class="c-info-wrap clearfix">
     <li class="c-info-list">
-    	<p class="c-info-title">路测点</p>
+    	<p class="c-info-title">路侧点</p>
     	<p class="c-info-text">{{responseData.sideCount|| '--'}}</p>
     </li>
     <li class="c-info-list">

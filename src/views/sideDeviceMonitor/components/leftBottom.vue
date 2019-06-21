@@ -85,7 +85,7 @@
                 lineStyle: {
                   color: 'rgba(55, 186, 123, .2)',
                   width:1,
-                  opacity: 0
+                  opacity: 0.7
                 },
                 areaStyle: {
                   color: 'rgba(55, 186, 123, .2)'
@@ -126,7 +126,7 @@
                 lineStyle: {
                   color: '#936314',
                   width: 1,
-                  opacity:0.5
+                  opacity:0.7
                 }
               },
                 {
@@ -138,7 +138,7 @@
                   lineStyle: {
                     color: '#2c815f',
                     width: 1,
-                    opacity:0.5
+                    opacity:0.7
                   }
                 },
                 {
@@ -150,7 +150,7 @@
                   lineStyle: {
                     color: '#368099',
                     width: 1,
-                    opacity:0.5
+                    opacity:0.7
                   }
                 },
                 {
@@ -162,7 +162,7 @@
                   lineStyle: {
                     color: '#ff0000',
                     width: 1,
-                    opacity:0.5
+                    opacity:0.7
                   }
                 }]
             };

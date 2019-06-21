@@ -180,7 +180,6 @@
               /*'roadSiderId': '130101_001',*/
               'roadSiderId': roadId,
             }).then(res => {
-
               _this.deviceList = res.data;
               var flag=true;
               var serialNum = "";
@@ -190,15 +189,18 @@
                   if(_this.selectedItem.camSerialNum==""){
                     flag=false;
                     //设置默认的选中值
-                    _this.$set(item, 'value', true);
+                    item.value=true;
+                   /* _this.$set(item, 'value', true);*/
                     _this.openVideoList.push(item);
                     serialNum = item.serialNum;
                   }else{
-                    _this.$set(item, 'value', false);
+                    item.value=false;
+                   /* _this.$set(item, 'value', false);*/
                     if(item.serialNum==_this.selectedItem.camSerialNum){
                       flag=false;
                       //设置默认的选中值
-                      _this.$set(item, 'value', true);
+                      item.value=true;
+                     /* _this.$set(item, 'value', true);*/
                       _this.openVideoList.push(item);
                       serialNum = item.serialNum;
                     }
@@ -215,14 +217,15 @@
                     })
                   }
                 }else{
-                  _this.$set(item, 'value', false);
+                  /*_this.$set(item, 'value', false);*/
+                  item.value=false;
                 }
               })
               if(serialNum==""){
                 var options = _this.getPlayerOptions();
                 options.sources[0].src =  "";
                 _this.option =options;
-                _this.$refs.tusvnMap3.initMap();
+                /*_this.$refs.tusvnMap3.initMap();*/
               }
             })
           },
@@ -233,7 +236,19 @@
               _this.$message.error("设备不在线");
               return;
             }
-            item.value=!item.value
+            item.value=!item.value;
+            if(item.value){
+              _this.$nextTick(function () {
+                _this.$set(item, 'value', true);
+              });
+            }
+            if(!item.value){
+              _this.$nextTick(function () {
+                _this.$set(item, 'value', false);
+              });
+            }
+            /*this.$forceUpdate();*/
+            /*console.log("value----"+item.value);*/
             if(item.value){
               //如果开启一个摄像头，则将另一个开启的摄像头关闭
               _this.openVideoList.forEach(function (item1,index) {
@@ -262,6 +277,7 @@
               var options = _this.getPlayerOptions();
               options.sources[0].src =  '';
               _this.option =options;
+             /* _this.$refs.tusvnMap3.initMap();*/
             }
           },
           loadNode(node, resolve){
@@ -751,8 +767,9 @@
       }
       .device-video-style{
         width: 370px;
-        height: 240px;
+      /*  height: 210px;*/
         border:1px solid #5e5970;
+        /*padding:15px 0px;*/
       }
     }
   }
