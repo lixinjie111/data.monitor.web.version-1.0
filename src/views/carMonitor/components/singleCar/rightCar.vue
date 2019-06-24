@@ -67,7 +67,7 @@
             scrWidth: 270, //屏幕宽 px
             scrHeight: 180, //屏幕高 px
             // showHeight: 1800000, //显示高 m
-            showHeight: 200, //显示高 m
+            showHeight: 300, //显示高 m
             meterPerDegree: 108000, //1度=108000 m 固定值
             scalefactor: 0,//一个像素相当于多少度
         },
