@@ -410,22 +410,23 @@
     margin:5%;
     min-width: 270px;
     overflow: hidden;
-    // &:before {
-    //   content: "";
-    //   position: absolute;
-    //   left: 50%;
-    //   bottom: 0;
-    //   width: 40px;
-    //   height: 100%;
-    //   margin-left: -30px;
-    //   background-color: rgba(255, 255, 255, .4);
-    //   transform: translateZ(-200px);
-    //   transform-origin: center center !important;
-    //   // transform: rotateX(45deg);
-    //   // transform-origin: center bottom !important;
-    //   transform-style:preserve-3d;
-    //   perspective: 1000px;
-    // }
+    perspective: 400px;
+    perspective-origin: 50% 50%;
+    &:before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width:50%;
+      height: 2000%;
+      margin-left: -25%;
+      border-left: 1px solid #fff;
+      border-right: 1px solid #fff;
+      // background-color: rgba(255, 255, 255, .2);
+      transform-style:preserve-3d;
+      transform-origin: center bottom;
+      transform: rotateX(70deg);
+    }
   }
 
   .monitor-video{
@@ -457,6 +458,9 @@
     position: absolute;
     left: 0;
     top: 0;
+    // transform-style:preserve-3d;
+    // transform-origin: center bottom;
+    // transform: rotateX(70deg);
   }
   .host-vehicle{
     position: absolute;
