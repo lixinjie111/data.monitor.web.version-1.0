@@ -50,7 +50,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dataMonitor'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/dataMonitor/',
+    assetsPublicPath: './',
     // // Template for index.html
     // index: path.resolve(__dirname, '../dist/index.html'),
 
