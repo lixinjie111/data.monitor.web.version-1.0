@@ -26,14 +26,13 @@
       </div>
     </div>
     <div class="monitor-perception right-title">
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <img src="@/assets/images/car/car-6.png" class="host-vehicle" :style="{left:screenConfig.scrWidth/2-13+'px',top:screenConfig.scrHeight*3/4-10+'px'}"/>
-      <div class="otherCarsContainer">
-        <div class="item" v-for="(carItem,index) in carsDataformate" :style="{left:carItem.Sx+'px',top:carItem.Sy+'px',transform:'rotate('+(carItem.headingAngle-currentCar.headingAngle)+'deg)'}">
-            <img src="@/assets/images/car/car-17.png" class="car-position1"/>
+      <div class="car-container" :style="{transform:'rotate(-'+currentCar.headingAngle+'deg)'}">
+        <!-- <img src="@/assets/images/car/car-11.png" class="host-vehicle" :style="{left:screenConfig.scrWidth/2-10+'px',top:screenConfig.scrHeight*3/4-13+'px'}"/> -->
+        <img src="@/assets/images/car/car-11.png" class="host-vehicle" :style="{transform:'rotate('+currentCar.headingAngle+'deg)'}"/>
+        <div class="otherCarsContainer">
+          <div class="item" v-for="(carItem,index) in carsDataformate" :style="{left:carItem.Sx+'px',top:carItem.Sy+'px',transform:'rotate('+carItem.headingAngle+'deg)'}">
+              <img src="@/assets/images/car/car-17.png" class="car-position1"/>
+          </div>
         </div>
       </div>
     </div>
@@ -63,7 +62,6 @@
         streamInfo:{},
         timer:{},
         vehicleId: this.$route.params.vehicleId,//车辆id
-       /* socketPath: 'ws://10.0.1.57:9982/mon',*/
         socket:'',
         screenConfig:{
             scrWidth: 270, //屏幕宽 px
@@ -281,9 +279,12 @@
 //        console.log("感知事件----")
           var that = this;
           var res = JSON.parse(msg.data);
-          this.currentCar = res.result;
+          this.currentCar = {
+            longitude: res.result.longitude,
+            latitude: res.result.latitude,
+            headingAngle: res.result.headingAngle
+          };
           this.carsData = res.result.liveRadarDetailList ? res.result.liveRadarDetailList : [];
-
       },
       close(){
           console.log('Socket已经关闭');
@@ -293,58 +294,53 @@
        * @param {*} longitude 经度
        * @param {*} latitude 纬度
        */
-      mapPtToScrPt(longitude,latitude){
+      mapPtToScrPt(item){
         /*console.log('当前车的经度：'+this.currentCar.longitude);
         console.log('当前车的维度：'+this.currentCar.latitude);
         console.log("旁车的经度"+longitude);
         console.log("旁车的维度"+latitude);*/
           var srcCenterPtX = this.screenConfig.scrWidth/2,//视图中心点x
               srcCenterPtY = this.screenConfig.scrHeight*3/4,//视图中心点y
+              // srcCenterPtY = this.screenConfig.scrHeight/2,//视图中心点y
               srcMapCenterLng = this.currentCar.longitude, //当前车经度
               srcMapCenterLat = this.currentCar.latitude,//当前车纬度
-              lng1 = longitude, //其他车经度
-              lat1 = latitude; //其他车纬度
+              lng1 = item.longitude, //其他车经度
+              lat1 = item.latitude; //其他车纬度
 
-          //当前车是否偏移中心点  假设在3/4高度处
-          // var movedMapPt = this.movePt(0,this.screenConfig.scrHeight/4,longitude,latitude);
-          // var srcMapCenterLng = movedMapPt.lng,
-          //     srcMapCenterLat = movedMapPt.lat;
+          //根据比例尺1像素=多少度，计算出其他车相对于中心点的偏移量(像素值)
+          // console.log('比例尺：',this.screenConfig.scalefactor*270*108000)
+          // console.log('srcCenterPtX',srcCenterPtX,'srcCenterPtY',srcCenterPtY)
 
-          //根据比例尺1像素=多少度，计算出其他车相对于中心点的偏移量
           var Ssx = (lng1 - srcMapCenterLng)/this.screenConfig.scalefactor,
-              Ssy = (lat1 - srcMapCenterLat)/this.screenConfig.scalefactor;
-              // console.log('Ssx',Ssx,'Ssy',Ssy)
-          //判断是否需要旋转坐标
-          if(this.currentCar.headingAngle != 0){
-              var rotatedData = this.rotateCoordinateAxis(Ssx,Ssy,this.currentCar.headingAngle);
-              Ssx = rotatedData.s;
-              Ssy = rotatedData.t;
-          }
-          var Sx = srcCenterPtX - Ssx,
-              Sy = srcCenterPtY + Ssy;
-          // console.log(this.currentCar.longitude, this.currentCar.latitude);
-          // console.log('Ssx',lng1 - srcMapCenterLng,'Ssy',lat1 - srcMapCenterLat);
-          // console.log('Sx',Sx,'Sy',Sy);
+              Ssy = (lat1 - srcMapCenterLat)/this.screenConfig.scalefactor,
+              Sx = srcCenterPtX + Ssx,
+              Sy = srcCenterPtY - Ssy;
 
-          //居中，减去水滴icon的宽高的一半
-          // Sx = Sx-8;
-          // Sy = Sy-12;
+              // console.log('SX',Ssx,'Sy',Ssy)
+
+          //判断是否需要旋转坐标
+          // if(this.currentCar.headingAngle != 0){
+          //     //var rotatedData = this.rotateCoordinateAxis(Sx,Sy,this.currentCar.headingAngle);
+          //     var rotatedData = this.rotateCoordinateAxis(Ssx,Ssy,this.currentCar.headingAngle);
+          //     Sx = srcCenterPtX + rotatedData.s;
+          //     Sy = srcCenterPtY + rotatedData.t;
+          // }
           return {
-              Sx:Sx,
-              Sy:Sy
+              Sx: parseInt(Sx),
+              Sy: parseInt(Sy)
           };
       },
       //旋转坐标
       rotateCoordinateAxis(x,y,angel){
-          var theta = angel*2*Math.PI/360;
-          // console.log('theta',theta);
-          //逆时针变换公式
-          var s = x*Math.cos(theta) + y*Math.sin(theta),
-              t = y*Math.cos(theta) - x*Math.sin(theta);
-          return {
-              s:s,
-              t:t
-          }
+        var theta = angel * Math.PI / 180;
+        console.log('theta',theta);
+        //逆时针变换公式
+        var s = x * Math.cos(angel) + y * Math.sin(angel),
+            t = y * Math.cos(angel) - x * Math.sin(angel);
+        return {
+            s:s,
+            t:t
+        }
       },
       /**
        * movePt 平移坐标
@@ -380,15 +376,9 @@
     computed:{
       carsDataformate(){
           var that = this;
-          // console.log(this.carsData.length);
           if(this.carsData && this.carsData.length > 0) {
             var carsDataformate = this.carsData.map(function(item,index,self){
-//              console.log("经度---"+item.longitude+"维度"+item.latitude)
-                var formateItem = that.mapPtToScrPt(item.longitude,item.latitude);
-               /* //模拟动态数据
-                var numx = Math.random()*100,
-                    numy = Math.random()*100;
-  */
+                var formateItem = that.mapPtToScrPt(item);
                 item.Sx = formateItem.Sx;
                 item.Sy = formateItem.Sy;
                 return item;
@@ -411,7 +401,7 @@
     display: none;
   }
 </style>
-<style scoped>
+<style scoped lang="scss">
   .monitor-right{
     width: 300px;
     min-width: 200px;
@@ -424,7 +414,25 @@
     margin:5%;
     min-width: 270px;
     overflow: hidden;
+    perspective: 400px;
+    perspective-origin: 50% 50%;
+    &:before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width:50%;
+      height: 2000%;
+      margin-left: -25%;
+      border-left: 1px solid #fff;
+      border-right: 1px solid #fff;
+      // background-color: rgba(255, 255, 255, .2);
+      transform-style:preserve-3d;
+      transform-origin: center bottom;
+      transform: rotateX(70deg);
+    }
   }
+
   .monitor-video{
     margin-left:auto;
     margin-right: auto;
@@ -432,58 +440,18 @@
     height:180px;
     border:1px solid #402800
   }
-
-  .monitor-perception > span:nth-child(1){
+  .car-container {
     position: absolute;
-    left: 0px;
-    top: 0px;
-    padding: 7px;
-    border-style: solid;
-    border-color: #8e5a00;
-    border-width: 0px;
-    box-shadow: -1px -1px 0px 0px #8e5a00;
-  }
-  .monitor-perception > span:nth-child(2){
-    position: absolute;
-    right: 0px;
-    top: 0px;
-    padding: 7px;
-    border-style: solid;
-    border-color: #8e5a00;
-    border-width: 0px;
-    box-shadow: 1px -1px 0px 0px #8e5a00;
-  }
-  .monitor-perception > span:nth-child(3){
-    position: absolute;
-    right: 0px;
-    bottom: 0px;
-    padding: 7px;
-    border-style: solid;
-    border-color: #8e5a00;
-    border-width: 0px;
-    box-shadow: 1px 1px 0px 0px #8e5a00;
-  }
-  .monitor-perception> span:nth-child(4){
-    position: absolute;
-    left: 0px;
-    bottom: 0px;
-    padding: 7px;
-    border-style: solid;
-    border-color: #8e5a00;
-    border-width:0px;
-    box-shadow: -1px 1px 0px 0px #8e5a00;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    transform-origin: center 75% !important;
   }
   .drive-container{
     width: 270px;
     height: 250px;
     margin-left:5%;
-  }
-  .car-position{
-    position: absolute;
-    left: 124px;
-    top: 145px;
-    width: 22px;
-    transform: rotate(-90deg);
   }
   .right-title{
     margin-top: 40px!important;
@@ -494,13 +462,19 @@
     position: absolute;
     left: 0;
     top: 0;
+    // transform-style:preserve-3d;
+    // transform-origin: center bottom;
+    // transform: rotateX(70deg);
   }
   .host-vehicle{
     position: absolute;
+    left: 50%;
+    top: 75%;
+    margin: -13px 0 0 -10px;
     z-index: 2;
-    width: 26px;
-    height: 20px;
-    transform:rotate(-90deg);
+    width: 20px;
+    height: 26px;
+    transform-origin: center center !important;
   }
   .item{
     position: absolute;
@@ -508,10 +482,24 @@
     width: 16px;
     height: 24px;
     margin: -12px 0 0 -8px;
+    transform-origin: center center !important;
   }
   .car-position1{
     width: 16px;
     height: 24px;
   }
-
+  .platNo {
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform:translate(-50%, 0);
+    font-size: 10px;
+    line-height: 16px;
+    padding: 0 5px;
+    border-radius: 4px;
+    background-color: rgba(55, 186, 123, .2);
+    text-align: center;
+    letter-spacing: 0;
+    color: #ccc;
+  }
 </style>
