@@ -801,7 +801,7 @@
           if(type=='VEHICLE'){
 
             warningData.forEach(item=>{
-              console.log("eventType========"+item.eventType);
+              // console.log("eventType========"+item.eventType);
               var dist = parseInt(item.dis);
               var obj = {type: item.eventType,timer: null, flag: true,dist:dist};
               obj.timer=setTimeout(()=>{

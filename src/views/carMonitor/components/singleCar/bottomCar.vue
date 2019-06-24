@@ -194,7 +194,9 @@
             },
             axisLabel:{
               color:'#918d84'
-            }
+            },
+            min: 0,
+            max: 130
           },
           series: [
             {
@@ -369,7 +371,7 @@
                 }
               }
           });
-
+          // console.log("速度： "+speed, "加速度： "+acceleration);
           this.xData = this.formateDate(gpsTime, 5);
           //对线的处理
           this.getSpeedChart();
