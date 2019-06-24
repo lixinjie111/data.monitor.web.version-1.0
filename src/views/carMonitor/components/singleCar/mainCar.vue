@@ -745,7 +745,7 @@
         _this.warningWebsocket.onopen = _this.onWarningOpen;
       },
       onWarningMessage(mesasge){
-        console.log("时间----"+new Date().getTime())
+        // console.log("时间----"+new Date().getTime())
         var _this=this;
         /*if(this.i>4){
           return;
