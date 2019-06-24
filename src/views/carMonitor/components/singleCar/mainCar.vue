@@ -1096,11 +1096,11 @@
       this.distanceMap.add(this.marker);*/
 
 
-      /*this.initWebSocket();
+      this.initWebSocket();
       this.initSideWebSocket();
       this.initDeviceWebSocket();
-      this.initLightWebSocket();*/
       this.initWarningWebSocket();
+      this.initLightWebSocket();
     },
     destroyed(){
       //销毁Socket
