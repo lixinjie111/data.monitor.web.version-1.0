@@ -14,6 +14,10 @@
         您的浏览器不支持 video 标签。
       </video>-->
       <video-player class="vjs-custom-skin" :options="playerOptions"></video-player>
+      <div class="stop-style" v-show="isStop">
+        <img src="@/assets/images/car/stop.png"/>
+        <p>无数据提示</p>
+      </div>
       <!--<div id="cmsplayer" style="width:100%;height:100%"></div>-->
     </div>
     <p class="monitor-title right-title">感知数据</p>
@@ -34,6 +38,10 @@
               <img src="@/assets/images/car/car-17.png" class="car-position1"/>
           </div>
         </div>
+      </div>
+      <div class="stop-style" v-show="isStop">
+        <img src="@/assets/images/car/stop.png"/>
+        <p>无数据提示</p>
       </div>
     </div>
     <p class="monitor-title right-title">行车日历</p>
@@ -97,8 +105,22 @@
         }
       }
     },
+    props:{
+      isStop:{
+        type:Boolean,
+        default:false
+      }
+    },
     created() {
       this.screenConfig.scalefactor = this.screenConfig.showHeight/(this.screenConfig.scrHeight*this.screenConfig.meterPerDegree);
+    },
+    watch:{
+      isStop(oldValue,newValue){
+        if(this.isStop){
+          this.playerOptions.sources[0].src='';
+          this.carsDataformate=[];
+        }
+      }
     },
     methods: {
       getDriveCalendar(){
@@ -365,7 +387,7 @@
     mounted () {
       this.getDriveCalendar();
       this.getDeviceInfo();
-     /* this.getStream();*/
+      this.getStream();
       this.initSocket();
     },
     beforeDestroy(){
@@ -402,6 +424,26 @@
   }
 </style>
 <style scoped lang="scss">
+  @import "@/assets/scss/theme.scss";
+  .stop-style{
+    background: #333;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    z-index: 3;
+    @include layoutMode();
+    img{
+      display: block;
+    }
+    p{
+      letter-spacing: 4px;
+      color: #666666;
+      font-size: 18px;
+    }
+  }
+
   .monitor-right{
     width: 300px;
     min-width: 200px;
@@ -438,7 +480,8 @@
     margin-right: auto;
     width:270px;
     height:180px;
-    border:1px solid #402800
+    border:1px solid #402800;
+    position: relative;
   }
   .car-container {
     position: absolute;

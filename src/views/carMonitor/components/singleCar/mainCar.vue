@@ -1,6 +1,6 @@
 <template>
   <div class="monitor-traffic">
-    <div class="travel-detail">
+    <div class="travel-detail" v-show="!isStop">
       <div class="detail1">
         <span>{{realData.longitude? realData.longitude.toFixed(8):'--'}}</span>
         <span class="detail2">E</span>
@@ -215,7 +215,7 @@
     <div class="real-traffic" id="realTraffic">
 
     </div>
-    <div class="travel-time" >
+    <div class="travel-time" v-show="!isStop">
       <span></span>
       <span></span>
       <span></span>
@@ -323,6 +323,10 @@
       },
       routeStartTime:{
         type:String
+      },
+      isStop:{
+        type:Boolean,
+        default:false
       }
     },
     computed:{
@@ -801,7 +805,6 @@
           if(type=='VEHICLE'){
 
             warningData.forEach(item=>{
-              console.log("eventType========"+item.eventType);
               var dist = parseInt(item.dis);
               var obj = {type: item.eventType,timer: null, flag: true,dist:dist};
               obj.timer=setTimeout(()=>{
@@ -819,13 +822,15 @@
             })
           }
           if(type=='CLOUD'){
-            let vehicleId = json.result.vehicleId;
+            let eventType = json.result.eventType;
             //如果发过来的数据存在，则进行计数,不存在的如果3s消失
             if(_this.event.length>0){
               _this.event.forEach(item=>{
+                console.log(item.uuid+"-----uuid")
+                console.log(item.eventType+"-----eventType")
                 let flag=false;
                 warningData.forEach(item1=>{
-                  if(item.vehicleId==vehicleId&&item.type==item1.eventType){
+                  if(item.uuid==item1.uuid){
                     flag=true;
                   }
                 });
@@ -847,41 +852,31 @@
               let obj = {};
               if(_this.event.length>0){
                 _this.event.forEach(item1=>{
-                  if(item1.vehicleId==vehicleId&&item.type==item1.eventType){
+                  if(item.uuid==item1.uuid){
                     flag= false;
                   }
                 })
                 //如果不存在，将车辆信息存储起来
                 if(flag){
-                  /*_this.$set(obj,'vehicleId',item.vehicleId);
-                  _this.$set(obj,'count',1);
-                  _this.$set(obj,'timer',null);
-                  _this.$set(obj,'flag',true);
-                  _this.$set(obj,'type',item.type);*/
-                  obj.vehicleId=vehicleId;
                   obj.count=1;
                   obj.timer=setTimeout(()=>{
                     obj.flag=false;
 //                console.log('我要消失了====='+item.vehicleId);
                   },3000);
                   obj.flag=true;
-                  obj.type=item.eventType
+                  obj.type=eventType;
+                  obj.uuid = item.uuid;
                 }
                 _this.event.unshift(obj);
               }else {
-                /*_this.$set(obj,'vehicleId',item.vehicleId);
-                _this.$set(obj,'count',1);
-                _this.$set(obj,'timer',null);
-                _this.$set(obj,'flag',true);
-                _this.$set(obj,'type',item.type);*/
-                obj.vehicleId=vehicleId;
                 obj.count=1;
                 obj.timer=setTimeout(()=>{
                   obj.flag=false;
 //              console.log('我要消失了===='+item.vehicleId);
                 },3000);
                 obj.flag=true;
-                obj.type=item.eventType
+                obj.type=eventType;
+                obj.uuid = item.uuid;
                 _this.event.unshift(obj);
               }
             });
@@ -909,7 +904,7 @@
         if(window.WebSocket){
           if(_this.warningWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
             _this.warningWebsocket.send(msg); //send()发送消息
-            console.log("已发送消息:"+ msg);
+            console.log("warning已发送消息:"+ msg);
           }
         }else{
           return;
@@ -991,7 +986,7 @@
       },2000);*/
       //v2v
       //存储发生的事件
-     _this.event=[];
+     /*_this.event=[];
       var data = [[{'vehicleId':'vehicleId1','type':'ADAS_1'},{'vehicleId':'vehicleId2','type':'ADAS_2'}],[{'vehicleId':'vehicleId1','type':'ADAS_1'}],[{'vehicleId':'vehicleId1','type':'ADAS_1'}],[{'vehicleId':'vehicleId1','type':'ADAS_1'}]];
       var time = setInterval(()=>{
         if(i>3){
@@ -1017,7 +1012,7 @@
                 item.flag = false;//控制隐藏
 //                console.log('如果存在，更新定时器'+item.count)
               },3000)
-            }/*else{
+            }/!*else{
               //如果不存在
               if(item.count<2){
                 console.log('i====='+i);
@@ -1029,7 +1024,7 @@
               }else{
                 item.flag = false;
               }
-            }*/
+            }*!/
           })
         }
         //新推过来的数据中有新发生的事件，进行保存开始计时
@@ -1044,11 +1039,11 @@
             })
             //如果不存在，将车辆信息存储起来
             if(flag){
-              /*_this.$set(obj,'vehicleId',item.vehicleId);
+              /!*_this.$set(obj,'vehicleId',item.vehicleId);
               _this.$set(obj,'count',1);
               _this.$set(obj,'timer',null);
               _this.$set(obj,'flag',true);
-              _this.$set(obj,'type',item.type);*/
+              _this.$set(obj,'type',item.type);*!/
               obj.vehicleId=item.vehicleId;
               obj.count=1;
               obj.timer=setTimeout(()=>{
@@ -1060,11 +1055,11 @@
             }
             _this.event.unshift(obj);
           }else {
-            /*_this.$set(obj,'vehicleId',item.vehicleId);
+            /!*_this.$set(obj,'vehicleId',item.vehicleId);
             _this.$set(obj,'count',1);
             _this.$set(obj,'timer',null);
             _this.$set(obj,'flag',true);
-            _this.$set(obj,'type',item.type);*/
+            _this.$set(obj,'type',item.type);*!/
             obj.vehicleId=item.vehicleId;
             obj.count=1;
             obj.timer=setTimeout(()=>{
@@ -1077,7 +1072,7 @@
           }
         });
         i++;
-      },1000)
+      },1000)*/
 
       this.distanceMap = new AMap.Map("realTraffic", {
         center: [116.482362,39.997718],
@@ -1101,11 +1096,11 @@
       this.distanceMap.add(this.marker);*/
 
 
-      this.initWebSocket();
+      /*this.initWebSocket();
       this.initSideWebSocket();
       this.initDeviceWebSocket();
+      this.initLightWebSocket();*/
       this.initWarningWebSocket();
-      this.initLightWebSocket();
     },
     destroyed(){
       //销毁Socket
