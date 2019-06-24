@@ -209,6 +209,10 @@
           'vehicleId': this.vehicleId,
         }).then(res => {
           this.liveDeviceInfo = res.liveDeviceData;
+          if(this.liveDeviceInfo.serialNum==''){
+            this.playerOptions.sources[0].src='';
+            return;
+          }
           this.getStream();
         });
       },
@@ -306,7 +310,7 @@
           //根据比例尺1像素=多少度，计算出其他车相对于中心点的偏移量(像素值)
           // console.log('比例尺：',this.screenConfig.scalefactor*270*108000)
           // console.log('srcCenterPtX',srcCenterPtX,'srcCenterPtY',srcCenterPtY)
-            
+
           var Ssx = (lng1 - srcMapCenterLng)/this.screenConfig.scalefactor,
               Ssy = (lat1 - srcMapCenterLat)/this.screenConfig.scalefactor,
               Sx = srcCenterPtX + Ssx,

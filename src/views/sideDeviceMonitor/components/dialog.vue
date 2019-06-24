@@ -57,7 +57,7 @@
             <div class="device-list-style">
               <div class="table-header-group">
                 <ul class="table-row">
-                  <li class="table-cell device-num">设备编号</li>
+                  <li class="table-cell device-num" style="text-align: center">设备编号</li>
                   <li class="table-cell device-style">联网状态</li>
                   <li class="table-cell device-style">开启监控</li>
                 </ul>
@@ -125,7 +125,9 @@
               selectAddr:[],//第一次默认选中的地址
               isFirst:true,//第一次展开，
               roadDevicePoint:{},
-              time:''
+              time:'',
+              serialNum:'',
+              mapInit:false
             }
         },
       components:{
@@ -180,49 +182,64 @@
               /*'roadSiderId': '130101_001',*/
               'roadSiderId': roadId,
             }).then(res => {
-
               _this.deviceList = res.data;
               var flag=true;
-              var serialNum = "";
               _this.deviceList.forEach(function (item, index) {
                 //第一次默认并且是摄像头而且在线设置其打开状态
                 if(flag&&item.deviceType=='N'&&item.workStatus==1){
                   if(_this.selectedItem.camSerialNum==""){
                     flag=false;
                     //设置默认的选中值
-                    _this.$set(item, 'value', true);
+                    item.value=true;
+                   /* _this.$set(item, 'value', true);*/
                     _this.openVideoList.push(item);
-                    serialNum = item.serialNum;
+                    _this.serialNum = item.serialNum;
                   }else{
-                    _this.$set(item, 'value', false);
+                    item.value=false;
+                   /* _this.$set(item, 'value', false);*/
                     if(item.serialNum==_this.selectedItem.camSerialNum){
                       flag=false;
                       //设置默认的选中值
-                      _this.$set(item, 'value', true);
+                      item.value=true;
+                     /* _this.$set(item, 'value', true);*/
                       _this.openVideoList.push(item);
-                      serialNum = item.serialNum;
+                      _this.serialNum = item.serialNum;
                     }
                   }
-                  if(serialNum!=""){
+                  if(_this.serialNum!=""){
                     getVideoByNum({
                       "protocal": 1,
                       /*"serialNum": "3402000000132000001401"*/
-                      "serialNum": serialNum
+                      "serialNum": _this.serialNum
                     }).then(res => {
                       var options = _this.getPlayerOptions();
                       options.sources[0].src =  res.data.rtmp;
                       _this.option =options;
                     })
+
+                    //切换路侧点时，重新切换3D地图
+                    //第一次地图加载后调整位置即可
+                    if(!_this.mapInit){
+                      _this.$refs.tusvnMap3.reset3DMap();
+                      _this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,item.serialNum);
+                      if(_this.selectedItem.roadSiderId=='130101_001'){
+                        _this.$refs.tusvnMap3.updateCameraPosition( 442486.3454129422,4427261.806106671, 47.90669656890555 , 34.88838511357024, -0.7656910059927339,  2.4898596954809307);
+                      }else{
+                        _this.$refs.tusvnMap3.updateCameraPosition(442454.32657890377,4427227.807879115,37.7350947252935, 0.0000028926452461693342, -0.39699074074074336, -0.730706721974606);
+                      }
+                    }
+
                   }
                 }else{
-                  _this.$set(item, 'value', false);
+                  /*_this.$set(item, 'value', false);*/
+                  item.value=false;
                 }
               })
-              if(serialNum==""){
+              if(_this.serialNum==""){
                 var options = _this.getPlayerOptions();
                 options.sources[0].src =  "";
                 _this.option =options;
-                _this.$refs.tusvnMap3.initMap();
+                _this.$refs.tusvnMap3.reset3DMap();
               }
             })
           },
@@ -233,7 +250,19 @@
               _this.$message.error("设备不在线");
               return;
             }
-            item.value=!item.value
+            item.value=!item.value;
+            if(item.value){
+              _this.$nextTick(function () {
+                _this.$set(item, 'value', true);
+              });
+            }
+            if(!item.value){
+              _this.$nextTick(function () {
+                _this.$set(item, 'value', false);
+              });
+            }
+            /*this.$forceUpdate();*/
+            /*console.log("value----"+item.value);*/
             if(item.value){
               //如果开启一个摄像头，则将另一个开启的摄像头关闭
               _this.openVideoList.forEach(function (item1,index) {
@@ -257,11 +286,20 @@
                 options.sources[0].src =  res.data.rtmp;
                 _this.option =options;
               })
+              //选中后重新请求
+              _this.$refs.tusvnMap3.reset3DMap();
+              this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,item.serialNum);
+              if(this.selectedItem.roadSiderId=='130101_001'){
+                this.$refs.tusvnMap3.updateCameraPosition( 442486.3454129422,4427261.806106671, 47.90669656890555 , 34.88838511357024, -0.7656910059927339,  2.4898596954809307);
+              }else{
+                this.$refs.tusvnMap3.updateCameraPosition(442454.32657890377,4427227.807879115,37.7350947252935, 0.0000028926452461693342, -0.39699074074074336, -0.730706721974606);
+              }
 
             }else{
               var options = _this.getPlayerOptions();
               options.sources[0].src =  '';
               _this.option =options;
+              _this.$refs.tusvnMap3.reset3DMap();
             }
           },
           loadNode(node, resolve){
@@ -370,6 +408,7 @@
           },
           handleNodeClick(node,resolve){
             //当切换树的时候，设备列表，感知结果进行切换
+            this.serialNum="";
             this.getDeviceList(node.code);
             this.getDeviceCountByCity();
           },
@@ -500,12 +539,17 @@
             this.time = time;
           },
           mapcomplete:function(){
-            this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,this.selectedItem.camSerialNum);
+            this.mapInit=true;
             if(this.selectedItem.roadSiderId=='130101_001'){
               this.$refs.tusvnMap3.updateCameraPosition( 442486.3454129422,4427261.806106671, 47.90669656890555 , 34.88838511357024, -0.7656910059927339,  2.4898596954809307);
             }else{
               this.$refs.tusvnMap3.updateCameraPosition(442454.32657890377,4427227.807879115,37.7350947252935, 0.0000028926452461693342, -0.39699074074074336, -0.730706721974606);
             }
+
+              if(this.serialNum!=""){
+                this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,this.selectedItem.camSerialNum);
+              }
+
           }
         },
         watch:{
@@ -520,7 +564,6 @@
               this.getDeviceList(this.selectedItem.roadSiderId);
               this.getSideTree();
               this.getDeviceCountByCity();
-
             }
           }
         },
@@ -657,6 +700,7 @@
       left: 296px;
       bottom: 0!important;
       right: 0;
+      background: #000;
       .time-style{
         position: absolute;
         top: 20px;
@@ -718,6 +762,9 @@
           }
           .device-num{
             width:40%;
+            text-align: left;
+            box-sizing: border-box;
+            padding:0px 15px;
           }
           .device-style{
             width:30%;
@@ -751,8 +798,9 @@
       }
       .device-video-style{
         width: 370px;
-        height: 240px;
+      /*  height: 210px;*/
         border:1px solid #5e5970;
+        /*padding:15px 0px;*/
       }
     }
   }

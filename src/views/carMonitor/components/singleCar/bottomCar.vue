@@ -90,7 +90,7 @@
         <p><span class="legend-size" style="background: #d3d12d"></span>PER</p>
         <p><span class="legend-size" style="background: #f75b30"></span>RSI</p>
         <p><span class="legend-size" style="background: #6ec9fd"></span>SPAT</p>
-        <p><span class="legend-size" style="background: #41c66d"></span>RSM/RCU</p>
+        <p><span class="legend-size" style="background: #41c66d"></span>RSM</p>
 
       </div>
     </div>
@@ -614,16 +614,13 @@
 
     },
     mounted () {
-
       var _this = this;
-     _this.container = document.getElementById('canvasContainer');
+      _this.container = document.getElementById('canvasContainer');
       //速度和加速度
       _this.speedChart = _this.$echarts.init(document.getElementById('speedChart'));
       _this.accelerateChart = _this.$echarts.init(document.getElementById('accelerateChart'));
-
       _this.initWebSocket();
       _this.realReportWebSocket();
-
     },
     destroyed(){
       //销毁Socket
