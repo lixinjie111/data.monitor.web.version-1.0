@@ -18,7 +18,7 @@
         <span class="detail2">{{nowTime}}</span>
       </div>
     </div>
-    <!--<div class="spat-detail">
+    <div class="spat-detail">
       <div class="spat-detail-style">
         <div class="spat-detail-img">
           <img src="@/assets/images/car/turn-yellow.png"/>
@@ -44,7 +44,7 @@
         </div>
         <span class="spat-detail-font spat-detail-color">10</span>
       </div>
-    </div>-->
+    </div>
     <div class="alert-event">
       <div class="event-style" @click="getCloudEvent">
         <img src="@/assets/images/car/car-20.png"/>
@@ -98,79 +98,117 @@
           </div>
         </div>
         <!--V2X-->
-        <div v-show="item.type=='VEHICLE_V2X_1'" class="warning-position">
+        <div v-show="item.type=='V2X_1'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/car-2.png"/>
+            <img src="@/assets/images/car/warning/car-2.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
-            <p>前车启动预警</p>
+            <p>前向碰撞预警</p>
           </div>
         </div>
-        <div v-show="item.type=='VEHICLE_V2X_2'" class="warning-position">
+        <div v-show="item.type=='V2X_2'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/car-5.png"/>
+            <img src="@/assets/images/car/warning/car-5.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
             <p>交叉路口碰撞预警</p>
           </div>
         </div>
-        <div v-show="item.type=='VEHICLE_V2X_3'" class="warning-position">
+        <div v-show="item.type=='V2X_3'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/car-6.png"/>
+            <img src="@/assets/images/car/warning/car-6.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
             <p>左转辅助</p>
           </div>
         </div>
-        <div v-show="item.type=='VEHICLE_V2X_4'" class="warning-position">
+        <div v-show="item.type=='V2X_4'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/car-7.png"/>
+            <img src="@/assets/images/car/warning/car-7.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
             <p>变道预警</p>
           </div>
         </div>
-        <div v-show="item.type=='VEHICLE_V2X_8'" class="warning-position">
+        <div v-show="item.type=='V2X_5'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/car-7.png"/>
-          </div>
-          <div class="pre-warning-style pre-warning-info">
-            <p>变道预警</p>
-          </div>
-        </div>
-        <div v-show="item.type=='VEHICLE_V2X_5'" class="warning-position">
-          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/car-8.png"/>
+            <img src="@/assets/images/car/warning/car-8.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
             <p>逆向超车预警</p>
           </div>
         </div>
-        <div v-show="item.type=='VEHICLE_V2X_6'" class="warning-position">
+        <div v-show="item.type=='V2X_6'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/car-9.png"/>
+            <img src="@/assets/images/car/warning/car-9.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
             <p>紧急制动预警</p>
           </div>
         </div>
-        <div v-show="item.type=='VEHICLE_V2X_7'" class="warning-position">
+
+        <div v-show="item.type=='V2X_9'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/car-10.png"/>
+            <img src="@/assets/images/car/warning/car-10.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
             <p>紧急车辆预警</p>
           </div>
         </div>
-        <div v-show="item.type=='VEHICLE_V2X_9'" class="warning-position">
+        <div v-show="item.type=='V2X_10'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/car-10.png"/>
+            <img src="@/assets/images/car/warning/car-7.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
-            <p>车辆失控预警</p>
+            <p>盲区提醒</p>
+          </div>
+        </div>
+        <div v-show="item.type=='V2X_12'" class="warning-position">
+          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
+            <img src="@/assets/images/car/warning/car-10.png"/>
+          </div>
+          <div class="pre-warning-style pre-warning-info">
+            <p>路侧告警</p>
           </div>
         </div>
 
+        <!--云下发-->
+        <!--道路打滑-->
+        <div v-show="item.type=='ICING'" class="warning-position">
+          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
+            <img src="@/assets/images/car/warning/car-11.png"/>
+          </div>
+          <div class="pre-warning-style pre-warning-info">
+            <p>道路打滑</p>
+          </div>
+        </div>
+        <!--道路施工-->
+        <div v-show="item.type=='ROADWORK'" class="warning-position">
+          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
+            <img src="@/assets/images/car/warning/car-12.png"/>
+          </div>
+          <div class="pre-warning-style pre-warning-info">
+            <p>道路施工</p>
+          </div>
+        </div>
+        <!--障碍物-->
+        <div v-show="item.type=='OBSTACLESAHEAD'" class="warning-position">
+          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
+            <img src="@/assets/images/car/warning/car-13.png"/>
+          </div>
+          <div class="pre-warning-style pre-warning-info">
+            <p>障碍物</p>
+          </div>
+        </div>
+        <!--公交车专用道-->
+        <div v-show="item.type=='BUSLANE'" class="warning-position">
+          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
+            <img src="@/assets/images/car/warning/car-14.png"/>
+          </div>
+          <div class="pre-warning-style pre-warning-info">
+            <p>公交车专用道</p>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -745,7 +783,7 @@
         _this.warningWebsocket.onopen = _this.onWarningOpen;
       },
       onWarningMessage(mesasge){
-        console.log("时间----"+new Date().getTime())
+//        console.log("时间----"+new Date().getTime())
         var _this=this;
         /*if(this.i>4){
           return;
@@ -760,24 +798,97 @@
           this.cloudCount++;
         }
         if(warningData.length>0){
-          let _attr = _this.i.toString();
-          warningData.forEach(item=>{
-            var dist = parseInt(item.dis);
-            var obj = {type: item.eventType,timer: null, flag: true,id:'type'+i,dist:dist};
-            obj.timer=setTimeout(()=>{
-              obj.flag=false;
-              _this.warningList.forEach(item=>{
-                if(item.flag){
-                  _this.isAllClear=true;
+          if(type=='VEHICLE'){
+
+            warningData.forEach(item=>{
+              console.log("eventType========"+item.eventType);
+              var dist = parseInt(item.dis);
+              var obj = {type: item.eventType,timer: null, flag: true,dist:dist};
+              obj.timer=setTimeout(()=>{
+                obj.flag=false;
+                _this.warningList.forEach(item=>{
+                  if(item.flag){
+                    _this.isAllClear=true;
+                  }
+                })
+                if(!_this.isAllClear){
+                  this.warningList=[];
+                }
+              },3000)
+              _this.warningList.unshift(obj);
+            })
+          }
+          if(type=='CLOUD'){
+            let vehicleId = json.result.vehicleId;
+            //如果发过来的数据存在，则进行计数,不存在的如果3s消失
+            if(_this.event.length>0){
+              _this.event.forEach(item=>{
+                let flag=false;
+                warningData.forEach(item1=>{
+                  if(item.vehicleId==vehicleId&&item.type==item1.eventType){
+                    flag=true;
+                  }
+                });
+                //如果存在
+                if(flag){
+                  item.count++;
+                  //如果存在更新定时器
+                  clearTimeout(item.timer);
+                  item.timer = setTimeout(()=>{
+                    item.flag = false;//控制隐藏
+//                console.log('如果存在，更新定时器'+item.count)
+                  },3000)
                 }
               })
-              if(!_this.isAllClear){
-                this.warningList=[];
+            }
+            //新推过来的数据中有新发生的事件，进行保存开始计时
+            let flag = true;
+            warningData.forEach(item=>{
+              let obj = {};
+              if(_this.event.length>0){
+                _this.event.forEach(item1=>{
+                  if(item1.vehicleId==vehicleId&&item.type==item1.eventType){
+                    flag= false;
+                  }
+                })
+                //如果不存在，将车辆信息存储起来
+                if(flag){
+                  /*_this.$set(obj,'vehicleId',item.vehicleId);
+                  _this.$set(obj,'count',1);
+                  _this.$set(obj,'timer',null);
+                  _this.$set(obj,'flag',true);
+                  _this.$set(obj,'type',item.type);*/
+                  obj.vehicleId=vehicleId;
+                  obj.count=1;
+                  obj.timer=setTimeout(()=>{
+                    obj.flag=false;
+//                console.log('我要消失了====='+item.vehicleId);
+                  },3000);
+                  obj.flag=true;
+                  obj.type=item.eventType
+                }
+                _this.event.unshift(obj);
+              }else {
+                /*_this.$set(obj,'vehicleId',item.vehicleId);
+                _this.$set(obj,'count',1);
+                _this.$set(obj,'timer',null);
+                _this.$set(obj,'flag',true);
+                _this.$set(obj,'type',item.type);*/
+                obj.vehicleId=vehicleId;
+                obj.count=1;
+                obj.timer=setTimeout(()=>{
+                  obj.flag=false;
+//              console.log('我要消失了===='+item.vehicleId);
+                },3000);
+                obj.flag=true;
+                obj.type=item.eventType
+                _this.event.unshift(obj);
               }
-            },3000)
-            _this.warningList.unshift(obj);
-          })
-          _this.i++;
+            });
+            _this.event.forEach(item=>{
+              _this.warningList.unshift(item);
+            })
+          }
         }
 
       },
@@ -818,8 +929,8 @@
       },
       getAlarmInformation(){
         var param = {
-          //"startTime": this.routeStartTime,
-          "startTime": 0,
+          "startTime": this.routeStartTime,
+         /* "startTime": 0,*/
           "vehicleId": this.vehicleId
         }
         getAlarmInformation(param).then(res=>{
@@ -894,7 +1005,7 @@
           _this.event.forEach(item=>{
             let flag=false;
             res.forEach(item1=>{
-              if(item.vehicleId==item1.vehicleId){
+              if(item.vehicleId==item1.vehicleId&&item.type==item1.type){
                 flag=true;
               }
             });
@@ -904,7 +1015,7 @@
               clearTimeout(item.timer);
               item.timer = setTimeout(()=>{
                 item.flag = false;//控制隐藏
-                console.log('如果存在，更新定时器'+item.count)
+//                console.log('如果存在，更新定时器'+item.count)
               },3000)
             }/*else{
               //如果不存在
@@ -927,7 +1038,7 @@
           let obj = {};
           if(_this.event.length>0){
             _this.event.forEach(item1=>{
-              if(item1.vehicleId==item.vehicleId){
+              if(item1.vehicleId==item.vehicleId&&item.type==item1.type){
                 flag= false;
               }
             })
@@ -942,7 +1053,7 @@
               obj.count=1;
               obj.timer=setTimeout(()=>{
                 obj.flag=false;
-                console.log('我要消失了====='+item.vehicleId);
+//                console.log('我要消失了====='+item.vehicleId);
               },3000);
               obj.flag=true;
               obj.type=item.type
@@ -958,7 +1069,7 @@
             obj.count=1;
             obj.timer=setTimeout(()=>{
               obj.flag=false;
-              console.log('我要消失了===='+item.vehicleId);
+//              console.log('我要消失了===='+item.vehicleId);
             },3000);
             obj.flag=true;
             obj.type=item.type

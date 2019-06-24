@@ -211,6 +211,10 @@
           'vehicleId': this.vehicleId,
         }).then(res => {
           this.liveDeviceInfo = res.liveDeviceData;
+          if(this.liveDeviceInfo.serialNum==''){
+            this.playerOptions.sources[0].src='';
+            return;
+          }
           this.getStream();
         });
       },

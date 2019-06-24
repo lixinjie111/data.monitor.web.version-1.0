@@ -30,11 +30,11 @@
           <span></span>
           <!--向左转 亮-->
           <!--<img src="@/assets/images/car/car-12.png" v-if="realData.turnLight=='left'">-->
-          <img src="@/assets/images/car/car-12.png" v-if="realData.turnLight=='left'">
-          <img src="@/assets/images/car/car-13.png" class="director-left" v-else>
+          <img src="@/assets/images/car/car-12.png" class="light-style-left" v-if="realData.turnLight=='left'">
+          <img src="@/assets/images/car/car-13.png" class="director-left " v-else>
           <!--向右转 亮-->
           <!--<img src="@/assets/images/car/car-12.png" class="director-right" v-if="realData.turnLight=='right'">-->
-          <img src="@/assets/images/car/car-12.png" class="director-right" v-if="realData.turnLight=='right'">
+          <img src="@/assets/images/car/car-12.png" class="director-right light-style-right" v-if="realData.turnLight=='right'">
           <img src="@/assets/images/car/car-13.png" v-else >
         </div>
 
@@ -273,15 +273,27 @@
     display: flex;
     align-items: center;
     position: relative;
+    width: 50px;
+    height: 38px;
   }
   .director-icon img:first-of-type{
     margin-right: 5px;
   }
 
+  .director-icon .light-style-left{
+    width: 36px;
+    position: relative;
+    right:-8px;
+  }
+  .director-icon .light-style-right{
+    width: 36px;
+    position: relative;
+    left:-8px;
+  }
   .director-icon > span:nth-child(1){
     position: absolute;
     left: -3px;
-    top: -3px;
+    top: 0px;
     padding: 3px;
     border-style: solid;
     border-color: #a3c8b0;
@@ -291,7 +303,7 @@
   .director-icon > span:nth-child(2){
     position: absolute;
     right: -3px;
-    top: -3px;
+    top: 0px;
     padding: 3px;
     border-style: solid;
     border-color: #a3c8b0;
@@ -301,7 +313,7 @@
   .director-icon > span:nth-child(3){
     position: absolute;
     right: -3px;
-    bottom: -3px;
+    bottom: 0px;
     padding: 3px;
     border-style: solid;
     border-color: #a3c8b0;
@@ -311,7 +323,7 @@
   .director-icon> span:nth-child(4){
     position: absolute;
     left: -3px;
-    bottom: -3px;
+    bottom: 0px;
     padding: 3px;
     border-style: solid;
     border-color: #a3c8b0;

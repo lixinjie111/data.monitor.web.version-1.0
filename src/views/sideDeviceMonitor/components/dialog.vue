@@ -564,7 +564,6 @@
               this.getDeviceList(this.selectedItem.roadSiderId);
               this.getSideTree();
               this.getDeviceCountByCity();
-
             }
           }
         },

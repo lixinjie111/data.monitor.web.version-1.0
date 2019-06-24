@@ -157,7 +157,11 @@
         filterData() {
             let _filterData = {};
             for(let attr in this.drivingStatistics) {
+              if(attr=='tripNums'){
+                _filterData[attr] = parseFloat(this.drivingStatistics[attr]).toLocaleString() || '--';
+              }else{
                 _filterData[attr] = parseFloat(this.drivingStatistics[attr]).toFixed(1).toLocaleString() || '--';
+              }
             }
             return _filterData;
         }
