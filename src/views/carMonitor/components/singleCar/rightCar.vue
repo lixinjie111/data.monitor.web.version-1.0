@@ -432,9 +432,11 @@
     bottom: 0;
     position: absolute;
     z-index: 3;
-    /*@include layoutMode();*/
+    text-align: center;
+    // @include layoutMode(pack);
     img{
       display: inline-block;
+      margin-top: 30px;
     }
     p{
       letter-spacing: 4px;
@@ -462,15 +464,15 @@
       position: absolute;
       left: 50%;
       bottom: 0;
-      width:50%;
+      width:100%;
       height: 2000%;
-      margin-left: -25%;
+      margin-left: -50%;
       border-left: 1px solid #fff;
       border-right: 1px solid #fff;
       // background-color: rgba(255, 255, 255, .2);
       transform-style:preserve-3d;
       transform-origin: center bottom;
-      transform: rotateX(70deg);
+      transform: rotateX(65deg);
     }
   }
 

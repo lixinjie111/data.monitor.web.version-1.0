@@ -196,7 +196,7 @@
               color:'#918d84'
             },
             min: 0,
-            max: 130
+            max: 120
           },
           series: [
             {
@@ -399,6 +399,7 @@
         let _this=this;
         if(window.WebSocket){
           if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+            // console.log("speedAcceleration 发送请求成功");
             _this.webSocket.send(msg); //send()发送消息
           }
         }else{
