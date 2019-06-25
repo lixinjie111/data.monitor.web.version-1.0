@@ -433,9 +433,11 @@
     bottom: 0;
     position: absolute;
     z-index: 3;
-    @include layoutMode();
+    text-align: center;
+    // @include layoutMode(pack);
     img{
-      display: block;
+      display: inline-block;
+      margin-top: 30px;
     }
     p{
       letter-spacing: 4px;
