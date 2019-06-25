@@ -9,15 +9,27 @@
         </div>
         <div class="single-content ">
             <div class="single-content-left">
-                <div class="single-content-top">
-                    <main-car :real-data="realData" :routeStartTime="routeStartTime"></main-car>
+              <div class="single-content-top" :class="{'stop-style':isStop}">
+                  <main-car :real-data="realData" :routeStartTime="routeStartTime" :isStop="isStop"></main-car>
+              </div>
+              <div class="single-content-bottom">
+                  <bottom-car ></bottom-car>
+              </div>
+              <div class="stop-left-style" v-show="isStop">
+                <div class="stop-left-text">
+                  <div class="stop-highlight">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    车辆已停驶
+                  </div>
+                  <p class="stop-text-detail">停驶时，只有部分数据可查看</p>
                 </div>
-                <div class="single-content-bottom">
-                    <bottom-car ></bottom-car>
-                </div>
+              </div>
             </div>
             <div class="single-content-right">
-                <right-car></right-car>
+                <right-car :isStop="isStop"></right-car>
             </div>
         </div>
     </div>
@@ -47,12 +59,14 @@
           transmission:'P',
           gpsTime:''
 
+
         },
         routeStartTime:'',
         liveData:{},
         speedData:{},
         vehicleId:'B21E-00-017',
-        webSocket:{}
+        webSocket:{},
+        isStop:false
       }
     },
     methods: {
@@ -77,6 +91,7 @@
           this.realData.oilDoor=0;
           this.realData.brakePedal=0;
           this.routeStartTime="";
+          this.isStop=true;
         }else{
           this.realData = json.result;
          /* console.log("转向灯---"+this.realData.turnLight)*/
@@ -121,6 +136,61 @@
   }
 </script>
 <style scoped>
+  .stop-left-text{
+    margin: 200px 500px;
+    text-align: center;
+    color: #dc8c00;
+  }
+  .stop-highlight{
+    font-size: 48px;
+    background: #333333;
+    position: relative;
+  }
+  .stop-text-detail{
+    letter-spacing: 4px;
+    line-height: 40px;
+    font-size: 18px;
+  }
+  .stop-highlight > span:nth-child(1){
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    padding: 6px;
+    border-style: solid;
+    border-color: #a3c8b0;
+    border-width: 0px;
+    box-shadow: -2px -2px 0px 0px #dc8c00;
+  }
+  .stop-highlight > span:nth-child(2){
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    padding: 6px;
+    border-style: solid;
+    border-color: #a3c8b0;
+    border-width: 0px;
+    box-shadow: 2px -2px 0px 0px #dc8c00;
+  }
+  .stop-highlight > span:nth-child(3){
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    padding: 6px;
+    border-style: solid;
+    border-color: #a3c8b0;
+    border-width: 0px;
+    box-shadow: 2px 2px 0px 0px #dc8c00;
+  }
+  .stop-highlight> span:nth-child(4){
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    padding: 6px;
+    border-style: solid;
+    border-color: #a3c8b0;
+    border-width:0px;
+    box-shadow: -2px 2px 0px 0px #dc8c00;
+  }
   .car-view-wrapper{
     position: fixed;
     top:0;
@@ -165,6 +235,15 @@
     top: 15px;
     bottom: 0;
   }
+  .stop-left-style{
+    position: absolute;
+    left: 0;
+    top:0;
+    right: 0;
+    bottom: 0;
+    background: #1c1c1c00;
+    z-index: 2;
+  }
   .single-content-right {
     float: right;
   }
@@ -174,6 +253,10 @@
     top: 0;
     right: 0;
     bottom: 220px;
+  }
+  .stop-style{
+    bottom:0!important;
+    z-index: 1;
   }
   .single-content-bottom{
     position: absolute;
