@@ -387,7 +387,6 @@
     mounted () {
       this.getDriveCalendar();
       this.getDeviceInfo();
-      this.getStream();
       this.initSocket();
     },
     beforeDestroy(){
@@ -433,9 +432,9 @@
     bottom: 0;
     position: absolute;
     z-index: 3;
-    @include layoutMode();
+    /*@include layoutMode();*/
     img{
-      display: block;
+      display: inline-block;
     }
     p{
       letter-spacing: 4px;

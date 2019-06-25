@@ -803,7 +803,6 @@
         }
         if(warningData.length>0){
           if(type=='VEHICLE'){
-
             warningData.forEach(item=>{
               var dist = parseInt(item.dis);
               var obj = {type: item.eventType,timer: null, flag: true,dist:dist};
@@ -827,7 +826,7 @@
             if(_this.event.length>0){
               _this.event.forEach(item=>{
                 console.log(item.uuid+"-----uuid")
-                console.log(item.eventType+"-----eventType")
+                console.log(item.type+"-----eventType")
                 let flag=false;
                 warningData.forEach(item1=>{
                   if(item.uuid==item1.uuid){
@@ -877,9 +876,10 @@
                 obj.flag=true;
                 obj.type=eventType;
                 obj.uuid = item.uuid;
-                _this.event.unshift(obj);
+                _this.event.push(obj);
               }
             });
+            _this.warningList = [];
             _this.event.forEach(item=>{
               _this.warningList.unshift(item);
             })
