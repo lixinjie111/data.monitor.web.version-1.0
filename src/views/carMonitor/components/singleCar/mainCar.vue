@@ -19,15 +19,43 @@
       </div>
     </div>
     <div class="spat-detail">
-      <div class="spat-detail-style">
-        <div class="spat-detail-img">
-          <img src="@/assets/images/car/turn-yellow.png"/>
+      <div  v-for="(item,key) in lightData" class="spat-layout">
+        <div v-show="key==3&&item.flag" class="spat-detail-style">
+          <div class="spat-detail-img" >
+            <img src="@/assets/images/car/light/turn-yellow.png" v-show="item.lightColor=='YELLOW'"/>
+            <img src="@/assets/images/car/light/turn-red.png" v-show="item.lightColor=='RED'"/>
+            <img src="@/assets/images/car/light/turn-green.png" v-show="item.lightColor=='GREEN'"/>
+          </div>
+          <span class="spat-detail-font" :class="[item.lightColor=='YELLOW' ? 'light-yellow' : item.lightColor=='RED'?'light-red':'light-green']">{{item.spareTime}}</span>
         </div>
-        <span class="spat-detail-font" style="color: #d99f04;">10</span>
+        <div v-show="key==2&&item.flag" class="spat-detail-style">
+          <div class="spat-detail-img">
+            <img src="@/assets/images/car/light/left-yellow.png" v-show="item.lightColor=='YELLOW'"/>
+            <img src="@/assets/images/car/light/left-red.png" v-show="item.lightColor=='RED'"/>
+            <img src="@/assets/images/car/light/left-green.png" v-show="item.lightColor=='GREEN'"/>
+          </div>
+          <span class="spat-detail-font" :class="[item.lightColor=='YELLOW' ? 'light-yellow' : item.lightColor=='RED'?'light-red':'light-green']">{{item.spareTime}}</span>
+        </div>
+        <div v-show="key==1&&item.flag" class="spat-detail-style">
+          <div class="spat-detail-img spat-straight">
+            <img src="@/assets/images/car/light/left-yellow.png" v-show="item.lightColor=='YELLOW'" />
+            <img src="@/assets/images/car/light/left-red.png" v-show="item.lightColor=='RED'"/>
+            <img src="@/assets/images/car/light/left-green.png" v-show="item.lightColor=='GREEN'"/>
+          </div>
+          <span class="spat-detail-font" :class="[item.lightColor=='YELLOW' ? 'light-yellow' : item.lightColor=='RED'?'light-red':'light-green']">{{item.spareTime}}</span>
+        </div>
+        <div v-show="key==4&&item.flag" class="spat-detail-style">
+          <div class="spat-detail-img spat-right">
+            <img src="@/assets/images/car/light/left-yellow.png" v-show="item.lightColor=='YELLOW'"/>
+            <img src="@/assets/images/car/light/left-red.png" v-show="item.lightColor=='RED'"/>
+            <img src="@/assets/images/car/light/left-green.png" v-show="item.lightColor=='GREEN'"/>
+          </div>
+          <span class="spat-detail-font" :class="[item.lightColor=='YELLOW' ? 'light-yellow' : item.lightColor=='RED'?'light-red':'light-green']">{{item.spareTime}}</span>
+        </div>
       </div>
-      <div class="spat-detail-style">
+      <!--<div class="spat-detail-style">
         <div class="spat-detail-img">
-          <img src="@/assets/images/car/car-27.png"/>
+          <img src="@/assets/images/car/left-red.png"/>
         </div>
         <span class="spat-detail-font">20</span>
       </div>
@@ -43,7 +71,7 @@
           <img src="@/assets/images/car/car-28.png"/>
         </div>
         <span class="spat-detail-font spat-detail-color">10</span>
-      </div>
+      </div>-->
     </div>
     <div class="alert-event">
       <div class="event-style" @click="getCloudEvent">
@@ -281,7 +309,7 @@
         wholePath:[],
         marker:{},
         platNoMarker:{},
-        sideVehicleList:[],
+        sideVehicleObj:{},
         sideObjList:[],
         sideVehicleData:[],
         hostWebsocket:{},
@@ -307,8 +335,15 @@
         vehicleDialog:false,
         cloudList:[],
         vehicleList:[],
-        isAllClear:false,
-        event:[]
+        event:[],
+        count: 0,
+        startTime:'',
+        lightData:{
+          /*'1':{spareTime:10,time:null,lightColor:'yellow',flag:true},
+          '2':{spareTime:10,time:null,lightColor:'red',flag:true},
+          '3':{spareTime:10,time:null,lightColor:'green',flag:true},
+          '4':{spareTime:10,time:null,lightColor:'red',flag:true},*/
+        }
       }
     },
     props:{
@@ -354,6 +389,13 @@
     },
     components:{
       SingleDialog
+    },
+    watch:{
+      routeStartTime(oldValue,newValue){
+        if(this.routeStartTime!=''){
+          this.startTime=this.routeStartTime;
+        }
+      }
     },
     methods: {
       getAngle(map,start, end) {
@@ -495,102 +537,82 @@
       onSideMessage(mesasge){
         var _this=this;
         var json = JSON.parse(mesasge.data);
-        var data = json.result;
-        //新建点
-        var sideVehicleData = json.result.data;
-        var position;
-        var existList = [];
-        var newList = [];
-        /*console.log("*****************");*/
-        sideVehicleData.forEach(function (item) {
-          var newObj;
-          var oldObj;
-          position = new AMap.LngLat(item.longitude, item.latitude);
-            var newPosition;
-            AMap.convertFrom(position, 'gps', function (status, result) {
+        if(this.count == 0) {
+          //新建点
+          var sideVehicleData = json.result.data;
+          //将不存在的marker点从地图上删除
+//          console.log("-------------------------");
+          var resultData=[];
+          sideVehicleData.forEach(item=>{
+            let option={
+              vehicleId:item.vehicleId,
+              position:new AMap.LngLat(item.longitude, item.latitude),
+              heading:item.heading,
+              speed:item.speed
+
+            }
+            resultData.push(option);
+          });
+          for(var id in _this.sideVehicleObj){
+            let flag=false;
+            for( let i = 0; i < sideVehicleData.length; i++){
+              if(id==sideVehicleData[i].vehicleId){
+                if(_this.sideVehicleObj[id].flag){
+                  flag = true;
+                  break;
+                }
+              }
+            }
+            if(!flag){
+              _this.sideVehicleObj[id].marker.hide();
+             /* _this.distanceMap.remove(_this.sideVehicleObj[id].marker);*/
+              _this.sideVehicleObj[id].flag=false;
+            }
+          }
+
+          resultData.forEach(function (item,index,arr) {
+            AMap.convertFrom(resultData[index].position, 'gps', function (status, result) {
+             /* console.log("count----"+count+"====status=="+status);*/
               if (result.info === 'ok') {
-                newPosition = result.locations[0];
-                //判断当前车旁车是否还在
-                //如果存在  遗留问题：_this.sideVehicleList不存在的旁车在地图上去掉 同时清理集合中的数据
-                if (_this.sideVehicleList.indexOf(item.vehicleId)!=-1) {
-                  //将已存在的车保存起来
-                  _this.sideVehicleData.forEach(function (e) {
-                    //找到存在的车 进行绘制线
-                    if (e.vehicleId == item.vehicleId) {
-                      oldObj={
-                        'vehicleId':e.vehicleId,
-                        'marker':e.marker
+                resultData[index].position = result.locations[0];
+                _this.count++;
+                if(_this.count == arr.length){
+                  resultData.forEach((subItem, subIndex, subArr)=>{
+                    if (_this.sideVehicleObj[subItem.vehicleId]) {
+                      var sideCar = _this.sideVehicleObj[subItem.vehicleId];
+                      if(_this.sideVehicleObj[subItem.vehicleId].flag) {
+                        sideCar.marker.setAngle(subItem.heading);
+                        sideCar.marker.moveTo(subItem.position, subItem.speed);
+                      }else{
+                        sideCar.marker.setAngle(subItem.heading);
+                        sideCar.marker.setPosition(subItem.position);
+                        sideCar.marker.show();
+                      }
+                    } else {//不存在
+                      _this.sideVehicleObj[subItem.vehicleId] = {
+                        marker : null,
+                        flag: true
                       };
-                      existList.push(oldObj);
-                      //设置车的位置
-                      var lastPosition = e.wholePath[e.wholePath.length - 1];
-                      e.marker.setPosition(lastPosition);
-                      e.marker.setAngle(item.heading);
-                      e.wholePath.push(newPosition);
-                      //所要移动的位置
-                      e.marker.moveTo(newPosition, item.speed);
-                      /*_this.distanceMap.setFitView();*/
+                      _this.sideVehicleObj[subItem.vehicleId].marker = new AMap.Marker({
+                        position: subItem.position,
+                        icon: 'static/images/car/car-7.png', // 添加 Icon 图标 URL
+                        title: '北京',
+                        angle: subItem.heading
+                      });
+                      _this.distanceMap.add(_this.sideVehicleObj[subItem.vehicleId].marker);
+                    }
+
+                    if(subIndex == subArr.length - 1) {
+                      setTimeout(() => {
+                        _this.count = 0;
+                      }, 0);
                     }
                   })
-                } else {//不存在
-                  var marker = new AMap.Marker({
-                    position: newPosition,
-                    icon: 'static/images/car/car-7.png', // 添加 Icon 图标 URL
-                    title: '北京'
-                  });
-                  _this.distanceMap.add(marker);
-                  var sideCar = {};
-                  var wholePath = [];
-                  wholePath.push(newPosition);
-                  sideCar.wholePath = wholePath;
-                  sideCar.marker = marker;
-                  sideCar.vehicleId = item.vehicleId;
-                  _this.sideVehicleData.push(sideCar);
-                  //将新出现车保存起来
-                  newObj = {
-                    'vehicleId':item.vehicleId,
-                    'marker':marker,
-                  };
-
-                  newList.push(newObj);
-                  _this.sideVehicleList.push(item.vehicleId);
                 }
               }
             })
-          /*_this.sideVehicleList = [];*/
-          //第一次不需要移除没出现的旁车
-          if(existList.length!=0){
-            //找出原来有的车辆，此时没有的。在地图上去除
-            _this.sideVehicleData.forEach(function (item) {
-              var flag = false;
-              existList.forEach(function (e) {
-                if (item.vehicleId == e.vehicleId) {
-                  flag = true;
-                }
-              })
-              if (!flag) {
-                newList.forEach(function (e) {
-                  if (item.vehicleId == e.vehicleId) {
-                    flag = true;
-                  }
-                })
-              }
-              //车不存在
-              if (!flag) {
-                //移除地图上的点
-                _this.distanceMap.remove(item.marker);
-                //数组数据去除不存在的对象
-                var index = this.indexOf(item);
-                if (index > -1) {
-                  _this.splice(index, 1);
-                }
-                //去除保存原数组中不存在的车辆Id
-                var idIndex = _this.sideVehicleList.indexOf(item.vehicleId);
-                _this.sideVehicleList.splice(idIndex, 1);
-              }
-            })
-          }
-        })
+        });
+        }
       },
       onSideClose(data){
         console.log("结束连接");
@@ -739,12 +761,6 @@
           var marker;
           AMap.convertFrom(position, 'gps', function (status, result) {
             newPosition = new AMap.LngLat(item.longitude, item.latitude);
-            /*var flag = false;
-            _this.lightMarkerList.forEach(function (item) {
-              if(item.getPosition()[0] == newPosition[0] &&item.getPosition()[1] == newPosition[1]){
-                flag=true;
-              }
-            })*/
               marker = new AMap.Marker({
                 position: newPosition,
                 icon: 'static/images/car/car-4.png', // 添加 Icon 图标 URL
@@ -753,6 +769,28 @@
               _this.distanceMap.add(marker);
               /*_this.lightMarkerList.push(marker);*/
           })
+          let direction = item.direction+"";
+//          console.log("direction----"+item.direction)
+
+          if(_this.lightData[direction]){
+            /*_this.$set(_this.lightData[direction],'spareTime',item.leftTime);*/
+            _this.lightData[direction].spareTime = item.leftTime;
+            _this.lightData[direction].lightColor = item.light;
+            _this.lightData[direction].flag=true;
+            _this.lightData[direction].time = null;
+            //延长时间
+            _this.lightData[direction].time=setTimeout(item=>{
+              _this.lightData[direction].flag=false;
+            },3000)
+//            console.log("light-----"+_this.lightData[direction].lightColor);
+
+          }else{
+            _this.lightData[direction]={spareTime:item.leftTime,time:null,lightColor:item.light,flag:true};
+            _this.lightData[direction].time=setTimeout(item=>{
+              _this.lightData[direction].flag=false;
+            },3000)
+            console.log("========"+_this.lightData[direction])
+          }
         })
       },
       onLightClose(data){
@@ -822,6 +860,24 @@
           }
           if(type=='CLOUD'){
             let eventType = json.result.eventType;
+            warningData.forEach(item=>{
+              var obj = {type:eventType,timer:null,flag:true};
+              obj.timer=setTimeout(()=>{
+                obj.flag=false;
+                _this.warningList.forEach(item=>{
+                  if(item.flag){
+                    _this.isAllClear=true;
+                  }
+                })
+                if(!_this.isAllClear){
+                  this.warningList=[];
+                }
+              },3000)
+              _this.warningList.unshift(obj);
+            })
+          }
+         /* if(type=='CLOUD'){
+            let eventType = json.result.eventType;
             //如果发过来的数据存在，则进行计数,不存在的如果3s消失
             if(_this.event.length>0){
               _this.event.forEach(item=>{
@@ -883,7 +939,7 @@
             _this.event.forEach(item=>{
               _this.warningList.unshift(item);
             })
-          }
+          }*/
         }
 
       },
@@ -924,8 +980,7 @@
       },
       getAlarmInformation(){
         var param = {
-          "startTime": this.routeStartTime,
-         /* "startTime": 0,*/
+          "startTime": this.startTime,
           "vehicleId": this.vehicleId
         }
         getAlarmInformation(param).then(res=>{
@@ -934,8 +989,8 @@
       },
       getV2xInformation(){
         var param = {
-          //"startTime": this.routeStartTime,
-          "startTime": 0,
+          "startTime": this.startTime,
+          /*"startTime": 0,*/
           "vehicleId": this.vehicleId
         }
         getV2xInformation(param).then(res=>{
@@ -943,7 +998,8 @@
         })
       },
       getCloudEvent(){
-        if(!this.routeStartTime||this.routeStartTime==""){
+        console.log("startTime---"+this.startTime)
+        if(!this.startTime||this.startTime==""){
           this.$message.error("本车行程未开始");
           return;
         }
@@ -951,7 +1007,7 @@
         this.getV2xInformation();
       },
       getVehicleEvent(){
-        if(!this.routeStartTime||this.routeStartTime==""){
+        if(!this.startTime||this.startTime==""){
           this.$message.error("本车行程未开始");
           return;
         }
@@ -978,7 +1034,7 @@
       this.hostWebsocket.close();
       this.sideWebsocket.close();
       this.deviceWebsocket.close();
-      this.lightWebsocket.close();
+     /* this.lightWebsocket.close();*/
       this.warningWebsocket.close();
     }
   }
@@ -1048,6 +1104,10 @@
       top: 66px;
       left: 0;
       z-index: 1;
+      .spat-layout{
+        float: left;
+        margin-left: 20px;
+      }
       .spat-detail-style{
         width: 130px;
         height: 60px;
@@ -1055,8 +1115,8 @@
         background-color: #313131;
         box-sizing: border-box;
         padding:6px 2px;
-        float: left;
-        margin-left: 20px;
+        /*float: left;
+        margin-left: 20px;*/
         @include layoutMode(align);
         .spat-detail-img{
           width: 48px;
@@ -1083,8 +1143,20 @@
         .spat-detail-color{
           color: #23b318;
         }
-        .spat-right{
+        .spat-straight{
           transform: rotate(90deg);
+        }
+        .spat-right{
+          transform: rotate(180deg);
+        }
+        .light-yellow{
+          color: #d99f04;
+        }
+        .light-red{
+          color: #c93710;
+        }
+        .light-green{
+          color: #28b51d;
         }
       }
     }

@@ -30,11 +30,12 @@
           <span></span>
           <!--向左转 亮-->
           <!--<img src="@/assets/images/car/car-12.png" v-if="realData.turnLight=='left'">-->
-          <img src="@/assets/images/car/car-12.png" class="light-style-left" v-if="realData.turnLight=='left'">
+          <!--左-->
+          <img src="@/assets/images/car/car-12.png" v-if="realData.turnLight=='left'">
           <img src="@/assets/images/car/car-13.png" class="director-left " v-else>
           <!--向右转 亮-->
           <!--<img src="@/assets/images/car/car-12.png" class="director-right" v-if="realData.turnLight=='right'">-->
-          <img src="@/assets/images/car/car-12.png" class="director-right light-style-right" v-if="realData.turnLight=='right'">
+          <img src="@/assets/images/car/car-12.png" class="director-right" v-if="realData.turnLight=='right'">
           <img src="@/assets/images/car/car-13.png" v-else >
         </div>
 
@@ -280,11 +281,6 @@
     margin-right: 5px;
   }
 
-  .director-icon .light-style-left{
-    width: 36px;
-    position: relative;
-    right:-8px;
-  }
   .director-icon .light-style-right{
     width: 36px;
     position: relative;

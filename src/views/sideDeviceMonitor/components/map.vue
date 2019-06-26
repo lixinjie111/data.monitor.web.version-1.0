@@ -52,6 +52,7 @@
         lightList:[],
         rcuList:[],
         sideList:[],
+        count:0
       }
     },
     methods: {
@@ -85,86 +86,82 @@
       },
       deviceMap(data){
         var _this = this;
-        if(data.length>0) {
-          var resultData=[];
-          data.forEach(item=>{
-            let option;
-            if(item.longitude|| item.latitude){
-              option={
-                position:new AMap.LngLat(item.longitude, item.latitude),
-                type:item.type,
-                deviceId:item.deviceId,
-                path:item.path
-              }
-              resultData.push(option);
-            }
-          });
-          var count=0;
-          //转成高德地图的坐标
-          resultData.forEach((item, index, arr)=>{
-            AMap.convertFrom(resultData[index].position, 'gps', function (status, result){
-//              console.log("status============="+status);
-//              console.log("count============="+count);
-              if (result.info === 'ok') {
-                let _point = result.locations[0];
-                resultData[index].position = _point;
-                count ++;
-//                console.log("count-------"+count);
-                if(count == arr.length) {
-                  //绘制线的轨迹
-                  resultData.forEach(function (item,index) {
-                    if(item.type==1){
-                     /* console.log("红绿灯----"+item.position);*/
-                      var marker = new AMap.Marker({
-                        position: item.position,
-                        icon: 'static/images/sideDevice/1.png', // 添加 Icon 图标 URL
-                      });
-                      _this.map.add(marker);
-                      _this.lightList.push(marker)
-                    }
-                    //路侧点
-                    if(item.type==2){
-                     /* console.log("路测点----"+item.position);*/
-                      var marker = new AMap.Marker({
-                        position: item.position,
-                        icon: 'static/images/sideDevice/3.png', // 添加 Icon 图标 URL
-                      });
-                      _this.map.add(marker);
-                      var item={
-                        path:item.path,
-                        roadSiderId:item.deviceId,
-                        camSerialNum:""
-                      }
-                      marker.on('click', function(e) {
-                        _this.$parent.$emit("sideEvent",item);
-                        /*_this.dialogVisible=true;
-                        _this.selectedItem=item;*/
-                      });
-                      _this.sideList.push(marker)
-                    }
-                    //rcu
-                    if(item.type==3){
-                      var marker = new AMap.Marker({
-                        position: item.position,
-                        icon: 'static/images/sideDevice/2.png', // 添加 Icon 图标 URL
-                      });
-                      _this.map.add(marker);
-                      _this.rcuList.push(marker)
-                    }
-                    //绘制完后，重新设置
-                   /* console.log("index-------"+index);*/
-                    if(index==resultData.length-1){
-                      _this.map.setFitView();
-                      console.log("zoom===="+_this.map.getZoom())
-                      _this.map.setZoom(_this.map.getZoom()-2);
-                      console.log("zoom1===="+_this.map.getZoom())
-                    }
-                  })
-
+        if(_this.count==0){
+          if(data.length>0) {
+            var resultData=[];
+            data.forEach(item=>{
+              let option;
+              if(item.longitude|| item.latitude){
+                option={
+                  position:new AMap.LngLat(item.longitude, item.latitude),
+                  type:item.type,
+                  deviceId:item.deviceId,
+                  path:item.path
                 }
+                resultData.push(option);
               }
             });
-          })
+            //转成高德地图的坐标
+            resultData.forEach((item, index, arr)=>{
+              AMap.convertFrom(resultData[index].position, 'gps', function (status, result){
+//              console.log("status============="+status);
+//              console.log("count============="+count);
+                if (result.info === 'ok') {
+                  let _point = result.locations[0];
+                  resultData[index].position = _point;
+                  _this.count ++;
+                  if(_this.count == arr.length) {
+                    //绘制线的轨迹
+                    resultData.forEach(function (subItem,subIndex) {
+                      console.log("红绿灯----"+subItem.type);
+                      if(subItem.type==1){
+                        var marker = new AMap.Marker({
+                          position: subItem.position,
+                          icon: 'static/images/sideDevice/1.png', // 添加 Icon 图标 URL
+                        });
+                        _this.map.add(marker);
+                        _this.lightList.push(marker)
+                      }
+                      //路侧点
+                      if(subItem.type==2){
+                        var marker = new AMap.Marker({
+                          position: subItem.position,
+                          icon: 'static/images/sideDevice/3.png', // 添加 Icon 图标 URL
+                        });
+                        _this.map.add(marker);
+                        var item={
+                          path:subItem.path,
+                          roadSiderId:subItem.deviceId,
+                          camSerialNum:""
+                        }
+                        marker.on('click', function(e) {
+                          _this.$parent.$emit("sideEvent",item);
+                        });
+                        _this.sideList.push(marker)
+                      }
+                      //rcu
+                      if(subItem.type==3){
+                        var marker = new AMap.Marker({
+                          position: subItem.position,
+                          icon: 'static/images/sideDevice/2.png', // 添加 Icon 图标 URL
+                        });
+                        _this.map.add(marker);
+                        _this.rcuList.push(marker)
+                      }
+                      //绘制完后，重新设置
+                      if(subIndex==resultData.length-1){
+                        _this.map.setFitView();
+//                        console.log("zoom===="+_this.map.getZoom())
+                        _this.map.setZoom(_this.map.getZoom()-2);
+                        _this.count=0;
+//                        console.log("zoom1===="+_this.map.getZoom())
+                      }
+                    })
+                  }
+                }
+              });
+            })
+          }
         }
       },
       removeDevice(type){

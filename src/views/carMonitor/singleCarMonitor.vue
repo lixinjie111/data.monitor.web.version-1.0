@@ -9,13 +9,13 @@
         </div>
         <div class="single-content ">
             <div class="single-content-left">
-              <div class="single-content-top" :class="{'stop-style':isStop}">
-                  <main-car :real-data="realData" :routeStartTime="routeStartTime" :isStop="isStop"></main-car>
+              <div class="single-content-top" :class="{'stop-style':false}">
+                  <main-car :real-data="realData" :routeStartTime="routeStartTime" :isStop="false"></main-car>
               </div>
               <div class="single-content-bottom">
                   <bottom-car ></bottom-car>
               </div>
-              <div class="stop-left-style" v-show="isStop">
+              <div class="stop-left-style" v-show="false">
                 <div class="stop-left-text">
                   <div class="stop-highlight">
                     <span></span>
@@ -29,7 +29,7 @@
               </div>
             </div>
             <div class="single-content-right">
-                <right-car :isStop="isStop"></right-car>
+                <right-car :isStop="false"></right-car>
             </div>
         </div>
     </div>
