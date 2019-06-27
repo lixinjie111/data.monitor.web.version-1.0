@@ -538,7 +538,7 @@
         return bounds;
       }
     },
-    watch:{
+    /*watch:{
 
       'routeInfo.routeStartTime': {
         handler(newValue, oldValue) {
@@ -547,7 +547,7 @@
 
       }
 
-    },
+    },*/
     mounted () {
       var _this = this;
       this.distanceMap = new AMap.Map("distanceContainer", {
@@ -714,7 +714,7 @@
     color: #ddd9d1;
     text-align: left;
     padding: 0 20px 0 20px;
-    width: 160px;
+    width: 210px;
     &:first-child {
       width: 230px;
     }

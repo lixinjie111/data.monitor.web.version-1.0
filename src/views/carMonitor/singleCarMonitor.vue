@@ -1,7 +1,7 @@
 <template>
 <div class="car-view-wrapper clearfix">
     <div class="single-left">
-        <left-car @getRouteStartTime="getRouteStartTime"></left-car>
+        <left-car ></left-car>
     </div>
     <div class="single-main">
         <div class="single-header">
@@ -10,7 +10,7 @@
         <div class="single-content ">
             <div class="single-content-left">
               <div class="single-content-top" :class="{'stop-style':false}">
-                  <main-car :real-data="realData" :routeStartTime="routeStartTime" :isStop="false"></main-car>
+                  <main-car :real-data="realData" :isStop="false"></main-car>
               </div>
               <div class="single-content-bottom">
                   <bottom-car ></bottom-car>
@@ -61,10 +61,10 @@
 
 
         },
-        routeStartTime:'',
         liveData:{},
         speedData:{},
-        vehicleId:'B21E-00-017',
+        /*vehicleId:'B21E-00-017',*/
+        vehicleId:this.$route.params.vehicleId,
         webSocket:{},
         isStop:false
       }
@@ -94,6 +94,7 @@
           this.isStop=true;
         }else{
           this.realData = json.result;
+          this.isStop=false;
          /* console.log("转向灯---"+this.realData.turnLight)*/
         }
       },
@@ -121,9 +122,6 @@
       },
       onerror(event){
         console.error("WebSocket error observed:", event);
-      },
-      getRouteStartTime(routeStartTime){
-        this.routeStartTime=routeStartTime.toString();
       }
     },
     mounted () {
