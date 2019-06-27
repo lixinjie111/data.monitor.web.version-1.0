@@ -596,7 +596,7 @@
     },
     destroyed(){
       //销毁Socket
-      this.websocket.close();
+      this.webSocket.close();
     }
   }
 </script>
