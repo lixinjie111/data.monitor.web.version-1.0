@@ -83,6 +83,8 @@ export default {
                 _allPointDataLength = allPointData.length;
             if(_responseDataDrawLength > 0) {
                 for(let m = 0; m < _this.responseDataDraw.length; m++) {
+                    _this.responseDataDraw[m].marker.off('click', _this.showView);
+                    _this.responseDataDraw[m].platNoMarker.off('click', _this.showView);
                     _this.AMap.remove(_this.responseDataDraw[m].marker);
                     _this.AMap.remove(_this.responseDataDraw[m].platNoMarker);
                 }
@@ -100,7 +102,8 @@ export default {
                     icon: "static/images/car/point.png",
                     offset: new AMap.Pixel(-2, -2),
                     angle: _data.heading,
-                    zIndex: 50
+                    zIndex: 50,
+                    vehicleId: _data.vehicleId
                 });
                 _markerObj.platNoMarker = new AMap.Text({
                     map: _this.AMap,
@@ -119,8 +122,12 @@ export default {
                         'margin-top': '14px',  //车头
                         'color': '#ccc'
                     },
-                    position: _data.position
+                    position: _data.position,
+                    vehicleId: _data.vehicleId
                 });
+                _markerObj.marker.on('click', _this.showView);
+                _markerObj.platNoMarker.on('click', _this.showView);
+
                 _this.responseDataDraw.push(_markerObj);
 
                 if(i == _allPointDataLength - 1) {
@@ -135,6 +142,15 @@ export default {
                     }, 0);
                 }
             }
+        },
+        showView(e) {
+            const { href } = this.$router.resolve({
+                name: 'SingleCarMonitor',
+                params: {
+                    vehicleId: e.target.get("vehicleId")
+                }
+            })
+            window.open(href, '_blank')
         },
         onclose(data){
             // console.log("结束--vehicleOnline--连接");

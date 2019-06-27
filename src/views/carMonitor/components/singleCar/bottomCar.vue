@@ -177,6 +177,10 @@
         var _self = this;
         var initOption = this.getOption();
         var option = {
+          grid:{
+            left:32,
+            bottom: 40
+          },
           yAxis: {
             type: 'value',
             splitLine: {
@@ -224,6 +228,10 @@
         var _self = this;
         var initOption = this.getOption();
         var option = {
+          grid:{
+            left:20,
+            bottom: 40
+          },
           yAxis: {
             type: 'value',
             splitLine: {
@@ -267,9 +275,6 @@
       },
       getOption(){
         let option = {
-          grid:{
-            left:40
-          },
           animation: false,
           xAxis: {
             type: 'category',
