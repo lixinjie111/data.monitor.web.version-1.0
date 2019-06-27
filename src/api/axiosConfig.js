@@ -65,7 +65,7 @@ function axiosFilter(vm) {
                 //     break;
                 // }
                 default: {
-                    vm.$message.error(response.data.message || '操作失败');
+                    vm.$message.error(response.data.message || response.data || '操作失败');
                     // vm.$message.error('操作失败');
                     return Promise.reject(response);
                 }

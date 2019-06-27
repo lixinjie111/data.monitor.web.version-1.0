@@ -1,7 +1,7 @@
 <template>
 <div class="car-view-wrapper clearfix">
     <div class="single-left">
-        <left-car ></left-car>
+        <left-car :isStop="isStop"></left-car>
     </div>
     <div class="single-main">
         <div class="single-header">
@@ -10,10 +10,10 @@
         <div class="single-content ">
             <div class="single-content-left">
               <div class="single-content-top" :class="{'stop-style':false}">
-                  <main-car :real-data="realData" :isStop="false"></main-car>
+                  <main-car :real-data="realData" :isStop="isStop"></main-car>
               </div>
               <div class="single-content-bottom">
-                  <bottom-car ></bottom-car>
+                  <bottom-car></bottom-car>
               </div>
               <div class="stop-left-style" v-show="false">
                 <div class="stop-left-text">
@@ -29,7 +29,7 @@
               </div>
             </div>
             <div class="single-content-right">
-                <right-car :isStop="false"></right-car>
+                <right-car :isStop="isStop"></right-car>
             </div>
         </div>
     </div>
@@ -126,6 +126,9 @@
     },
     mounted () {
       this.initWebSocket();
+      // setTimeout(() => {
+      //   this.isStop = true;
+      // }, 5000);
     },
     destroyed(){
       //销毁Socket
@@ -250,7 +253,7 @@
     left: 0;
     top: 0;
     right: 0;
-    bottom: 220px;
+    bottom: 200px;
   }
   .stop-style{
     bottom:0!important;
@@ -261,7 +264,7 @@
     left: 15px;
     bottom: 0;
     right: 0;
-    height: 220px;
+    height: 200px;
   }
   .distance-detail{
     display: inline-block;

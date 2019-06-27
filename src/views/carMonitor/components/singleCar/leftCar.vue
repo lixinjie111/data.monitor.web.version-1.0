@@ -96,6 +96,10 @@
   export default {
     name: "LeftCar", // 实时数据
     props:{
+      isStop: {
+        type: Boolean,
+        default: false
+      },
       path: {
         type: Array,
         default() {
@@ -118,9 +122,9 @@
         drivingStatistics:{},
         singleVehicle:{},
 
-        distanceMap:{}, //创建的地图对象
+        distanceMap: null, //创建的地图对象
         prevLastPointPath:[],//上次请求的终点，
-        carStartPoint:this.$parent.defaultCenterPoint,
+        carStartPoint:this.$parent.$parent.defaultCenterPoint,
         routeId: "",
         pointPath:[],//整个行程路径
         markers: {
@@ -136,7 +140,6 @@
 
         zoom: 11,
         // direction: 0,  //航向角--方向
-        routeInfo: {},
         // mapTimestamp: 0,
         wholePath: [],
 
@@ -150,24 +153,39 @@
             'vehicleId': '',
             'scale': 0,
             'all': 1
-        }
+        },
+        routeInfo: {}
       }
     },
     computed: {
-        filterData() {
-            let _filterData = {};
-            for(let attr in this.drivingStatistics) {
-              if(attr=='tripNums'){
-                _filterData[attr] = parseFloat(this.drivingStatistics[attr]).toLocaleString() || '--';
-              }else{
-                _filterData[attr] = parseFloat(this.drivingStatistics[attr]).toFixed(1).toLocaleString() || '--';
-              }
+      filterData() {
+          let _filterData = {};
+          for(let attr in this.drivingStatistics) {
+            if(attr=='tripNums'){
+              _filterData[attr] = parseFloat(this.drivingStatistics[attr]).toLocaleString() || '--';
+            }else{
+              _filterData[attr] = parseFloat(this.drivingStatistics[attr]).toFixed(1).toLocaleString() || '--';
             }
-            return _filterData;
-        }
+          }
+          return _filterData;
+      }
     },
     watch: {
       deep: true,
+      isStop(newVal,oldVal) {
+        if(newVal){
+          console.log("行程结束--初始化地图数据");
+          this.initDistanceMap();
+          this.routeInfo = {
+            routeStartTime: "",
+            durationTime: "",
+            mileage: "",
+            avgSpd: ""
+          };
+
+          // this.webSocket.close();
+        }
+      },
       handleZoom(newVal, oldVal){
           // this.all = 1;  //可以不用重绘
 
@@ -187,7 +205,30 @@
         }
       }
     },
+    mounted () {
+      this.initMap();
+      // var roadNetLayer =  new AMap.TileLayer.RoadNet();
+      // this.distanceMap.add(roadNetLayer);
+      this.initWebSocket();
+
+      this.getBaseData();
+      this.getDrivingStatistics();
+
+      setTimeout(() => {
+        this.isStopHandle = true;
+      }, 2000);
+    },
     methods: {
+      initMap() {
+        this.distanceMap = new AMap.Map("distanceContainer", {
+          center: this.carStartPoint,
+          zoom: this.zoom,
+          zooms: [11, 16],
+          mapStyle:'amap://styles/7b007636f01d8a19e9cc2841a85dc083'
+        });
+
+        // console.log(this.$parent.$parent.defaultCenterPoint, this.zoom);
+      },
       getRunTime(nS) {
         nS = nS / 1000;
         var year = Math.floor(nS / 86400 / 365);
@@ -242,13 +283,14 @@
       //重绘形成初始化
       initDistanceMap(){
         this.prevLastPointPath = [];//上次请求的终点，
-        this.carStartPoint = this.$parent.defaultCenterPoint;
+        this.carStartPoint = this.$parent.$parent.defaultCenterPoint;
         this.routeId = "";
         this.pointPath = [];
         // this.direction = 0;
         // this.times = 1;
         this.scale = 10;
         this.all = 1;
+        // this.zoom = 11;
 
         // this.mapTimestamp = 0;
         this.wholePath = [];
@@ -257,13 +299,20 @@
 
         this.distanceMap.remove(this.markers.polyline);
         this.markers.polyline = [];
-        this.distanceMap.remove(this.markers.markerStart);
-        this.markers.markerStart = null;
-        this.distanceMap.remove(this.markers.markerEnd);
-        this.markers.markerEnd = null;
+        if(this.markers.markerStart) {
+          this.distanceMap.remove(this.markers.markerStart);
+          this.markers.markerStart = null;
+        }
+        if(this.markers.markerEnd) {
+          this.distanceMap.remove(this.markers.markerEnd);
+          this.markers.markerEnd = null;
+        }
 
         this.webSocketData.scale = this.scale;
         this.webSocketData.all = this.all;
+        // console.log(this.$parent.$parent.defaultCenterPoint, this.zoom);
+        // this.distanceMap.setCenter(this.$parent.$parent.defaultCenterPoint);
+        // this.distanceMap.setZoom(this.zoom);
 
         this.webSocket.send(JSON.stringify(this.webSocketData));
       },
@@ -322,7 +371,7 @@
             offset: new AMap.Pixel(-20, -10),
             autoRotation: true,
             // angle: _this.direction-90
-            angle: _this.wholePath[_this.count].angle-90
+            angle: _this.wholePath[_this.count].angle ? _this.wholePath[_this.count].angle-90 : 0
           });
           // 将创建的点标记添加到已有的地图实例：
           this.distanceMap.add(_this.markers.markerEnd);
@@ -537,31 +586,6 @@
         var bounds = new AMap.Bounds(minLnglat, maxLnglat);
         return bounds;
       }
-    },
-    /*watch:{
-
-      'routeInfo.routeStartTime': {
-        handler(newValue, oldValue) {
-          this.$emit("getRouteStartTime",newValue);
-        }
-
-      }
-
-    },*/
-    mounted () {
-      var _this = this;
-      this.distanceMap = new AMap.Map("distanceContainer", {
-        center: _this.carStartPoint,
-        zoom: _this.zoom,
-        zooms: [11, 16],
-        mapStyle:'amap://styles/7b007636f01d8a19e9cc2841a85dc083'
-      });
-      // var roadNetLayer =  new AMap.TileLayer.RoadNet();
-      // this.distanceMap.add(roadNetLayer);
-      this.initWebSocket();
-
-      this.getBaseData();
-      this.getDrivingStatistics();
     },
     destroyed(){
       //销毁Socket
