@@ -323,7 +323,6 @@
         warningData:{},
         vehicleId: this.$route.params.vehicleId,
         whetherData:{},
-        vehicleCount:0,
         cloudCount:0,
         headingAngle:0,
         isInit:true,
@@ -339,11 +338,13 @@
         count: 0,
         startTime:'',
         lightData:{
-          /*'1':{spareTime:10,time:null,lightColor:'yellow',flag:true},
-          '2':{spareTime:10,time:null,lightColor:'red',flag:true},
-          '3':{spareTime:10,time:null,lightColor:'green',flag:true},
+          /*'1':{spareTime:10,time:null,lightColor:'YELLOW',flag:true},
+          '2':{spareTime:10,time:null,lightColor:'RED',flag:true},
+          '3':{spareTime:10,time:null,lightColor:'GREEN',flag:true},
           '4':{spareTime:10,time:null,lightColor:'red',flag:true},*/
-        }
+        },
+        alertInit:true,
+        v2xInit:true
       }
     },
     props:{
@@ -354,9 +355,6 @@
         }
       },
       time:{
-        type:String
-      },
-      routeStartTime:{
         type:String
       },
       isStop:{
@@ -389,13 +387,6 @@
     },
     components:{
       SingleDialog
-    },
-    watch:{
-      routeStartTime(oldValue,newValue){
-        if(this.routeStartTime!=''){
-          this.startTime=this.routeStartTime;
-        }
-      }
     },
     methods: {
       getAngle(map,start, end) {
@@ -980,37 +971,33 @@
       },
       getAlarmInformation(){
         var param = {
-          "startTime": this.startTime,
           "vehicleId": this.vehicleId
         }
         getAlarmInformation(param).then(res=>{
           this.vehicleList=res.alarmInfoList;
+          if(this.alertInit){
+            this.vehicleCount = this.vehicleList.length;
+            this.alertInit=  false;
+          }
         })
       },
       getV2xInformation(){
         var param = {
-          "startTime": this.startTime,
-          /*"startTime": 0,*/
           "vehicleId": this.vehicleId
         }
         getV2xInformation(param).then(res=>{
           this.cloudList=res.earlyWarningInfoList;
+          if(this.v2xInit){
+            this.cloudCount = this.cloudList.length;
+            this.v2xInit=  false;
+          }
         })
       },
       getCloudEvent(){
-        console.log("startTime---"+this.startTime)
-        if(!this.startTime||this.startTime==""){
-          this.$message.error("本车行程未开始");
-          return;
-        }
         this.cloudDialog=true;
         this.getV2xInformation();
       },
       getVehicleEvent(){
-        if(!this.startTime||this.startTime==""){
-          this.$message.error("本车行程未开始");
-          return;
-        }
         this.vehicleDialog=true;
         this.getAlarmInformation();
       }
@@ -1028,6 +1015,9 @@
       this.initDeviceWebSocket();
       this.initWarningWebSocket();
       this.initLightWebSocket();
+      //云端和车端此次行程统计
+      this.getV2xInformation();
+      this.getAlarmInformation();
     },
     destroyed(){
       //销毁Socket

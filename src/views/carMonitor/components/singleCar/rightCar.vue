@@ -119,6 +119,8 @@
         if(this.isStop){
           this.playerOptions.sources[0].src='';
           this.carsDataformate=[];
+        }else {
+          this.getDeviceInfo();
         }
       }
     },

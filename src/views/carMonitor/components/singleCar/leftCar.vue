@@ -203,13 +203,6 @@
           this.webSocket.send(JSON.stringify(this.webSocketData));
           console.log("all=0, chang，重新发起服务");
         }
-      },
-      'routeInfo.routeStartTime': {
-        handler(newValue, oldValue) {
-          if(newValue) {
-            this.$emit("getRouteStartTime",newValue);
-          };
-        }
       }
     },
     mounted () {
@@ -745,7 +738,7 @@
     color: #ddd9d1;
     text-align: left;
     padding: 0 20px 0 20px;
-    width: 160px;
+    width: 210px;
     &:first-child {
       width: 230px;
     }
