@@ -630,6 +630,7 @@
     height: 50px;
     background: #423e4e;
     letter-spacing: 1px;
+
   }
   .car-detail{
     font-size: 16px;
@@ -637,6 +638,8 @@
     line-height: 50px;
     display: block;
     padding-left: 5%;
+    font-family: MicrosoftYaHei;
+    letter-spacing: 2px;
   }
   .car-level{
     font-size: 16px;
@@ -706,6 +709,7 @@
     font-family: carFont;
     color: #33b175;
     font-size: 14px;
+    letter-spacing: 2px;
   }
   .text-style{
     color: #b8b5ae;

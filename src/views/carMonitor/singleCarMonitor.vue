@@ -9,13 +9,13 @@
         </div>
         <div class="single-content ">
             <div class="single-content-left">
-              <div class="single-content-top" :class="{'stop-style':false}">
+              <div class="single-content-top" :class="{'stop-style':isStop}">
                   <main-car :real-data="realData" :isStop="isStop"></main-car>
               </div>
               <div class="single-content-bottom">
                   <bottom-car></bottom-car>
               </div>
-              <div class="stop-left-style" v-show="false">
+              <div class="stop-left-style" v-show="isStop">
                 <div class="stop-left-text">
                   <div class="stop-highlight">
                     <span></span>
@@ -87,6 +87,7 @@
         var data = json.result;
 
         if(data.transmission=='P'){
+          console.log("data.transmission========"+data.transmission);
           this.realData.transmission='P';
           this.realData.oilDoor=0;
           this.realData.brakePedal=0;
@@ -126,9 +127,9 @@
     },
     mounted () {
       this.initWebSocket();
-      // setTimeout(() => {
-      //   this.isStop = true;
-      // }, 5000);
+       /*setTimeout(() => {
+         this.isStop = true;
+       }, 5000);*/
     },
     destroyed(){
       //销毁Socket
