@@ -232,11 +232,10 @@
             left:20,
             bottom: 40
           },
-          xAxis: {
-            position: 'bottom'
-          },
           yAxis: {
-            type: 'value',
+            // type: 'value',
+            type: 'category',
+            boundaryGap : false,
             splitLine: {
               lineStyle:{
                 color: '#918d84',
@@ -253,8 +252,9 @@
             axisLabel:{
               color:'#918d84'
             },
-            min: -3,
-            max: 3
+            // min: -3,
+            // max: -3
+            data: [-3, -2, -1, 0, 1, 2, 3]
           },
           series: [
             {
@@ -630,6 +630,10 @@
       //速度和加速度
       _this.speedChart = _this.$echarts.init(document.getElementById('speedChart'));
       _this.accelerateChart = _this.$echarts.init(document.getElementById('accelerateChart'));
+
+      // this.xData = new Array(1,2,3,4,5);
+      // this.accelerateData = [1,2,0,-3,-1];
+      // this.getAccelerateChart();
       _this.initWebSocket();
       _this.realReportWebSocket();
     },
