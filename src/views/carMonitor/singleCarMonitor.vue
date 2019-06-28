@@ -142,6 +142,10 @@
     margin: 200px 500px;
     text-align: center;
     color: #dc8c00;
+    width: 340px;
+    margin-top:20%;
+    margin-left:auto;
+    margin-right: auto;
   }
   .stop-highlight{
     font-size: 48px;

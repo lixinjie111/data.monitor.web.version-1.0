@@ -300,6 +300,7 @@
   import SingleDialog from '@/views/carMonitor/components/singleCar/dialog.vue'
   import { getAlarmInformation,getV2xInformation } from '@/api/carMonitor'
   import DateFormat from '@/assets/js/utils/date.js'
+  import ConvertCoord from '@/assets/js/utils/coordConvert.js'
   export default {
     name:"main-car",
     data () {
@@ -424,13 +425,10 @@
         var json = JSON.parse(mesasge.data);
         var data = json.result;
         var type = json.action;
-        /*if(_this.hostCount==0){
-          _this.hostCount++;*/
           var position = new AMap.LngLat(data.longitude,data.latitude);
           var newPosition;
           var platNo;
           var source="";
-          // console.log("单车监控地图获取数据---------------------------------------------");
           // let _nowtime = new Date().getTime();
           // console.log(_nowtime, json.time, data.gpsTime, json.time-_nowtime, data.gpsTime-_nowtime);
           if(_this.isInit){
@@ -440,9 +438,10 @@
             })
             source = source.substring(0,source.lastIndexOf(","));
           }
-          AMap.convertFrom(position, 'gps', function (status, result) {
-            if (result.info === 'ok') {
-              newPosition = result.locations[0];
+          /*AMap.convertFrom(position, 'gps', function (status, result) {
+            if (result.info === 'ok') {*/
+//              newPosition = result.locations[0];
+              newPosition = ConvertCoord.wgs84togcj02(data.longitude, data.latitude);
               if(_this.isInit){
                 _this.marker = new AMap.Marker({
                   map:_this.distanceMap,
@@ -498,13 +497,6 @@
               //所要移动的位置
               _this.marker.moveTo(newPosition,data.speed);
               _this.platNoMarker.moveTo(newPosition,data.speed);
-              /*_this.marker.on('moveend', function(e) {
-                _this.hostCount=0;
-              });*/
-
-            }
-          })
-        /*}*/
 
       },
       onclose(data){
@@ -555,7 +547,9 @@
               vehicleId:item.vehicleId,
               position:new AMap.LngLat(item.longitude, item.latitude),
               heading:item.heading,
-              speed:item.speed
+              speed:item.speed,
+              longitude:item.longitude,
+              latitude: item.latitude
 
             }
 //            console.log("旁车的经纬度----"+option.position);
@@ -578,12 +572,13 @@
               _this.sideVehicleObj[id].flag=false;
             }
           }
-          var c = 0;
           resultData.forEach(function (item,index,arr) {
-            AMap.convertFrom(resultData[index].position, 'gps', function (status, result) {
+//            AMap.convertFrom(resultData[index].position, 'gps', function (status, result) {
 //                console.log("count----"+_this.count+"====status=="+status+"位置---"+resultData[index].position);
-                if (result.info === 'ok') {
-                  resultData[index].position = result.locations[0];
+//                if (result.info === 'ok') {
+//                  resultData[index].position = result.locations[0];
+                  resultData[index].position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
+//                  console.log("position-----"+ resultData[index].position+"----vehicleId---"+item.vehicleId)
                   _this.count++;
                   if(_this.count == arr.length+1){
                     resultData.forEach((subItem, subIndex, subArr)=>{
@@ -592,9 +587,11 @@
                         if(_this.sideVehicleObj[subItem.vehicleId].flag) {
                           sideCar.marker.setAngle(subItem.heading);
                           sideCar.marker.moveTo(subItem.position, subItem.speed);
+//                          _this.sideVehicleObj[subItem.vehicleId].platNo.moveTo(subItem.position, subItem.speed);
                         }else{
                           sideCar.marker.setAngle(subItem.heading);
                           sideCar.marker.setPosition(subItem.position);
+//                          _this.sideVehicleObj[subItem.vehicleId].platNo.setPosition(subItem.position);
                           sideCar.marker.show();
                           _this.sideVehicleObj[subItem.vehicleId].flag=true;
                         }
@@ -609,7 +606,26 @@
                           title: '北京',
                           angle: subItem.heading
                         });
+                     /*   _this.sideVehicleObj[subItem.vehicleId].platNo = new AMap.Text({
+                          text: subItem.vehicleId,
+                          map: _this.distanceMap,
+                          anchor: 'center', // 设置文本标记锚点
+                          style: {
+                            'padding': '0 5px',
+                            'border-radius': '4px',
+                            'background-color': 'rgba(55, 186, 123, .2)',
+                            'border-width': 0,
+                            'text-align': 'center',
+                            'font-size': '10px',
+                            'line-height': '16px',
+                            'letter-spacing': '0',
+                            'margin-top': '-36px', //车头
+                            'color': '#ccc'
+                          }
+                        });
+                        _this.sideVehicleObj[subItem.vehicleId].platNo.setPosition(subItem.position);*/
                         _this.distanceMap.add(_this.sideVehicleObj[subItem.vehicleId].marker);
+
                       }
 
                       if(subIndex == subArr.length - 1) {
@@ -619,8 +635,8 @@
                       }
                     })
                   }
-                }
-              })
+                /*}
+              })*/
 
         });
         }
