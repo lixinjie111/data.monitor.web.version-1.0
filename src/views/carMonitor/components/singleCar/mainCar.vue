@@ -1246,7 +1246,7 @@
     font-family: carFont;
     color: #37ba7b;
     font-size: 16px;
-    letter-spacing: 1px;
+    letter-spacing: 4px;
   }
   .pre-warning{
     overflow: hidden;
