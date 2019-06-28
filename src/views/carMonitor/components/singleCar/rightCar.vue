@@ -30,11 +30,11 @@
       </div>
     </div>
     <div class="monitor-perception right-title">
-      <div class="car-container" :style="{transform:'rotate(-'+currentCar.headingAngle+'deg)'}">
+      <div class="car-container" :style="{transform:'rotate(-'+currentCar.heading+'deg)'}">
         <!-- <img src="@/assets/images/car/car-11.png" class="host-vehicle" :style="{left:screenConfig.scrWidth/2-10+'px',top:screenConfig.scrHeight*3/4-13+'px'}"/> -->
-        <img src="@/assets/images/car/car-11.png" class="host-vehicle" :style="{transform:'rotate('+currentCar.headingAngle+'deg)'}"/>
+        <img src="@/assets/images/car/car-11.png" class="host-vehicle" :style="{transform:'rotate('+currentCar.heading+'deg)'}"/>
         <div class="otherCarsContainer">
-          <div class="item" v-for="(carItem,index) in carsDataformate" :style="{left:carItem.Sx+'px',top:carItem.Sy+'px',transform:'rotate('+carItem.headingAngle+'deg)'}">
+          <div class="item" v-for="(carItem,index) in carsDataformate" :style="{left:carItem.Sx+'px',top:carItem.Sy+'px',transform:'rotate('+carItem.heading+'deg)'}">
               <img src="@/assets/images/car/car-17.png" class="car-position1"/>
           </div>
         </div>
@@ -277,7 +277,7 @@
               return;
           }
           // 实例化socket
-          this.socket = new WebSocket(window.cfg.websocketUrl)
+          this.socket = new WebSocket(window.cfg.socketUrl)
           // 监听socket连接
           this.socket.onopen = this.openSocket
           // 监听socket错误信息
@@ -290,7 +290,7 @@
       },
       sendMsg(){
           var params = {
-                  action:'vehicleRadar',
+                  action:'vehPer',
                   vehicleId:this.vehicleId
               }
           this.socket.send(JSON.stringify(params));
@@ -303,12 +303,14 @@
 //        console.log("感知事件----")
           var that = this;
           var res = JSON.parse(msg.data);
-          this.currentCar = {
-            longitude: res.result.longitude,
-            latitude: res.result.latitude,
-            headingAngle: res.result.headingAngle
-          };
-          this.carsData = res.result.liveRadarDetailList ? res.result.liveRadarDetailList : [];
+          // let _currentCar = res.result.data.vechicleInfo;
+          // this.currentCar = {
+          //   longitude: _currentCar.longitude,
+          //   latitude: _currentCar.latitude,
+          //   heading: _currentCar.heading
+          // };
+          this.currentCar = res.result.data.vechicleInfo;
+          this.carsData = res.result.data.liveRadarDetailList ? res.result.data.liveRadarDetailList : [];
       },
       close(){
           console.log('Socket已经关闭');
@@ -343,9 +345,9 @@
               // console.log('SX',Ssx,'Sy',Ssy)
 
           //判断是否需要旋转坐标
-          // if(this.currentCar.headingAngle != 0){
-          //     //var rotatedData = this.rotateCoordinateAxis(Sx,Sy,this.currentCar.headingAngle);
-          //     var rotatedData = this.rotateCoordinateAxis(Ssx,Ssy,this.currentCar.headingAngle);
+          // if(this.currentCar.heading != 0){
+          //     //var rotatedData = this.rotateCoordinateAxis(Sx,Sy,this.currentCar.heading);
+          //     var rotatedData = this.rotateCoordinateAxis(Ssx,Ssy,this.currentCar.heading);
           //     Sx = srcCenterPtX + rotatedData.s;
           //     Sy = srcCenterPtY + rotatedData.t;
           // }

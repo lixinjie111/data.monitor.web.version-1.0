@@ -2,6 +2,7 @@
     <div class="c-view-main" :id="id"></div>
 </template>
 <script>
+import ConvertCoord from '@/assets/js/utils/coordConvert.js'
 export default {
     name: "MapContainer",
     data () {
@@ -45,6 +46,7 @@ export default {
                 _result = _json.result.allVehicle;
             if(_this.flag) {
                 // console.log("绘制前--------");
+                // console.log(_result.length);
                 _this.flag = false;
                 let _responseData = _result.map( item => {
                     let _option = {
@@ -52,30 +54,34 @@ export default {
                         platNo: item.platNo,
                         source: item.source.join(','),
                         heading: item.heading,
-                        position: new AMap.LngLat(item.longitude, item.latitude)
+                        // position: new AMap.LngLat(item.longitude, item.latitude)
+                        position: [item.longitude, item.latitude]
                     };
                     return _option;
                 });
-                // console.log(_responseData.length);
                 _this.changeLngLat(_responseData);
             }
         },
         changeLngLat(_allPointData){
             let _this = this;
-            _allPointData.forEach((item, index, arr) => {
-                AMap.convertFrom(_allPointData[index].position, 'gps', function (status, result){
-                    // console.log(result.info);
-                    if (result.info === 'ok') {
-                        let _point = result.locations[0];
-                        _allPointData[index].position = _point;
-                        _this.count ++;
-                        if(_this.count == arr.length) {
-                            //绘制线的轨迹
-                            _this.drawMarker(_allPointData);
-                        }
+                    // console.log(_this.count);
+            // _allPointData.forEach((item, index, arr) => {
+            for( let i = 0; i < _allPointData.length; i++){
+                // console.log(_allPointData[i].position);
+                (function(itemIndex){
+                    let _position = ConvertCoord.wgs84togcj02(_allPointData[itemIndex].position[0], _allPointData[itemIndex].position[1]);
+                    _allPointData[itemIndex].position = _position;
+
+                    // console.log(itemIndex);
+                    // console.log(_this.count);
+                    _this.count ++;
+                    if(_this.count == _allPointData.length) {
+                        //绘制线的轨迹
+                        _this.drawMarker(_allPointData);
                     }
-                });
-            });
+                })(i);
+            };
+            // });
         },
         drawMarker(allPointData) {
             let _this = this,
@@ -91,44 +97,46 @@ export default {
                 _this.responseDataDraw = [];
             }
             for(let i = 0; i < _allPointDataLength; i++) {
-                let _data = allPointData[i],
-                    _markerObj = {
+                let _data = allPointData[i];
+                if(_data.position) {
+                    let _markerObj = {
                         marker: null,
                         platNoMarker: null
                     };
-                _markerObj.marker = new AMap.Marker({
-                    map: _this.AMap,
-                    position: _data.position,
-                    icon: "static/images/car/point.png",
-                    offset: new AMap.Pixel(-2, -2),
-                    angle: _data.heading,
-                    zIndex: 50,
-                    vehicleId: _data.vehicleId
-                });
-                _markerObj.platNoMarker = new AMap.Text({
-                    map: _this.AMap,
-                    text: _data.platNo+"<br/><span style='color:#e6a23c'>"+_data.source+'</span>',
-                    // text: '京N123456',
-                    anchor: 'center', // 设置文本标记锚点
-                    style: {
-                        'padding': '0 5px',
-                        'border-radius': '4px',
-                        'background-color': 'rgba(55, 186, 123, .2)',
-                        'border-width': 0,
-                        'text-align': 'center',
-                        'font-size': '10px',
-                        'line-height': '16px',
-                        'letter-spacing': '0',
-                        'margin-top': '14px',  //车头
-                        'color': '#ccc'
-                    },
-                    position: _data.position,
-                    vehicleId: _data.vehicleId
-                });
-                _markerObj.marker.on('click', _this.showView);
-                _markerObj.platNoMarker.on('click', _this.showView);
+                    _markerObj.marker = new AMap.Marker({
+                        map: _this.AMap,
+                        position: _data.position,
+                        icon: "static/images/car/point.png",
+                        offset: new AMap.Pixel(-2, -2),
+                        angle: _data.heading,
+                        zIndex: 50,
+                        vehicleId: _data.vehicleId
+                    });
+                    _markerObj.platNoMarker = new AMap.Text({
+                        map: _this.AMap,
+                        text: _data.platNo+"<br/><span style='color:#e6a23c'>"+_data.source+'</span>',
+                        // text: '京N123456',
+                        anchor: 'center', // 设置文本标记锚点
+                        style: {
+                            'padding': '0 5px',
+                            'border-radius': '4px',
+                            'background-color': 'rgba(55, 186, 123, .2)',
+                            'border-width': 0,
+                            'text-align': 'center',
+                            'font-size': '10px',
+                            'line-height': '16px',
+                            'letter-spacing': '0',
+                            'margin-top': '14px',  //车头
+                            'color': '#ccc'
+                        },
+                        position: _data.position,
+                        vehicleId: _data.vehicleId
+                    });
+                    _markerObj.marker.on('click', _this.showView);
+                    _markerObj.platNoMarker.on('click', _this.showView);
 
-                _this.responseDataDraw.push(_markerObj);
+                    _this.responseDataDraw.push(_markerObj);
+                }
 
                 if(i == _allPointDataLength - 1) {
                     if(_this.setFitViewFlag) {
