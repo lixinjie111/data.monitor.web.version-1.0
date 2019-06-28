@@ -233,9 +233,9 @@
             bottom: 40
           },
           yAxis: {
-            // type: 'value',
-            type: 'category',
-            boundaryGap : false,
+            type: 'value',
+            // type: 'log',
+            // boundaryGap : false,
             splitLine: {
               lineStyle:{
                 color: '#918d84',
@@ -252,9 +252,9 @@
             axisLabel:{
               color:'#918d84'
             },
-            // min: -3,
-            // max: -3
-            data: [-3, -2, -1, 0, 1, 2, 3]
+            min: -3,
+            max: 3
+            // data: [-3, -2, -1, 0, 1, 2, 3]
           },
           series: [
             {
