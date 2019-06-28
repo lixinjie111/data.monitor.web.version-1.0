@@ -232,6 +232,9 @@
             left:20,
             bottom: 40
           },
+          xAxis: {
+            position: 'bottom'
+          },
           yAxis: {
             type: 'value',
             splitLine: {
@@ -329,7 +332,7 @@
       initWebSocket(){
         let _this=this;
         if ('WebSocket' in window) {
-          _this.webSocket = new WebSocket(window.cfg.websocketUrl);  //获得WebSocket对象
+          _this.webSocket = new WebSocket(window.cfg.socketUrl);  //获得WebSocket对象
         }
         _this.webSocket.onmessage = _this.onmessage;
         _this.webSocket.onclose = _this.onclose;
@@ -393,7 +396,7 @@
 
         //获取速度加速度
         var speed = {
-          'action':'speedAcceleration',
+          'action':'track',
           /*'vid':this.vehicleID,*/
           'vehicleId':this.vehicleId
         }
@@ -633,7 +636,7 @@
     destroyed(){
       //销毁Socket
       this.reportWebSocket.close();
-      this.websocket.close();
+      this.webSocket.close();
     }
   }
 </script>

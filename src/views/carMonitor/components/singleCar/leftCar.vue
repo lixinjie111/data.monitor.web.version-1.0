@@ -223,9 +223,10 @@
         this.distanceMap = new AMap.Map("distanceContainer", {
           center: this.carStartPoint,
           zoom: this.zoom,
-          zooms: [11, 16],
+          // zooms: [11, 16],
           mapStyle:'amap://styles/7b007636f01d8a19e9cc2841a85dc083'
         });
+        // console.log(this.distanceMap.getZoom());
 
         // console.log(this.$parent.$parent.defaultCenterPoint, this.zoom);
       },
