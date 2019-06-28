@@ -20,7 +20,7 @@
     </div>
     <div class="spat-detail">
       <div  v-for="(item,key) in lightData" class="spat-layout" :key="key">
-        <div v-show="key==3&&item.flag" class="spat-detail-style">
+        <div v-show="key=='key_3'&&item.flag" class="spat-detail-style">
           <div class="spat-detail-img" >
             <img src="@/assets/images/car/light/turn-yellow.png" v-show="item.lightColor=='YELLOW'"/>
             <img src="@/assets/images/car/light/turn-red.png" v-show="item.lightColor=='RED'"/>
@@ -28,7 +28,7 @@
           </div>
           <span class="spat-detail-font" :class="[item.lightColor=='YELLOW' ? 'light-yellow' : item.lightColor=='RED'?'light-red':'light-green']">{{item.spareTime}}</span>
         </div>
-        <div v-show="key==2&&item.flag" class="spat-detail-style">
+        <div v-show="key=='key_2'&&item.flag" class="spat-detail-style">
           <div class="spat-detail-img">
             <img src="@/assets/images/car/light/left-yellow.png" v-show="item.lightColor=='YELLOW'"/>
             <img src="@/assets/images/car/light/left-red.png" v-show="item.lightColor=='RED'"/>
@@ -36,7 +36,7 @@
           </div>
           <span class="spat-detail-font" :class="[item.lightColor=='YELLOW' ? 'light-yellow' : item.lightColor=='RED'?'light-red':'light-green']">{{item.spareTime}}</span>
         </div>
-        <div v-show="key==1&&item.flag" class="spat-detail-style">
+        <div v-show="key=='key_1'&&item.flag" class="spat-detail-style">
           <div class="spat-detail-img spat-straight">
             <img src="@/assets/images/car/light/left-yellow.png" v-show="item.lightColor=='YELLOW'" />
             <img src="@/assets/images/car/light/left-red.png" v-show="item.lightColor=='RED'"/>
@@ -44,7 +44,7 @@
           </div>
           <span class="spat-detail-font" :class="[item.lightColor=='YELLOW' ? 'light-yellow' : item.lightColor=='RED'?'light-red':'light-green']">{{item.spareTime}}</span>
         </div>
-        <div v-show="key==4&&item.flag" class="spat-detail-style">
+        <div v-show="key=='key_4'&&item.flag" class="spat-detail-style">
           <div class="spat-detail-img spat-right">
             <img src="@/assets/images/car/light/left-yellow.png" v-show="item.lightColor=='YELLOW'"/>
             <img src="@/assets/images/car/light/left-red.png" v-show="item.lightColor=='RED'"/>
@@ -300,6 +300,7 @@
   import SingleDialog from '@/views/carMonitor/components/singleCar/dialog.vue'
   import { getAlarmInformation,getV2xInformation } from '@/api/carMonitor'
   import DateFormat from '@/assets/js/utils/date.js'
+  import ConvertCoord from '@/assets/js/utils/coordConvert.js'
   export default {
     name:"main-car",
     data () {
@@ -336,12 +337,17 @@
         event:[],
         count: 0,
         lightCount:0,
+        hostCount:0,
         startTime:'',
         lightData:{
          /* '3':{spareTime:10,time:null,lightColor:'GREEN',flag:true},
           '2':{spareTime:10,time:null,lightColor:'RED',flag:true},
           '1':{spareTime:10,time:null,lightColor:'YELLOW',flag:true},
           '4':{spareTime:10,time:null,lightColor:'RED',flag:true},*/
+          'key_3':{},
+          'key_2':{},
+          'key_1':{},
+          'key_4':{}
         },
         alertInit:true,
         v2xInit:true,
@@ -419,80 +425,79 @@
         var json = JSON.parse(mesasge.data);
         var data = json.result;
         var type = json.action;
-        var position = new AMap.LngLat(data.longitude,data.latitude);
-        var newPosition;
-        var platNo;
-        var source="";
-        // console.log("单车监控地图获取数据---------------------------------------------");
-        // let _nowtime = new Date().getTime();
-        // console.log(_nowtime, json.time, data.gpsTime, json.time-_nowtime, data.gpsTime-_nowtime);
-        if(_this.isInit){
-          platNo=data.platNo;
-          data.source.forEach(item=>{
-            source+=item+",";
-          })
-          source = source.substring(0,source.lastIndexOf(","));
-        }
-        AMap.convertFrom(position, 'gps', function (status, result) {
-          if (result.info === 'ok') {
-            newPosition = result.locations[0];
-            if(_this.isInit){
-              _this.marker = new AMap.Marker({
-                map:_this.distanceMap,
-                position: newPosition,
-                icon: 'static/images/car/car-6.png', // 添加 Icon 图标 URL
-                title: '北京',
-                zIndex:500
-              });
-             /* _this.marker.setLabel({
-//                offset: new AMap.Pixel(20, 20),  //设置文本标注偏移量
-                content: "<div class='car-info'>京N123456</div>", //设置文本标注内容
-                direction: 'left' //设置文本标注方位
-              });*/
-              _this.distanceMap.add(_this.marker);
-              _this.platNoMarker = new AMap.Text({
-                map: _this.distanceMap,
-                text: platNo+"<br/><span style='color:#e6a23c'>"+source+'</span>',
-                // text: '京N123456',
-                anchor: 'center', // 设置文本标记锚点
-                style: {
-                  'padding': '0 5px',
-                  'border-radius': '4px',
-                  'background-color': 'rgba(55, 186, 123, .2)',
-                  'border-width': 0,
-                  'text-align': 'center',
-                  'font-size': '10px',
-                  'line-height': '16px',
-                  'letter-spacing': '0',
-                  'margin-top': '-36px', //车头
-                  'color': '#ccc'
-                },
-                position: newPosition
-              });
-              _this.isInit=false;
-            }
-            //设置车的位置
-            var lastPosition = [];
-            if(_this.wholePath.length > 0 ) {
-              lastPosition = _this.wholePath[_this.wholePath.length-1];
-            }else{
-              lastPosition = newPosition;
-            }
-            //存放整个路径
-            _this.wholePath.push(newPosition);
-            _this.marker.setPosition(lastPosition);
-            _this.platNoMarker.setPosition(lastPosition);
-            //设置中心点
-            _this.distanceMap.panTo(newPosition);
-            //设置旋转角度
-            _this.headingAngle = data.heading;
-            _this.marker.setAngle(_this.headingAngle);
-           /* _this.platNoMarker.setAngle(_this.headingAngle);*/
-            //所要移动的位置
-            _this.marker.moveTo(newPosition,data.speed);
-            _this.platNoMarker.moveTo(newPosition,data.speed);
+          var position = new AMap.LngLat(data.longitude,data.latitude);
+          var newPosition;
+          var platNo;
+          var source="";
+          // let _nowtime = new Date().getTime();
+          // console.log(_nowtime, json.time, data.gpsTime, json.time-_nowtime, data.gpsTime-_nowtime);
+          if(_this.isInit){
+            platNo=data.platNo;
+            data.source.forEach(item=>{
+              source+=item+",";
+            })
+            source = source.substring(0,source.lastIndexOf(","));
           }
-        })
+          /*AMap.convertFrom(position, 'gps', function (status, result) {
+            if (result.info === 'ok') {*/
+//              newPosition = result.locations[0];
+              newPosition = ConvertCoord.wgs84togcj02(data.longitude, data.latitude);
+              if(_this.isInit){
+                _this.marker = new AMap.Marker({
+                  map:_this.distanceMap,
+                  position: newPosition,
+                  icon: 'static/images/car/car-6.png', // 添加 Icon 图标 URL
+                  title: '北京',
+                  zIndex:500
+                });
+                /* _this.marker.setLabel({
+   //                offset: new AMap.Pixel(20, 20),  //设置文本标注偏移量
+                   content: "<div class='car-info'>京N123456</div>", //设置文本标注内容
+                   direction: 'left' //设置文本标注方位
+                 });*/
+                _this.distanceMap.add(_this.marker);
+                _this.platNoMarker = new AMap.Text({
+                  map: _this.distanceMap,
+                  text: platNo+"<br/><span style='color:#e6a23c'>"+source+'</span>',
+                  // text: '京N123456',
+                  anchor: 'center', // 设置文本标记锚点
+                  style: {
+                    'padding': '0 5px',
+                    'border-radius': '4px',
+                    'background-color': 'rgba(55, 186, 123, .2)',
+                    'border-width': 0,
+                    'text-align': 'center',
+                    'font-size': '10px',
+                    'line-height': '16px',
+                    'letter-spacing': '0',
+                    'margin-top': '-36px', //车头
+                    'color': '#ccc'
+                  },
+                  position: newPosition
+                });
+                _this.isInit=false;
+              }
+              //设置车的位置
+              var lastPosition = [];
+              if(_this.wholePath.length > 0 ) {
+                lastPosition = _this.wholePath[_this.wholePath.length-1];
+              }else{
+                lastPosition = newPosition;
+              }
+              //存放整个路径
+              _this.wholePath.push(newPosition);
+              _this.marker.setPosition(lastPosition);
+              _this.platNoMarker.setPosition(lastPosition);
+              //设置中心点
+              _this.distanceMap.panTo(newPosition);
+              //设置旋转角度
+              _this.headingAngle = data.heading;
+              _this.marker.setAngle(_this.headingAngle);
+              /* _this.platNoMarker.setAngle(_this.headingAngle);*/
+              //所要移动的位置
+              _this.marker.moveTo(newPosition,data.speed);
+              _this.platNoMarker.moveTo(newPosition,data.speed);
+
       },
       onclose(data){
         console.log("结束连接");
@@ -542,7 +547,9 @@
               vehicleId:item.vehicleId,
               position:new AMap.LngLat(item.longitude, item.latitude),
               heading:item.heading,
-              speed:item.speed
+              speed:item.speed,
+              longitude:item.longitude,
+              latitude: item.latitude
 
             }
 //            console.log("旁车的经纬度----"+option.position);
@@ -565,12 +572,13 @@
               _this.sideVehicleObj[id].flag=false;
             }
           }
-          var c = 0;
           resultData.forEach(function (item,index,arr) {
-            AMap.convertFrom(resultData[index].position, 'gps', function (status, result) {
+//            AMap.convertFrom(resultData[index].position, 'gps', function (status, result) {
 //                console.log("count----"+_this.count+"====status=="+status+"位置---"+resultData[index].position);
-                if (result.info === 'ok') {
-                  resultData[index].position = result.locations[0];
+//                if (result.info === 'ok') {
+//                  resultData[index].position = result.locations[0];
+                  resultData[index].position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
+//                  console.log("position-----"+ resultData[index].position+"----vehicleId---"+item.vehicleId)
                   _this.count++;
                   if(_this.count == arr.length+1){
                     resultData.forEach((subItem, subIndex, subArr)=>{
@@ -579,9 +587,11 @@
                         if(_this.sideVehicleObj[subItem.vehicleId].flag) {
                           sideCar.marker.setAngle(subItem.heading);
                           sideCar.marker.moveTo(subItem.position, subItem.speed);
+//                          _this.sideVehicleObj[subItem.vehicleId].platNo.moveTo(subItem.position, subItem.speed);
                         }else{
                           sideCar.marker.setAngle(subItem.heading);
                           sideCar.marker.setPosition(subItem.position);
+//                          _this.sideVehicleObj[subItem.vehicleId].platNo.setPosition(subItem.position);
                           sideCar.marker.show();
                           _this.sideVehicleObj[subItem.vehicleId].flag=true;
                         }
@@ -596,7 +606,26 @@
                           title: '北京',
                           angle: subItem.heading
                         });
+                     /*   _this.sideVehicleObj[subItem.vehicleId].platNo = new AMap.Text({
+                          text: subItem.vehicleId,
+                          map: _this.distanceMap,
+                          anchor: 'center', // 设置文本标记锚点
+                          style: {
+                            'padding': '0 5px',
+                            'border-radius': '4px',
+                            'background-color': 'rgba(55, 186, 123, .2)',
+                            'border-width': 0,
+                            'text-align': 'center',
+                            'font-size': '10px',
+                            'line-height': '16px',
+                            'letter-spacing': '0',
+                            'margin-top': '-36px', //车头
+                            'color': '#ccc'
+                          }
+                        });
+                        _this.sideVehicleObj[subItem.vehicleId].platNo.setPosition(subItem.position);*/
                         _this.distanceMap.add(_this.sideVehicleObj[subItem.vehicleId].marker);
+
                       }
 
                       if(subIndex == subArr.length - 1) {
@@ -606,8 +635,8 @@
                       }
                     })
                   }
-                }
-              })
+                /*}
+              })*/
 
         });
         }
@@ -730,11 +759,11 @@
         });
         if(_this.lightCount==0){
           resultData.forEach(function (item,index,arr) {
-//            console.log("index----"+index+"****position****"+item.position);
+            console.log("index----"+index+"****position****"+item.position);
             AMap.convertFrom(item.position, 'gps', function (status, result) {
               if (result.info === 'ok') {
                 item.position = result.locations[0];
-//                console.log("position---"+result.locations[0])
+                console.log("红绿灯转换成position---"+result.locations[0])
                 _this.lightCount++;
                 if(_this.lightCount==arr.length){
                   resultData.forEach((subItem,subIndex,subArr)=>{
@@ -753,26 +782,26 @@
             })
             let direction = item.direction+"";
 //          console.log("direction----"+item.direction)
-
-            if(_this.lightData[direction]){
+            let key = 'key_'+direction;
+            if(_this.lightData[key].flag){
               /*_this.$set(_this.lightData[direction],'spareTime',item.leftTime);*/
-              _this.lightData[direction].spareTime = item.leftTime;
-              _this.lightData[direction].lightColor = item.light;
-              _this.lightData[direction].flag=true;
-              _this.lightData[direction].time = null;
+              _this.lightData[key].spareTime = item.leftTime;
+              _this.lightData[key].lightColor = item.light;
+              _this.lightData[key].flag=true;
+              _this.lightData[key].time = null;
               //延长时间
-              _this.lightData[direction].time=setTimeout(item=>{
-                _this.lightData[direction].flag=false;
+              _this.lightData[key].time=setTimeout(item=>{
+                _this.lightData[key].flag=false;
               },3000)
 //            console.log("light-----"+_this.lightData[direction].lightColor);
 
-            }else{
+            }/*else{
               _this.lightData[direction]={spareTime:item.leftTime,time:null,lightColor:item.light,flag:true};
               _this.lightData[direction].time=setTimeout(item=>{
                 _this.lightData[direction].flag=false;
               },3000)
 //              console.log("========"+_this.lightData[direction])
-            }
+            }*/
           })
         }
 
@@ -1233,6 +1262,7 @@
     font-family: carFont;
     color: #37ba7b;
     font-size: 16px;
+    letter-spacing: 4px;
   }
   .pre-warning{
     overflow: hidden;
