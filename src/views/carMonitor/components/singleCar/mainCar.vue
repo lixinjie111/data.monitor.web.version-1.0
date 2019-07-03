@@ -1049,7 +1049,7 @@
       this.initSideWebSocket();
       this.initDeviceWebSocket();
       this.initWarningWebSocket();
-         this.initLightWebSocket();
+      this.initLightWebSocket();
       //云端和车端此次行程统计
       this.getV2xInformation();
       this.getAlarmInformation();
@@ -1213,6 +1213,9 @@
     position: absolute;
     bottom: 10px;
     left:48%;
+    width: 90px;
+    text-align: left;
+    padding: 4px;
   }
   .real-traffic{
     width: 100%;

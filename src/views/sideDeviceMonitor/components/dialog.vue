@@ -175,6 +175,7 @@
             }
             return option;
           },
+
           getDeviceList(roadId){
             var _this = this;
             _this.deviceList=[];
