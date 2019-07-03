@@ -175,11 +175,46 @@
     methods: {
       getSpeedChart(){
         var _self = this;
-        var initOption = this.getOption();
         var option = {
+          animation: false,
           grid:{
             left:32,
             bottom: 40
+          },
+          xAxis: {
+            type: 'category',
+            boundaryGap : false,
+            splitLine: {
+              interval(index, val) {
+                if(index == 4){
+                  return true;
+                }else{
+                  return false;
+                }
+              },
+              lineStyle:{
+                color: '#fff',
+                lineStyle: {
+                  width: 4
+                }
+              },
+              show:true
+            },
+            axisLine:{
+              lineStyle:{
+                color:'#918d84'
+              }
+            },
+            axisTick:{
+              inside:true,
+              lineStyle:{
+                color:'#918d84'
+              }
+            },
+            axisLabel:{
+              color:'#918d84'
+            },
+            data: this.xData
           },
           yAxis: {
             type: 'value',
@@ -220,22 +255,60 @@
             }
           ]
         }
-        var finalOption = Object.assign(option,initOption);
-
-        _self.speedChart.setOption(finalOption);
+        _self.speedChart.setOption(option);
       },
       getAccelerateChart(){
         var _self = this;
-        var initOption = this.getOption();
         var option = {
+          animation: false,
           grid:{
             left:20,
             bottom: 40
           },
+          xAxis: [{
+              type: 'category',
+              boundaryGap : false,
+              data: this.xData,
+              onZero:true,
+              show:false
+            },{
+              type: 'category',
+              boundaryGap : false,
+              position:'bottom',
+              splitLine: {
+                interval(index, val) {
+                  if(index == 4){
+                    return true;
+                  }else{
+                    return false;
+                  }
+                },
+                lineStyle:{
+                  color: '#fff',
+                  lineStyle: {
+                    width: 4
+                  }
+                },
+                show:true
+              },
+              axisLine:{
+                lineStyle:{
+                  color:'#918d84'
+                }
+              },
+              axisTick:{
+                inside:true,
+                lineStyle:{
+                  color:'#918d84'
+                }
+              },
+              axisLabel:{
+                color:'#918d84'
+              },
+              data: this.xData
+          }],
           yAxis: {
             type: 'value',
-            // type: 'log',
-            // boundaryGap : false,
             splitLine: {
               lineStyle:{
                 color: '#918d84',
@@ -254,7 +327,6 @@
             },
             min: -3,
             max: 3
-            // data: [-3, -2, -1, 0, 1, 2, 3]
           },
           series: [
             {
@@ -272,50 +344,7 @@
             }
           ]
         }
-        var finalOption = Object.assign(option,initOption);
-
-        _self.accelerateChart.setOption(finalOption);
-      },
-      getOption(){
-        let option = {
-          animation: false,
-          xAxis: {
-            type: 'category',
-            boundaryGap : false,
-            splitLine: {
-              interval(index, val) {
-                if(index == 4){
-                  return true;
-                }else{
-                  return false;
-                }
-              },
-              lineStyle:{
-                color: '#fff',
-                lineStyle: {
-                  width: 4
-                }
-              },
-              show:true
-            },
-            axisLine:{
-              lineStyle:{
-                color:'#918d84'
-              }
-            },
-            axisTick:{
-              inside:true,
-              lineStyle:{
-                color:'#918d84'
-              }
-            },
-            axisLabel:{
-              color:'#918d84'
-            },
-            data: this.xData
-          }
-        }
-        return option;
+        _self.accelerateChart.setOption(option);
       },
       formateDate(timestamp, subNum){
         let timeArr = [];
@@ -346,9 +375,6 @@
             speed = json.result.speed,
             acceleration = json.result.acceleration;
         if(gpsTime){
-          // console.log("速度加速度 speedAcceleration ？？？？？？？？？？？？？？？？？？？？？？？？");
-          // let _nowtime = new Date().getTime();
-          // console.log(_nowtime, json.time, gpsTime, json.time-_nowtime, gpsTime-_nowtime);
           //动态数据
           this.isStop = false;
           if(_this.data.length>4){
@@ -384,6 +410,8 @@
           //对线的处理
           this.getSpeedChart();
           this.getAccelerateChart();
+          // console.log(gpsTime,this.formateDate(gpsTime, 1));
+          // console.log(json);
         }else {
           this.isStop = true;
         }

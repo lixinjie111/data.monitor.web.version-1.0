@@ -67,7 +67,6 @@
 
      </div>
 
-
     <p class="monitor-title">行程概览</p>
     <div class="clearfix line-style">
       <div class="line line-1" >
@@ -81,10 +80,10 @@
 
     <div class="single-bottom">
 
-        <span class="distance-detail">行驶开始时间：{{routeInfo.routeStartTime ? $dateUtil.formatTime(routeInfo.routeStartTime) : "--"}}</span>
-        <span class="distance-detail">累计行驶时长：{{routeInfo.durationTime ? getRunTime(routeInfo.durationTime) : "--"}}</span>
-        <span class="distance-detail">累计行驶里程：{{routeInfo.mileage ? routeInfo.mileage.toFixed(1) : "--"}}km</span>
-        <span class="distance-detail">平均车速：{{routeInfo.avgSpd ? routeInfo.avgSpd.toFixed(1) : "--"}}km/h</span>
+        <span class="distance-detail" style="width: 230px;">行驶开始时间：{{routeInfo.routeStartTime ? $dateUtil.formatTime(routeInfo.routeStartTime) : "--"}}</span>
+        <span class="distance-detail" style="width: 230px;">累计行驶时长：{{showRouteInfoDurationTime ? getRunTime(showRouteInfoDurationTime) : "--"}}</span>
+        <span class="distance-detail" style="width: 200px;">累计行驶里程：{{routeInfo.mileage ? routeInfo.mileage.toFixed(1) : "--"}}km</span>
+        <span class="distance-detail" style="width: 200px;">平均车速：{{routeInfo.avgSpd ? routeInfo.avgSpd.toFixed(1) : "--"}}km/h</span>
 
     </div>
 
@@ -93,6 +92,7 @@
 <script>
   import AMap from 'AMap';
   import { getDrivingStatisticsData, getVehicleBaseData } from '@/api/carMonitor'
+  import ConvertCoord from '@/assets/js/utils/coordConvert.js'
   export default {
     name: "LeftCar", // 实时数据
     props:{
@@ -154,7 +154,9 @@
             'scale': 0,
             'all': 1
         },
-        routeInfo: {}
+        routeInfo: {},
+        timer: null,
+        showRouteInfoDurationTime: 0
       }
     },
     computed: {
@@ -182,6 +184,8 @@
             mileage: "",
             avgSpd: ""
           };
+          this.showRouteInfoDurationTime = 0;
+          clearInterval(this.timer);
 
           // this.webSocket.close();
         }
@@ -202,6 +206,15 @@
           this.webSocketData.all = newVal;
           this.webSocket.send(JSON.stringify(this.webSocketData));
           console.log("all=0, chang，重新发起服务");
+        }
+      },
+      'routeInfo.durationTime'(newVal, oldVal) {
+        if(!oldVal) {
+          this.showRouteInfoDurationTime = newVal;
+          this.timer = setInterval(() => {
+            this.showRouteInfoDurationTime += 1000;
+            // console.log(this.showRouteInfoDurationTime);
+          }, 1000);
         }
       }
     },
@@ -248,7 +261,7 @@
         day = day == 0 ? "" : day+"天";
         hour = hour == 0 ? "" : hour+"小时";
         minute = minute == 0 ? "" : minute+"分";
-        second = second == 0 ? "" : second+"秒";
+        second = second == 0 ? "0秒" : second+"秒";
        // console.log(year,month,day,hour,minute,second);
     　　return year+month+day+hour+minute+second;
       },
@@ -330,7 +343,7 @@
         }else{
           this.markers.markerStart.setPosition(_this.carStartPoint);
         }
-        // this.distanceMap.setFitView(_this.markers.markerStart);
+        this.distanceMap.setFitView(_this.markers.markerStart);
       },
       //行程概览--绘制路径
       distanceMapLine(){
@@ -438,22 +451,20 @@
             gNSS_HEAD: json.data.head
           }];
         }
-        // pointList.forEach((item) => {
-        //   console.log(item.gNSS_LONG, item.gNSS_LAT);
-        // });
+        let _pointer = [json.data.lon, json.data.lat];
+        // console.log("行程概览 route *********************************************");
+        // console.log(_pointer);
         this.routeInfo = {
           routeStartTime: json.data.routeStartTime, //行驶开始时间
           durationTime: json.data.durationTime, //累计行驶时间
           mileage: json.data.mileage, //累计行驶里程
           avgSpd: json.data.avgSpd //平均测速
         };
+        // console.log(this.getRunTime(json.data.durationTime));
         if(pointList && pointList.length > 0) {
-          // this.direction = pointList[pointList.length-1].gNSS_HEAD;
           if(this.routeId != ""){
             if(this.routeId != json.data.routeId) {
               console.log("重新开启行程");
-//              console.log(this.routeId);
-//              console.log(json.data.routeId);
               this.all = 1;
               return false;
             }
@@ -461,15 +472,8 @@
             console.log("第一次开启行程");
             this.routeId = json.data.routeId;
             // console.log(this.routeId);
-            AMap.convertFrom(new AMap.LngLat(pointList[0].gNSS_LONG, pointList[0].gNSS_LAT), 'gps', function (status, result){
-                if (result.info === 'ok') {
-                  let firstPoint = result.locations[0];
-                  // console.log(firstPoint);
-                  // 绘制起点
-                  _this.carStartPoint = firstPoint;
-                  _this.distanceMapStart();
-                }
-            });
+            _this.carStartPoint = ConvertCoord.wgs84togcj02(pointList[0].gNSS_LONG, pointList[0].gNSS_LAT);
+            _this.distanceMapStart();
           }
 
           if(this.prevLastPointPath.length !=0 && pointList.length==1 && this.prevLastPointPath[0] == pointList[0].gNSS_LONG && this.prevLastPointPath[1] == pointList[0].gNSS_LAT){
@@ -480,53 +484,23 @@
           if(pointList.length!=0){
             this.prevLastPointPath = [pointList[pointList.length-1].gNSS_LONG, pointList[pointList.length-1].gNSS_LAT];
           }
-          // if(pointList.length==1){
-          //   this.prevLastPointPath = [pointList[0].gNSS_LONG, pointList[0].gNSS_LAT];
-          //   // console.log(pointList[0].gNSS_LONG, pointList[0].gNSS_LAT);
-          // }else{
-          //   this.prevLastPointPath = [pointList[pointList.length-1].gNSS_LONG, pointList[pointList.length-1].gNSS_LAT];
-          //   // console.log(pointList);
-          // }
 
           var handlePointList = [];
-          // console.log("--------------------------------------------");
-          // console.log(pointList);
           pointList.forEach((item, index) => {
             if(item.gNSS_LONG && item.gNSS_LAT){
-              let lnglatArr = new AMap.LngLat(item.gNSS_LONG, item.gNSS_LAT);
+              // let lnglatArr = new AMap.LngLat(item.gNSS_LONG, item.gNSS_LAT);
+              let lnglatArr = [item.gNSS_LONG, item.gNSS_LAT];
               handlePointList.push(lnglatArr);
             }
           });
 
-          let _dataLength = handlePointList.length,
-              _limitLength = 200;
-          if(_dataLength > _limitLength) {
-            let _newLength = Math.ceil(_dataLength/_limitLength);
-            // console.log(_newLength);
-            for(let i = 0; i < _newLength; i++){
-              this.wholePath.push({
-                angle: (i+1)*_limitLength < _dataLength ? pointList[(i+1)*_limitLength-1].gNSS_HEAD : pointList[_dataLength-1].gNSS_HEAD,
-                routeId: json.data.routeId,
-                pathList: handlePointList.slice(i*_limitLength, (i+1)*_limitLength)
-              });
-            }
-            // console.log(this.wholePath);
-          }else{
-            let _newWholeJson = {
-              angle: pointList[_dataLength-1].gNSS_HEAD >= 0 ? pointList[_dataLength-1].gNSS_HEAD : 90,
-              routeId: json.data.routeId,
-              pathList: handlePointList
-            }
-            // console.log("航向角："+_newWholeJson.angle);
-            // console.log("坐标轴："+handlePointList.toString());
-
-            this.wholePath.push(_newWholeJson);
-          }
-            // console.log("wholePath------------");
-            // console.log(this.wholePath.length);
-            // console.log(this.wholePath);
+          let _dataLength = handlePointList.length;
+          this.wholePath.push( {
+            angle: pointList[_dataLength-1].gNSS_HEAD >= 0 ? pointList[_dataLength-1].gNSS_HEAD : 90,
+            routeId: json.data.routeId,
+            pathList: handlePointList
+          });
           this.changeLngLat();
-
 
           this.all = 0;
         }
@@ -534,24 +508,25 @@
       changeLngLat(){
         var _this = this;
         if(this.flag && _this.count < this.wholePath.length){
+          // console.log("----------------------------------");
             this.flag = false;
-            // console.log(this.wholePath);
             if(_this.count > 0) {
               _this.wholePath[_this.count].pathList.unshift(_this.wholePath[_this.count-1].pathList[_this.wholePath[_this.count-1].pathList.length-1]);
             }
-            AMap.convertFrom(_this.wholePath[_this.count].pathList, 'gps', function (status, result) {
-              if (result.info === 'ok') {
-                // debugger
-                _this.pointPath = result.locations;
-
-                //绘制线的轨迹
-                _this.distanceMapLine();
-
-                _this.count++;
-                _this.flag = true;
-                _this.changeLngLat();
+          // console.log(_this.wholePath[_this.count].pathList);
+            let _pathList = _this.wholePath[_this.count].pathList;
+            _this.pointPath = [];
+            for( let i = 0; i < _pathList.length; i++){
+              let _position = ConvertCoord.wgs84togcj02(_pathList[i][0], _pathList[i][1]);
+              _this.pointPath[i] = _position;
+              // console.log(_position);
+              if(i == _pathList.length-1) {
+                  //绘制线的轨迹
+                  _this.distanceMapLine();
+                  _this.count++;
+                  _this.flag = true;
               }
-            });
+            };
         }
       },
       onclose(data){
@@ -653,8 +628,11 @@
     text-align: center;
   }
   .car-img{
-    width: 80%;
-    height:auto;
+    // width: 80%;
+    // height:auto;
+    width: auto;
+    height: 118px;
+    margin: 0 auto;
 
   }
   .monitor-car{
@@ -664,23 +642,6 @@
      padding-bottom:34px;
   }
 
-/*  @media screen and (max-width: 1280px){
-    .monitor-left{
-      width: 200px;
-      background: #24212c;
-      min-width: 200px;
-      height:100%;
-    }
-
-  }
-  @media (max-width: 1920px)  and (min-width: 1281px){
-    .monitor-left{
-      width: 300px;
-      background: #24212c;
-      min-width: 200px;
-      height:100%;
-    }
-  }*/
   .monitor-left{
     width: 100%;
    /* background: #24212c;*/
@@ -742,9 +703,5 @@
     color: #ddd9d1;
     text-align: left;
     padding: 0 20px 0 20px;
-    width: 210px;
-    &:first-child {
-      width: 230px;
-    }
   }
 </style>
