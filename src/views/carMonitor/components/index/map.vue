@@ -19,8 +19,6 @@ export default {
             // responseData: [],
             responseDataDraw: [],
             setFitViewFlag: true,
-
-            wholeData: [],
             count: 0,
             flag: true
         }
@@ -41,13 +39,12 @@ export default {
             this.webSocket.onerror = this.onerror;
         },
         onmessage(message){
-            let _this = this,
-                _json = JSON.parse(message.data),
+            let _json = JSON.parse(message.data),
                 _result = _json.result.allVehicle;
-            if(_this.flag) {
+            if(this.flag) {
                 // console.log("绘制前--------");
                 // console.log(_result.length);
-                _this.flag = false;
+                this.flag = false;
                 let _responseData = _result.map( item => {
                     let _option = {
                         vehicleId: item.vehicleId,
@@ -59,7 +56,7 @@ export default {
                     };
                     return _option;
                 });
-                _this.changeLngLat(_responseData);
+                this.changeLngLat(_responseData);
             }
         },
         changeLngLat(_allPointData){

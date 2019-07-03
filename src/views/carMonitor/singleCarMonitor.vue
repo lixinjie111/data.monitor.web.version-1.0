@@ -127,9 +127,9 @@
     },
     mounted () {
       this.initWebSocket();
-       /*setTimeout(() => {
-         this.isStop = true;
-       }, 5000);*/
+      // setTimeout(() => {
+      //   this.isStop = true;
+      // }, 5000);
     },
     destroyed(){
       //销毁Socket
