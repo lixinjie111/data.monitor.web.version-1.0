@@ -128,7 +128,7 @@
         <!--V2X-->
         <div v-show="item.type=='V2X_1'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/warning/car-2.png"/>
+            <img src="@/assets/images/car/warning/car-1.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
             <p>前向碰撞预警</p>
@@ -442,6 +442,7 @@
             if (result.info === 'ok') {*/
 //              newPosition = result.locations[0];
               newPosition = ConvertCoord.wgs84togcj02(data.longitude, data.latitude);
+              console.log("本车行驶的位置:"+newPosition);
               if(_this.isInit){
                 _this.marker = new AMap.Marker({
                   map:_this.distanceMap,
@@ -586,7 +587,7 @@
                         var sideCar = _this.sideVehicleObj[subItem.vehicleId];
                         if(_this.sideVehicleObj[subItem.vehicleId].flag) {
                           sideCar.marker.setAngle(subItem.heading);
-                          sideCar.marker.moveTo(subItem.position, subItem.speed);
+                          sideCar.marker.setPosition(subItem.position);
 //                          _this.sideVehicleObj[subItem.vehicleId].platNo.moveTo(subItem.position, subItem.speed);
                         }else{
                           sideCar.marker.setAngle(subItem.heading);
@@ -682,13 +683,17 @@
             deviceData.forEach(item=>{
             let option={
               position:new AMap.LngLat(item.ptLon, item.ptLat),
+              longitude:item.ptLon,
+              latitude:item.ptLat
             }
             resultData.push(option);
           });
             resultData.forEach(function (item,index,arr) {
-              AMap.convertFrom(item.position, 'gps', function (status, result) {
+              /*AMap.convertFrom(item.position, 'gps', function (status, result) {
                 if (result.info === 'ok') {
-                  item.position = result.locations[0];
+
+                  item.position = result.locations[0];*/
+                  item.position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
 //                  console.log("position-------"+ item.position)
                   _this.deviceCount++;
                   if(_this.deviceCount==arr.length){
@@ -704,8 +709,8 @@
                       }
                     })
                   }
-                }
-              })
+                /*}
+              })*/
             })
 
           }
@@ -753,17 +758,19 @@
             position:new AMap.LngLat(item.longitude, item.latitude),
             leftTime:item.leftTime,
             light:item.light,
-            direction:item.direction
+            direction:item.direction,
+            longitude:item.longitude,
+            latitude:item.latitude
           }
           resultData.push(option);
         });
         if(_this.lightCount==0){
           resultData.forEach(function (item,index,arr) {
-            console.log("index----"+index+"****position****"+item.position);
-            AMap.convertFrom(item.position, 'gps', function (status, result) {
+            /*AMap.convertFrom(item.position, 'gps', function (status, result) {
               if (result.info === 'ok') {
                 item.position = result.locations[0];
-                console.log("红绿灯转换成position---"+result.locations[0])
+                console.log("红绿灯转换成position---"+result.locations[0])*/
+                item.position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
                 _this.lightCount++;
                 if(_this.lightCount==arr.length){
                   resultData.forEach((subItem,subIndex,subArr)=>{
@@ -778,8 +785,8 @@
                     }
                   })
                 }
-              }
-            })
+              /*}
+            })*/
             let direction = item.direction+"";
 //          console.log("direction----"+item.direction)
             let key = 'key_'+direction;

@@ -12,6 +12,7 @@
 </template>
 <script>
   import { getDevDis } from '@/api/sideDeviceMonitor'
+  import ConvertCoord from '@/assets/js/utils/coordConvert.js'
   export default {
     name: "MapContainer",
     data() {
@@ -96,24 +97,24 @@
                   position:new AMap.LngLat(item.longitude, item.latitude),
                   type:item.type,
                   deviceId:item.deviceId,
-                  path:item.path
+                  path:item.path,
+                  longitude:item.longitude,
+                  latitude:item.latitude
                 }
                 resultData.push(option);
               }
             });
             //转成高德地图的坐标
             resultData.forEach((item, index, arr)=>{
-              AMap.convertFrom(resultData[index].position, 'gps', function (status, result){
-//              console.log("status============="+status);
-//              console.log("count============="+count);
+             /* AMap.convertFrom(resultData[index].position, 'gps', function (status, result){
                 if (result.info === 'ok') {
                   let _point = result.locations[0];
-                  resultData[index].position = _point;
+                  resultData[index].position = _point;*/
+              resultData[index].position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
                   _this.count ++;
                   if(_this.count == arr.length) {
                     //绘制线的轨迹
                     resultData.forEach(function (subItem,subIndex) {
-                      console.log("红绿灯----"+subItem.type);
                       if(subItem.type==1){
                         var marker = new AMap.Marker({
                           position: subItem.position,
@@ -158,8 +159,8 @@
                       }
                     })
                   }
-                }
-              });
+                /*}
+              });*/
             })
           }
         }

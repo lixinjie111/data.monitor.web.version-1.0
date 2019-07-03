@@ -77,7 +77,7 @@
         </div>
         <div class="signal-item2">
           <span class="signal-icon2" :class="[naviStatus.naviPlanningStatus==1 ? liveUsed : naviStatus.naviPlanningStatus==2?liveBroken:naviStatus.naviPlanningStatus==0?liveUnused:liveUsed]"></span>
-          <span>Navi Plannig</span>
+          <span>Navi Planning</span>
         </div>
         <div class="signal-item2">
           <span class="signal-icon2" :class="[naviStatus.naviPerceptionStatus==1 ? liveUsed : naviStatus.naviPerceptionStatus==2?liveBroken:naviStatus.naviPerceptionStatus==0?liveUnused:liveUsed]"></span>

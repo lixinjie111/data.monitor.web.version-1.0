@@ -95,7 +95,7 @@
               roadList1:[],//第一个路侧点的marker集合
               roadList2:[],//第二个路侧点的marker集合
               center1:[],
-              center2:[]
+              center2:[],
 
             }
         },
@@ -104,28 +104,38 @@
           ,TusvnMap
         },
         methods: {
-          /*onMapComplet:function(map){
-            console.log(map);
-            this.$refs.tusvnMap1.updateCameraPosition(442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606);
-          },
-          @mapcomplet="onMapComplete2"*/
           onMapComplete1:function(){
-            // this.getRoadList();
             console.log("onMapComplete1");
-            setTimeout(()=>{
-              console.log('roadItem1------'+this.roadItem1.camSerialNum+"====roadId1"+this.roadItem1.roadSiderId);
-              this.$refs.tusvnMap1.changeRcuId(window.cfg.websocketUrl,this.roadItem1.camSerialNum);
-              this.$refs.tusvnMap1.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
-            },2000);
-            // this.$refs.tusvnMap1.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
+            this.$refs.tusvnMap1.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
+            let count = 0;
+            let time = setInterval(()=>{
+              if(this.roadItem1.roadSiderId&&this.roadItem1.roadSiderId!=''){
+                console.log('roadItem1------'+this.roadItem1.camSerialNum+"====roadId1"+this.roadItem1.roadSiderId);
+                this.$refs.tusvnMap1.changeRcuId(window.cfg.websocketUrl,this.roadItem1.camSerialNum);
+                clearInterval(time);
+              }
+              //超过一分钟仍然没有响应 则停止渲染
+              if(count==5){
+                clearInterval(time);
+              }
+              count++;
+            },2000)
           },
           onMapComplete2:function(){
-            // this.getRoadList();
             console.log("onMapComplete2");
-            setTimeout(()=> {
-              console.log('roadItem2------'+this.roadItem2.camSerialNum+"====roadId2"+this.roadItem2.roadSiderId);
-              this.$refs.tusvnMap2.changeRcuId(window.cfg.websocketUrl, this.roadItem2.camSerialNum);
-              this.$refs.tusvnMap2.updateCameraPosition( 442486.3454129422,4427261.806106671, 47.90669656890555 , 34.88838511357024, -0.7656910059927339,  2.4898596954809307);
+            this.$refs.tusvnMap2.updateCameraPosition( 442486.3454129422,4427261.806106671, 47.90669656890555 , 34.88838511357024, -0.7656910059927339,  2.4898596954809307);
+            let count = 0;
+            let time = setInterval(()=>{
+              if(this.roadItem1.roadSiderId&&this.roadItem1.roadSiderId!=''){
+                console.log('roadItem2------'+this.roadItem2.camSerialNum+"====roadId2"+this.roadItem2.roadSiderId);
+                this.$refs.tusvnMap2.changeRcuId(window.cfg.websocketUrl, this.roadItem2.camSerialNum);
+                clearInterval(time);
+              }
+              //超过一分钟仍然没有响应 则停止渲染
+              if(count==5){
+                clearInterval(time);
+              }
+              count++;
             },2000)
           },
           getPlayerOptions(){
@@ -416,7 +426,6 @@
           }
         },
        watch:{
-
        },
         mounted() {
          /* this.map1 = new AMap.Map("map1", {
@@ -436,7 +445,11 @@
           this.getRoadList();
           //给地图绑定点击事件
         /*  this.map1.on('click',()=>{
-            this.$emit("queryDeviceDetail",this.roadItem1);
+            this.$emit("queryDeviceDetai
+
+
+
+            l",this.roadItem1);
           });
           this.map2.on('click',()=>{
             this.$emit("queryDeviceDetail",this.roadItem2);
