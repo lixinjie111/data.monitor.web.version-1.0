@@ -1,60 +1,64 @@
 <template>
   <div class="monitor-right">
-    <p class="monitor-title right-title">视频数据</p>
-    <div class="clear line-style">
-      <div class="line line-1" >
-        <span class="line1"></span>
-      </div>
-      <div class="line line-2" >
-        <span class="line2"></span>
-      </div>
-    </div>
-    <div class="monitor-video right-title">
-      <!--<video src="movie.ogg" controls="controls" autoplay width="270" height="200">
-        您的浏览器不支持 video 标签。
-      </video>-->
-      <video-player class="vjs-custom-skin" :options="playerOptions"></video-player>
-      <div class="stop-style" v-show="isStop">
-        <img src="@/assets/images/car/stop.png"/>
-        <p>无数据提示</p>
-      </div>
-      <!--<div id="cmsplayer" style="width:100%;height:100%"></div>-->
-    </div>
-    <p class="monitor-title right-title">感知数据</p>
-    <div class="clear line-style">
-      <div class="line line-1" >
-        <span class="line1"></span>
-      </div>
-      <div class="line line-2" >
-        <span class="line2"></span>
-      </div>
-    </div>
-    <div class="monitor-perception right-title">
-      <div class="car-container" :style="{transform:'rotate(-'+currentCar.heading+'deg)'}">
-        <!-- <img src="@/assets/images/car/car-11.png" class="host-vehicle" :style="{left:screenConfig.scrWidth/2-10+'px',top:screenConfig.scrHeight*3/4-13+'px'}"/> -->
-        <img src="@/assets/images/car/car-11.png" class="host-vehicle" :style="{transform:'rotate('+currentCar.heading+'deg)'}"/>
-        <div class="otherCarsContainer">
-          <div class="item" v-for="(carItem,index) in carsDataformate" :style="{left:carItem.Sx+'px',top:carItem.Sy+'px',transform:'rotate('+carItem.heading+'deg)'}">
-              <img src="@/assets/images/car/car-17.png" class="car-position1"/>
+    <div class="c-scroll-wrap">
+      <div class="c-scroll-inner">
+        <p class="monitor-title right-title">视频数据</p>
+        <div class="clear line-style">
+          <div class="line line-1" >
+            <span class="line1"></span>
+          </div>
+          <div class="line line-2" >
+            <span class="line2"></span>
           </div>
         </div>
-      </div>
-      <div class="stop-style" v-show="isStop">
-        <img src="@/assets/images/car/stop.png"/>
-        <p>无数据提示</p>
-      </div>
-    </div>
-    <p class="monitor-title right-title">行车日历</p>
-    <div class="clear line-style">
-      <div class="line line-1" >
-        <span class="line1"></span>
-      </div>
-      <div class="line line-2" >
-        <span class="line2"></span>
-      </div>
-    </div>
-    <div class="drive-container" id="driveContainer">
+        <div class="monitor-video right-title">
+          <!--<video src="movie.ogg" controls="controls" autoplay width="270" height="200">
+            您的浏览器不支持 video 标签。
+          </video>-->
+          <video-player class="vjs-custom-skin" :options="playerOptions"></video-player>
+          <div class="stop-style" v-show="isStop">
+            <img src="@/assets/images/car/stop.png"/>
+            <p>无数据提示</p>
+          </div>
+          <!--<div id="cmsplayer" style="width:100%;height:100%"></div>-->
+        </div>
+        <p class="monitor-title right-title">感知数据</p>
+        <div class="clear line-style">
+          <div class="line line-1" >
+            <span class="line1"></span>
+          </div>
+          <div class="line line-2" >
+            <span class="line2"></span>
+          </div>
+        </div>
+        <div class="monitor-perception right-title">
+          <div class="car-container" :style="{transform:'rotate(-'+currentCar.heading+'deg)'}">
+            <!-- <img src="@/assets/images/car/car-11.png" class="host-vehicle" :style="{left:screenConfig.scrWidth/2-10+'px',top:screenConfig.scrHeight*3/4-13+'px'}"/> -->
+            <img src="@/assets/images/car/car-11.png" class="host-vehicle" :style="{transform:'rotate('+currentCar.heading+'deg)'}"/>
+            <div class="otherCarsContainer">
+              <div class="item" v-for="(carItem,index) in carsDataformate" :style="{left:carItem.Sx+'px',top:carItem.Sy+'px',transform:'rotate('+carItem.heading+'deg)'}">
+                  <img src="@/assets/images/car/car-17.png" class="car-position1"/>
+              </div>
+            </div>
+          </div>
+          <div class="stop-style" v-show="isStop">
+            <img src="@/assets/images/car/stop.png"/>
+            <p>无数据提示</p>
+          </div>
+        </div>
+        <p class="monitor-title right-title">行车日历</p>
+        <div class="clear line-style">
+          <div class="line line-1" >
+            <span class="line1"></span>
+          </div>
+          <div class="line line-2" >
+            <span class="line2"></span>
+          </div>
+        </div>
+        <div class="drive-container" id="driveContainer">
 
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -424,6 +428,13 @@
 <style>
   .monitor-video .vjs-custom-skin > .video-js .vjs-big-play-button{
     display: none;
+  }
+  .monitor-video .vjs-custom-skin > .video-js .vjs-control{
+    width:2.5em!important;
+  }
+  .monitor-video .video-js .vjs-mute-control{
+    padding-left: 0!important;
+    padding-right: 0!important;
   }
 </style>
 <style scoped lang="scss">

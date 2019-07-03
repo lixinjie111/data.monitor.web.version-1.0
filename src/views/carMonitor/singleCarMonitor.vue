@@ -1,7 +1,7 @@
 <template>
 <div class="car-view-wrapper clearfix">
     <div class="single-left">
-      <left-car :isStop="isStop"></left-car>
+        <left-car :isStop="isStop"></left-car>
     </div>
     <div class="single-main">
         <div class="single-header">
@@ -218,7 +218,7 @@
   }
   .single-left,.single-content-right{
     width: 300px;
-    height:100%;
+    height: 100%;
   }
   .single-left {
     float: left;

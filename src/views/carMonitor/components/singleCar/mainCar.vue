@@ -306,7 +306,6 @@
     data () {
       return {
         distanceMap:{},
-        path:[],
         wholePath:[],
         marker:{},
         platNoMarker:{},
@@ -392,6 +391,25 @@
         return time+":"+ms;
       }
     },
+    watch:{
+      /*isStop(newVal,oldVal){
+        if(newVal){
+          //本车处理
+          this.wholePath=[];
+          //旁车处理
+          this.sideVehicleObj={};
+          /!*for(var id in this.sideVehicleObj){
+            this.distanceMap.remove(this.sideVehicleObj[id].marker);
+          }*!/
+          //告警和预警计数
+          this.vehicleCount=0;
+          this.cloudCount=0;
+          this.cloudList = [];
+          this.vehicleList= [];
+
+        }
+      }*/
+    },
     components:{
       SingleDialog
     },
@@ -425,6 +443,7 @@
         var json = JSON.parse(mesasge.data);
         var data = json.result;
         var type = json.action;
+        _this.wholePath = [];
           var position = new AMap.LngLat(data.longitude,data.latitude);
           var newPosition;
           var platNo;
@@ -442,7 +461,7 @@
             if (result.info === 'ok') {*/
 //              newPosition = result.locations[0];
               newPosition = ConvertCoord.wgs84togcj02(data.longitude, data.latitude);
-              console.log("本车行驶的位置:"+newPosition);
+//              console.log("本车行驶的位置:"+newPosition);
               if(_this.isInit){
                 _this.marker = new AMap.Marker({
                   map:_this.distanceMap,
@@ -481,7 +500,7 @@
               //设置车的位置
               var lastPosition = [];
               if(_this.wholePath.length > 0 ) {
-                lastPosition = _this.wholePath[_this.wholePath.length-1];
+                lastPosition = _this.wholePath[0];
               }else{
                 lastPosition = newPosition;
               }

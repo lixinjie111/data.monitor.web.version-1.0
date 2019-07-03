@@ -1,82 +1,87 @@
 <template>
   <div class="monitor-left">
-    <p class="car-detail-title">
-      <span class="car-detail">车牌号：{{singleVehicle.platNo}}</span>
-      <span class="car-level">L{{singleVehicle.autoLevel}}</span>
-    </p>
-    <div class="monitor-car">
-      <img class="car-img" src="@/assets/images/car/car.png" ></img>
-    </div>
-    <p class="monitor-title">行车统计</p>
-    <div class="clearfix line-style">
-      <div class="line line-1" >
-        <span class="line1"></span>
-      </div>
-      <div class="line line-2" >
-        <span class="line2"></span>
-      </div>
-    </div>
-    <div class="clearfix">
-       <ul class="statistic-style">
-         <li>
-           <img src="@/assets/images/car/car-1.png" class="statistic-img"/>
-         </li>
-         <li>
-           <span class="text-font">{{filterData.cumulatedMiles || '--'}}</span>
-           <span class="text-style">KM</span>
-         </li>
-         <li>
-           <span class="text-style">行车里程</span>
-         </li>
-       </ul>
-       <ul class="statistic-style">
-         <li>
-           <img src="@/assets/images/car/car-2.png" class="statistic-img"/>
-         </li>
-         <li>
-           <span class="text-font">{{filterData.cumulatedTime || '--'}}</span>
-           <span class="text-style">H</span>
-         </li>
-         <li>
-           <span class="text-style">驾驶时长</span>
-         </li>
-       </ul>
-       <ul class="statistic-style">
-         <li>
-           <img src="@/assets/images/car/car-3.png" class="statistic-img"/>
-         </li>
-         <li>
-           <span class="text-font">{{filterData.avgSpeed || '--'}}</span>
-           <span class="text-style">KM/H</span>
-         </li>
-         <li>
-           <span class="text-style">平均速度</span>
-         </li>
-       </ul>
-       <ul class="statistic-style">
-         <li>
-           <img src="@/assets/images/car/car-4.png" class="statistic-img"/>
-         </li>
-         <li>
-           <span class="text-font">{{filterData.tripNums || '--'}}</span>
-         </li>
-         <li>
-           <span class="text-style">行程数量</span>
-         </li>
-       </ul>
 
-     </div>
+    <div class="c-scroll-wrap">
+      <div class="c-scroll-inner">
+        <p class="car-detail-title">
+          <span class="car-detail">车牌号：{{singleVehicle.platNo}}</span>
+          <span class="car-level">L{{singleVehicle.autoLevel}}</span>
+        </p>
+        <div class="monitor-car">
+          <img class="car-img" src="@/assets/images/car/car.png" ></img>
+        </div>
+        <p class="monitor-title">行车统计</p>
+        <div class="clearfix line-style">
+          <div class="line line-1" >
+            <span class="line1"></span>
+          </div>
+          <div class="line line-2" >
+            <span class="line2"></span>
+          </div>
+        </div>
+        <div class="clearfix">
+           <ul class="statistic-style">
+             <li>
+               <img src="@/assets/images/car/car-1.png" class="statistic-img"/>
+             </li>
+             <li>
+               <span class="text-font">{{filterData.cumulatedMiles || '--'}}</span>
+               <span class="text-style">KM</span>
+             </li>
+             <li>
+               <span class="text-style">行车里程</span>
+             </li>
+           </ul>
+           <ul class="statistic-style">
+             <li>
+               <img src="@/assets/images/car/car-2.png" class="statistic-img"/>
+             </li>
+             <li>
+               <span class="text-font">{{filterData.cumulatedTime || '--'}}</span>
+               <span class="text-style">H</span>
+             </li>
+             <li>
+               <span class="text-style">驾驶时长</span>
+             </li>
+           </ul>
+           <ul class="statistic-style">
+             <li>
+               <img src="@/assets/images/car/car-3.png" class="statistic-img"/>
+             </li>
+             <li>
+               <span class="text-font">{{filterData.avgSpeed || '--'}}</span>
+               <span class="text-style">KM/H</span>
+             </li>
+             <li>
+               <span class="text-style">平均速度</span>
+             </li>
+           </ul>
+           <ul class="statistic-style">
+             <li>
+               <img src="@/assets/images/car/car-4.png" class="statistic-img"/>
+             </li>
+             <li>
+               <span class="text-font">{{filterData.tripNums || '--'}}</span>
+             </li>
+             <li>
+               <span class="text-style">行程数量</span>
+             </li>
+           </ul>
 
-    <p class="monitor-title">行程概览</p>
-    <div class="clearfix line-style">
-      <div class="line line-1" >
-        <span class="line1"></span>
-      </div>
-      <div class="line line-2" >
-        <span class="line2"></span>
+         </div>
+
+        <p class="monitor-title">行程概览</p>
+        <div class="clearfix line-style">
+          <div class="line line-1" >
+            <span class="line1"></span>
+          </div>
+          <div class="line line-2" >
+            <span class="line2"></span>
+          </div>
+        </div>
+        <div class="distance-overview" id="distanceContainer"></div>
       </div>
     </div>
-    <div class="distance-overview" id="distanceContainer"></div>
 
     <div class="single-bottom">
 
@@ -222,7 +227,7 @@
       this.initMap();
       // var roadNetLayer =  new AMap.TileLayer.RoadNet();
       // this.distanceMap.add(roadNetLayer);
-      this.initWebSocket();
+      /*this.initWebSocket();*/
       this.getBaseData();
       this.getDrivingStatistics();
 
@@ -644,9 +649,7 @@
 
   .monitor-left{
     width: 100%;
-   /* background: #24212c;*/
-    min-width: 200px;
-    height:100%;
+    height: calc(100% - 50px);
   }
 
   .statistic-style{
