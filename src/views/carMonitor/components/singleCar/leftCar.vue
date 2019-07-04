@@ -227,7 +227,7 @@
       this.initMap();
       // var roadNetLayer =  new AMap.TileLayer.RoadNet();
       // this.distanceMap.add(roadNetLayer);
-      /*this.initWebSocket();*/
+      this.initWebSocket();
       this.getBaseData();
       this.getDrivingStatistics();
 

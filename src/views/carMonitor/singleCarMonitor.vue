@@ -58,8 +58,6 @@
           turnLight:'',
           transmission:'P',
           gpsTime:''
-
-
         },
         liveData:{},
         speedData:{},
@@ -85,9 +83,8 @@
         var json = JSON.parse(mesasge.data);
         /*var type = json.action;*/
         var data = json.result;
-
+//        console.log("data.transmission========"+data.transmission);
         if(data.transmission=='P'){
-          console.log("data.transmission========"+data.transmission);
           this.realData.transmission='P';
           this.realData.oilDoor=0;
           this.realData.brakePedal=0;
