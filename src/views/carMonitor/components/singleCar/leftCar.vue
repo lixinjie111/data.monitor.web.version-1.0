@@ -96,26 +96,10 @@
 </template>
 <script>
   import AMap from 'AMap';
-  import { getDrivingStatisticsData, getVehicleBaseData } from '@/api/carMonitor'
+  import { getDrivingStatisticsData, getVehicleBaseData, getRouteDataByVehId } from '@/api/carMonitor'
   import ConvertCoord from '@/assets/js/utils/coordConvert.js'
   export default {
     name: "LeftCar", // 实时数据
-    props:{
-      isStop: {
-        type: Boolean,
-        default: false
-      },
-      path: {
-        type: Array,
-        default() {
-          return [];
-        }
-      }/*,
-      zoom:{
-        type:Number,
-        default:18
-      }*/
-    },
     data () {
       return {
         map: {
@@ -161,7 +145,11 @@
         },
         routeInfo: {},
         timer: null,
-        showRouteInfoDurationTime: 0
+        showRouteInfoDurationTime: 0,
+
+        countTimer: null,
+        countTimeLimit: 1000*60*5,
+        countTime: 0
       }
     },
     computed: {
@@ -179,22 +167,6 @@
     },
     watch: {
       deep: true,
-      isStop(newVal,oldVal) {
-        if(newVal){
-          console.log("行程结束--初始化地图数据");
-          this.initDistanceMap();
-          this.routeInfo = {
-            routeStartTime: "",
-            durationTime: "",
-            mileage: "",
-            avgSpd: ""
-          };
-          this.showRouteInfoDurationTime = 0;
-          clearInterval(this.timer);
-
-          // this.webSocket.close();
-        }
-      },
       handleZoom(newVal, oldVal){
           // this.all = 1;  //可以不用重绘
 
@@ -206,11 +178,10 @@
           this.initDistanceMap();
           console.log("all=1, change重绘路线");
         }else{
-          // this.onopen();
-          this.webSocketData.scale = this.scale;
-          this.webSocketData.all = newVal;
-          this.webSocket.send(JSON.stringify(this.webSocketData));
-          console.log("all=0, chang，重新发起服务");
+          // this.webSocketData.scale = this.scale;
+          // this.webSocketData.all = newVal;
+          // this.webSocket.send(JSON.stringify(this.webSocketData));
+          // console.log("all=0, chang，重新发起服务");
         }
       },
       'routeInfo.durationTime'(newVal, oldVal) {
@@ -221,13 +192,25 @@
             // console.log(this.showRouteInfoDurationTime);
           }, 1000);
         }
+      },
+      countTime(newVal, oldVal) {
+        if(newVal >= this.countTimeLimit) {
+          this.$router.replace({
+              path: '/refresh',
+              params: {
+                  t: Date.now()
+              }
+          })
+        }
       }
     },
     mounted () {
       this.initMap();
       // var roadNetLayer =  new AMap.TileLayer.RoadNet();
       // this.distanceMap.add(roadNetLayer);
-      this.initWebSocket();
+      this.getRouteDataByVehId();
+      // this.initWebSocket();
+      
       this.getBaseData();
       this.getDrivingStatistics();
 
@@ -328,11 +311,25 @@
 
         this.webSocketData.scale = this.scale;
         this.webSocketData.all = this.all;
+
+        this.routeInfo = {
+          routeStartTime: "", //行驶开始时间
+          durationTime: "", //累计行驶时间
+          mileage: "", //累计行驶里程
+          avgSpd: "" //平均测速
+        };
+        clearInterval(this.timer);
+        this.timer = null;
+        this.showRouteInfoDurationTime = 0;
+
+        clearInterval(this.countTimer);
+        this.countTimer = null;
+        this.countTime = 0;
         // console.log(this.$parent.$parent.defaultCenterPoint, this.zoom);
         // this.distanceMap.setCenter(this.$parent.$parent.defaultCenterPoint);
         // this.distanceMap.setZoom(this.zoom);
 
-        this.webSocket.send(JSON.stringify(this.webSocketData));
+        // this.webSocket.send(JSON.stringify(this.webSocketData));
       },
       //行程概览--绘制起点
       distanceMapStart(){
@@ -423,6 +420,21 @@
             this.scale = 20;
         }
       },
+      getRouteDataByVehId() {
+        getRouteDataByVehId({
+          'scale': this.scale,
+          'vehicleId': this.vehicleId,
+        }).then(res => {
+          let _result = res.data.pointList;
+          if(_result && _result.length > 0) {
+            this.onmessage(res);
+          }
+          this.initWebSocket();
+        }).catch(error => {
+          // console.log("hahahah");
+          // this.initWebSocket();
+        });
+      },
       initWebSocket(){
         // debugger
         let _this=this;
@@ -436,27 +448,37 @@
       },
       onmessage(message){
         // console.log("行程概览 route *********************************************");
+        clearInterval(this.countTimer);
+        this.countTime = 0;
+        this.countTimer = setInterval(() => {
+          this.countTime += 1000;
+        }, 1000);
         var _this=this;
-        var json = JSON.parse(message.data);
+        var json  = {};
+        if(typeof message.data == "string") {
+          json = JSON.parse(message.data);
+        }else {
+          json = message;
+        }
         var pointList = [];
         if(this.all == 1){
           if(json.data.pointList && json.data.pointList.length > 0){
             pointList = json.data.pointList;
           }else{
             pointList = [{
-              gNSS_LONG: json.data.lon,
-              gNSS_LAT: json.data.lat,
-              gNSS_HEAD: json.data.head
+              gnss_LONG: json.data.lon,
+              gnss_LAT: json.data.lat,
+              gnss_HEAD: json.data.head
             }];
           }
         }else{
           pointList = [{
-            gNSS_LONG: json.data.lon,
-            gNSS_LAT: json.data.lat,
-            gNSS_HEAD: json.data.head
+            gnss_LONG: json.data.lon,
+            gnss_LAT: json.data.lat,
+            gnss_HEAD: json.data.head
           }];
         }
-        let _pointer = [json.data.lon, json.data.lat];
+        // let _pointer = [json.data.lon, json.data.lat];
         // console.log("行程概览 route *********************************************");
         // console.log(_pointer);
         this.routeInfo = {
@@ -477,31 +499,31 @@
             console.log("第一次开启行程");
             this.routeId = json.data.routeId;
             // console.log(this.routeId);
-            _this.carStartPoint = ConvertCoord.wgs84togcj02(pointList[0].gNSS_LONG, pointList[0].gNSS_LAT);
+            _this.carStartPoint = ConvertCoord.wgs84togcj02(pointList[0].gnss_LONG, pointList[0].gnss_LAT);
             _this.distanceMapStart();
           }
 
-          if(this.prevLastPointPath.length !=0 && pointList.length==1 && this.prevLastPointPath[0] == pointList[0].gNSS_LONG && this.prevLastPointPath[1] == pointList[0].gNSS_LAT){
+          if(this.prevLastPointPath.length !=0 && pointList.length==1 && this.prevLastPointPath[0] == pointList[0].gnss_LONG && this.prevLastPointPath[1] == pointList[0].gnss_LAT){
             this.changeLngLat();
             return false;
           }
 
           if(pointList.length!=0){
-            this.prevLastPointPath = [pointList[pointList.length-1].gNSS_LONG, pointList[pointList.length-1].gNSS_LAT];
+            this.prevLastPointPath = [pointList[pointList.length-1].gnss_LONG, pointList[pointList.length-1].gnss_LAT];
           }
 
           var handlePointList = [];
           pointList.forEach((item, index) => {
-            if(item.gNSS_LONG && item.gNSS_LAT){
-              // let lnglatArr = new AMap.LngLat(item.gNSS_LONG, item.gNSS_LAT);
-              let lnglatArr = [item.gNSS_LONG, item.gNSS_LAT];
+            if(item.gnss_LONG && item.gnss_LAT){
+              // let lnglatArr = new AMap.LngLat(item.gnss_LONG, item.gnss_LAT);
+              let lnglatArr = [item.gnss_LONG, item.gnss_LAT];
               handlePointList.push(lnglatArr);
             }
           });
-
+          // console.log(handlePointList);
           let _dataLength = handlePointList.length;
           this.wholePath.push( {
-            angle: pointList[_dataLength-1].gNSS_HEAD >= 0 ? pointList[_dataLength-1].gNSS_HEAD : 90,
+            angle: pointList[_dataLength-1].gnss_HEAD >= 0 ? pointList[_dataLength-1].gnss_HEAD : 90,
             routeId: json.data.routeId,
             pathList: handlePointList
           });
