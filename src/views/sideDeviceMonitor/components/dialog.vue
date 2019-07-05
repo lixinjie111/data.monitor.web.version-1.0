@@ -175,6 +175,7 @@
             }
             return option;
           },
+
           getDeviceList(roadId){
             var _this = this;
             _this.deviceList=[];
@@ -219,7 +220,7 @@
 
                     //切换路侧点时，重新切换3D地图
                     //第一次地图加载后调整位置即可
-                    if(!_this.mapInit){
+                    if(_this.mapInit){
                       _this.$refs.tusvnMap3.reset3DMap();
                       _this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,item.serialNum);
                       if(_this.selectedItem.roadSiderId=='130101_001'){
@@ -228,7 +229,6 @@
                         _this.$refs.tusvnMap3.updateCameraPosition(442454.32657890377,4427227.807879115,37.7350947252935, 0.0000028926452461693342, -0.39699074074074336, -0.730706721974606);
                       }
                     }
-
                   }
                 }else{
                   /*_this.$set(item, 'value', false);*/
@@ -546,16 +546,26 @@
               this.$refs.tusvnMap3.updateCameraPosition(442454.32657890377,4427227.807879115,37.7350947252935, 0.0000028926452461693342, -0.39699074074074336, -0.730706721974606);
             }
 
-              if(this.serialNum!=""){
+            let count = 0;
+            let time = setInterval(()=>{
+              if(this.serialNum&&this.serialNum!=""){
+                console.log("this.serialNum--"+this.serialNum)
                 this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,this.selectedItem.camSerialNum);
+                clearInterval(time);
               }
-
+              //超过一分钟仍然没有响应 则停止渲染
+              if(count==5){
+                clearInterval(time);
+              }
+              count++;
+            },2000)
           }
         },
         watch:{
           dialogVisible(){
             if(this.dialogVisible){
               this.isFirst=true;
+              this.mapInit=false; //打开窗口只加载一次地图
               this.selectAddr = this.selectedItem.path.split("|");
               this.provinceCode=this.selectAddr[0];
               this.cityCode=this.selectAddr[1];
