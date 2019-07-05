@@ -83,7 +83,7 @@
         var json = JSON.parse(mesasge.data);
         /*var type = json.action;*/
         var data = json.result;
-//        console.log("data.transmission========"+data.transmission);
+        console.log("data.transmission========"+data.transmission);
         if(data.transmission=='P'){
           this.realData.transmission='P';
           this.realData.oilDoor=0;

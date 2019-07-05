@@ -220,14 +220,12 @@
 
                     //切换路侧点时，重新切换3D地图
                     //第一次地图加载后调整位置即可
+//                    console.log("地图初始化---"+_this.mapInit)
                     if(_this.mapInit){
                       _this.$refs.tusvnMap3.reset3DMap();
+                      let cameraParam = JSON.parse(item.cameraParam);
+                      _this.$refs.tusvnMap3.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
                       _this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,item.serialNum);
-                      if(_this.selectedItem.roadSiderId=='130101_001'){
-                        _this.$refs.tusvnMap3.updateCameraPosition( 442486.3454129422,4427261.806106671, 47.90669656890555 , 34.88838511357024, -0.7656910059927339,  2.4898596954809307);
-                      }else{
-                        _this.$refs.tusvnMap3.updateCameraPosition(442454.32657890377,4427227.807879115,37.7350947252935, 0.0000028926452461693342, -0.39699074074074336, -0.730706721974606);
-                      }
                     }
                   }
                 }else{
@@ -288,13 +286,9 @@
               })
               //选中后重新请求
               _this.$refs.tusvnMap3.reset3DMap();
+              let cameraParam = JSON.parse(item.cameraParam);
+              this.$refs.tusvnMap3.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
               this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,item.serialNum);
-              if(this.selectedItem.roadSiderId=='130101_001'){
-                this.$refs.tusvnMap3.updateCameraPosition( 442486.3454129422,4427261.806106671, 47.90669656890555 , 34.88838511357024, -0.7656910059927339,  2.4898596954809307);
-              }else{
-                this.$refs.tusvnMap3.updateCameraPosition(442454.32657890377,4427227.807879115,37.7350947252935, 0.0000028926452461693342, -0.39699074074074336, -0.730706721974606);
-              }
-
             }else{
               var options = _this.getPlayerOptions();
               options.sources[0].src =  '';
@@ -409,6 +403,7 @@
           handleNodeClick(node,resolve){
             //当切换树的时候，设备列表，感知结果进行切换
             this.serialNum="";
+            this.selectedItem.camSerialNum="";
             this.getDeviceList(node.code);
             this.getDeviceCountByCity();
           },
@@ -540,25 +535,28 @@
           },
           mapcomplete:function(){
             this.mapInit=true;
-            if(this.selectedItem.roadSiderId=='130101_001'){
-              this.$refs.tusvnMap3.updateCameraPosition( 442486.3454129422,4427261.806106671, 47.90669656890555 , 34.88838511357024, -0.7656910059927339,  2.4898596954809307);
-            }else{
-              this.$refs.tusvnMap3.updateCameraPosition(442454.32657890377,4427227.807879115,37.7350947252935, 0.0000028926452461693342, -0.39699074074074336, -0.730706721974606);
+            if(this.serialNum&&this.serialNum!=""){
+              console.log("this.serialNum--"+this.serialNum)
+              let cameraParam = JSON.parse(this.selectedItem.cameraParam);
+              this.$refs.tusvnMap3.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
+              this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,this.selectedItem.camSerialNum);
+              return;
             }
-
             let count = 0;
             let time = setInterval(()=>{
               if(this.serialNum&&this.serialNum!=""){
                 console.log("this.serialNum--"+this.serialNum)
+                let cameraParam = JSON.parse(this.selectedItem.cameraParam);
+                this.$refs.tusvnMap3.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
                 this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,this.selectedItem.camSerialNum);
                 clearInterval(time);
               }
-              //超过一分钟仍然没有响应 则停止渲染
+              //超过5s仍然没有响应 则停止渲染
               if(count==5){
                 clearInterval(time);
               }
               count++;
-            },2000)
+            },1000)
           }
         },
         watch:{

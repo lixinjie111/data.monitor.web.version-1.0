@@ -7,7 +7,11 @@
           <p @click="queryDeviceDetail(roadItem1)">路侧点：{{roadItem1.roadSiderId}}</p>
         </div>
       </div>
-      <div class="side-device-size">
+      <div class="side-device-size " id="device1">
+        <!--<div class="device-control">
+          <div class="side-device-magnify" v-show="!isFullScreen" @click="perFullScreen"></div>
+          <div class="side-device-shrink" v-show="isFullScreen" @click="perShrinkScreen"></div>
+        </div>-->
         <div class="side-device-mask" >
           <p @click="queryDeviceDetail(roadItem1)">路侧点：{{roadItem1.roadSiderId}}</p>
         </div>
@@ -96,6 +100,7 @@
               roadList2:[],//第二个路侧点的marker集合
               center1:[],
               center2:[],
+              isFullScreen:false
 
             }
         },
@@ -106,11 +111,20 @@
         methods: {
           onMapComplete1:function(){
             console.log("onMapComplete1");
-            this.$refs.tusvnMap1.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
+            if(this.roadItem1.roadSiderId&&this.roadItem1.roadSiderId!=''){
+//                this.$refs.tusvnMap1.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
+              let cameraParam = JSON.parse(this.roadItem1.cameraParam);
+              this.$refs.tusvnMap1.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
+              this.$refs.tusvnMap1.changeRcuId(window.cfg.websocketUrl,this.roadItem1.camSerialNum);
+              return;
+            }
             let count = 0;
             let time = setInterval(()=>{
               if(this.roadItem1.roadSiderId&&this.roadItem1.roadSiderId!=''){
                 console.log('roadItem1------'+this.roadItem1.camSerialNum+"====roadId1"+this.roadItem1.roadSiderId);
+//                this.$refs.tusvnMap1.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
+                let cameraParam = JSON.parse(this.roadItem1.cameraParam);
+                this.$refs.tusvnMap1.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
                 this.$refs.tusvnMap1.changeRcuId(window.cfg.websocketUrl,this.roadItem1.camSerialNum);
                 clearInterval(time);
               }
@@ -119,15 +133,23 @@
                 clearInterval(time);
               }
               count++;
-            },2000)
+            },1000)
           },
           onMapComplete2:function(){
             console.log("onMapComplete2");
-            this.$refs.tusvnMap2.updateCameraPosition( 442486.3454129422,4427261.806106671, 47.90669656890555 , 34.88838511357024, -0.7656910059927339,  2.4898596954809307);
+//            this.$refs.tusvnMap2.updateCameraPosition( 442486.3454129422,4427261.806106671, 47.90669656890555 , 34.88838511357024, -0.7656910059927339,  2.4898596954809307);
+            if(this.roadItem1.roadSiderId&&this.roadItem1.roadSiderId!=''){
+              let cameraParam = JSON.parse(this.roadItem2.cameraParam);
+              this.$refs.tusvnMap2.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
+              this.$refs.tusvnMap2.changeRcuId(window.cfg.websocketUrl, this.roadItem2.camSerialNum);
+              return;
+            }
             let count = 0;
             let time = setInterval(()=>{
               if(this.roadItem1.roadSiderId&&this.roadItem1.roadSiderId!=''){
                 console.log('roadItem2------'+this.roadItem2.camSerialNum+"====roadId2"+this.roadItem2.roadSiderId);
+                let cameraParam = JSON.parse(this.roadItem2.cameraParam);
+                this.$refs.tusvnMap2.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
                 this.$refs.tusvnMap2.changeRcuId(window.cfg.websocketUrl, this.roadItem2.camSerialNum);
                 clearInterval(time);
               }
@@ -136,7 +158,7 @@
                 clearInterval(time);
               }
               count++;
-            },2000)
+            },1000)
           },
           getPlayerOptions(){
             var option={
@@ -171,25 +193,13 @@
                   /*"serialNum": "3402000000132000001401"*/
                   "serialNum": item.camSerialNum
                 }).then(res => {
-                  /*var options = _this.getPlayerOptions();
-                  options.sources[0].src=res.data.rtmp;*/
-                  /*item.option = options;*/
-                  /*_this.playerOptions.push(options);*/
                   if(index==0){
                     _this.option1.sources[0].src=res.data.rtmp;
                     _this.roadItem1=item;
-//                    _this.initWebSocket1();
-                    // _this.$refs.tusvnMap1.changeRcuId(window.cfg.websocketUrl,item.roadSiderId);//2046A1037E1F   item.roadSiderId
-                    // _this.$refs.tusvnMap1.updateCameraPosition( 442454.32657890377,4427227.807879115,37.7350947252935, 0.0000028926452461693342, -0.39699074074074336, -0.730706721974606);
-//                    console.log("ref------"+ _this.$refs.tusvnMap1);
                   }
                   if(index==1){
                     _this.option2.sources[0].src=res.data.rtmp;
                     _this.roadItem2=item;
-//                    _this.initWebSocket2();
-                    // _this.$refs.tusvnMap2.changeRcuId(window.cfg.websocketUrl,item.roadSiderId);
-                    // _this.$refs.tusvnMap2.updateCameraPosition( 442454.32657890377,4427227.807879115,37.7350947252935, 0.0000028926452461693342, -0.39699074074074336, -0.730706721974606);
-//                    console.log("ref------"+ _this.$refs.tusvnMap1);
                   }
                 })
               })
@@ -423,6 +433,43 @@
             }else{
               return;
             }
+          },
+          perFullScreen(e){
+            this.isFullScreen=true;
+            let element = document.getElementById('device1');
+            this.openFullscreen(element);
+          },
+          perShrinkScreen(e){
+            this.isFullScreen=false;
+            this.exitFullScreen();
+          },
+          //打开全屏方法
+          openFullscreen(element) {
+            if (element.requestFullscreen) {
+              element.requestFullscreen();
+            } else if (element.mozRequestFullScreen) {
+              element.mozRequestFullScreen();
+            } else if (element.msRequestFullscreen) {
+              element.msRequestFullscreen();
+            } else if (element.webkitRequestFullscreen) {
+              element.webkitRequestFullScreen();
+            }
+          },
+
+          //退出全屏方法
+          exitFullScreen() {
+            if (document.exitFullscreen) {
+              document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+              document.mozCancelFullScreen();
+            } else if (document.msExitFullscreen) {
+              document.msExiFullscreen();
+            } else if (document.webkitCancelFullScreen) {
+              document.webkitCancelFullScreen();
+
+            } else if (document.webkitExitFullscreen) {
+              document.webkitExitFullscreen();
+            }
           }
         },
        watch:{
@@ -487,10 +534,44 @@
   .side-device-info{
     position: absolute;
     right:20px;
-    /*.side-device-style{
-      position: relative;
-     !* margin-bottom: 30px;*!
-    }*/
+
+    .side-device-magnify:before{
+      content: "\F108";
+      font-family: VideoJS;
+      position: absolute;
+      z-index: 3;
+      right: 10px;
+      bottom: 0px;
+      font-size: 26px;
+    }
+    .side-device-shrink:before{
+      content: '\F109';
+      font-family: VideoJS;
+      position: absolute;
+      z-index: 3;
+      right: 10px;
+      bottom: 0px;
+      font-size: 26px;
+    }
+    .device-control{
+      position: absolute;
+      width:100%;
+      bottom: 0;
+      height: 40px;
+      left: 0px;
+      right: 0px;
+      box-sizing: border-box;
+      padding: 5px;
+      opacity: 0;
+      cursor: pointer;
+      z-index:3;
+    }
+    .device-control:hover{
+      opacity: 1;
+      visibility: visible;
+      /*background:rgba(0,0,0,0.3) ;*/
+      transition:visibility 0.1s, opacity 0.1s;
+    }
     .side-device-size{
       width: 330px;
       height: 210px;

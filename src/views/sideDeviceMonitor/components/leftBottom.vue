@@ -164,7 +164,8 @@
                     width: 1,
                     opacity:0.7
                   }
-                }]
+                }],
+              /*animation:false*/
             };
             return option;
           },
