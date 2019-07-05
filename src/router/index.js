@@ -5,6 +5,14 @@ import Router from 'vue-router'
 const Login = resolve => require(['@/views/login/index'], resolve)
 const Home = resolve => require(['@/views/home/index'], resolve)
 const Err404 = resolve => require(['@/views/error/404'], resolve)
+//重新加载当前路由
+const Refresh = resolve => require(['@/views/refresh'], resolve)
+// this.$router.replace({
+//     path: '/refresh',
+//     params: {
+//         t: Date.now()
+//     }
+// })
 
 
 const DataMonitor = resolve => require(['@/views/dataMonitor/index'], resolve)
@@ -44,6 +52,11 @@ export default new Router({
     meta: {
       showHeader: true
     }
+  },{ 
+    path: '/refresh', 
+    name: 'Refresh', 
+    component: Refresh,
+    meta: {}
   },{
     path: '/dataMonitor',
     name: 'DataMonitor',

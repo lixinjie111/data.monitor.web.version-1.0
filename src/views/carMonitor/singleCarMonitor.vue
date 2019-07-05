@@ -1,7 +1,7 @@
 <template>
 <div class="car-view-wrapper clearfix">
     <div class="single-left">
-        <left-car :isStop="isStop"></left-car>
+        <left-car></left-car>
     </div>
     <div class="single-main">
         <div class="single-header">
