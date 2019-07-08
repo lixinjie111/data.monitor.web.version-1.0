@@ -145,6 +145,7 @@
                         var marker = new AMap.Marker({
                           position: subItem.position,
                           icon: 'static/images/sideDevice/2.png', // 添加 Icon 图标 URL
+
                         });
                         _this.map.add(marker);
                         _this.rcuList.push(marker)
