@@ -502,6 +502,8 @@
               }else{
                 lastPosition = newPosition;
               }
+              /*_this.marker.setPosition(lastPosition);
+              _this.platNoMarker.setPosition(lastPosition);*/
               //设置中心点
               _this.distanceMap.setCenter(newPosition);
               //设置旋转角度
@@ -597,7 +599,7 @@
                   if(_this.count == arr.length+1){
                     resultData.forEach((subItem, subIndex, subArr)=>{
                       if (_this.sideVehicleObj[subItem.vehicleId]) {
-                        var sideCar = _this.sideVehicleObj[subItem.vehicleId];
+                        let sideCar = _this.sideVehicleObj[subItem.vehicleId];
                         if(_this.sideVehicleObj[subItem.vehicleId].flag) {
                           sideCar.marker.setAngle(subItem.heading);
                           sideCar.marker.setPosition(subItem.position);
@@ -1230,8 +1232,8 @@
     position: absolute;
     bottom: 10px;
     left:48%;
-    width: 90px;
-    text-align: left;
+    width: 100px;
+    text-align: center;
     padding: 4px;
   }
   .real-traffic{
