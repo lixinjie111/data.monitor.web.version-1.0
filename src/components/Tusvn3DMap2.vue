@@ -40,6 +40,8 @@ export default {
 
             ,modelPersonArr:[]
             ,cacheModelNum:400
+            ,interval:1
+            ,count:0
 
             // ,websocketUrl:"ws://10.0.1.57:9999/ws"
             // ,websocketUrl:"ws://192.168.1.132:9998/ws"
@@ -440,9 +442,18 @@ export default {
                 }
             }
         },
+        setInterval:function(interval)
+        {
+            this.interval = interval;
+            this.count = 0;
+        },
         onMessage:function(data){
             this.models={};
-
+            this.count++;
+            if((this.count%this.interval)!=0)
+            {
+                return;
+            }
             let rsuDatas = JSON.parse(data.data);
             var deviceid = null;
             if(rsuDatas.result.length>0)
