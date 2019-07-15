@@ -622,7 +622,7 @@ export default {
              }
         },
         onOpen:function(){
-            console.log("建立连接");
+            // console.log("建立连接");
             // 2046A1035893
             // var hostVehicle = '{"action":"rcu","data":{"rcuId":"2046A1037E1F"},"token":"fpx"}';
             // var hostVehicleMsg = JSON.stringify(hostVehicle);

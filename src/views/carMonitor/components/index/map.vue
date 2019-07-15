@@ -41,6 +41,10 @@ export default {
         onmessage(message){
             let _json = JSON.parse(message.data),
                 _result = _json.result.allVehicle;
+            if(_result.length == 0) {
+                console.log(_json);
+                console.log("当前数据为空",this.dateUtil.formatTime(_json.result.time));
+            }
             if(this.flag) {
                 // console.log("绘制前--------");
                 // console.log(_result.length);
