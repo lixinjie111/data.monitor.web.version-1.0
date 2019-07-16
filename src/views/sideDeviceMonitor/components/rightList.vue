@@ -236,14 +236,16 @@
 
 
             if(!this.roadItem1.roadSiderId||this.roadItem1.roadSiderId==''){
-              this.$refs.tusvnMap1.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
+              this.$refs.tusvnMap1.updateCameraPosition(325865.6761880854,3462531.6792285736,35.222258683691756,48.28433151549649,-0.5404932964918664,-0.8388297497940136);
             }
             if(this.roadItem1.roadSiderId&&this.roadItem1.roadSiderId!=''){
               let cameraParam = JSON.parse(this.roadItem1.cameraParam);
               this.$refs.tusvnMap1.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
+              // this.$refs.tusvnMap1.updateCameraPosition(325865.6761880854,3462531.6792285736,35.222258683691756,48.28433151549649,-0.5404932964918664,-0.8388297497940136);
               this.$refs.tusvnMap1.changeRcuId(window.cfg.websocketUrl,this.roadItem1.camSerialNum);
               return;
             }
+            // return;
             let count = 0;
             let time = setInterval(()=>{
               if(this.roadItem1.roadSiderId&&this.roadItem1.roadSiderId!=''){
