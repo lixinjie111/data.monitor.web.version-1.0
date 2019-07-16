@@ -540,6 +540,8 @@
               this.$refs.tusvnMap3.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
               this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,this.selectedItem.camSerialNum);
               return;
+            }else{
+              this.$refs.tusvnMap3.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
             }
             let count = 0;
             let time = setInterval(()=>{

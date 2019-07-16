@@ -112,7 +112,6 @@
 </template>
 <script>
   import Curve from '@/assets/js/utils/curve.js';
-
   export default {
     name:"bottom-car",
     data () {

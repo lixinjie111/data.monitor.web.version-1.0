@@ -87,18 +87,30 @@
     <!--v-show="warningData.show"-->
 
     <div class="pre-warning">
-      <div  class="pre-warning-item" v-for="item in warningList" v-show="item.flag" >
+      <div  class="pre-warning-item" v-for="item in warningList" v-show="item.flag">
+        <!--<div class="warning-position" >
+          <div class="pre-warning-img pre-warning-info" :style="background: item.backgroundColor">
+            <img :src="item.src"/>
+          </div>
+          <div class="pre-warning-style pre-warning-info">
+            <p>
+              <span class="pre-warning-font">{{item.dist}}</span>米<br/>
+              {{item.message}}
+            </p>
+            &lt;!&ndash;<p></p>&ndash;&gt;
+          </div>
+        </div>-->
         <!--ADAS-->
-        <div v-show="item.type=='ADAS_1'" class="warning-position" >
+        <!--<div v-show="item.type=='ADAS_1'" class="warning-position" >
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
             <img src="@/assets/images/car/warning/adas-1.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
             <p>
-              <!--<span class="pre-warning-font">{{item.dist}}</span>米<br/>-->
+              &lt;!&ndash;<span class="pre-warning-font">{{item.dist}}</span>米<br/>&ndash;&gt;
               {{item.message}}
             </p>
-            <!--<p></p>-->
+            &lt;!&ndash;<p></p>&ndash;&gt;
           </div>
         </div>
         <div v-show="item.type=='ADAS_2'" class="warning-position">
@@ -125,7 +137,7 @@
             <p>{{item.message}}</p>
           </div>
         </div>
-        <!--V2X-->
+        &lt;!&ndash;V2X&ndash;&gt;
         <div v-show="item.type=='V2X_1'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
             <img src="@/assets/images/car/warning/car-1.png"/>
@@ -191,18 +203,18 @@
             <p>{{item.message}}</p>
           </div>
         </div>
-        <!--路侧告警-->
-       <!-- <div v-show="item.type=='V2X_12'" class="warning-position">
+        &lt;!&ndash;路侧告警&ndash;&gt;
+       &lt;!&ndash; <div v-show="item.type=='V2X_12'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
             <img src="@/assets/images/car/warning/car-10.png"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
             <p>{{item.message}}</p>
           </div>
-        </div>-->
+        </div>&ndash;&gt;
 
-        <!--云下发-->
-        <!--道路打滑-->
+        &lt;!&ndash;云下发&ndash;&gt;
+        &lt;!&ndash;道路打滑&ndash;&gt;
         <div v-show="item.type=='ICING'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
             <img src="@/assets/images/car/warning/cloud-1.png"/>
@@ -211,7 +223,7 @@
             <p>道路打滑</p>
           </div>
         </div>
-        <!--道路施工-->
+        &lt;!&ndash;道路施工&ndash;&gt;
         <div v-show="item.type=='ROADWORK'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
             <img src="@/assets/images/car/warning/cloud-2.png"/>
@@ -220,7 +232,7 @@
             <p>道路施工</p>
           </div>
         </div>
-        <!--障碍物-->
+        &lt;!&ndash;障碍物&ndash;&gt;
         <div v-show="item.type=='OBSTACLESAHEAD'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
             <img src="@/assets/images/car/warning/cloud-3.png"/>
@@ -229,7 +241,7 @@
             <p>障碍物</p>
           </div>
         </div>
-        <!--公交车专用道-->
+        &lt;!&ndash;公交车专用道&ndash;&gt;
         <div v-show="item.type=='BUSLANE'" class="warning-position">
           <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
             <img src="@/assets/images/car/warning/cloud-4.png"/>
@@ -237,7 +249,7 @@
           <div class="pre-warning-style pre-warning-info">
             <p>公交车专用道</p>
           </div>
-        </div>
+        </div>-->
       </div>
     </div>
 
