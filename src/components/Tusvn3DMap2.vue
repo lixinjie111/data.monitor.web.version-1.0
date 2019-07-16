@@ -113,11 +113,26 @@ export default {
             let bbox = new THREE.Box3(new THREE.Vector3(x1,y1,z1), new THREE.Vector3(x2,y2,z2));
             dl.initView(bbox,this.viewer);
         },
-        addShape:function(name,url,color){
+        /**
+         * name:矢量数据的名字 可选
+         * url:矢量数据的url路径 必须
+         * color:矢量数据的颜色类型，默认是 #fff，数据接受多种类型，比如 "rgb(255, 0, 0)"、"hsl(0, 100%, 50%)"、'#ff0000' 可选
+         * width:矢量数据如果是线类型，该参数会起作用，默认是 1.0 可选
+         * size:矢量数据如果是点类型，该参数会起作用，默认是 6.0 可选
+         * visible:是否可见，默认是 true， 可选
+         * map:纹理的url，默认是 null 可选
+         * proj:数据的坐标系，默认是 和点云坐标系一致 可选
+         */
+        addShape:function(name,url,color,width,size,visible,map,proj){
             let shp = new dl.Shape({
                 url: url,
                 name: name,
-                color: color
+                color: color==undefined?"#fff":color,
+                width: width==undefined?1.0:width,
+                size: size==undefined?6.0:size,
+                visible: visible==undefined?true:visible,
+                map: map==undefined?null:map,
+                proj: proj
             });
             this.scene.add(shp);
 
