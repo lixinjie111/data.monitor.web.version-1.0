@@ -43,7 +43,6 @@ export default new Router({
     path: '/login',
     name: 'Login',
     component: Login,
-    // component: () => import('@/pages/home/Home'),
     meta: {}
   },{
     path: '*',
@@ -149,18 +148,19 @@ export default new Router({
       showHeader: false
     }
   },{
+  //   path: '/',
+  //   name: 'Home',
+  //   component: Home,
+  //   meta: {
+  //     showHeader: true
+  //   }
+  // },{
     path: '/',
-    name: 'Home',
-    component: Home,
-    // component: () => import('@/pages/home/Home'),
-    meta: {
-      showHeader: true
-    }
+    redirect: '/dataMonitor'
   },{
     path: '/monitorManage',
     name: 'MonitorManage',
     component: MonitorManage,
-    // component: () => import('@/pages/home/Home'),
     meta: {
       showHeader: false
     }
@@ -168,7 +168,6 @@ export default new Router({
     path: '/monitorVideo',
     name: 'MonitorVideo',
     component: MonitorVideo,
-    // component: () => import('@/pages/home/Home'),
     meta: {
       showHeader: false
     }

@@ -12,26 +12,19 @@ import _ from 'lodash';
 
 export default {
     name:"Tusvn3DMap2",
-    props:["targetId"],
+    props:["targetId","background","navMode","minX","minY","minZ","maxX","maxY","maxZ","defualtZ"],
     data(){
         return {
             mapoption:{
                 doc: this.targetId,
-                background:"black",
-                navMode: Pt.earthControls   //earthControls  OrbitControls
+                background:this.background == undefined? "black":this.background,
+                navMode: this.navMode == undefined? Pt.EarthControls:Pt.OrbitControls   //    Pt.EarthControls  Pt.OrbitControls
             }
             ,viewer:null
             ,scene:null
-            // ,viewVector1:{x:287406.0,y:3463772,z:50}
-            // ,viewVector2:{x:287707.0,y:3463835.0,z:80.0}
-            //科技园
-            ,viewVector1:{x:442350.475567611,y:4427186.352713934,z:50}
-            ,viewVector2:{x:442637.284474562,y:4427363.359317946,z:80.0}
+            ,viewVector1:{x:this.minX,y:this.minY,z:this.minZ}
+            ,viewVector2:{x:this.maxX,y:this.maxY,z:this.maxZ}
 
-
-            //上海
-            // ,viewVector1:{x:325694.8329,y:3462004.5056,z:50}
-            // ,viewVector2:{x:326765.6277,y:3462754.6978,z:80.0}
 
             ,shps:{}
             ,models:{}
@@ -39,7 +32,9 @@ export default {
             }
 
             ,modelPersonArr:[]
-            ,cacheModelNum:400
+            ,cacheModelNum:200
+            ,interval:1
+            ,count:0
 
             // ,websocketUrl:"ws://10.0.1.57:9999/ws"
             // ,websocketUrl:"ws://192.168.1.132:9998/ws"
@@ -55,7 +50,7 @@ export default {
             ,vehicleIds:'B21E-00-017,B21E-00-018,B21E-00-019,B21E-00-020,B21E-00-021,B21E-00-022,B21E-00-023,B21E-00-024'
             ,defualtRadius:100
             ,defualtPitch:-0.8
-            ,defualtZ:12.816
+            ,defualtZ:this.defualtZ==undefined?12.816:this.defualtZ
             ,rcuId:"2046A1037E1F"
 
             ,matStdObjects : new THREE.MeshStandardMaterial( { color: 0x7337E3, roughness: 1, metalness: 0 } )
@@ -71,7 +66,8 @@ export default {
             // ,utmposition: null
 
             ,sourceProject:"EPSG:4326"
-            ,destinatePorject:"+proj=utm +zone=50 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+            // ,destinatePorject:"+proj=utm +zone=50 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"//北京
+            ,destinatePorject:"+proj=utm +zone=51 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"//上海
         }
     },
     watch:{
@@ -80,84 +76,126 @@ export default {
         initMap:function(){
             this.viewer = dl.init(this.mapoption);
             this.scene = dl.scene;
-            //添加数据
-            // this.addShape("intersection","./static/map3d/suzhou_CityRoad_utm51/Intersection.shp",dl.styles.intersection.color)
-            // this.addShape("Crosswalk","./static/map3d/suzhou_CityRoad_utm51/Crosswalk.shp",dl.styles.crosswalk.color)
-            // this.addShape("lane_marking","./static/map3d/suzhou_CityRoad_utm51/Lane_marking.shp",dl.styles.lane_marking.color)
-            // this.addShape("lane_arrow","./static/map3d/suzhou_CityRoad_utm51/Direction_arrow.shp",dl.styles.lane_arrow.color)
-            // this.addShape("lane_boundary","./static/map3d/suzhou_CityRoad_utm51/Lane_boundary.shp",dl.styles.lane_boundary.color)
 
-            // this.addShape("Crosswalk2","./static/map3d/kjy/UTM/crosswalk.shp","#999999")
-            // this.addShape("lane2","./static/map3d/kjy/UTM/lane.shp",dl.styles.lane_boundary.color)
-            // this.addShape("roadline2","./static/map3d/kjy/UTM/roadline.shp",dl.styles.lane_boundary.color)
-          //科技园
-          this.addShape("Crosswalk2","./static/map3d/newUTMData/crosswalk.shp","#999999")
-          this.addShape("lane2","./static/map3d/newUTMData/lane.shp",dl.styles.lane_boundary.color)
-          this.addShape("roadline2","./static/map3d/newUTMData/roadline.shp",dl.styles.lane_boundary.color)
+            // //上海自测
+            // this.addShape("intersection","./static/map3d/dl_shcsq_zc/Intersection.shp",dl.styles.intersection.color)
+            // this.addShape("Crosswalk","./static/map3d/dl_shcsq_zc/Crosswalk.shp",dl.styles.crosswalk.color)
+            // this.addShape("lane_marking","./static/map3d/dl_shcsq_zc/Lane_marking.shp",dl.styles.lane_marking.color)
+            // this.addShape("lane_arrow","./static/map3d/dl_shcsq_zc/Direction_arrow.shp",dl.styles.lane_arrow.color)
+            // this.addShape("lane_boundary","./static/map3d/dl_shcsq_zc/Lane_boundary.shp",dl.styles.lane_boundary.color)
 
-            //上海
-            // this.addShape("intersection","./static/map3d/dilu_zc/clip/Intersection.shp",dl.styles.intersection.color)
-            // this.addShape("Crosswalk","./static/map3d/dilu_zc/clip/Crosswalk.shp",dl.styles.crosswalk.color)
-            // // this.addShape("lane_marking","./static/map3d/20190531_utm51/clip/Lane_marking.shp",dl.styles.lane_marking.color)
-            // this.addShape("lane_arrow","./static/map3d/dilu_zc/clip/Direction_arrow.shp",dl.styles.lane_arrow.color)
-            // this.addShape("lane_boundary","./static/map3d/dilu_zc/clip/Lane_boundary.shp",dl.styles.lane_boundary.color)
+            // //添加路灯
+            // this.addModel('street_lamp_two_0','./static/map3d/models/street_lamp_two.3ds',325605.9620401191,3462422.087016858,this.defualtZ);
+            // this.addModel('street_lamp_two_1','./static/map3d/models/street_lamp_two.3ds',325644.5698510726,3462439.737268414,this.defualtZ);
+            // this.addModel('street_lamp_two_2','./static/map3d/models/street_lamp_two.3ds',325678.213173572,3462456.845491925,this.defualtZ);
+            // this.addModel('street_lamp_two_3','./static/map3d/models/street_lamp_two.3ds',325714.8015379905,3462475.9571395535,this.defualtZ);
+            // this.addModel('street_lamp_two_4','./static/map3d/models/street_lamp_two.3ds',325751.7192636788,3462494.9147299756,this.defualtZ);
+            // this.addModel('street_lamp_two_5','./static/map3d/models/street_lamp_two.3ds',325791.2291744284,3462513.0858777757,this.defualtZ);
+            // this.addModel('street_lamp_two_6','./static/map3d/models/street_lamp_two.3ds',325839.45728057146,3462528.673690394,this.defualtZ);
+            // this.addModel('street_lamp_two_7','./static/map3d/models/street_lamp_two.3ds',325871.50033267133,3462535.577747621,this.defualtZ);
+            // this.addModel('street_lamp_two_8','./static/map3d/models/street_lamp_two.3ds',325927.26942355325,3462540.7501094346,this.defualtZ);
+            // this.addModel('street_lamp_two_9','./static/map3d/models/street_lamp_two.3ds',325971.1791292096,3462539.308385897,this.defualtZ);
+            // this.addModel('street_lamp_two_10','./static/map3d/models/street_lamp_two.3ds',326011.51930734934,3462530.549954456,this.defualtZ);
+            // this.addModel('street_lamp_two_11','./static/map3d/models/street_lamp_two.3ds',326060.29745298775,3462517.6961886724,this.defualtZ);
+            // this.addModel('street_lamp_two_12','./static/map3d/models/street_lamp_two.3ds',326110.0640013865,3462499.7403886765,this.defualtZ);
+            // this.addModel('street_lamp_two_13','./static/map3d/models/street_lamp_two.3ds',326146.8028378673,3462478.6396884797,this.defualtZ);
+            // this.addModel('street_lamp_two_14','./static/map3d/models/street_lamp_two.3ds',326184.09992171597,3462451.135337721,this.defualtZ);
+            // this.addModel('street_lamp_two_15','./static/map3d/models/street_lamp_two.3ds',326213.6642104323,3462424.026798547,this.defualtZ);
+            // this.addModel('street_lamp_two_16','./static/map3d/models/street_lamp_two.3ds',326239.9417744168,3462394.325700396,this.defualtZ);
+            // this.addModel('street_lamp_two_17','./static/map3d/models/street_lamp_two.3ds',326261.54341858963,3462364.523596104,this.defualtZ);
+            // this.addModel('street_lamp_two_18','./static/map3d/models/street_lamp_two.3ds',326283.7656650753,3462325.9076287984,this.defualtZ);
+            // this.addModel('street_lamp_two_19','./static/map3d/models/street_lamp_two.3ds',326293.7409365265,3462305.101613318,this.defualtZ);
+            // this.addModel('street_lamp_two_20','./static/map3d/models/street_lamp_two.3ds',326317.89209304436,3462233.2914442807,this.defualtZ);
+            // this.addModel('street_lamp_two_21','./static/map3d/models/street_lamp_two.3ds',326338.3463113972,3462166.509419441,this.defualtZ);
+            // this.addModel('street_lamp_two_22','./static/map3d/models/street_lamp_two.3ds',326360.74210184,3462124.440723257,this.defualtZ);
+            // this.addModel('street_lamp_two_23','./static/map3d/models/street_lamp_two.3ds',326381.50148141605,3462094.623117925,this.defualtZ);
+            // this.addModel('street_lamp_two_24','./static/map3d/models/street_lamp_two.3ds',326404.88685793115,3462064.49447238,this.defualtZ)
 
-          // this.addShape("1","./static/map3d/kjy/UTM/1.shp",dl.styles.lane_boundary.color)
-          //   this.addShape("2","./static/map3d/kjy/UTM/2.shp",dl.styles.lane_boundary.color)
-          //   this.addShape("3","./static/map3d/kjy/UTM/3.shp",dl.styles.lane_boundary.color)
-          //   this.addShape("4","./static/map3d/kjy/UTM/4.shp",dl.styles.lane_boundary.color)
-          //   this.addShape("5","./static/map3d/kjy/UTM/5.shp",dl.styles.lane_boundary.color)
-          //   this.addShape("6","./static/map3d/kjy/UTM/6.shp",dl.styles.lane_boundary.color)
-          //   this.addShape("7","./static/map3d/kjy/UTM/7.shp",dl.styles.lane_boundary.color)
-          //   this.addShape("8","./static/map3d/kjy/UTM/8.shp",dl.styles.lane_boundary.color)
-          //   this.addShape("9","./static/map3d/kjy/UTM/9.shp",dl.styles.lane_boundary.color)
-          //   this.addShape("10","./static/map3d/kjy/UTM/10.shp",dl.styles.lane_boundary.color)
-          //   this.addShape("11","./static/map3d/kjy/UTM/11.shp",dl.styles.lane_boundary.color)
-          //   this.addShape("12","./static/map3d/kjy/UTM/12.shp",dl.styles.lane_boundary.color)
 
 
-            // this.addShape("lane_marking","./static/map3d/suzhou_CityRoad_utm51/Lane_marking.shp",dl.styles.lane_marking.color)
-            // this.addShape("lane_arrow","./static/map3d/suzhou_CityRoad_utm51/Direction_arrow.shp",dl.styles.lane_arrow.color)
+            // this.addModel('street_lamp_two_opposite_0','./static/map3d/models/street_lamp_two.3ds',326539.9124336911,3461961.7054950483,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_1','./static/map3d/models/street_lamp_two.3ds',326513.87203228497,3461985.7805497725,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_2','./static/map3d/models/street_lamp_two.3ds',326481.66853339976,3462015.608493991,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_3','./static/map3d/models/street_lamp_two.3ds',326437.26901612466,3462057.088796324,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_4','./static/map3d/models/street_lamp_two.3ds',326407.9536514446,3462091.627984262,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_5','./static/map3d/models/street_lamp_two.3ds',326376.1808195288,3462139.740524388,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_6','./static/map3d/models/street_lamp_two.3ds',326350.5054369998,3462201.284972825,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_7','./static/map3d/models/street_lamp_two.3ds',326336.9131020676,3462244.3383032307,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_8','./static/map3d/models/street_lamp_two.3ds',326348.00984258053,3462274.3429545504,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_9','./static/map3d/models/street_lamp_two.3ds',326342.11978901166,3462296.5981887174,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_10','./static/map3d/models/street_lamp_two.3ds',326312.36564479594,3462319.9917033706,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_11','./static/map3d/models/street_lamp_two.3ds',326293.32005615474,3462357.6330448994,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_12','./static/map3d/models/street_lamp_two.3ds',326269.8965779829,3462393.1162129235,this.defualtZ);
+            // // this.addModel('street_lamp_two_opposite_13','./static/map3d/models/street_lamp_two.3ds',326269.5184563148,3462393.419889987,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_14','./static/map3d/models/street_lamp_two.3ds',326254.2686340613,3462413.4506998067,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_15','./static/map3d/models/street_lamp_two.3ds',326225.2493836086,3462442.6320404094,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_16','./static/map3d/models/street_lamp_two.3ds',326183.79399392195,3462476.6293645953,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_17','./static/map3d/models/street_lamp_two.3ds',326152.984818381,3462497.958909394,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_18','./static/map3d/models/street_lamp_two.3ds',326109.57493707456,3462521.876607037,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_19','./static/map3d/models/street_lamp_two.3ds',326064.91023163777,3462539.4207325154,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_20','./static/map3d/models/street_lamp_two.3ds',326018.01353881694,3462553.284279363,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_21','./static/map3d/models/street_lamp_two.3ds',325971.39649421745,3462560.897562495,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_22','./static/map3d/models/street_lamp_two.3ds',325938.60034148674,3462562.482200762,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_23','./static/map3d/models/street_lamp_two.3ds',325904.6023904722,3462584.014099191,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_24','./static/map3d/models/street_lamp_two.3ds',325881.56604034174,3462581.124477936,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_25','./static/map3d/models/street_lamp_two.3ds',325858.1721216263,3462556.677784916,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_26','./static/map3d/models/street_lamp_two.3ds',325821.3680088696,3462547.6220940743,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_27','./static/map3d/models/street_lamp_two.3ds',325782.45188748406,3462534.4376719757,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_28','./static/map3d/models/street_lamp_two.3ds',325748.2227811228,3462518.9449371654,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_29','./static/map3d/models/street_lamp_two.3ds',325723.55472146743,3462502.401337263,this.defualtZ);
+            // this.addModel('street_lamp_two_opposite_30','./static/map3d/models/street_lamp_two.3ds',325704.09742565616,3462492.017142771,this.defualtZ);
 
-            //初始化视锥体
+
+            // //添加红绿灯
+            // this.addModel('traffic_light_0','./static/map3d/models/traffic_light.3ds',325921.545860186,3462541.0160225183,this.defualtZ);
+            // this.addModel('traffic_light_1','./static/map3d/models/traffic_light.3ds',325868.4327871947,3462561.2291684817,this.defualtZ);
+            // this.addModel('traffic_light_2','./static/map3d/models/traffic_light.3ds',325898.55675146834,3462539.0550170965,this.defualtZ);
+            // this.addModel('traffic_light_3','./static/map3d/models/traffic_light.3ds',326325.78270624415,3462247.0504668984,this.defualtZ);
+            // this.addModel('traffic_light_4','./static/map3d/models/traffic_light.3ds',326314.74230815104,3462313.111718161,this.defualtZ);
+            // this.addModel('traffic_light_5','./static/map3d/models/traffic_light.3ds',326343.54615430237,3462286.313593357,this.defualtZ);
+
+            // // //添加标识牌
+            // this.addModel('traffic_sign_stop_0','./static/map3d/models/traffic_sign_stop.3ds',325894.67930130404,3462580.1783312797,this.defualtZ);
+            // this.addModel('traffic_sign_stop_1','./static/map3d/models/traffic_sign_stop.3ds',326253.3704410266,3462374.6075555324,this.defualtZ);
+            // this.addModel('traffic_sign_stop_2','./static/map3d/models/traffic_sign_stop.3ds',326260.07575023104,3462409.3542993385,this.defualtZ);
+            // //初始化视锥体
             this.initView(this.viewVector1.x,this.viewVector1.y,this.viewVector1.z,this.viewVector2.x,this.viewVector2.y,this.viewVector2.z);
 
-            // this.updateCameraPosition(442455.99844902,4427229.863377506,58.45029574064428,147.4909535804191,-0.6650238516042308,-0.8020833333333345);
-            //添加模型
-            // this.addModel("car","./static/map3d/map_photo/car.3DS",0,0,12.816);
 
-            //矮路灯
-            this.addModel("lamppost_01","./static/map3d/models/lamppost_01.3ds",442496.96,4427294.44,16);
-            this.models["lamppost_01"].setHeading(30);
-            this.models["lamppost_01"].setUpdate(true);
+            // //矮路灯
+            // this.addModel("lamppost_01","./static/map3d/models/lamppost_01.3ds",442496.96,4427294.44,16);
+            // this.models["lamppost_01"].setHeading(30);
+            // this.models["lamppost_01"].setUpdate(true);
+
+
+
+            // //大路灯
+            // this.addModel("street_lamp_two","./static/map3d/models/street_lamp_two.3ds",442501.99,4427272.65,16);
+            // this.models["street_lamp_two"].setHeading(30);
+            // this.models["street_lamp_two"].setUpdate(true);
+            // //红绿灯
+            // this.addModel("traffic_light","./static/map3d/models/traffic_light.3ds",442533.95,4427306.77,16);
+            // this.models["traffic_light"].setHeading(30);
+            // this.models["traffic_light"].setUpdate(true);
+
+            // //标识牌
+            // this.addModel("traffic_sign_stop","./static/map3d/models/traffic_sign_stop.3ds",442529.62,4427323.70,16);
+            // this.models["traffic_sign_stop"].setHeading(120);
+            // this.models["traffic_sign_stop"].setUpdate(true);
+
+            // //女人
+            // this.addModel("Girl walking N090814","./static/map3d/models/Girl walking N090814.3DS",442529.62,4427325.70,16);
+            // this.models["Girl walking N090814"].setHeading(120);
+            // this.models["Girl walking N090814"].setUpdate(true);
+            // //男人
+            // this.addModel("Man N151016.3DS","./static/map3d/models/Man N151016.3DS",442531.62,4427325.70,16);
+            // this.models["Man N151016.3DS"].setHeading(120);
+            // this.models["Man N151016.3DS"].setUpdate(true);
 
             //障碍物
             // this.addModel("traffic_cone","./static/map3d/models/traffic_cone.3ds",442492.797,4427280.995,16);
             // this.models["traffic_cone"].setHeading(30);
             // this.models["traffic_cone"].setUpdate(true);
-
-            //大路灯
-            this.addModel("street_lamp_two","./static/map3d/models/street_lamp_two.3ds",442501.99,4427272.65,16);
-            this.models["street_lamp_two"].setHeading(30);
-            this.models["street_lamp_two"].setUpdate(true);
-            //红绿灯
-            this.addModel("traffic_light","./static/map3d/models/traffic_light.3ds",442533.95,4427306.77,16);
-            this.models["traffic_light"].setHeading(30);
-            this.models["traffic_light"].setUpdate(true);
-
-            //标识牌
-            this.addModel("traffic_sign_stop","./static/map3d/models/traffic_sign_stop.3ds",442529.62,4427323.70,16);
-            this.models["traffic_sign_stop"].setHeading(120);
-            this.models["traffic_sign_stop"].setUpdate(true);
-
-            //女人
-            this.addModel("Girl walking N090814","./static/map3d/models/Girl walking N090814.3DS",442529.62,4427325.70,16);
-            this.models["Girl walking N090814"].setHeading(120);
-            this.models["Girl walking N090814"].setUpdate(true);
-            //男人
-            this.addModel("Man N151016.3DS","./static/map3d/models/Man N151016.3DS",442531.62,4427325.70,16);
-            this.models["Man N151016.3DS"].setHeading(120);
-            this.models["Man N151016.3DS"].setUpdate(true);
 
             //初始化websocket连接
             // this.initWebsocket(this.websocketUrl);
@@ -176,6 +214,9 @@ export default {
                 this.$emit("mapcomplete",this);
                 //上海
                 // this.updateCameraPosition(326181.72659014474,3462354.6747002415,737.3642832288795,741.5052736914325,-1.5707963267948966,-0.05266622778143515);
+
+                //上海自采 裁剪
+                this.updateCameraPosition(326181.72659014474,3462354.6747002415,737.3642832288795,741.5052736914325,-1.5707963267948966,-0.05266622778143515);
 
             },500);
 
@@ -204,6 +245,9 @@ export default {
             this.scene.add(model);
 
             this.models[name]=model;
+        },
+        getModel:function(id){
+          return this.models[id];
         },
         updateModelPostion:function(modelId,x,y,z,heading){
             let model = this.models[modelId];
@@ -440,9 +484,18 @@ export default {
                 }
             }
         },
+        setInterval:function(interval)
+        {
+            this.interval = interval;
+            this.count = 0;
+        },
         onMessage:function(data){
             this.models={};
-
+            this.count++;
+            if((this.count%this.interval)!=0)
+            {
+                return;
+            }
             let rsuDatas = JSON.parse(data.data);
             var deviceid = null;
             if(rsuDatas.result.length>0)
@@ -622,7 +675,7 @@ export default {
              }
         },
         onOpen:function(){
-            console.log("建立连接");
+            // console.log("建立连接");
             // 2046A1035893
             // var hostVehicle = '{"action":"rcu","data":{"rcuId":"2046A1037E1F"},"token":"fpx"}';
             // var hostVehicleMsg = JSON.stringify(hostVehicle);

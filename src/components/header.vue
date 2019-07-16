@@ -12,21 +12,30 @@
                 <em class="c-middle">{{city.province}}{{city.district}}</em>
                 <img src="@/assets/images/weather/default.png" class="weather-icon" /><em class="c-middle">{{weather.wendu || '--'}}°</em>
             </span>
-            <span class="tip">预警<em class="num">{{responseData.warningNum || '--'}}</em></span>
-            <span class="tip">故障<em class="num">{{responseData.faultNum || '--'}}</em></span>
+            <a href="javascript:;" class="tip" @click="DialogWarningFlag = !DialogWarningFlag">预警<em class="num">{{ warningNum || '--' }}</em></a>
+            <a href="javascript:;" class="tip" @click="DialogFaultFlag = !DialogFaultFlag">故障<em class="num">{{ faultNum || '--' }}</em></a>
         </div>
         <!-- <a href="javascript:;" class="userinfo" @click="logout">
             当前用户：{{sysAdminName}} 退出
         </a> -->
+        <dialog-warning v-if="DialogWarningFlag" @closeDialogWarning="closeDialogWarning"></dialog-warning>
+        <dialog-fault v-if="DialogFaultFlag" @closeDialogFault="closeDialogFault"></dialog-fault>
+
     </div>
 </template>
 <script>
 import { getTopHead, getTopWeather } from '@/api/header';
 import { mapActions } from 'vuex';
+import DialogWarning from './components/dialogWarning.vue';
+import DialogFault from './components/dialogFault.vue';
 export default {
 	name: "Header",
     props: {
         changeCenterPoint: [Array, Object]
+    },
+    components: {
+        DialogWarning,
+        DialogFault
     },
     data() {
         return {
@@ -44,13 +53,29 @@ export default {
             weather: {},
             requestData: {
                 disCode: ''
-            }
+            },
+            DialogWarningFlag: false,
+            DialogFaultFlag: false
         }
     },
     computed: {
         formatTime() {
             if(this.responseData.timestamp){
                 return this.$dateUtil.formatTime(this.responseData.timestamp);
+            }else {
+                return '--'
+            }
+        },
+        warningNum() {
+            if(this.responseData.warningNum || this.responseData.warningNum == 0){
+                return parseFloat(this.responseData.warningNum).toLocaleString();
+            }else {
+                return '--'
+            }
+        },
+        faultNum() {
+            if(this.responseData.faultNum || this.responseData.faultNum == 0){
+                return parseFloat(this.responseData.faultNum).toLocaleString();
             }else {
                 return '--'
             }
@@ -102,6 +127,12 @@ export default {
                 this.weather = res.data;
             });
         },
+        closeDialogWarning() {
+            this.DialogWarningFlag = false;
+        },
+        closeDialogFault() {
+            this.DialogFaultFlag = false;
+        },
         ...mapActions(['goLogOut']),
         //退出登录
         logout() {
@@ -125,7 +156,7 @@ export default {
     left: 0;
     right: 0;
     top: 0;
-    z-index: 2;
+    z-index: 99;
     height: 40px;
     color: #fff;
     padding: 24px 30px;
@@ -169,6 +200,7 @@ export default {
         float: right;
         font-size: 14px;
         .tip {
+            color: #fff;
             margin-left: 40px;
             &:first-child {
                 margin-left: 0;
