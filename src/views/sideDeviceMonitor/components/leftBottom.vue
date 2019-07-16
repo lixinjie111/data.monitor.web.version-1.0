@@ -1,6 +1,5 @@
 <template>
   <div>
-
       <h3 class="c-title">累计数据
         <span class="c-sub-title">累计:{{count}}GB</span>
       </h3>

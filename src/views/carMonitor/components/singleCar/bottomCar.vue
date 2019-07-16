@@ -577,8 +577,8 @@
           }
 
 
-          /*if(spatData.length>0){*/
-          if(_this.n1==1){
+          if(spatData.length>0){
+          /*if(_this.n1==1){*/
             var downCurve1 = new Curve();
             //开始画spat的第一条线
             if(_this.spatIsFirst){
@@ -593,8 +593,8 @@
             }
           }
 
-          /*if(rsmRcuData.length>0){*/
-          if(_this.n1==10){
+          if(rsmRcuData.length>0){
+          /*if(_this.n1==10){*/
             var downCurve2 = new Curve();
             //开始画v2x的第一条线
             if(_this.v2xIsFirst){
@@ -609,8 +609,8 @@
             }
           }
 
-          /*if(rsiData.length>0){*/
-          if(_this.n1==15){
+          if(rsiData.length>0){
+          /*if(_this.n1==15){*/
             var downCurve3 = new Curve();
             //开始画can的第一条线
             if(_this.rsiIsFirst){
@@ -669,6 +669,7 @@
       //销毁Socket
       this.reportWebSocket.close();
       this.webSocket.close();
+
     }
   }
 </script>

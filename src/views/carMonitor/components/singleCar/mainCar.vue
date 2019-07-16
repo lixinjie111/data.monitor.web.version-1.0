@@ -511,8 +511,10 @@
               _this.marker.setAngle(_this.headingAngle);
               /* _this.platNoMarker.setAngle(_this.headingAngle);*/
               //所要移动的位置
-              _this.marker.moveTo(newPosition,data.speed);
-              _this.platNoMarker.moveTo(newPosition,data.speed);
+//              _this.marker.moveTo(newPosition,data.speed);
+//              _this.platNoMarker.moveTo(newPosition,data.speed);
+              _this.marker.setPosition(newPosition);
+              _this.platNoMarker.setPosition(newPosition);
 
       },
       onclose(data){

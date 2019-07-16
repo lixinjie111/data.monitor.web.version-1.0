@@ -1,8 +1,8 @@
 <template>
 
   <div class="c-view-main" >
-    <div :id="id" class="side-device-map"></div>
-    <ul class="side-device-button clearfix">
+    <div :id="id" class="c-map-style"></div>
+    <ul class="c-button-style clearfix">
       <li v-for="item in options" :key="item.id" :class="{active:item.isActive}" @click="getMarkers(item)">
         {{item.text}}
       </li>
@@ -183,51 +183,11 @@
     },
     mounted() {
       this.map = new AMap.Map(this.id, this.mapOption);
-      /*var marker = new AMap.Marker({
-        position: [120.774007,31.286014],
-        icon: 'static/images/sideDevice/1.png', // 添加 Icon 图标 URL
-      });
-      120.774005,31.285981
-      this.map.add(marker);
-      var marker1 = new AMap.Marker({
-        position: [120.774005,31.285981],
-        icon: 'static/images/sideDevice/1.png', // 添加 Icon 图标 URL
-      });
-      this.map.add(marker1);*/
       var item = {
         'id':'0'
       };
       this.getMarkers(item);
-     /* var data=[{"type":'3','longitude':120.7688836,'latitude':31.2880208}]
-      this.deviceMap(data);*/
     }
   }
 </script>
-<style lang="scss" scoped>
-  @import "@/assets/scss/theme.scss";
-  .side-device-map{
-    height:100%;
-  }
-  .side-device-button{
-    font-size:14px;
-    position: absolute;
-    top: 100px;
-    right:400px;
-    color: #ccc;
-    z-index: 2;
-    li{
-      float: left;
-      border:1px solid #5e5970;
-      width: 100px;
-      height: 30px;
-      @include layoutMode();
-      margin-left: -1px;
-      cursor: pointer;
-    }
-    .active{
-      color: #dc8c00;
-      border:1px solid #dc8c00!important;
-      position: relative;
-    }
-  }
-</style>
+

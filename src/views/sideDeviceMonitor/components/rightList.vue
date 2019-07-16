@@ -1,18 +1,18 @@
 <template>
-  <div class="side-device-info">
+  <div class="c-info-style">
     <div class="side-device-style" >
-      <div class="side-device-size" >
-        <video-player class="vjs-custom-skin" :options="option1" ></video-player>
-        <div class="side-device-mask" >
+      <div class="c-size-style" >
+        <video-player class="vjs-custom-skin" :options="option1" @error="playerError1"></video-player>
+        <div class="c-mask-style" >
           <p @click="queryDeviceDetail(roadItem1)">路侧点：{{roadItem1.roadSiderId}}</p>
         </div>
       </div>
-      <div class="side-device-size " id="device1">
+      <div class="c-size-style " id="device1">
         <!--<div class="device-control">
           <div class="side-device-magnify" v-show="!isFullScreen" @click="perFullScreen"></div>
           <div class="side-device-shrink" v-show="isFullScreen" @click="perShrinkScreen"></div>
         </div>-->
-        <div class="side-device-mask" >
+        <div class="c-mask-style" >
           <p @click="queryDeviceDetail(roadItem1)">路侧点：{{roadItem1.roadSiderId}}</p>
         </div>
         <tusvn-map :target-id="'mapMonitor'" ref="tusvnMap1" @mapcomplete="onMapComplete1">
@@ -22,14 +22,14 @@
       </div>
     </div>
     <div class="side-device-style" >
-      <div class="side-device-size" >
-        <video-player class="vjs-custom-skin" :options="option2" ></video-player>
-        <div class="side-device-mask" >
+      <div class="c-size-style" >
+        <video-player class="vjs-custom-skin" :options="option2" @error="playerError2"></video-player>
+        <div class="c-mask-style" >
           <p @click="queryDeviceDetail(roadItem2)">路侧点：{{roadItem2.roadSiderId}}</p>
         </div>
       </div>
-      <div class="side-device-size">
-        <div class="side-device-mask" >
+      <div class="c-size-style">
+        <div class="c-mask-style" >
           <p @click="queryDeviceDetail(roadItem2)">路侧点：{{roadItem2.roadSiderId}}</p>
         </div>
         <tusvn-map :target-id="'mapMonitor1'"  ref="tusvnMap2" @mapcomplete="onMapComplete2">
@@ -199,6 +199,7 @@
                 }).then(res => {
                   if(index==0){
                     _this.option1.sources[0].src=res.data.rtmp;
+                    console.log("src---"+_this.option1.sources[0].src)
                     _this.roadItem1=item;
                   }
                   if(index==1){
@@ -474,56 +475,47 @@
             } else if (document.webkitExitFullscreen) {
               document.webkitExitFullscreen();
             }
+          },
+          playerError1(e) {
+            console.log("playerError");
+            if(this.option1.sources[0].src != '') {
+              let _videoUrl = this.option1.sources[0].src;
+              this.option1.sources[0].src = '';
+              setTimeout(() => {
+                this.option1.sources[0].src = _videoUrl;
+              }, 2000);
+            }
+          },
+          playerError2(e) {
+            console.log("playerError");
+            if(this.option2.sources[0].src != '') {
+              let _videoUrl = this.option2.sources[0].src;
+              this.option2.sources[0].src = '';
+              setTimeout(() => {
+                this.option2.sources[0].src = _videoUrl;
+              }, 2000);
+            }
           }
         },
        watch:{
        },
         mounted() {
-         /* this.map1 = new AMap.Map("map1", {
-           /!* center: [123.456789,39.123456],*!/
-            mapStyle:'amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8',
-            zoom:1,
-            rotateEnable:'true',
-            defaultCursor:'pointer'
-          });
-          this.map2 = new AMap.Map("map2", {
-            /!*center: [116.482362,39.997718],*!/
-            mapStyle:'amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8',
-            zoom:1,
-            rotateEnable:'true',
-            defaultCursor:'pointer'
-          });*/
           this.getRoadList();
-          //给地图绑定点击事件
-        /*  this.map1.on('click',()=>{
-            this.$emit("queryDeviceDetai
-
-
-
-            l",this.roadItem1);
-          });
-          this.map2.on('click',()=>{
-            this.$emit("queryDeviceDetail",this.roadItem2);
-          });*/
-          /*setTimeout(()=>{
-            console.log("设置aaa");
-            this.$refs.tusvnMap1.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
-          },10000);*/
         }
     }
 </script>
 
 <style>
-  .side-device-size .vjs-error .vjs-error-display .vjs-modal-dialog-content{
+  .c-size-style .vjs-error .vjs-error-display .vjs-modal-dialog-content{
     padding:50px 24px 30px;
     color: #ccc;
   }
-  .side-device-size .vjs-error .vjs-error-display:before{
+  .c-size-style .vjs-error .vjs-error-display:before{
     font-size: 3em;
     color: #ccc;
     top:60%;
   }
-  .side-device-size .video-js{
+  .c-size-style .video-js{
     height: 200px!important;
   }
  /* .side-device-size .vjs-custom-skin > .video-js .vjs-control{
@@ -535,9 +527,6 @@
 </style>
 <style lang="scss" scoped>
 
-  .side-device-info{
-    position: absolute;
-    right:20px;
 
     .side-device-magnify:before{
       content: "\F108";
@@ -576,32 +565,4 @@
       /*background:rgba(0,0,0,0.3) ;*/
       transition:visibility 0.1s, opacity 0.1s;
     }
-    .side-device-size{
-      width: 330px;
-      height: 210px;
-      margin-bottom: 30px;
-      position: relative;
-      padding: 5px;
-      border:1px solid #5e5970;
-      box-sizing: border-box;
-      .side-road-map{
-        height:100%;
-      }
-    }
-    .side-device-mask{
-      position: absolute;
-      width: 310px;
-      top: 0;
-      cursor: pointer;
-      z-index:1;
-      p{
-        margin-top: 10px;
-        margin-left: 10px;
-        font-size: 12px;
-        color: #fff;
-      }
-    }
-  }
-
-
 </style>

@@ -45,7 +45,7 @@
                      highlight-current node-key="code" ref="tree" :default-expanded-keys="defaultArr"></el-tree>
           </div>
         </div>
-        <div class="side-device-right c-scroll-wrap">
+        <div class="side-device-right">
           <div class="time-style">
             <span class="t-class">2019-06-14 16:59:57.439</span>
           </div>
@@ -175,7 +175,6 @@
             }
             return option;
           },
-
           getDeviceList(roadId){
             var _this = this;
             _this.deviceList=[];
