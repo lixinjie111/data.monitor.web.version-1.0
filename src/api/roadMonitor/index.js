@@ -41,3 +41,9 @@ export const allCross = params => {return axios.post(`${HTTPURL}rw/bs/allCross`,
  * 根据某一路口获取路口信息
  */
 export const getCrossById = params => {return axios.post(`${HTTPURL}rw/bs/crossBD`, params).then(res => res.data); };
+
+
+/**
+ * 根据某一路口获取路口信息以及所在页数
+ */
+export const getCrossPageById = params => {return axios.post(`${HTTPURL}rw/bs/allCrossByCrossId`, params).then(res => res.data); };

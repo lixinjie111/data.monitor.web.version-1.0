@@ -360,7 +360,15 @@
           this.map3 = new AMap.Map('map3', this.mapOption);
           this.map4 = new AMap.Map('map4', this.mapOption);
           this.getTypeCross();
-        }
+        },
+      destroyed(){
+        //销毁Socket
+        this.webSocket1.close();
+        this.webSocket2.close();
+        this.webSocket3.close();
+        this.webSocket4.close();
+
+      }
     }
 </script>
 

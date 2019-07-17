@@ -62,7 +62,7 @@ export default {
     padding:0!important;
   }
   .road-overview{
-    border:1px solid #5e5970;
+   /* border:1px solid #5e5970;*/
     padding: 30px 40px;
     .road-left-font{
       line-height: 40px!important;

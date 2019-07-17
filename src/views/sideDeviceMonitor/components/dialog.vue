@@ -47,11 +47,18 @@
         </div>
         <div class="side-device-right">
           <div class="time-style">
-            <span class="t-class">2019-06-14 16:59:57.439</span>
+            <span class="t-class">{{time}}</span>
           </div>
-          <tusvn-map :target-id="deviceMapId" ref="tusvnMap3" @showTimeStamp="showTimeStamp" @mapcomplete="mapcomplete" v-if="dialogVisible">
+          <tusvn-map :target-id="deviceMapId" ref="tusvnMap3"
+                     background="black" minX=325295.155400   minY=3461941.703700  minZ=50
+          maxX=326681.125700  maxY=3462723.022400  maxZ=80
+          @mapcomplete="mapcomplete" v-if="dialogVisible" @showTimeStamp="showTimeStamp">
 
           </tusvn-map>
+
+         <!-- <tusvn-map :target-id="deviceMapId" ref="tusvnMap3" @showTimeStamp="showTimeStamp" @mapcomplete="mapcomplete" v-if="dialogVisible">
+
+          </tusvn-map>-->
           <div class="side-device-list">
             <p class="side-device-title">设备列表</p>
             <div class="device-list-style">
@@ -83,6 +90,9 @@
             </div>
             <p class="side-device-title">监控视频</p>
             <div class="device-video-style">
+              <div class="road-mask-style" >
+                <img src="@/assets/images/carMonitor/refresh.png" class="road-mask-img" @click="refresh"/>
+              </div>
               <video-player class="vjs-custom-skin" :options="option" ></video-player>
             </div>
           </div>
@@ -94,6 +104,7 @@
 <script>
   import {getDeviceList,getVideoByNum,getSideTree,getDevListByRoadId,getDeviceCountByCity} from '@/api/sideDeviceMonitor'
   import TusvnMap from '@/components/Tusvn3DMap2'
+  import {getMap} from '@/utils/tusvnMap.js';
   const isProduction = process.env.NODE_ENV === 'production'
     export default {
       name: "SideDialog",
@@ -127,7 +138,9 @@
               roadDevicePoint:{},
               time:'',
               serialNum:'',
-              mapInit:false
+              mapInit:false,
+              roadId:'',//存储路的id
+              rtmp:''
             }
         },
       components:{
@@ -171,16 +184,29 @@
               ],
               muted:true,
               width:'100%',
-              height:'100%'
+              height:'100%',
+              bigPlayButton : false,
+              controlBar: {
+                timeDivider: false,
+                durationDisplay: false,
+                remainingTimeDisplay: false,
+                currentTimeDisplay:false,
+                fullscreenToggle: true, //全屏按钮
+                captionsButton : false,
+                chaptersButton: false,
+                subtitlesButton:false,
+                liveDisplay:false,
+                playbackRateMenuButton:false
+              }
             }
             return option;
           },
-          getDeviceList(roadId){
+          getDeviceList(){
             var _this = this;
             _this.deviceList=[];
             getDeviceList({
               /*'roadSiderId': '130101_001',*/
-              'roadSiderId': roadId,
+              'roadSiderId': this.roadId,
             }).then(res => {
               _this.deviceList = res.data;
               var flag=true;
@@ -207,15 +233,17 @@
                     }
                   }
                   if(_this.serialNum!=""){
-                    getVideoByNum({
+                    _this.getVideo();
+                    /*getVideoByNum({
                       "protocal": 1,
-                      /*"serialNum": "3402000000132000001401"*/
+                      /!*"serialNum": "3402000000132000001401"*!/
                       "serialNum": _this.serialNum
                     }).then(res => {
                       var options = _this.getPlayerOptions();
+                      _this.rtmp = res.data.rtmp;
                       options.sources[0].src =  res.data.rtmp;
                       _this.option =options;
-                    })
+                    })*/
 
                     //切换路侧点时，重新切换3D地图
                     //第一次地图加载后调整位置即可
@@ -273,16 +301,18 @@
               })
               _this.openVideoList.push(item);
               //根据摄像头调取视频
+              _this.getVideo();
 //              var rtmp = _this.getVideoByNum(item.serialNum);
-              getVideoByNum({
+              /*getVideoByNum({
                 "protocal": 1,
-                /*"serialNum": "3402000000132000001401"*/
+                /!*"serialNum": "3402000000132000001401"*!/
                 "serialNum": item.serialNum
               }).then(res => {
                 var options = _this.getPlayerOptions();
+                _this.rtmp = res.data.rtmp;
                 options.sources[0].src =  res.data.rtmp;
                 _this.option =options;
-              })
+              })*/
               //选中后重新请求
               _this.$refs.tusvnMap3.reset3DMap();
               let cameraParam = JSON.parse(item.cameraParam);
@@ -403,7 +433,8 @@
             //当切换树的时候，设备列表，感知结果进行切换
             this.serialNum="";
             this.selectedItem.camSerialNum="";
-            this.getDeviceList(node.code);
+            this.roadId = node.code;
+            this.getDeviceList();
             this.getDeviceCountByCity();
           },
           getSideTree(){
@@ -534,6 +565,9 @@
           },
           mapcomplete:function(){
             this.mapInit=true;
+            getMap(this.$refs.tusvnMap3);
+            this.$refs.tusvnMap3.updateCameraPosition(326282.75554201024,3462316.8664064347,42.007991231815836,49.684198177964,-0.5303922863908559,-2.1753077372153995);
+            return;
             if(this.serialNum&&this.serialNum!=""){
               console.log("this.serialNum--"+this.serialNum)
               let cameraParam = JSON.parse(this.selectedItem.cameraParam);
@@ -541,7 +575,7 @@
               this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,this.selectedItem.camSerialNum);
               return;
             }else{
-              this.$refs.tusvnMap3.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
+              this.$refs.tusvnMap3.updateCameraPosition(326282.75554201024,3462316.8664064347,42.007991231815836,49.684198177964,-0.5303922863908559,-2.1753077372153995);
             }
             let count = 0;
             let time = setInterval(()=>{
@@ -558,6 +592,36 @@
               }
               count++;
             },1000)
+          },
+          getVideo(){
+            getVideoByNum({
+              "protocal": 1,
+              /*"serialNum": "3402000000132000001401"*/
+              "serialNum": this.serialNum
+            }).then(res => {
+              var options = this.getPlayerOptions();
+              this.rtmp = res.data.rtmp;
+              options.sources[0].src =  res.data.rtmp;
+              this.option =options;
+            })
+          },
+          refresh(){
+            if(this.roadId==''){
+              this.$message.error('请先选择具体的路侧点');
+              return;
+            }
+            if(this.deviceList.length==0){
+              this.getDeviceList();
+              return;
+            }
+            if(this.rtmp==''){
+              this.getVideo();
+              return;
+            }else {
+              var options = this.getPlayerOptions();
+              options.sources[0].src =  this.rtmp;
+              this.option =options;
+            }
           }
         },
         watch:{
@@ -570,7 +634,8 @@
               this.cityCode=this.selectAddr[1];
              /* this.dialogVisible=true;*/
               //默认选中的
-              this.getDeviceList(this.selectedItem.roadSiderId);
+              this.roadId=this.selectedItem.roadSiderId;
+              this.getDeviceList();
               this.getSideTree();
               this.getDeviceCountByCity();
             }
@@ -809,7 +874,22 @@
         width: 370px;
       /*  height: 210px;*/
         border:1px solid #5e5970;
+        position: relative;
         /*padding:15px 0px;*/
+      }
+    }
+    .road-mask-style{
+      position: absolute;
+      width: 370px;
+      top: 0;
+      cursor: pointer;
+      z-index:1;
+      right: 10px;
+      top: 10px;
+      .road-mask-img{
+        float: right;
+        width: 14px;
+        height: 14px;
       }
     }
   }

@@ -133,9 +133,10 @@
     padding:0px !important;
   }
   .road-item{
-    border:1px solid #5e5970;
+    /*border:1px solid #5e5970;
     margin-top: 20px;
-    padding: 20px 20px 50%;
+    padding: 20px 20px 50%;*/
+    padding-bottom:50%;
     position: relative;
     .road-pie-style{
       position: absolute;

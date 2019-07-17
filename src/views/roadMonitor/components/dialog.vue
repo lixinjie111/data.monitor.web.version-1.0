@@ -19,7 +19,7 @@
         </div>
         <div class="road-content-right">
           <ul class="road-button-style clearfix">
-            <li v-for="item in options" :key="item.id" :class="{active:item.isActive}" @click="getAllRoads(item)">
+            <li v-for="item in options" :key="item.id" :class="{active:item.isActive}" @click="getAllRoadsByType(item)">
               {{item.text}}
             </li>
           </ul>
@@ -31,7 +31,7 @@
 </template>
 <script>
   import ConvertCoord from '@/assets/js/utils/coordConvert.js'
-  import {allCross,getCrossById} from '@/api/roadMonitor'
+  import {allCross,getCrossById,getCrossPageById} from '@/api/roadMonitor'
     export default {
         data() {
             return {
@@ -74,7 +74,8 @@
               type:null,
               map:{},
               markerList:[],
-              isFirst:true
+              pageInitIndex:0,
+              totalRoadCount:0
             }
         },
       props:{
@@ -99,18 +100,20 @@
         closeDialog(){
           this.$emit("closeDialog");
         },
-        getAllCross(){
+        getAllCross(param){
           let _this = this;
+//          console.log("pageIndex----"+_this.pageIndex);
           allCross(
             {
               'page':{
                 'pageIndex': _this.pageIndex,
-                'pageSize':_this.pageSize,
-                'type':_this.type
-              }
+                'pageSize':_this.pageSize
+              },
+              'type':_this.type
             }
           ).then((res,index)=>{
             let result = res.data.data.data;
+            _this.totalRoadCount = res.data.data.total;
             let position;
            /* _this.roadList=[];*/
             result.forEach((item,index)=>{
@@ -121,8 +124,12 @@
               obj.crossId = item.uid;
               obj.position = position;
               obj.isActive=false;
-              _this.roadList.push(obj);
-
+              //向上滚动
+              if(param=='up'){
+                _this.roadList.unshift(obj);
+              }else{
+                _this.roadList.push(obj);
+              }
             });
             setTimeout(() => {
               _this.roadList.forEach(item=>{
@@ -150,22 +157,25 @@
           let scrollHeight = divScroll.scrollHeight;
           //滚动条滚动到底部
           if(scrollTop+offsetHeight==scrollHeight){
+            if(_this.roadList.length==_this.totalRoadCount){
+              return;
+            }
             //获取下一页的数据
             _this.pageIndex++;
             _this.getAllCross();
           }
           //滚动到顶部
-          if(scrollTop==0&&_this.isFirst){
-            if(_this.pageIndex==0){
+          if(scrollTop==0){
+            if(_this.pageInitIndex==0){
               return;
             }else{
-              _this.pageIndex--;
-              _this.getAllCross();
-              _this.isFirst=false;
+              _this.pageInitIndex--;
+              _this.pageIndex = _this.pageInitIndex;
+              _this.getAllCross('up');
             }
           }
         },
-        getAllRoads(item){
+        getAllRoadsByType(item){
           if(item.id==0){
             this.type=null;
             this.options.forEach(item=>{
@@ -200,6 +210,7 @@
           item.isActive=!item.isActive;
           this.pageIndex=0;
           this.roadList=[];
+          this.index=0;
           this.getAllCross();
         },
         getCrossById(crossId){
@@ -244,6 +255,54 @@
           if(item.isActive){
             this.getCrossById(item.crossId);
           }
+        },
+        getCrossPageById(){
+          let _this = this;
+          getCrossPageById(
+            {
+              "crossId": this.selectedItem.crossId,
+              "page": {
+
+                "pageIndex": 0,
+                "pageSize": 5
+              }
+            }
+          ).then(res=>{
+            let result = res.data.data.data;
+            _this.pageInitIndex = res.data.data.pageIndex;
+            _this.pageIndex=_this.pageInitIndex;
+            _this.totalRoadCount=res.data.data.total;
+            let position;
+            /* _this.roadList=[];*/
+            result.forEach((item,index)=>{
+              _this.index++;
+              position = ConvertCoord.wgs84togcj02(item.x,item.y);
+              let obj = {};
+              obj.id = "road"+_this.index;
+              obj.crossId = item.uid;
+              obj.position = position;
+              if(_this.selectedItem.crossId==item.uid){
+                obj.isActive=true;
+              }else {
+                obj.isActive=false;
+              }
+
+              _this.roadList.push(obj);
+            });
+            setTimeout(() => {
+              _this.roadList.forEach(item=>{
+                item.map=new AMap.Map(item.id, this.mapOption);
+                let wms  = new AMap.TileLayer.WMS({
+                  url:'http://10.0.1.22:8080/geoserver/shanghai_qcc/wms',
+                  blend: false,
+                  tileSize: 256,
+                  params:{'LAYERS': 'shanghai_qcc:gd_road_centerline',VERSION:'1.1.0'}
+                })
+                wms.setMap(item.map);
+                item.map.setCenter(item.position);
+              })
+            }, 0);
+          });
         }
       },
 
@@ -251,6 +310,8 @@
         dialogVisible(){
           if(this.dialogVisible){
             this.roadList=[];
+            this.index=0;
+            this.pageIndex=0;
             this.options.forEach(item=>{
               if(item.id==0){
                 item.isActive=true;
@@ -259,7 +320,7 @@
               }
             })
             this.type=null;
-            this.getAllCross();
+            this.getCrossPageById();
             this.getCrossById(this.selectedItem.crossId);
           }
         }

@@ -53,7 +53,7 @@
 <script>
   import VideoPlayer from "../../../../node_modules/vue-video-player/src/player.vue";
   import {getVideoByNum,getRoadList} from '@/api/sideDeviceMonitor'
-  import {getMap,map} from '@/utils/tusvnMap.js';
+  import {getMap} from '@/utils/tusvnMap.js';
   const isProduction = process.env.NODE_ENV === 'production'
 
   import TusvnMap from '@/components/Tusvn3DMap2'
@@ -78,13 +78,25 @@
                 ],
                 muted:true,
                 width:'100%',
-                height:'100%'
+                height:'100%',
+                controlBar: {
+                  timeDivider: false,
+                  durationDisplay: false,
+                  remainingTimeDisplay: false,
+                  currentTimeDisplay:false,
+                  fullscreenToggle: true, //全屏按钮
+                  captionsButton : false,
+                  chaptersButton: false,
+                  subtitlesButton:false,
+                  liveDisplay:false,
+                  playbackRateMenuButton:false
+                }
               },
               option2:{
                 overNative: true,
                 autoplay: true,
                 controls: true,
-                fluid: true,
+                /*fluid: true,*/
                 techOrder: ['flash', 'html5'],
                 sourceOrder: true,
                 flash: {
@@ -98,7 +110,19 @@
                 ],
                 muted:true,
                 width:'100%',
-                height:'100%'
+                height:'100%',
+                controlBar: {
+                  timeDivider: false,
+                  durationDisplay: false,
+                  remainingTimeDisplay: false,
+                  currentTimeDisplay:false,
+                  fullscreenToggle: true, //全屏按钮
+                  captionsButton : false,
+                  chaptersButton: false,
+                  subtitlesButton:false,
+                  liveDisplay:false,
+                  playbackRateMenuButton:false
+               }
               },
               roadItem1:{},
               roadItem2:{},
@@ -124,23 +148,18 @@
         methods: {
           onMapComplete1:function(){
             console.log("onMapComplete1");
-            // //障碍物
-            // this.$refs.tusvnMap1.addModel("traffic_cone","./static/map3d/models/traffic_cone.3ds",442492.797,4427280.995,16);
-            // this.$refs.tusvnMap1.getModel("traffic_cone").setHeading(30);
-            // this.$refs.tusvnMap1.getModel("traffic_cone").setUpdate(true);
-
-//            getMap(this.$refs.tusvnMap1);
+            getMap(this.$refs.tusvnMap1);
+            this.$refs.tusvnMap1.updateCameraPosition(326282.75554201024,3462316.8664064347,42.007991231815836,49.684198177964,-0.5303922863908559,-2.1753077372153995);
+            return;
             if(!this.roadItem1.roadSiderId||this.roadItem1.roadSiderId==''){
-              this.$refs.tusvnMap1.updateCameraPosition(325865.6761880854,3462531.6792285736,35.222258683691756,48.28433151549649,-0.5404932964918664,-0.8388297497940136);
+              this.$refs.tusvnMap1.updateCameraPosition(326282.75554201024,3462316.8664064347,42.007991231815836,49.684198177964,-0.5303922863908559,-2.1753077372153995);
             }
             if(this.roadItem1.roadSiderId&&this.roadItem1.roadSiderId!=''){
               let cameraParam = JSON.parse(this.roadItem1.cameraParam);
               this.$refs.tusvnMap1.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
-              // this.$refs.tusvnMap1.updateCameraPosition(325865.6761880854,3462531.6792285736,35.222258683691756,48.28433151549649,-0.5404932964918664,-0.8388297497940136);
               this.$refs.tusvnMap1.changeRcuId(window.cfg.websocketUrl,this.roadItem1.camSerialNum);
               return;
             }
-            // return;
             let count = 0;
             let time = setInterval(()=>{
               if(this.roadItem1.roadSiderId&&this.roadItem1.roadSiderId!=''){
@@ -160,6 +179,9 @@
           },
           onMapComplete2:function(){
             console.log("onMapComplete2");
+            getMap(this.$refs.tusvnMap2);
+            this.$refs.tusvnMap2.updateCameraPosition(326307.52403642295,3462319.729835483,55.56183747132579,61.31110395146773,-0.6314023874009567,0.8750067281934094);
+            return;
             if(!this.roadItem2.roadSiderId||this.roadItem2.roadSiderId==''){
               this.$refs.tusvnMap2.updateCameraPosition( 442486.3454129422,4427261.806106671, 47.90669656890555 , 34.88838511357024, -0.7656910059927339,  2.4898596954809307);
             }
@@ -519,7 +541,7 @@
               }, 2000);
             }
           },
-          getRoad1Info(){
+          getRoad1Info(param){
             let _this=this;
             getVideoByNum({
               "protocal": 1,
@@ -529,9 +551,12 @@
               _this.rtmp1 = res.data.rtmp;
               _this.option1.sources[0].src=_this.rtmp1;
               _this.roadItem1=item;
+              if(param!=''){
+                this.$refs.tusvnMap1.changeRcuId(window.cfg.websocketUrl,this.roadItem1.camSerialNum);
+              }
             })
           },
-          getRoad2Info(){
+          getRoad2Info(param){
             let _this=this;
             getVideoByNum({
               "protocal": 1,
@@ -541,6 +566,9 @@
               _this.rtmp2 = res.data.rtmp;
               _this.option2.sources[0].src=_this.rtmp2;
               _this.roadItem2=item;
+              if(param!=''){
+                this.$refs.tusvnMap2.changeRcuId(window.cfg.websocketUrl,this.roadItem2.camSerialNum);
+              }
             })
           },
 
@@ -549,6 +577,7 @@
             let _this = this;
             if(_this.roadList.length==0){
               _this.getRoadList();
+              return;
             }
             if(param=='video1'){
               if(_this.rtmp1==''){
@@ -568,23 +597,26 @@
               if(_this.roadItem1.camSerialNum&&_this.roadItem1.camSerialNum!=""){
                 this.$refs.tusvnMap1.changeRcuId(window.cfg.websocketUrl,this.roadItem1.camSerialNum);
               }else {
-                _this.getRoad1Info();
+                _this.getRoad1Info('map');
               }
             }
             if(param=='map2'){
               if(_this.roadItem2.camSerialNum&&_this.roadItem2.camSerialNum!=""){
                 this.$refs.tusvnMap2.changeRcuId(window.cfg.websocketUrl,this.roadItem2.camSerialNum);
               }else {
-                _this.getRoad2Info();
+                _this.getRoad2Info('map');
               }
             }
           }
         },
        watch:{
        },
-        mounted() {
-          this.getRoadList();
-        }
+      mounted() {
+        this.getRoadList();
+      },
+      destroyed(){
+        //销毁Socket
+      }
     }
 </script>
 
@@ -599,14 +631,8 @@
     top:60%;
   }
   .c-size-style .video-js{
-    height: 200px!important;
-  }
- /* .side-device-size .vjs-custom-skin > .video-js .vjs-control{
-    width:4em;
-  }*/
-  .vjs-custom-skin>.video-js .vjs-control-bar .vjs-time-control{
-    min-width: 3.2em!important;
-  }
+      height: 200px!important;
+    }
 </style>
 <style lang="scss" scoped>
   @import '@/assets/scss/theme.scss';

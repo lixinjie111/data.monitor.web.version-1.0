@@ -2,7 +2,7 @@
   <div class="monitor-right">
     <div class="c-scroll-wrap">
       <div class="c-scroll-inner">
-        <p class="monitor-title right-title">视频数据</p>
+        <p class="monitor-title right-title">车端视频</p>
         <div class="clear line-style">
           <div class="line line-1" >
             <span class="line1"></span>
@@ -15,14 +15,17 @@
           <!--<video src="movie.ogg" controls="controls" autoplay width="270" height="200">
             您的浏览器不支持 video 标签。
           </video>-->
-          <video-player class="vjs-custom-skin" :options="playerOptions"></video-player>
+          <div class="single-mask-style" >
+            <img src="@/assets/images/carMonitor/refresh.png" class="single-mask-img" @click="refresh"/>
+          </div>
+          <video-player class="vjs-custom-skin" :options="playerOptions" @error="playerError"></video-player>
           <div class="stop-style" v-show="isStop">
             <img src="@/assets/images/car/stop.png"/>
             <p>无数据提示</p>
           </div>
           <!--<div id="cmsplayer" style="width:100%;height:100%"></div>-->
         </div>
-        <p class="monitor-title right-title">感知数据</p>
+        <p class="monitor-title right-title">车端感知</p>
         <div class="clear line-style">
           <div class="line line-1" >
             <span class="line1"></span>
@@ -105,8 +108,22 @@
           ],
           muted:true,
           width:'270',
-          height:'180'
-        }
+          height:'180',
+          bigPlayButton : false,
+          controlBar: {
+            timeDivider: false,
+            durationDisplay: false,
+            remainingTimeDisplay: false,
+            currentTimeDisplay:false,
+            fullscreenToggle: true, //全屏按钮
+            captionsButton : false,
+            chaptersButton: false,
+            subtitlesButton:false,
+            liveDisplay:false,
+            playbackRateMenuButton:false
+          }
+        },
+        rtmp:''
       }
     },
     props:{
@@ -252,8 +269,8 @@
         }).then(res => {
           this.streamInfo = res.streamInfoRes;
           //获取视频地址并赋值
-          let videoUrl = this.streamInfo.rtmp;
-          this.playerOptions.sources[0].src=videoUrl;
+          this.rtmp = this.streamInfo.rtmp;
+          this.playerOptions.sources[0].src = this.rtmp;
           //直播报活调用
           this.repeatFn();//拉取流后，保活
         });
@@ -372,6 +389,29 @@
             t:t
         }
       },
+      refresh(){
+        if(!this.liveDeviceInfo&&this.liveDeviceInfo.serialNum==''){
+          this.getDeviceInfo();
+          return;
+        }else{
+          if(this.rtmp==''){
+            this.getStream();
+            return;
+          }else{
+            this.playerOptions.sources[0].src = this.rtmp;
+          }
+        }
+      },
+      playerError(e) {
+        console.log("singleCar----playerError");
+        if(this.playerOptions.sources[0].src != '') {
+          let _videoUrl = this.playerOptions.sources[0].src;
+          this.playerOptions.sources[0].src = '';
+          setTimeout(() => {
+            this.playerOptions.sources[0].src = _videoUrl;
+          }, 2000);
+        }
+      }
       /**
        * movePt 平移坐标
        * @param {*} moveX x平移量 单位px
@@ -560,5 +600,19 @@
     text-align: center;
     letter-spacing: 0;
     color: #ccc;
+  }
+  .single-mask-style{
+    position: absolute;
+    width: 270px;
+    top: 0;
+    cursor: pointer;
+    z-index:1;
+    right: 10px;
+    top: 10px;
+    .single-mask-img{
+      float: right;
+      width: 14px;
+      height: 14px;
+    }
   }
 </style>
