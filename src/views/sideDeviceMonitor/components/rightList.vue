@@ -79,6 +79,8 @@
                 muted:true,
                 width:'100%',
                 height:'100%',
+                notSupportedMessage: '此视频暂无法播放，请稍后再试',
+                /*errorDisplay : false,*/
                 controlBar: {
                   timeDivider: false,
                   durationDisplay: false,
@@ -111,6 +113,8 @@
                 muted:true,
                 width:'100%',
                 height:'100%',
+                notSupportedMessage: '此视频暂无法播放，请稍后再试',
+               /* errorDisplay : false,*/
                 controlBar: {
                   timeDivider: false,
                   durationDisplay: false,
@@ -149,10 +153,14 @@
           onMapComplete1:function(){
             console.log("onMapComplete1");
             getMap(this.$refs.tusvnMap1);
-            this.$refs.tusvnMap1.updateCameraPosition(326282.75554201024,3462316.8664064347,42.007991231815836,49.684198177964,-0.5303922863908559,-2.1753077372153995);
+            this.$refs.tusvnMap1.updateCameraPosition(326298.47687949863,3462315.620723144,32.88598020600586,32.403931760940445,-0.6415033975019673,-2.7256222026242036);
+            /*setInterval(()=>{
+              let obj = this.$refs.tusvnMap1.getCamera();
+              console.log("x:"+obj.x+",y"+obj.y+",z:"+obj.z+",radius:"+obj.radius+",pitch:"+obj.pitch+",yaw:"+obj.yaw);
+            },5000)*/
             return;
             if(!this.roadItem1.roadSiderId||this.roadItem1.roadSiderId==''){
-              this.$refs.tusvnMap1.updateCameraPosition(326282.75554201024,3462316.8664064347,42.007991231815836,49.684198177964,-0.5303922863908559,-2.1753077372153995);
+              this.$refs.tusvnMap1.updateCameraPosition(326282.75554201024,3462316.8664064347,25.710786551667653,49.684198177964,-0.5303922863908559,-2.1753077372153995);
             }
             if(this.roadItem1.roadSiderId&&this.roadItem1.roadSiderId!=''){
               let cameraParam = JSON.parse(this.roadItem1.cameraParam);
@@ -549,8 +557,15 @@
               "serialNum": _this.roadList[0].camSerialNum
             }).then(res => {
               _this.rtmp1 = res.data.rtmp;
-              _this.option1.sources[0].src=_this.rtmp1;
-              _this.roadItem1=item;
+              if(_this.rtmp1==""){
+//                console.log("rtmp1----")
+                _this.option1.notSupportedMessage="";
+                _this.option1.notSupportedMessage='视频流不存在，请稍后重试';
+              }else{
+                _this.option1.notSupportedMessage= '此视频暂无法播放，请稍后再试';
+                _this.option1.sources[0].src=_this.rtmp1;
+              }
+              _this.roadItem1=_this.roadList[0];
               if(param!=''){
                 this.$refs.tusvnMap1.changeRcuId(window.cfg.websocketUrl,this.roadItem1.camSerialNum);
               }
@@ -564,8 +579,14 @@
               "serialNum": _this.roadList[1].camSerialNum
             }).then(res => {
               _this.rtmp2 = res.data.rtmp;
-              _this.option2.sources[0].src=_this.rtmp2;
-              _this.roadItem2=item;
+              if(_this.rtmp2==""){
+                _this.option2.notSupportedMessage="";
+                _this.option2.notSupportedMessage='视频流不存在，请稍后重试';
+              }else{
+                _this.option2.notSupportedMessage= '此视频暂无法播放，请稍后再试';
+                _this.option2.sources[0].src=_this.rtmp2;
+              }
+              _this.roadItem2=_this.roadList[1];
               if(param!=''){
                 this.$refs.tusvnMap2.changeRcuId(window.cfg.websocketUrl,this.roadItem2.camSerialNum);
               }
@@ -622,13 +643,14 @@
 
 <style>
   .c-size-style .vjs-error .vjs-error-display .vjs-modal-dialog-content{
-    padding:50px 24px 30px;
+    padding:80px 24px 30px;
     color: #ccc;
   }
   .c-size-style .vjs-error .vjs-error-display:before{
     font-size: 3em;
     color: #ccc;
     top:60%;
+    display: none;
   }
   .c-size-style .video-js{
       height: 200px!important;

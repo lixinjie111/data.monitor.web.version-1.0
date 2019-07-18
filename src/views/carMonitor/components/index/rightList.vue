@@ -306,7 +306,7 @@ export default {
 				letter-spacing: 4px;
 				color: #37ba7b;
 				&:after {
-					content: "KM/H";
+					content: "km/h";
 					position: absolute;
 					left: 50%;
 					top: 100%;

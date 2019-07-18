@@ -144,9 +144,9 @@
         </tr>
         <tr v-for="(item,index) in vehicleList">
           <td>{{index+1}}</td>
-          <td>{{item.gpstime | dateFormat}}</td>
-          <td>{{item.alarmName}}</td>
-          <td><p class="alert-level" style="background-color: #ae3717"><span class="alert-level-value">{{item.alarmLvl}}</span></p></td>
+          <td>{{item.warningTime | dateFormat}}</td>
+          <td>{{item.warningName}}</td>
+          <td><p class="alert-level" style="background-color: #ae3717"><span class="alert-level-value">{{item.warningLevel}}</span></p></td>
           <td>{{item.plateNo}}</td>
         </tr>
         <!--<tr>
@@ -486,6 +486,8 @@
                       var marker = new AMap.Marker({
                         position: subItem.position,
                         icon: 'static/images/car/car-3.png', // 添加 Icon 图标 URL
+                        offset:new AMap.Pixel(-15, -25)
+
                       });
                       _this.distanceMap.add(marker);
                       if(subIndex==resultData.length-1){

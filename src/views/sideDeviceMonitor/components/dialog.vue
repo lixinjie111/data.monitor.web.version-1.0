@@ -186,6 +186,7 @@
               width:'100%',
               height:'100%',
               bigPlayButton : false,
+              notSupportedMessage: '此视频暂无法播放，请稍后再试',
               controlBar: {
                 timeDivider: false,
                 durationDisplay: false,
@@ -601,7 +602,13 @@
             }).then(res => {
               var options = this.getPlayerOptions();
               this.rtmp = res.data.rtmp;
-              options.sources[0].src =  res.data.rtmp;
+              if(this.rtmp==""){
+                options.notSupportedMessage="";
+                options.notSupportedMessage='视频流不存在，请稍后重试';
+              }else{
+                options.notSupportedMessage= '此视频暂无法播放，请稍后再试';
+                options.sources[0].src =  res.data.rtmp;
+              }
               this.option =options;
             })
           },
@@ -697,6 +704,17 @@
   }
   .device-distribute .el-tree-node:focus>.el-tree-node__content{
     background-color: #262626;
+  }
+
+  .device-video-style .vjs-error .vjs-error-display .vjs-modal-dialog-content{
+    padding:80px 24px 30px;
+    color: #ccc;
+  }
+  .device-video-style .vjs-error .vjs-error-display:before{
+    font-size: 3em;
+    color: #ccc;
+    top:60%;
+    display: none;
   }
 </style>
 
@@ -880,12 +898,13 @@
     }
     .road-mask-style{
       position: absolute;
-      width: 370px;
+      width: 350px;
       top: 0;
       cursor: pointer;
-      z-index:1;
+      z-index:2;
       right: 10px;
       top: 10px;
+      height: 20px;
       .road-mask-img{
         float: right;
         width: 14px;

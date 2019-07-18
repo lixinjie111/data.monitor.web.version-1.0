@@ -86,6 +86,7 @@
           width:'270',
           height:'180',
           bigPlayButton : false,
+          notSupportedMessage: '此视频暂无法播放，请稍后再试',
           controlBar: {
             timeDivider: false,
             durationDisplay: false,
