@@ -3,7 +3,8 @@ export function getMap(map){
   map.addShape("Crosswalk","./static/map3d/dl_shcsq_zc/Crosswalk.shp",dl.styles.crosswalk.color)
   map.addShape("lane_marking","./static/map3d/dl_shcsq_zc/Lane_marking.shp",dl.styles.lane_marking.color)
   map.addShape("lane_arrow","./static/map3d/dl_shcsq_zc/Direction_arrow.shp",dl.styles.lane_arrow.color)
-  map.addShape("lane_boundary","./static/map3d/dl_shcsq_zc/Lane_boundary.shp",dl.styles.lane_boundary.color)
+  map.addShape("lane_boundary","./static/map3d/dl_shcsq_zc/Lane_boundary.shp","#0597f2")
+  map.addShape("lane_centerline","./static/map3d/dl_shcsq_zc/Lane_centerline.shp","#153641")
 
   //添加路灯
   map.addModel('street_lamp_two_0','./static/map3d/models/street_lamp_two.3ds',325605.9620401191,3462422.087016858,12.68);
