@@ -75,12 +75,13 @@
               let wms;
               result.forEach((obj,index)=>{
                 baseData = obj.baseData;
-                position = ConvertCoord.wgs84togcj02(baseData.x,baseData.y);
+                position = new AMap.LngLat(baseData.x,baseData.y);
+//                position = ConvertCoord.wgs84togcj02(baseData.x,baseData.y);
                 wms  = new AMap.TileLayer.WMS({
                   url:'http://10.0.1.22:8080/geoserver/shanghai_qcc/wms',
                   blend: false,
                   tileSize: 256,
-                  params:{'LAYERS': 'shanghai_qcc:gd_road_centerline',VERSION:'1.1.0'}
+                  params:{'LAYERS': 'shanghai_qcc:dl_shcsq_wgs84_gjlk',VERSION:'1.1.0'}
                 })
                 if(index==0){
                   this.cross1 = obj;
@@ -135,12 +136,14 @@
               _this.map1.remove(_this.map1List);
               _this.map1List=[];
               result.forEach(item =>{
-                position = ConvertCoord.wgs84togcj02(item.longitude,item.latitude);
+                position = new AMap.LngLat(item.longitude,item.latitude);
+//                position = ConvertCoord.wgs84togcj02(item.longitude,item.latitude);
                 _this.count1++;
                 let marker = new AMap.Marker({
                   position: position,
-                  icon: 'static/images/car/car-7.png', // 添加 Icon 图标 URL
-                  angle: item.heading
+                  icon: 'static/images/road/car.png', // 添加 Icon 图标 URL
+                  angle: item.heading,
+                  offset:new AMap.Pixel(-8, -16)
                 });
                 _this.map1.add(marker);
                 _this.map1List.push(marker);
@@ -194,12 +197,14 @@
               _this.map2.remove(_this.map2List);
               _this.map2List = [];
               result.forEach(item => {
-                position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
+                position = new AMap.LngLat(item.longitude,item.latitude);
+//                position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
                 _this.count2++;
                 let marker = new AMap.Marker({
                   position: position,
-                  icon: 'static/images/car/car-7.png', // 添加 Icon 图标 URL
-                  angle: item.heading
+                  icon: 'static/images/road/car.png', // 添加 Icon 图标 URL
+                  angle: item.heading,
+                  offset:new AMap.Pixel(-8, -16)
                 });
                 _this.map2.add(marker);
                 _this.map2List.push(marker);
@@ -253,12 +258,14 @@
               _this.map3.remove(_this.map3List);
               _this.map3List = [];
               result.forEach(item => {
-                position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
+//                position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
+                position = new AMap.LngLat(item.longitude,item.latitude);
                 _this.count3++;
                 let marker = new AMap.Marker({
                   position: position,
-                  icon: 'static/images/car/car-7.png', // 添加 Icon 图标 URL
-                  angle: item.heading
+                  icon: 'static/images/road/car.png', // 添加 Icon 图标 URL
+                  angle: item.heading,
+                  offset:new AMap.Pixel(-8, -16)
                 });
                 _this.map3.add(marker);
                 _this.map3List.push(marker);
@@ -312,12 +319,14 @@
               _this.map4.remove(_this.map4List);
               _this.map4List = [];
               result.forEach(item => {
-                position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
-                _this.count3++;
+//                position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
+                position = new AMap.LngLat(item.longitude,item.latitude);
+                _this.count4++;
                 let marker = new AMap.Marker({
                   position: position,
-                  icon: 'static/images/car/car-7.png', // 添加 Icon 图标 URL
-                  angle: item.heading
+                  icon: 'static/images/road/car.png', // 添加 Icon 图标 URL
+                  angle: item.heading,
+                  offset:new AMap.Pixel(-8, -16)
                 });
                 _this.map4.add(marker);
                 _this.map4List.push(marker);

@@ -50,7 +50,7 @@
               series: [
                 {
                   type:'pie',
-                  radius: ['45%', '65%'],
+                  radius: ['45%', '70%'],
                   center: ['30%', '48%'],
                   avoidLabelOverlap: false,
                   label: {

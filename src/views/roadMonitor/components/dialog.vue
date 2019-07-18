@@ -75,7 +75,11 @@
               map:{},
               markerList:[],
               pageInitIndex:0,
-              totalRoadCount:0
+              totalRoadCount:0,
+              webSocket:{},
+              crossId:"",
+              count:0,
+              mapList:[]
             }
         },
       props:{
@@ -213,13 +217,13 @@
           this.index=0;
           this.getAllCross();
         },
-        getCrossById(crossId){
+        getCrossById(){
           if(this.markerList.length>0){
             this.map.remove(this.markerList);
             this.markerList=[];
           }
           getCrossById({
-            "crossId": crossId
+            "crossId": this.crossId
           }).then(res=>{
             let result = res.data.data;
             let wms  = new AMap.TileLayer.WMS({
@@ -253,7 +257,10 @@
           }
           item.isActive=!item.isActive;
           if(item.isActive){
-            this.getCrossById(item.crossId);
+            this.crossId = item.crossId;
+            this.getCrossById();
+            this.webSocket.close();
+            this.initWebSocket();
           }
         },
         getCrossPageById(){
@@ -303,6 +310,67 @@
               })
             }, 0);
           });
+        },
+        initWebSocket(){
+          let _this=this;
+          if ('WebSocket' in window) {
+            _this.webSocket = new WebSocket(window.cfg.websocketUrl);  //获得WebSocket对象
+          }
+          _this.webSocket.onmessage = _this.onmessage;
+          _this.webSocket.onclose = _this.onclose;
+          _this.webSocket.onopen = _this.onopen;
+          _this.webSocket.onerror = _this.onerror;
+        },
+        onmessage(mesasge){
+          let _this=this;
+          let json = JSON.parse(mesasge.data);
+          let result = json.result.vehData;
+          let position;
+          if(_this.count==0) {
+            //在接受请求前清除地图上的点
+            _this.map.remove(_this.mapList);
+            _this.mapList = [];
+            result.forEach(item => {
+                position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
+//              position = new AMap.LngLat(item.longitude,item.latitude);
+              _this.count++;
+              let marker = new AMap.Marker({
+                position: position,
+                icon: 'static/images/road/car.png', // 添加 Icon 图标 URL
+                angle: item.heading,
+                offset:new AMap.Pixel(-8, -16)
+              });
+              _this.map.add(marker);
+              _this.mapList.push(marker);
+            });
+            if (this.count == result.length) {
+              _this.count = 0;
+            }
+          }
+
+        },
+        onclose(data){
+          console.log("结束连接");
+        },
+        onopen(data){
+          //获取在驶车辆状态
+          var carStatus = {
+            'action':'cross_real_data',
+            'token':'tusvn',
+            'crossId':this.crossId
+          }
+          var vehicleStatusMsg = JSON.stringify(carStatus);
+          this.sendMsg(vehicleStatusMsg);
+        },
+        sendMsg(msg) {
+          let _this=this;
+          if(window.WebSocket){
+            if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+              _this.webSocket.send(msg); //send()发送消息
+            }
+          }else{
+            return;
+          }
         }
       },
 
@@ -321,7 +389,9 @@
             })
             this.type=null;
             this.getCrossPageById();
-            this.getCrossById(this.selectedItem.crossId);
+            this.crossId = this.selectedItem.crossId;
+            this.getCrossById();
+            this.initWebSocket();
           }
         }
       },

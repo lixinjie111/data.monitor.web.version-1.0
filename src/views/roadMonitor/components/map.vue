@@ -81,7 +81,9 @@
           18:0,
           19:0,
           20:0
-        }
+        },
+        layerList:[],
+        timer:0
       }
     },
     methods: {
@@ -98,11 +100,28 @@
             /*disParams.push(item.id);*/
             //如果是车辆分布，弹出弹出框
             if(item.id=='car'){
+//              clearInterval(this.timer);
               this.distributeShow = true;
+              //获取车辆分布数据
+              this.getDistributeWms();
+              this.timer = setInterval(()=>{
+                console.log("调用了---")
+                if(this.layerList.length>0){
+                  this.map.remove(this.layerList);
+                  this.layerList=[];
+                }
+                //获取车辆分布数据
+                this.getDistributeWms();
+              },5000)
+              return;
             }
             this.getRwDis(item.id);
           }else{
-            this.distributeShow = false;
+            if(item.id=='car'){
+              clearInterval(this.timer);
+              this.distributeShow = false;
+              this.getWms();
+            }
               //取消选中，将设备从地图中消除
               this.removeMarkers(item.id);
             }
@@ -222,6 +241,16 @@
           params:{'LAYERS': 'shanghai_qcc:gd_road_centerline',VERSION:'1.1.0'}
         })
         wms.setMap(this.map);
+      },
+      getDistributeWms() {
+        var wms  = new AMap.TileLayer.WMS({
+          url:'http://10.0.1.22:8080/geoserver/shanghai_qcc/wms',
+          blend: false,
+          tileSize: 256,
+          params:{'LAYERS': 'shanghai_qcc:gd_road_centerline','STYLES':'shanghai_qcc:dl_shcsq_wgs84_road_centerline_car_statistics',VERSION:'1.1.0'}
+        })
+        this.layerList.push(wms);
+        wms.setMap(this.map);
 //        console.log("放大级别---"+this.map.getZoom())
 //        this.$parent.$parent.changeCenterPoint = this.setCenter;
       },
@@ -272,6 +301,10 @@
         'id':0
       };
       this.getMarkers(item);
+    },
+    destroyed(){
+      //清除定时器
+      clearInterval(this.timer);
     }
   }
 </script>

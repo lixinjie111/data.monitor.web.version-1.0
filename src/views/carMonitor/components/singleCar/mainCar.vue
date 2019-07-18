@@ -88,168 +88,20 @@
 
     <div class="pre-warning">
       <div  class="pre-warning-item" v-for="item in warningList" v-show="item.flag">
-        <!--<div class="warning-position" >
-          <div class="pre-warning-img pre-warning-info" :style="background: item.backgroundColor">
-            <img :src="item.src"/>
+        <div class="warning-position" >
+          <div class="pre-warning-img pre-warning-info" >
+            <img :src="item.icon"/>
           </div>
           <div class="pre-warning-style pre-warning-info">
-            <p>
+            <p v-if="item.dist==-1">
+              {{item.message}}
+            </p>
+            <p v-else="item.dist">
               <span class="pre-warning-font">{{item.dist}}</span>米<br/>
               {{item.message}}
             </p>
-            &lt;!&ndash;<p></p>&ndash;&gt;
-          </div>
-        </div>-->
-        <!--ADAS-->
-        <!--<div v-show="item.type=='ADAS_1'" class="warning-position" >
-          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/warning/adas-1.png"/>
-          </div>
-          <div class="pre-warning-style pre-warning-info">
-            <p>
-              &lt;!&ndash;<span class="pre-warning-font">{{item.dist}}</span>米<br/>&ndash;&gt;
-              {{item.message}}
-            </p>
-            &lt;!&ndash;<p></p>&ndash;&gt;
           </div>
         </div>
-        <div v-show="item.type=='ADAS_2'" class="warning-position">
-          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/warning/adas-2.png"/>
-          </div>
-          <div class="pre-warning-style pre-warning-info">
-            <p> {{item.message}}</p>
-          </div>
-        </div>
-        <div v-show="item.type=='ADAS_3'" class="warning-position">
-          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/warning/adas-3.png"/>
-          </div>
-          <div class="pre-warning-style pre-warning-info">
-            <p>{{item.message}}</p>
-          </div>
-        </div>
-        <div v-show="item.type=='ADAS_4'" class="warning-position">
-          <div class="pre-warning-img pre-warning-info" style="background: #fd8610">
-            <img src="@/assets/images/car/warning/adas-4.png"/>
-          </div>
-          <div class="pre-warning-style pre-warning-info">
-            <p>{{item.message}}</p>
-          </div>
-        </div>
-        &lt;!&ndash;V2X&ndash;&gt;
-        <div v-show="item.type=='V2X_1'" class="warning-position">
-          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/warning/car-1.png"/>
-          </div>
-          <div class="pre-warning-style pre-warning-info">
-            <p>{{item.message}}</p>
-          </div>
-        </div>
-        <div v-show="item.type=='V2X_2'" class="warning-position">
-          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/warning/car-2.png"/>
-          </div>
-          <div class="pre-warning-style pre-warning-info">
-            <p>{{item.message}}</p>
-          </div>
-        </div>
-        <div v-show="item.type=='V2X_3'" class="warning-position">
-          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/warning/car-3.png"/>
-          </div>
-          <div class="pre-warning-style pre-warning-info">
-            <p>{{item.message}}</p>
-          </div>
-        </div>
-        <div v-show="item.type=='V2X_4'" class="warning-position">
-          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/warning/car-4.png"/>
-          </div>
-          <div class="pre-warning-style pre-warning-info">
-            <p>{{item.message}}</p>
-          </div>
-        </div>
-        <div v-show="item.type=='V2X_5'" class="warning-position">
-          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/warning/car-5.png"/>
-          </div>
-          <div class="pre-warning-style pre-warning-info">
-            <p>{{item.message}}</p>
-          </div>
-        </div>
-        <div v-show="item.type=='V2X_6'" class="warning-position">
-          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/warning/car-6.png"/>
-          </div>
-          <div class="pre-warning-style pre-warning-info">
-            <p>{{item.message}}</p>
-          </div>
-        </div>
-
-        <div v-show="item.type=='V2X_9'" class="warning-position">
-          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/warning/car-7.png"/>
-          </div>
-          <div class="pre-warning-style pre-warning-info">
-            <p>{{item.message}}</p>
-          </div>
-        </div>
-        <div v-show="item.type=='V2X_10'" class="warning-position">
-          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/warning/car-4.png"/>
-          </div>
-          <div class="pre-warning-style pre-warning-info">
-            <p>{{item.message}}</p>
-          </div>
-        </div>
-        &lt;!&ndash;路侧告警&ndash;&gt;
-       &lt;!&ndash; <div v-show="item.type=='V2X_12'" class="warning-position">
-          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/warning/car-10.png"/>
-          </div>
-          <div class="pre-warning-style pre-warning-info">
-            <p>{{item.message}}</p>
-          </div>
-        </div>&ndash;&gt;
-
-        &lt;!&ndash;云下发&ndash;&gt;
-        &lt;!&ndash;道路打滑&ndash;&gt;
-        <div v-show="item.type=='ICING'" class="warning-position">
-          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/warning/cloud-1.png"/>
-          </div>
-          <div class="pre-warning-style pre-warning-info">
-            <p>道路打滑</p>
-          </div>
-        </div>
-        &lt;!&ndash;道路施工&ndash;&gt;
-        <div v-show="item.type=='ROADWORK'" class="warning-position">
-          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/warning/cloud-2.png"/>
-          </div>
-          <div class="pre-warning-style pre-warning-info">
-            <p>道路施工</p>
-          </div>
-        </div>
-        &lt;!&ndash;障碍物&ndash;&gt;
-        <div v-show="item.type=='OBSTACLESAHEAD'" class="warning-position">
-          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/warning/cloud-3.png"/>
-          </div>
-          <div class="pre-warning-style pre-warning-info">
-            <p>障碍物</p>
-          </div>
-        </div>
-        &lt;!&ndash;公交车专用道&ndash;&gt;
-        <div v-show="item.type=='BUSLANE'" class="warning-position">
-          <div class="pre-warning-img pre-warning-info" style="background: #ae3717">
-            <img src="@/assets/images/car/warning/cloud-4.png"/>
-          </div>
-          <div class="pre-warning-style pre-warning-info">
-            <p>公交车专用道</p>
-          </div>
-        </div>-->
       </div>
     </div>
 
@@ -274,9 +126,9 @@
         </tr>
         <tr v-for="(item,index) in cloudList">
           <td>{{index+1}}</td>
-          <td>{{item.timestamp | dateFormat}}</td>
-          <td>{{item.earlyWarningName}}</td>
-          <td><p class="alert-level" style="background-color: #ae3717"><span class="alert-level-value">{{item.earlyWarningLvl}}</span></p></td>
+          <td>{{item.warningTime | dateFormat}}</td>
+          <td>{{item.warningName}}</td>
+          <td><p class="alert-level" style="background-color: #ae3717"><span class="alert-level-value">{{item.warningLevel}}</span></p></td>
           <td>{{item.position}}</td>
         </tr>
       </table>
@@ -319,12 +171,9 @@
     data () {
       return {
         distanceMap:{},
-        wholePath:[],
         marker:{},
         platNoMarker:{},
-        sideVehicleObj:{},
-        sideObjList:[],
-        sideVehicleData:[],
+        sideList:[],
         hostWebsocket:{},
         sideWebsocket:{},
         deviceWebsocket:{},
@@ -407,12 +256,9 @@
     watch:{
       isStop(newVal,oldVal){
         if(newVal){
-          //本车处理
-          this.wholePath=[];
-          //旁车处理
-          this.sideVehicleObj={};
-          for(var id in this.sideVehicleObj){
-            this.distanceMap.remove(this.sideVehicleObj[id].marker);
+          //旁车处理,本车保留最后位置
+          if(this.sideList.length>0){
+            this.distanceMap.remove(this.sideList);
           }
           this.sideWebsocket.close();
         }else{
@@ -454,9 +300,6 @@
         var json = JSON.parse(mesasge.data);
         var data = json.result;
         var type = json.action;
-        _this.wholePath = [];
-          var position = new AMap.LngLat(data.longitude,data.latitude);
-          var newPosition;
           var platNo;
           var source="";
           // let _nowtime = new Date().getTime();
@@ -468,28 +311,17 @@
             })
             source = source.substring(0,source.lastIndexOf(","));
           }
-          /*AMap.convertFrom(position, 'gps', function (status, result) {
-            if (result.info === 'ok') {*/
-//              newPosition = result.locations[0];
-              newPosition = ConvertCoord.wgs84togcj02(data.longitude, data.latitude);
-//              console.log("本车行驶的位置:"+newPosition);
+             let newPosition = ConvertCoord.wgs84togcj02(data.longitude, data.latitude);
               if(_this.isInit){
                 _this.marker = new AMap.Marker({
-                  map:_this.distanceMap,
                   position: newPosition,
                   icon: 'static/images/car/car-6.png', // 添加 Icon 图标 URL
                   zIndex:500
                 });
-                /* _this.marker.setLabel({
-   //                offset: new AMap.Pixel(20, 20),  //设置文本标注偏移量
-                   content: "<div class='car-info'>京N123456</div>", //设置文本标注内容
-                   direction: 'left' //设置文本标注方位
-                 });*/
                 _this.distanceMap.add(_this.marker);
                 _this.platNoMarker = new AMap.Text({
                   map: _this.distanceMap,
                   text: platNo+"<br/><span style='color:#e6a23c'>"+source+'</span>',
-                  // text: '京N123456',
                   anchor: 'center', // 设置文本标记锚点
                   style: {
                     'padding': '0 5px',
@@ -507,24 +339,12 @@
                 });
                 _this.isInit=false;
               }
-              //设置车的位置
-              var lastPosition = [];
-              if(_this.wholePath.length > 0 ) {
-                lastPosition = _this.wholePath[0];
-              }else{
-                lastPosition = newPosition;
-              }
-              /*_this.marker.setPosition(lastPosition);
-              _this.platNoMarker.setPosition(lastPosition);*/
               //设置中心点
+//              console.log("newPosition----"+newPosition)
               _this.distanceMap.setCenter(newPosition);
               //设置旋转角度
               _this.headingAngle = data.heading;
               _this.marker.setAngle(_this.headingAngle);
-              /* _this.platNoMarker.setAngle(_this.headingAngle);*/
-              //所要移动的位置
-//              _this.marker.moveTo(newPosition,data.speed);
-//              _this.platNoMarker.moveTo(newPosition,data.speed);
               _this.marker.setPosition(newPosition);
               _this.platNoMarker.setPosition(newPosition);
 
@@ -564,13 +384,10 @@
       onSideMessage(mesasge){
         var _this=this;
         var json = JSON.parse(mesasge.data);
-//        console.log("this.count-----------"+this.count);
         if(this.count == 0) {
           this.count++;
           //新建点
           var sideVehicleData = json.result.data;
-          //将不存在的marker点从地图上删除
-//          console.log("-------------------------");
           var resultData=[];
           sideVehicleData.forEach(item=>{
             let option={
@@ -582,92 +399,32 @@
               latitude: item.latitude
 
             }
-//            console.log("旁车的经纬度----"+option.position);
             resultData.push(option);
           });
-          for(var id in _this.sideVehicleObj){
-            let flag=false;
-            for( let i = 0; i < sideVehicleData.length; i++){
-              if(id==sideVehicleData[i].vehicleId){
-                if(_this.sideVehicleObj[id].flag){
-                  flag = true;
-                  break;
-                }
-              }
-            }
-            if(!flag){
-//              console.log("要消失的旁车----"+id);
-              _this.sideVehicleObj[id].marker.hide();
-             /* _this.distanceMap.remove(_this.sideVehicleObj[id].marker);*/
-              _this.sideVehicleObj[id].flag=false;
-            }
-          }
+         if(_this.sideList.length>0){
+           _this.distanceMap.remove(_this.sideList);
+           _this.sideList=[];
+         }
           resultData.forEach(function (item,index,arr) {
-//            AMap.convertFrom(resultData[index].position, 'gps', function (status, result) {
-//                console.log("count----"+_this.count+"====status=="+status+"位置---"+resultData[index].position);
-//                if (result.info === 'ok') {
-//                  resultData[index].position = result.locations[0];
-                  resultData[index].position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
-//                  console.log("position-----"+ resultData[index].position+"----vehicleId---"+item.vehicleId)
-                  _this.count++;
-                  if(_this.count == arr.length+1){
-                    resultData.forEach((subItem, subIndex, subArr)=>{
-                      if (_this.sideVehicleObj[subItem.vehicleId]) {
-                        let sideCar = _this.sideVehicleObj[subItem.vehicleId];
-                        if(_this.sideVehicleObj[subItem.vehicleId].flag) {
-                          sideCar.marker.setAngle(subItem.heading);
-                          sideCar.marker.setPosition(subItem.position);
-//                          _this.sideVehicleObj[subItem.vehicleId].platNo.moveTo(subItem.position, subItem.speed);
-                        }else{
-                          sideCar.marker.setAngle(subItem.heading);
-                          sideCar.marker.setPosition(subItem.position);
-//                          _this.sideVehicleObj[subItem.vehicleId].platNo.setPosition(subItem.position);
-                          sideCar.marker.show();
-                          _this.sideVehicleObj[subItem.vehicleId].flag=true;
-                        }
-                      } else {//不存在
-                        _this.sideVehicleObj[subItem.vehicleId] = {
-                          marker : null,
-                          flag: true
-                        };
-                        _this.sideVehicleObj[subItem.vehicleId].marker = new AMap.Marker({
-                          position: subItem.position,
-                          icon: 'static/images/car/car-7.png', // 添加 Icon 图标 URL
-                          angle: subItem.heading
-                        });
-                     /*   _this.sideVehicleObj[subItem.vehicleId].platNo = new AMap.Text({
-                          text: subItem.vehicleId,
-                          map: _this.distanceMap,
-                          anchor: 'center', // 设置文本标记锚点
-                          style: {
-                            'padding': '0 5px',
-                            'border-radius': '4px',
-                            'background-color': 'rgba(55, 186, 123, .2)',
-                            'border-width': 0,
-                            'text-align': 'center',
-                            'font-size': '10px',
-                            'line-height': '16px',
-                            'letter-spacing': '0',
-                            'margin-top': '-36px', //车头
-                            'color': '#ccc'
-                          }
-                        });
-                        _this.sideVehicleObj[subItem.vehicleId].platNo.setPosition(subItem.position);*/
-                        _this.distanceMap.add(_this.sideVehicleObj[subItem.vehicleId].marker);
-
-                      }
-
-                      if(subIndex == subArr.length - 1) {
-                        setTimeout(() => {
-                          _this.count = 0;
-                        }, 0);
-                      }
-                    })
+              resultData[index].position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
+              _this.count++;
+              if(_this.count == arr.length+1){
+                resultData.forEach((subItem, subIndex, subArr)=>{
+                  let marker = new AMap.Marker({
+                    position: subItem.position,
+                    icon: 'static/images/car/car-7.png', // 添加 Icon 图标 URL
+                    angle: subItem.heading
+                  });
+                  _this.sideList.push(marker);
+                  _this.distanceMap.add(marker);
+                  if(subIndex == subArr.length - 1) {
+                    setTimeout(() => {
+                      _this.count = 0;
+                    }, 0);
                   }
-                /*}
-              })*/
-
-        });
+                })
+              }
+          });
         }
       },
       onSideClose(data){
@@ -897,7 +654,12 @@
           if(type=='VEHICLE'){
             warningData.forEach(item=>{
               var dist = parseInt(item.dis);
-              var obj = {type: item.eventType,timer: null, flag: true,dist:dist,message:item.warnMsg};
+              if(!dist){
+                dist=-1;
+              }
+
+              var obj = {type: item.eventType,timer: null, flag: true,dist:dist,message:item.warnMsg,icon:item.warnIcon,warnColor:item.warnColor};
+              console.log("dist...."+obj.dist);
               obj.timer=setTimeout(()=>{
                 obj.flag=false;
                 _this.warningList.forEach(item=>{
@@ -915,7 +677,11 @@
           if(type=='CLOUD'){
             let eventType = json.result.eventType;
             warningData.forEach(item=>{
-              var obj = {type:eventType,timer:null,flag:true,message:item.message};
+              var dist = parseInt(item.dis);
+              if(!dist){
+                dist=-1;
+              }
+              var obj = {type:eventType,timer:null,flag:true,dist:dist,message:item.warnMsg,icon:item.warnIcon,warnColor:item.warnColor};
               obj.timer=setTimeout(()=>{
                 obj.flag=false;
                 _this.warningList.forEach(item=>{
@@ -1073,11 +839,29 @@
     mounted () {
       var _this =this;
       this.distanceMap = new AMap.Map("realTraffic", {
-        center: [116.482362,39.997718],
+        center: [121.18653381418872,31.274421462567677],
         mapStyle:'amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8',
         zoom:18,
         rotateEnable:'true'
       });
+      /*let marker1 = new AMap.Marker({
+        position: [121.18653381418872,31.274421462567677],
+        icon: 'static/images/car/car-1.png', // 添加 Icon 图标 URL
+        zIndex:500
+      });
+      let marker2 = new AMap.Marker({
+        position: [121.18696087827043,31.274363226403192],
+        icon: 'static/images/car/car-2.png', // 添加 Icon 图标 URL
+        zIndex:500
+      });
+      let marker3 = new AMap.Marker({
+        position: [121.18684514591077,31.27437144715565],
+        icon: 'static/images/car/car-6.png', // 添加 Icon 图标 URL
+        zIndex:500
+      });
+      this.distanceMap.add(marker1);
+      this.distanceMap.add(marker2);
+      this.distanceMap.add(marker3);*/
       this.initWebSocket();
       this.initSideWebSocket();
       this.initDeviceWebSocket();
@@ -1136,7 +920,7 @@
       position: relative;
       .alert-level-value{
         position: relative;
-        top: -6px;
+        top: -7px;
       }
     }
   }
@@ -1338,6 +1122,10 @@
     vertical-align: middle;
     height: 100px;
     text-align: center;
+    img{
+      width:60px;
+      height:auto;
+    }
   }
   .pre-warning-style{
     background: #2f2d35;
