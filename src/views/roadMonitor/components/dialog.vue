@@ -1,5 +1,5 @@
 <template>
-  <div class="c-dialog-wrapper" v-show="dialogVisible">
+  <div class="c-dialog-wrapper" v-if="dialogVisible">
     <div class="c-dialog-container" >
       <div class="c-dialog-header">
         <span class="c-dialog-title">车辆数据</span>
@@ -122,7 +122,8 @@
            /* _this.roadList=[];*/
             result.forEach((item,index)=>{
               _this.index++;
-              position = ConvertCoord.wgs84togcj02(item.x,item.y);
+//              position = ConvertCoord.wgs84togcj02(item.x,item.y);
+              position = new AMap.LngLat(item.x,item.y);
               let obj = {};
               obj.id = "road"+_this.index;
               obj.crossId = item.uid;
@@ -142,10 +143,11 @@
                   url:'http://10.0.1.22:8080/geoserver/shanghai_qcc/wms',
                   blend: false,
                   tileSize: 256,
-                  params:{'LAYERS': 'shanghai_qcc:gd_road_centerline',VERSION:'1.1.0'}
+                  params:{'LAYERS': 'shanghai_qcc:dl_shcsq_wgs84_gjlk',VERSION:'1.1.0'}
                 })
                 wms.setMap(item.map);
                 item.map.setCenter(item.position);
+                item.map.setZoom(17);
               })
             }, 0);
           })
@@ -230,14 +232,16 @@
               url:'http://10.0.1.22:8080/geoserver/shanghai_qcc/wms',
               blend: false,
               tileSize: 256,
-              params:{'LAYERS': 'shanghai_qcc:gd_road_centerline',VERSION:'1.1.0'}
+              params:{'LAYERS': 'shanghai_qcc:dl_shcsq_wgs84_gjlk',VERSION:'1.1.0'}
             })
             wms.setMap(this.map);
-            let position = ConvertCoord.wgs84togcj02(result[0].x,result[0].y);
+//            let position = ConvertCoord.wgs84togcj02(result[0].x,result[0].y);
+            let position = new AMap.LngLat(result[0].x,result[0].y);
             this.map.setCenter(position);
             let p;
             result.forEach(item=>{
-              p =  ConvertCoord.wgs84togcj02(item.x,item.y);
+//              p =  ConvertCoord.wgs84togcj02(item.x,item.y);
+              p=new AMap.LngLat(item.x,item.y);
               //画灯的位置
               let marker = new AMap.Marker({
                 position: p,
@@ -283,7 +287,8 @@
             /* _this.roadList=[];*/
             result.forEach((item,index)=>{
               _this.index++;
-              position = ConvertCoord.wgs84togcj02(item.x,item.y);
+//              position = ConvertCoord.wgs84togcj02(item.x,item.y);
+              position = new AMap.LngLat(item.x,item.y);
               let obj = {};
               obj.id = "road"+_this.index;
               obj.crossId = item.uid;
@@ -303,10 +308,11 @@
                   url:'http://10.0.1.22:8080/geoserver/shanghai_qcc/wms',
                   blend: false,
                   tileSize: 256,
-                  params:{'LAYERS': 'shanghai_qcc:gd_road_centerline',VERSION:'1.1.0'}
+                  params:{'LAYERS': 'shanghai_qcc:dl_shcsq_wgs84_gjlk',VERSION:'1.1.0'}
                 })
                 wms.setMap(item.map);
                 item.map.setCenter(item.position);
+                item.map.setZoom(17);
               })
             }, 0);
           });
@@ -331,8 +337,8 @@
             _this.map.remove(_this.mapList);
             _this.mapList = [];
             result.forEach(item => {
-                position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
-//              position = new AMap.LngLat(item.longitude,item.latitude);
+              /*  position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);*/
+              position = new AMap.LngLat(item.longitude,item.latitude);
               _this.count++;
               let marker = new AMap.Marker({
                 position: position,
@@ -388,10 +394,10 @@
               }
             })
             this.type=null;
-            this.getCrossPageById();
+           /* this.getCrossPageById();*/
             this.crossId = this.selectedItem.crossId;
             this.getCrossById();
-            this.initWebSocket();
+            /*this.initWebSocket();*/
           }
         }
       },
