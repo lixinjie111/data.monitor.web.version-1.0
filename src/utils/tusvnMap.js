@@ -92,6 +92,7 @@ export function getMap(map){
   map.addModel("street_lamp_two","./static/map3d/models/street_lamp_two.3ds",442501.99,4427272.65,16);
   map.getModel("street_lamp_two").setHeading(30);
   map.getModel("street_lamp_two").setUpdate(true);
+
   //红绿灯
   map.addModel("traffic_light","./static/map3d/models/traffic_light.3ds",442533.95,4427306.77,16);
   map.getModel("traffic_light").setHeading(30);
@@ -106,6 +107,7 @@ export function getMap(map){
   map.addModel("Girl walking N090814","./static/map3d/models/Girl walking N090814.3DS",442529.62,4427325.70,16);
   map.getModel("Girl walking N090814").setHeading(120);
   map.getModel("Girl walking N090814").setUpdate(true);
+
   //男人
   map.addModel("Man N151016.3DS","./static/map3d/models/Man N151016.3DS",442531.62,4427325.70,16);
   map.getModel("Man N151016.3DS").setHeading(120);

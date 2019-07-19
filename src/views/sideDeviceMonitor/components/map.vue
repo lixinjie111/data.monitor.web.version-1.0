@@ -119,6 +119,7 @@
                         var marker = new AMap.Marker({
                           position: subItem.position,
                           icon: 'static/images/sideDevice/1.png', // 添加 Icon 图标 URL
+                          offset:new AMap.Pixel(-15, -15)
                         });
                         _this.map.add(marker);
                         _this.lightList.push(marker)
@@ -128,6 +129,7 @@
                         var marker = new AMap.Marker({
                           position: subItem.position,
                           icon: 'static/images/sideDevice/3.png', // 添加 Icon 图标 URL
+                          offset:new AMap.Pixel(-15, -15)
                         });
                         _this.map.add(marker);
                         var item={
@@ -145,6 +147,7 @@
                         var marker = new AMap.Marker({
                           position: subItem.position,
                           icon: 'static/images/sideDevice/2.png', // 添加 Icon 图标 URL
+                          offset:new AMap.Pixel(-15, -15)
 
                         });
                         _this.map.add(marker);

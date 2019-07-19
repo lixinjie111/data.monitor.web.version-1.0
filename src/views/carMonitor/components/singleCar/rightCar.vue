@@ -2,15 +2,7 @@
   <div class="monitor-right">
     <div class="c-scroll-wrap">
       <div class="c-scroll-inner">
-        <p class="monitor-title right-title">车端视频</p>
-        <div class="clear line-style">
-          <div class="line line-1" >
-            <span class="line1"></span>
-          </div>
-          <div class="line line-2" >
-            <span class="line2"></span>
-          </div>
-        </div>
+        <p class="monitor-title c-title">车端视频</p>
         <div class="monitor-video right-title">
           <!--<video src="movie.ogg" controls="controls" autoplay width="270" height="200">
             您的浏览器不支持 video 标签。
@@ -25,15 +17,7 @@
           </div>
           <!--<div id="cmsplayer" style="width:100%;height:100%"></div>-->
         </div>
-        <p class="monitor-title right-title">车端感知</p>
-        <div class="clear line-style">
-          <div class="line line-1" >
-            <span class="line1"></span>
-          </div>
-          <div class="line line-2" >
-            <span class="line2"></span>
-          </div>
-        </div>
+        <p class="monitor-title c-title">车端感知</p>
         <div class="monitor-perception right-title">
           <div class="car-container" :style="{transform:'rotate(-'+currentCar.heading+'deg)'}">
             <!-- <img src="@/assets/images/car/car-11.png" class="host-vehicle" :style="{left:screenConfig.scrWidth/2-10+'px',top:screenConfig.scrHeight*3/4-13+'px'}"/> -->
@@ -49,15 +33,7 @@
             <p>无数据提示</p>
           </div>
         </div>
-        <p class="monitor-title right-title">行车日历</p>
-        <div class="clear line-style">
-          <div class="line line-1" >
-            <span class="line1"></span>
-          </div>
-          <div class="line line-2" >
-            <span class="line2"></span>
-          </div>
-        </div>
+        <p class="monitor-title c-title">行车日历</p>
         <div class="drive-container" id="driveContainer">
 
         </div>
@@ -110,6 +86,7 @@
           width:'270',
           height:'180',
           bigPlayButton : false,
+          notSupportedMessage: '此视频暂无法播放，请稍候再试',
           controlBar: {
             timeDivider: false,
             durationDisplay: false,
@@ -509,8 +486,8 @@
     position: relative;
     border:1px solid #402800;
     height: 180px;
-    margin:5%;
-    min-width: 270px;
+    margin: 20px;
+    min-width: 250px;
     overflow: hidden;
     perspective: 400px;
     perspective-origin: 50% 50%;
@@ -534,7 +511,7 @@
   .monitor-video{
     margin-left:auto;
     margin-right: auto;
-    width:270px;
+    width:250px;
     height:180px;
     border:1px solid #402800;
     position: relative;
@@ -548,7 +525,7 @@
     transform-origin: center 75% !important;
   }
   .drive-container{
-    width: 270px;
+    width: 250px;
     height: 250px;
     margin-left:5%;
   }
@@ -603,12 +580,13 @@
   }
   .single-mask-style{
     position: absolute;
-    width: 270px;
+    width: 250px;
     top: 0;
     cursor: pointer;
-    z-index:1;
+    z-index:2;
     right: 10px;
     top: 10px;
+    height: 20px;
     .single-mask-img{
       float: right;
       width: 14px;

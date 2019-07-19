@@ -48,7 +48,7 @@
       <li>
         <span>剩余里程</span>
         <!--<img src="@/assets/images/car/car-15.png"/>-->
-        <span class="current-electric">{{realData.remainElec | toFixed(1)}} KM</span>
+        <span class="current-electric">{{realData.remainElec | toFixed(1)}} km</span>
       </li>
     </ul>
     <ul class="monitor-header signal-detail">
