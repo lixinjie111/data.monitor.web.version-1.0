@@ -1,9 +1,9 @@
 export function getMap(map){
-  map.addShape("intersection","./static/map3d/dl_shcsq_zc/Intersection.shp","#cb995f")
-  map.addShape("Crosswalk","./static/map3d/dl_shcsq_zc/Crosswalk.shp",dl.styles.crosswalk.color)
+  map.addShape("intersection","./static/map3d/dl_shcsq_zc/Intersection.shp","#ff974f")
+  map.addShape("Crosswalk","./static/map3d/dl_shcsq_zc/Crosswalk.shp","#00d49d")
   map.addShape("lane_marking","./static/map3d/dl_shcsq_zc/Lane_marking.shp",dl.styles.lane_marking.color)
-  map.addShape("lane_arrow","./static/map3d/dl_shcsq_zc/Direction_arrow.shp",dl.styles.lane_arrow.color)
-  map.addShape("lane_boundary","./static/map3d/dl_shcsq_zc/Lane_boundary.shp","#4e87b3")
+  map.addShape("lane_arrow","./static/map3d/dl_shcsq_zc/Direction_arrow.shp","#06c2ff")
+  map.addShape("lane_boundary","./static/map3d/dl_shcsq_zc/Lane_boundary.shp","#6fb07d")
   map.addShape("lane_centerline","./static/map3d/dl_shcsq_zc/Lane_centerline.shp","#153641")
 
   //添加路灯
