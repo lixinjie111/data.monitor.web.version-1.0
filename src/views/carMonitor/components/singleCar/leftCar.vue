@@ -10,7 +10,15 @@
         <div class="monitor-car">
           <img class="car-img" src="@/assets/images/car/car.png" ></img>
         </div>
-        <p class="c-title monitor-title">行车统计</p>
+        <p class="monitor-title">行车统计</p>
+        <div class="clearfix line-style">
+          <div class="line line-1" >
+            <span class="line1"></span>
+          </div>
+          <div class="line line-2" >
+            <span class="line2"></span>
+          </div>
+        </div>
         <div class="clearfix">
            <ul class="statistic-style">
              <li>
@@ -18,7 +26,7 @@
              </li>
              <li>
                <span class="text-font">{{filterData.cumulatedMiles || '--'}}</span>
-               <span class="text-style">km</span>
+               <span class="text-style">KM</span>
              </li>
              <li>
                <span class="text-style">行车里程</span>
@@ -30,7 +38,7 @@
              </li>
              <li>
                <span class="text-font">{{filterData.cumulatedTime || '--'}}</span>
-               <span class="text-style">h</span>
+               <span class="text-style">H</span>
              </li>
              <li>
                <span class="text-style">驾驶时长</span>
@@ -42,7 +50,7 @@
              </li>
              <li>
                <span class="text-font">{{filterData.avgSpeed || '--'}}</span>
-               <span class="text-style">km/h</span>
+               <span class="text-style">KM/H</span>
              </li>
              <li>
                <span class="text-style">平均速度</span>
@@ -62,7 +70,15 @@
 
          </div>
 
-        <p class="c-title monitor-title">行程概览</p>
+        <p class="monitor-title">行程概览</p>
+        <div class="clearfix line-style">
+          <div class="line line-1" >
+            <span class="line1"></span>
+          </div>
+          <div class="line line-2" >
+            <span class="line2"></span>
+          </div>
+        </div>
         <div class="distance-overview" id="distanceContainer"></div>
       </div>
     </div>
@@ -71,8 +87,8 @@
 
         <span class="distance-detail" style="width: 230px;">行驶开始时间：{{routeInfo.routeStartTime ? $dateUtil.formatTime(routeInfo.routeStartTime) : "--"}}</span>
         <span class="distance-detail" style="width: 230px;">累计行驶时长：{{showRouteInfoDurationTime ? getRunTime(showRouteInfoDurationTime) : "--"}}</span>
-        <span class="distance-detail" style="width: 200px;">累计行驶里程：{{routeInfo.mileage ? routeInfo.mileage.toFixed(1) : "--"}}km</span>
-        <span class="distance-detail" style="width: 200px;">平均车速：{{routeInfo.avgSpd ? routeInfo.avgSpd.toFixed(1) : "--"}}km/h</span>
+        <span class="distance-detail" style="width: 200px;">累计行驶里程：{{routeInfo.mileage ? routeInfo.mileage : "--"}}km</span>
+        <span class="distance-detail" style="width: 200px;">平均车速：{{routeInfo.avgSpd ? routeInfo.avgSpd : "--"}}km/h</span>
 
     </div>
 
@@ -194,7 +210,7 @@
       // this.distanceMap.add(roadNetLayer);
       this.getRouteDataByVehId();
       // this.initWebSocket();
-
+      
       this.getBaseData();
       this.getDrivingStatistics();
 
@@ -468,8 +484,8 @@
         this.routeInfo = {
           routeStartTime: json.data.routeStartTime, //行驶开始时间
           durationTime: json.data.durationTime, //累计行驶时间
-          mileage: parseFloat(json.data.mileage).toLocaleString(), //累计行驶里程
-          avgSpd: parseFloat(json.data.avgSpd).toLocaleString() //平均测速
+          mileage: parseFloat(json.data.mileage).toFixed(1).toLocaleString(), //累计行驶里程
+          avgSpd: parseFloat(json.data.avgSpd).toFixed(1).toLocaleString() //平均测速
         };
         // console.log(this.getRunTime(json.data.durationTime));
         if(pointList && pointList.length > 0) {
@@ -580,11 +596,34 @@
   }
 </script>
 <style>
-  .monitor-title{
-    margin-left: 20px;
-    margin-right: 20px;
+  .line-style{
+    padding-left: 5%;
+    margin-top: 2%;
   }
-
+  .line{
+    float: left;
+  }
+  .line-1{
+    width: 10%;
+  }
+  .line-2{
+    width: 85%;
+  }
+  .line1{
+    border-top: 2px solid #ef920e;
+    display: block;
+  }
+  .line2{
+    border-top: 1px solid #ef920e;
+    display: block;
+    margin-top: 0.5px;
+  }
+  .monitor-title{
+    font-size: 18px;
+    color: #fff;
+    padding-left: 5%;
+    margin-top: 55px;
+  }
 </style>
 <style scoped lang="scss">
 
@@ -664,8 +703,8 @@
   }
 
   .distance-overview{
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left:5%;
+    margin-right:5%;
     height: 200px;
     border:1px solid #ef920e;
     margin-top: 35px;
