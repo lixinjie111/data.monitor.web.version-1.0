@@ -18,8 +18,8 @@
         </div>
       </div>
     </div>
-    <side-dialog :dialogVisible="dialogVisible" :selected-item="selectedItem" @closeDialog="closeDialog" :deviceMapId="'deviceMap1'"></side-dialog>
-    <side-dialog :dialog-visible.sync="mapDialogVisible" :selected-item="mapSelectedItem" @closeDialog="mapDialogVisible=false" :deviceMapId="'deviceMap2'"></side-dialog>
+    <side-dialog :dialogVisible="dialogVisible" :selected-item="selectedItem" @closeDialog="closeDialog" :deviceMapId="'deviceMap1'" :target="target"></side-dialog>
+    <side-dialog :dialog-visible.sync="mapDialogVisible" :selected-item="mapSelectedItem" @closeDialog="mapDialogVisible=false" :deviceMapId="'deviceMap2'" :target="target"></side-dialog>
   </div>
 </template>
 <script>
@@ -38,7 +38,8 @@
         selectedItem:{},
         mapDialogVisible:false,
         mapSelectedItem:{},
-        getDevStatus:getDevStatus
+        getDevStatus:getDevStatus,
+        target:""
       }
     },
     components: { LeftTop,CircleProgress,LeftMiddle,LeftBottom,MapContainer,RightList,SideDialog},
@@ -46,16 +47,18 @@
       closeDialog() {
         this.dialogVisible = false;
       },
-      queryDeviceDetail(item){
+      queryDeviceDetail(item,target){
         this.dialogVisible=true;
         this.selectedItem = item;
+        this.target = target;
         console.log(item);
       }
     },
     mounted() {
-      this.$on("sideEvent",(item) =>{
+      this.$on("sideEvent",(item,target) =>{
           this.mapDialogVisible=true;
           this.mapSelectedItem=item;
+          this.target = target;
       })
     }
   }

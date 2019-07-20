@@ -375,6 +375,7 @@
             this.getStream();
             return;
           }else{
+            this.playerOptions.sources[0].src='';
             this.playerOptions.sources[0].src = this.rtmp;
           }
         }

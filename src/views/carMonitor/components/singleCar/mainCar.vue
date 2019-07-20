@@ -212,7 +212,8 @@
         },
         alertInit:true,
         v2xInit:true,
-        v2xUuid:[]
+        v2xUuid:[],
+        lastPoint:[]
       }
     },
     props:{
@@ -338,7 +339,10 @@
                   position: newPosition
                 });
                 _this.isInit=false;
+                _this.lastPoint = newPosition;
               }
+             /* let lastPoint = _this.lastPoint;
+              _this.lastPoint = newPosition;*/
               //设置中心点
 //              console.log("newPosition----"+newPosition)
               _this.distanceMap.setCenter(newPosition);
@@ -347,6 +351,10 @@
               _this.marker.setAngle(_this.headingAngle);
               _this.marker.setPosition(newPosition);
               _this.platNoMarker.setPosition(newPosition);
+              _/*this.marker.setPosition(lastPoint);
+              _this.platNoMarker.setPosition(lastPoint);
+              _this.marker.moveTo(newPosition,data.speed);
+              _this.platNoMarker.moveTo(newPosition,data.speed);*/
 
       },
       onclose(data){

@@ -56,12 +56,17 @@
               </div>
               <video-player class="vjs-custom-skin" :options="option" ></video-player>
             </div>
-            <div v-if="target=='map'" style="width: 100%;height: 100%;">
-              <tusvn-map :target-id="deviceMapId" ref="tusvnMap3"
-                         background="black" minX=325295.155400   minY=3461941.703700  minZ=50
-              maxX=326681.125700  maxY=3462723.022400  maxZ=80
-              @mapcomplete="mapcomplete" @showTimeStamp="showTimeStamp">
-              </tusvn-map>
+            <div v-if="target=='map'" style="width: 100%;height: 100%;" >
+              <div style="width: 100%;height: 100%;" v-if="sideMap">
+                <tusvn-map :target-id="deviceMapId" ref="tusvnMap3"
+                           background="black" minX=325295.155400   minY=3461941.703700  minZ=50
+                maxX=326681.125700  maxY=3462723.022400  maxZ=80
+                @mapcomplete="mapcomplete" @showTimeStamp="showTimeStamp">
+                </tusvn-map>
+              </div>
+              <div v-if="!sideMap" class="side-map-tip side-tip-style">
+                {{mapMessage}}
+              </div>
             </div>
           </div>
           <div class="side-device-list">
@@ -93,7 +98,7 @@
 
               </div>
             </div>
-            <p class="side-device-title"><span v-show="target=='map'">路侧视频</span><span v-show="target=='video'">感知结果</span></p>
+            <p class="side-device-title"><span v-if="target=='map'">路侧视频</span><span v-if="target=='video'">感知结果</span></p>
             <div class="device-video-style">
               <div v-show="target=='map'" class="side-video-style">
                 <div class="road-mask-style" >
@@ -102,11 +107,16 @@
                 <video-player class="vjs-custom-skin" :options="option" ></video-player>
               </div>
               <div v-if="target=='video'" style="width: 100%;height: 100%;">
-                <tusvn-map :target-id="deviceMapId" ref="tusvnMap3"
-                           background="black" minX=325295.155400   minY=3461941.703700  minZ=50
-                maxX=326681.125700  maxY=3462723.022400  maxZ=80
-                @mapcomplete="mapcomplete" @showTimeStamp="showTimeStamp">
-                </tusvn-map>
+                <div style="width: 100%;height: 100%;" v-if="sideMap">
+                  <tusvn-map :target-id="deviceMapId" ref="tusvnMap3"
+                             background="black" minX=325295.155400   minY=3461941.703700  minZ=50
+                  maxX=326681.125700  maxY=3462723.022400  maxZ=80
+                  @mapcomplete="mapcomplete" @showTimeStamp="showTimeStamp">
+                  </tusvn-map>
+                </div>
+                <div v-if="!sideMap" class="side-map-tip">
+                  {{mapMessage}}
+                </div>
               </div>
             </div>
           </div>
@@ -155,7 +165,9 @@
               mapInit:false,
               roadId:'',//存储路的id
               rtmp:'',
-              target:''//判断点击的是视频还是地图
+              sideMap:false,
+              mapMessage:'该路口没有数据，请稍候再试！',
+              cameraParam:{}
             }
         },
       components:{
@@ -175,6 +187,10 @@
             }
           },
           deviceMapId:{
+            type:String,
+            default:""
+          },
+          target:{
             type:String,
             default:""
           }
@@ -244,6 +260,7 @@
                       _this.serialNum = item.serialNum;
                     }
                   }
+                  _this.cameraParam = JSON.parse(item.cameraParam);;
                   if(_this.serialNum!=""){
                     _this.getVideo();
                     //切换路侧点时，重新切换3D地图
@@ -251,14 +268,15 @@
 //                    console.log("地图初始化---"+_this.mapInit)
                     if(_this.mapInit){
                       _this.$refs.tusvnMap3.reset3DMap();
-                      let cameraParam = JSON.parse(item.cameraParam);
-                      _this.$refs.tusvnMap3.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
+//                      let cameraParam = JSON.parse(item.cameraParam);
+                      _this.$refs.tusvnMap3.updateCameraPosition(_this.cameraParam.x,_this.cameraParam.y,_this.cameraParam.z,_this.cameraParam.radius,_this.cameraParam.pitch,_this.cameraParam.yaw);
                       _this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,item.serialNum);
                     }
                   }
                 }else{
                   /*_this.$set(item, 'value', false);*/
                   item.value=false;
+                  _this.sideMap=false;
                 }
               })
               if(_this.serialNum==""){
@@ -266,6 +284,7 @@
                 options.sources[0].src =  "";
                 _this.option =options;
                 _this.$refs.tusvnMap3.reset3DMap();
+                _this.sideMap=false;
               }
             })
           },
@@ -305,14 +324,16 @@
               _this.getVideo();
               //选中后重新请求
               _this.$refs.tusvnMap3.reset3DMap();
-              let cameraParam = JSON.parse(item.cameraParam);
-              this.$refs.tusvnMap3.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
+              _this.cameraParam = JSON.parse(item.cameraParam);
+              this.$refs.tusvnMap3.updateCameraPosition(_this.cameraParam.x,_this.cameraParam.y,_this.cameraParam.z,_this.cameraParam.radius,_this.cameraParam.pitch,_this.cameraParam.yaw);
               this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,item.serialNum);
             }else{
               var options = _this.getPlayerOptions();
               options.sources[0].src =  '';
               _this.option =options;
               _this.$refs.tusvnMap3.reset3DMap();
+              //地图关闭
+              _this.sideMap=false;
             }
           },
           loadNode(node, resolve){
@@ -556,23 +577,21 @@
           mapcomplete:function(){
             this.mapInit=true;
             getMap(this.$refs.tusvnMap3);
-            this.$refs.tusvnMap3.updateCameraPosition(326282.75554201024,3462316.8664064347,42.007991231815836,49.684198177964,-0.5303922863908559,-2.1753077372153995);
-            return;
+            /*this.$refs.tusvnMap3.updateCameraPosition(326282.75554201024,3462316.8664064347,42.007991231815836,49.684198177964,-0.5303922863908559,-2.1753077372153995);
+            return;*/
             if(this.serialNum&&this.serialNum!=""){
               console.log("this.serialNum--"+this.serialNum)
-              let cameraParam = JSON.parse(this.selectedItem.cameraParam);
-              this.$refs.tusvnMap3.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
+              /*let cameraParam = JSON.parse(this.selectedItem.cameraParam);*/
+              this.$refs.tusvnMap3.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
               this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,this.selectedItem.camSerialNum);
               return;
-            }else{
-              this.$refs.tusvnMap3.updateCameraPosition(326282.75554201024,3462316.8664064347,42.007991231815836,49.684198177964,-0.5303922863908559,-2.1753077372153995);
             }
             let count = 0;
             let time = setInterval(()=>{
               if(this.serialNum&&this.serialNum!=""){
                 console.log("this.serialNum--"+this.serialNum)
                 let cameraParam = JSON.parse(this.selectedItem.cameraParam);
-                this.$refs.tusvnMap3.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
+                this.$refs.tusvnMap3.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
                 this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,this.selectedItem.camSerialNum);
                 clearInterval(time);
               }
@@ -594,9 +613,11 @@
               if(this.rtmp==""){
                 options.notSupportedMessage="";
                 options.notSupportedMessage='视频流不存在，请稍候重试';
+                this.sideMap=false;
               }else{
                 options.notSupportedMessage= '此视频暂无法播放，请稍候再试';
                 options.sources[0].src =  res.data.rtmp;
+                this.sideMap=true;
               }
               this.option =options;
             })
@@ -615,6 +636,7 @@
               return;
             }else {
               var options = this.getPlayerOptions();
+              options.sources[0].src ='';
               options.sources[0].src =  this.rtmp;
               this.option =options;
             }
@@ -623,6 +645,7 @@
         watch:{
           dialogVisible(){
             if(this.dialogVisible){
+              this.sideMap=false;
               this.isFirst=true;
               this.mapInit=false; //打开窗口只加载一次地图
               this.selectAddr = this.selectedItem.path.split("|");
@@ -631,7 +654,6 @@
              /* this.dialogVisible=true;*/
               //默认选中的
               this.roadId=this.selectedItem.roadSiderId;
-              this.target=this.selectedItem.target;
               this.getDeviceList();
               this.getSideTree();
               this.getDeviceCountByCity();
@@ -648,7 +670,7 @@
     display: none!important;
   }
   .video-style-height .video-js{
-    height: 630px;
+    height: 630px!important;
   }
   .device-left-ul .el-input__inner{
     background-color: #262626 ;
@@ -715,6 +737,10 @@
 
 <style lang="scss" scoped>
   @import '@/assets/scss/theme.scss';
+  .side-tip-style{
+    font-size: 18px;
+    padding-top:100px!important;
+  }
   .online{
     background-color: #19cd2e;
   }
@@ -859,7 +885,7 @@
             width:40%;
             text-align: left;
             box-sizing: border-box;
-            padding:0px 15px;
+            padding:0px 0px 0px 15px;
           }
           .device-style{
             width:30%;

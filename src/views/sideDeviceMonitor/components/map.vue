@@ -135,10 +135,11 @@
                         var item={
                           path:subItem.path,
                           roadSiderId:subItem.deviceId,
-                          camSerialNum:""
+                          camSerialNum:"",
+                          target:'map'
                         }
                         marker.on('click', function(e) {
-                          _this.$parent.$emit("sideEvent",item);
+                          _this.$parent.$emit("sideEvent",item,'map');
                         });
                         _this.sideList.push(marker)
                       }

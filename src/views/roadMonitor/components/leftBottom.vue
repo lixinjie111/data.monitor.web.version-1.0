@@ -74,14 +74,14 @@
                       show: true
                     }
                   },
-                  /*data: data*/
-                   data:[
+                  data: data
+                   /*data:[
                        {value:1548, name:'高速'},
                        {value:1032, name:'国道'},
                        {value:534, name:'省道'},
                        {value:235, name:'城市道路'},
                        {value:154, name:'乡道'}
-                   ]
+                   ]*/
                 }
               ]
             };
@@ -93,8 +93,8 @@
               let data = [];
               result.forEach(item=>{
                 let obj = {};
-                obj.value = item.data;
-                obj.name = item.scatName;
+                obj.value = item.value;
+                obj.name = item.name;
                 data.push(obj);
               })
               let option = this.defaultOption(data);
@@ -109,7 +109,7 @@
                 let obj = {};
                 obj.value = item.value;
                 obj.name = item.name;
-                data.push(obj);
+                data.unshift(obj);
               })
               let option = this.defaultOption(data);
               this.classifyPie.setOption(option);

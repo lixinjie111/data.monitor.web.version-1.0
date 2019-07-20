@@ -9,7 +9,7 @@
     </ul>
     <div class="road-distribute" v-show="distributeShow">
       <div class="road-title">
-        <span class="road-title-style">车辆分布:显示车辆再每段路上的分布情况</span>
+        <span class="road-title-style">车辆分布:显示车辆在每段路上的分布情况</span>
         <i class="road-title-close" @click="closeDialog"></i>
       </div>
       <div class="road-legend">

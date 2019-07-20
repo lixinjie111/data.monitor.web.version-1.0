@@ -1,5 +1,5 @@
 <template>
-  <div class="c-dialog-wrapper" v-if="dialogVisible">
+  <div class="c-dialog-wrapper" v-show="dialogVisible">
     <div class="c-dialog-container" >
       <div class="c-dialog-header">
         <span class="c-dialog-title">车辆数据</span>
@@ -394,10 +394,10 @@
               }
             })
             this.type=null;
-           /* this.getCrossPageById();*/
+            this.getCrossPageById();
             this.crossId = this.selectedItem.crossId;
             this.getCrossById();
-            /*this.initWebSocket();*/
+            this.initWebSocket();
           }
         }
       },
