@@ -313,7 +313,8 @@
               _this.openVideoList.forEach(function (item1,index) {
                 _this.deviceList.forEach(function (item2) {
                   if(item1.deviceId==item2.deviceId){
-                    item2.value=false;
+//                    item2.value=false;
+                    _this.$set(item2, 'value', false);
                     //将原来的删除
                     _this.openVideoList.splice(index,1);
                   }
