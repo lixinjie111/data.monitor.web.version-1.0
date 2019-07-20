@@ -1,5 +1,5 @@
 <template>
-  <div class="c-dialog-wrapper" v-show="dialogVisible">
+  <div class="c-dialog-wrapper" v-if="dialogVisible">
     <div class="c-dialog-container" >
       <div class="c-dialog-header">
         <span class="c-dialog-title">路侧点数据</span>
@@ -19,7 +19,7 @@
                 </el-option>
               </el-select>
             </li>
-            <li >
+            <li>
               <el-select v-model="cityValue" placeholder="请选择" @change="getTree">
                 <el-option
                   v-for="item in cityOptions"
@@ -49,16 +49,21 @@
           <div class="time-style">
             <span class="t-class">{{time}}</span>
           </div>
-          <tusvn-map :target-id="deviceMapId" ref="tusvnMap3"
-                     background="black" minX=325295.155400   minY=3461941.703700  minZ=50
-          maxX=326681.125700  maxY=3462723.022400  maxZ=80
-          @mapcomplete="mapcomplete" v-if="dialogVisible" @showTimeStamp="showTimeStamp">
-
-          </tusvn-map>
-
-         <!-- <tusvn-map :target-id="deviceMapId" ref="tusvnMap3" @showTimeStamp="showTimeStamp" @mapcomplete="mapcomplete" v-if="dialogVisible">
-
-          </tusvn-map>-->
+          <div class="side-dialog-map">
+            <div v-show="target=='video'" class="video-style-height">
+              <div class="road-mask-style" >
+                <img src="@/assets/images/carMonitor/refresh.png" class="road-mask-img" @click="refresh"/>
+              </div>
+              <video-player class="vjs-custom-skin" :options="option" ></video-player>
+            </div>
+            <div v-if="target=='map'" style="width: 100%;height: 100%;">
+              <tusvn-map :target-id="deviceMapId" ref="tusvnMap3"
+                         background="black" minX=325295.155400   minY=3461941.703700  minZ=50
+              maxX=326681.125700  maxY=3462723.022400  maxZ=80
+              @mapcomplete="mapcomplete" @showTimeStamp="showTimeStamp">
+              </tusvn-map>
+            </div>
+          </div>
           <div class="side-device-list">
             <p class="side-device-title">设备列表</p>
             <div class="device-list-style">
@@ -88,12 +93,21 @@
 
               </div>
             </div>
-            <p class="side-device-title">监控视频</p>
+            <p class="side-device-title"><span v-show="target=='map'">路侧视频</span><span v-show="target=='video'">感知结果</span></p>
             <div class="device-video-style">
-              <div class="road-mask-style" >
-                <img src="@/assets/images/carMonitor/refresh.png" class="road-mask-img" @click="refresh"/>
+              <div v-show="target=='map'" class="side-video-style">
+                <div class="road-mask-style" >
+                  <img src="@/assets/images/carMonitor/refresh.png" class="road-mask-img" @click="refresh"/>
+                </div>
+                <video-player class="vjs-custom-skin" :options="option" ></video-player>
               </div>
-              <video-player class="vjs-custom-skin" :options="option" ></video-player>
+              <div v-if="target=='video'" style="width: 100%;height: 100%;">
+                <tusvn-map :target-id="deviceMapId" ref="tusvnMap3"
+                           background="black" minX=325295.155400   minY=3461941.703700  minZ=50
+                maxX=326681.125700  maxY=3462723.022400  maxZ=80
+                @mapcomplete="mapcomplete" @showTimeStamp="showTimeStamp">
+                </tusvn-map>
+              </div>
             </div>
           </div>
         </div>
@@ -140,7 +154,8 @@
               serialNum:'',
               mapInit:false,
               roadId:'',//存储路的id
-              rtmp:''
+              rtmp:'',
+              target:''//判断点击的是视频还是地图
             }
         },
       components:{
@@ -186,6 +201,7 @@
               width:'100%',
               height:'100%',
               bigPlayButton : false,
+              notSupportedMessage: '此视频暂无法播放，请稍候再试',
               controlBar: {
                 timeDivider: false,
                 durationDisplay: false,
@@ -205,7 +221,6 @@
             var _this = this;
             _this.deviceList=[];
             getDeviceList({
-              /*'roadSiderId': '130101_001',*/
               'roadSiderId': this.roadId,
             }).then(res => {
               _this.deviceList = res.data;
@@ -217,34 +232,20 @@
                     flag=false;
                     //设置默认的选中值
                     item.value=true;
-                   /* _this.$set(item, 'value', true);*/
                     _this.openVideoList.push(item);
                     _this.serialNum = item.serialNum;
                   }else{
                     item.value=false;
-                   /* _this.$set(item, 'value', false);*/
                     if(item.serialNum==_this.selectedItem.camSerialNum){
                       flag=false;
                       //设置默认的选中值
                       item.value=true;
-                     /* _this.$set(item, 'value', true);*/
                       _this.openVideoList.push(item);
                       _this.serialNum = item.serialNum;
                     }
                   }
                   if(_this.serialNum!=""){
                     _this.getVideo();
-                    /*getVideoByNum({
-                      "protocal": 1,
-                      /!*"serialNum": "3402000000132000001401"*!/
-                      "serialNum": _this.serialNum
-                    }).then(res => {
-                      var options = _this.getPlayerOptions();
-                      _this.rtmp = res.data.rtmp;
-                      options.sources[0].src =  res.data.rtmp;
-                      _this.option =options;
-                    })*/
-
                     //切换路侧点时，重新切换3D地图
                     //第一次地图加载后调整位置即可
 //                    console.log("地图初始化---"+_this.mapInit)
@@ -302,17 +303,6 @@
               _this.openVideoList.push(item);
               //根据摄像头调取视频
               _this.getVideo();
-//              var rtmp = _this.getVideoByNum(item.serialNum);
-              /*getVideoByNum({
-                "protocal": 1,
-                /!*"serialNum": "3402000000132000001401"*!/
-                "serialNum": item.serialNum
-              }).then(res => {
-                var options = _this.getPlayerOptions();
-                _this.rtmp = res.data.rtmp;
-                options.sources[0].src =  res.data.rtmp;
-                _this.option =options;
-              })*/
               //选中后重新请求
               _this.$refs.tusvnMap3.reset3DMap();
               let cameraParam = JSON.parse(item.cameraParam);
@@ -601,7 +591,13 @@
             }).then(res => {
               var options = this.getPlayerOptions();
               this.rtmp = res.data.rtmp;
-              options.sources[0].src =  res.data.rtmp;
+              if(this.rtmp==""){
+                options.notSupportedMessage="";
+                options.notSupportedMessage='视频流不存在，请稍候重试';
+              }else{
+                options.notSupportedMessage= '此视频暂无法播放，请稍候再试';
+                options.sources[0].src =  res.data.rtmp;
+              }
               this.option =options;
             })
           },
@@ -635,6 +631,7 @@
              /* this.dialogVisible=true;*/
               //默认选中的
               this.roadId=this.selectedItem.roadSiderId;
+              this.target=this.selectedItem.target;
               this.getDeviceList();
               this.getSideTree();
               this.getDeviceCountByCity();
@@ -650,8 +647,8 @@
   .vjs-custom-skin > .video-js .vjs-big-play-button{
     display: none!important;
   }
-  .device-video-style .video-js{
-    height: 240px;
+  .video-style-height .video-js{
+    height: 630px;
   }
   .device-left-ul .el-input__inner{
     background-color: #262626 ;
@@ -698,10 +695,26 @@
   .device-distribute .el-tree-node:focus>.el-tree-node__content{
     background-color: #262626;
   }
+
+  .video-style-height .vjs-error .vjs-error-display .vjs-modal-dialog-content{
+    padding:100px 24px 30px;
+    color: #ccc;
+    font-size: 20px;
+  }
+  .device-video-style .vjs-error .vjs-error-display .vjs-modal-dialog-content{
+    padding:80px 24px 30px;
+    color: #ccc;
+  }
+  .video-style-height .vjs-error .vjs-error-display:before,.device-video-style .vjs-error .vjs-error-display:before{
+    font-size: 3em;
+    color: #ccc;
+    top:60%;
+    display: none;
+  }
 </style>
 
 <style lang="scss" scoped>
-
+  @import '@/assets/scss/theme.scss';
   .online{
     background-color: #19cd2e;
   }
@@ -775,6 +788,13 @@
       bottom: 0!important;
       right: 0;
       background: #000;
+      .side-dialog-map{
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 420px;
+        bottom: 0px;
+      }
       .time-style{
         position: absolute;
         top: 20px;
@@ -794,6 +814,7 @@
       position: absolute;
       right: 0;
       top:0;
+      bottom: 0;
       width: 400px;
       background-color: #000;
       cursor: pointer;
@@ -872,20 +893,25 @@
       }
       .device-video-style{
         width: 370px;
-      /*  height: 210px;*/
+        height: 210px;
         border:1px solid #5e5970;
         position: relative;
+        box-sizing: content-box;
         /*padding:15px 0px;*/
+        /*.side-video-style{
+          @include layoutMode(both);
+        }*/
       }
     }
     .road-mask-style{
       position: absolute;
-      width: 370px;
+      width: 350px;
       top: 0;
       cursor: pointer;
-      z-index:1;
+      z-index:2;
       right: 10px;
       top: 10px;
+      height: 20px;
       .road-mask-img{
         float: right;
         width: 14px;

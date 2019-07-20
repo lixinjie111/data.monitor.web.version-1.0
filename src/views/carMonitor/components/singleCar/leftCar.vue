@@ -10,15 +10,7 @@
         <div class="monitor-car">
           <img class="car-img" src="@/assets/images/car/car.png" ></img>
         </div>
-        <p class="monitor-title">行车统计</p>
-        <div class="clearfix line-style">
-          <div class="line line-1" >
-            <span class="line1"></span>
-          </div>
-          <div class="line line-2" >
-            <span class="line2"></span>
-          </div>
-        </div>
+        <p class="c-title monitor-title">行车统计</p>
         <div class="clearfix">
            <ul class="statistic-style">
              <li>
@@ -26,7 +18,7 @@
              </li>
              <li>
                <span class="text-font">{{filterData.cumulatedMiles || '--'}}</span>
-               <span class="text-style">KM</span>
+               <span class="text-style">km</span>
              </li>
              <li>
                <span class="text-style">行车里程</span>
@@ -38,7 +30,7 @@
              </li>
              <li>
                <span class="text-font">{{filterData.cumulatedTime || '--'}}</span>
-               <span class="text-style">H</span>
+               <span class="text-style">h</span>
              </li>
              <li>
                <span class="text-style">驾驶时长</span>
@@ -50,7 +42,7 @@
              </li>
              <li>
                <span class="text-font">{{filterData.avgSpeed || '--'}}</span>
-               <span class="text-style">KM/H</span>
+               <span class="text-style">km/h</span>
              </li>
              <li>
                <span class="text-style">平均速度</span>
@@ -70,15 +62,7 @@
 
          </div>
 
-        <p class="monitor-title">行程概览</p>
-        <div class="clearfix line-style">
-          <div class="line line-1" >
-            <span class="line1"></span>
-          </div>
-          <div class="line line-2" >
-            <span class="line2"></span>
-          </div>
-        </div>
+        <p class="c-title monitor-title">行程概览</p>
         <div class="distance-overview" id="distanceContainer"></div>
       </div>
     </div>
@@ -210,7 +194,7 @@
       // this.distanceMap.add(roadNetLayer);
       this.getRouteDataByVehId();
       // this.initWebSocket();
-      
+
       this.getBaseData();
       this.getDrivingStatistics();
 
@@ -596,34 +580,11 @@
   }
 </script>
 <style>
-  .line-style{
-    padding-left: 5%;
-    margin-top: 2%;
-  }
-  .line{
-    float: left;
-  }
-  .line-1{
-    width: 10%;
-  }
-  .line-2{
-    width: 85%;
-  }
-  .line1{
-    border-top: 2px solid #ef920e;
-    display: block;
-  }
-  .line2{
-    border-top: 1px solid #ef920e;
-    display: block;
-    margin-top: 0.5px;
-  }
   .monitor-title{
-    font-size: 18px;
-    color: #fff;
-    padding-left: 5%;
-    margin-top: 55px;
+    margin-left: 20px;
+    margin-right: 20px;
   }
+
 </style>
 <style scoped lang="scss">
 
@@ -703,8 +664,8 @@
   }
 
   .distance-overview{
-    margin-left:5%;
-    margin-right:5%;
+    margin-left: 20px;
+    margin-right: 20px;
     height: 200px;
     border:1px solid #ef920e;
     margin-top: 35px;

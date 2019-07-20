@@ -1,9 +1,10 @@
 export function getMap(map){
-  map.addShape("intersection","./static/map3d/dl_shcsq_zc/Intersection.shp",dl.styles.intersection.color)
-  map.addShape("Crosswalk","./static/map3d/dl_shcsq_zc/Crosswalk.shp",dl.styles.crosswalk.color)
+  map.addShape("intersection","./static/map3d/dl_shcsq_zc/Intersection.shp","#ff974f")
+  map.addShape("Crosswalk","./static/map3d/dl_shcsq_zc/Crosswalk.shp","#00d49d")
   map.addShape("lane_marking","./static/map3d/dl_shcsq_zc/Lane_marking.shp",dl.styles.lane_marking.color)
-  map.addShape("lane_arrow","./static/map3d/dl_shcsq_zc/Direction_arrow.shp",dl.styles.lane_arrow.color)
-  map.addShape("lane_boundary","./static/map3d/dl_shcsq_zc/Lane_boundary.shp",dl.styles.lane_boundary.color)
+  map.addShape("lane_arrow","./static/map3d/dl_shcsq_zc/Direction_arrow.shp","#06c2ff")
+  map.addShape("lane_boundary","./static/map3d/dl_shcsq_zc/Lane_boundary.shp","#6fb07d")
+  map.addShape("lane_centerline","./static/map3d/dl_shcsq_zc/Lane_centerline.shp","#153641")
 
   //添加路灯
   map.addModel('street_lamp_two_0','./static/map3d/models/street_lamp_two.3ds',325605.9620401191,3462422.087016858,12.68);
@@ -91,6 +92,7 @@ export function getMap(map){
   map.addModel("street_lamp_two","./static/map3d/models/street_lamp_two.3ds",442501.99,4427272.65,16);
   map.getModel("street_lamp_two").setHeading(30);
   map.getModel("street_lamp_two").setUpdate(true);
+
   //红绿灯
   map.addModel("traffic_light","./static/map3d/models/traffic_light.3ds",442533.95,4427306.77,16);
   map.getModel("traffic_light").setHeading(30);
@@ -105,6 +107,7 @@ export function getMap(map){
   map.addModel("Girl walking N090814","./static/map3d/models/Girl walking N090814.3DS",442529.62,4427325.70,16);
   map.getModel("Girl walking N090814").setHeading(120);
   map.getModel("Girl walking N090814").setUpdate(true);
+
   //男人
   map.addModel("Man N151016.3DS","./static/map3d/models/Man N151016.3DS",442531.62,4427325.70,16);
   map.getModel("Man N151016.3DS").setHeading(120);
