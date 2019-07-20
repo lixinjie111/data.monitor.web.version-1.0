@@ -484,8 +484,8 @@
         this.routeInfo = {
           routeStartTime: json.data.routeStartTime, //行驶开始时间
           durationTime: json.data.durationTime, //累计行驶时间
-          mileage: json.data.mileage, //累计行驶里程
-          avgSpd: json.data.avgSpd //平均测速
+          mileage: parseFloat(json.data.mileage).toLocaleString(), //累计行驶里程
+          avgSpd: parseFloat(json.data.avgSpd).toLocaleString() //平均测速
         };
         // console.log(this.getRunTime(json.data.durationTime));
         if(pointList && pointList.length > 0) {
