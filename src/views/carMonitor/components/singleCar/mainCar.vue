@@ -351,10 +351,10 @@
               _this.marker.setAngle(_this.headingAngle);
               _this.marker.setPosition(newPosition);
               _this.platNoMarker.setPosition(newPosition);
-              _/*this.marker.setPosition(lastPoint);
-              _this.platNoMarker.setPosition(lastPoint);
-              _this.marker.moveTo(newPosition,data.speed);
-              _this.platNoMarker.moveTo(newPosition,data.speed);*/
+        /* _this.marker.setPosition(lastPoint);
+         _this.platNoMarker.setPosition(lastPoint);
+         _this.marker.moveTo(newPosition,data.speed);
+         _this.platNoMarker.moveTo(newPosition,data.speed);*/
 
       },
       onclose(data){
