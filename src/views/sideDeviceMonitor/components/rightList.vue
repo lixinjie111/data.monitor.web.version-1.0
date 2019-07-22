@@ -179,6 +179,12 @@
           VideoPlayer
           ,TusvnMap
         },
+        props:{
+          visible: {
+            type: Boolean,
+            default:false
+          }
+        },
         methods: {
           onMapComplete1:function(){
             console.log("onMapComplete1");
@@ -697,12 +703,17 @@
                 },100)
                 _this.sideMap1=false;
               }else{
+                if(_this.sideMap1){
+//                  this.$refs.tusvnMap1.reset3DMap();
                   this.$refs.tusvnMap1.changeRcuId(window.cfg.websocketUrl,this.roadItem1.camSerialNum);
                   this.map1Show=true;
                   this.message1='数据正在加载，请稍候...';
                   setTimeout(()=>{
                     this.map1Show=false;
                   },3000)
+                }else{
+                  _this.sideMap1=true;
+                }
               }
             }
             if(param=='map2'){
@@ -713,23 +724,72 @@
                 },100)
                 _this.sideMap2=false;
               }else{
-                this.$refs.tusvnMap2.changeRcuId(window.cfg.websocketUrl,this.roadItem2.camSerialNum);
-                this.map2Show=true;
-                this.message2='数据正在加载，请稍候...';
-                setTimeout(()=>{
-                  this.map2Show=false;
-                },3000)
+                if(_this.sideMap2){
+//                  this.$refs.tusvnMap2.reset3DMap();
+                  this.$refs.tusvnMap2.changeRcuId(window.cfg.websocketUrl,this.roadItem2.camSerialNum);
+                  this.map2Show=true;
+                  this.message2='数据正在加载，请稍候...';
+                  setTimeout(()=>{
+                    this.map2Show=false;
+                  },3000)
+                }else {
+                  _this.sideMap2=true;
+                }
               }
             }
           }
         },
-       watch:{
-       },
+      watch:{
+        visible(){
+          let _this = this;
+          //当窗口关闭
+          if(!this.visible) {
+            //重新连接数据和视频
+            if(_this.roadList==0){
+              _this.option1.notSupportedMessage='';
+              _this.option1.notSupportedMessage='路侧设备不存在!';
+              _this.option2.notSupportedMessage='';
+              _this.option2.notSupportedMessage='路侧设备不存在!';
+              _this.map1Message='路侧设备不存在!';
+              _this.map2Message='路侧设备不存在!';
+              return;
+            }
+            if(_this.rtmp1==''){
+              _this.option1.notSupportedMessage='视频流不存在，请稍候重试';
+              _this.map1Message='该路口没有数据，请稍候再试！';
+            }else{
+              _this.option1.sources[0].src=_this.rtmp1;
+              _this.sideMap1=true;
+            }
+
+            if(_this.rtmp2==''){
+              _this.option2.notSupportedMessage='视频流不存在，请稍候重试';
+              _this.map2Message='该路口没有数据，请稍候再试！';
+            }else{
+
+              _this.option2.sources[0].src=_this.rtmp2;
+              _this.sideMap2=true;
+            }
+          }else{
+            //打开窗口之前，关闭连接
+            _this.option1.notSupportedMessage='连接关闭';
+            _this.option1.sources[0].src='';
+            _this.option2.notSupportedMessage='连接关闭';
+            _this.option2.sources[0].src='';
+            _this.sideMap1=false;
+            _this.map1Message='连接关闭';
+            _this.sideMap2=false;
+            _this.map2Message='连接关闭';
+          }
+        }
+      },
       mounted() {
         this.getRoadList();
       },
       destroyed(){
         //销毁Socket
+        this.$refs.tusvnMap1.reset3DMap();
+        this.$refs.tusvnMap2.reset3DMap();
       }
     }
 </script>

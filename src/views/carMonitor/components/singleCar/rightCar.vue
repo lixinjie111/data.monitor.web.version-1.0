@@ -69,7 +69,7 @@
         ],
         playerOptions: {
           overNative: true,
-            autoplay: true,
+            autoplay: false,
             controls: true,
             techOrder: ['flash', 'html5'],
             sourceOrder: true,
@@ -85,7 +85,7 @@
           muted:true,
           width:'270',
           height:'180',
-          bigPlayButton : false,
+          /*bigPlayButton : false,*/
           notSupportedMessage: '此视频暂无法播放，请稍候再试',
           controlBar: {
             timeDivider: false,
@@ -445,7 +445,7 @@
 
 <style>
   .monitor-video .vjs-custom-skin > .video-js .vjs-big-play-button{
-    display: none;
+    font-size: 0.5em!important;
   }
   .monitor-video .vjs-custom-skin > .video-js .vjs-control{
     width:2.5em!important;
@@ -453,6 +453,16 @@
   .monitor-video .video-js .vjs-mute-control{
     padding-left: 0!important;
     padding-right: 0!important;
+  }
+  .monitor-video .vjs-error .vjs-error-display .vjs-modal-dialog-content{
+    padding:60px 24px 30px!important;
+    color: #ccc;
+  }
+  .monitor-video .vjs-error .vjs-error-display:before{
+    font-size: 3em;
+    color: #ccc;
+    top:60%;
+    display: none;
   }
 </style>
 <style scoped lang="scss">

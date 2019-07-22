@@ -46,9 +46,6 @@
           </div>
         </div>
         <div class="side-device-right">
-          <div class="time-style">
-            <span class="t-class">{{time}}</span>
-          </div>
           <div class="side-dialog-map">
             <div v-show="target=='video'" class="video-style-height">
               <div class="road-mask-style" >
@@ -58,6 +55,9 @@
             </div>
             <div v-if="target=='map'" style="width: 100%;height: 100%;" >
               <div style="width: 100%;height: 100%;" v-if="sideMap">
+                <div class="time-style">
+                  <span class="t-class">{{time}}</span>
+                </div>
                 <tusvn-map :target-id="deviceMapId" ref="tusvnMap3"
                            background="black" minX=325295.155400   minY=3461941.703700  minZ=50
                 maxX=326681.125700  maxY=3462723.022400  maxZ=80
@@ -101,6 +101,7 @@
             <p class="side-device-title"><span v-if="target=='map'">路侧视频</span><span v-if="target=='video'">感知结果</span></p>
             <div class="device-video-style">
               <div v-show="target=='map'" class="side-video-style">
+
                 <div class="road-mask-style" >
                   <img src="@/assets/images/carMonitor/refresh.png" class="road-mask-img" @click="refresh"/>
                 </div>
@@ -108,6 +109,9 @@
               </div>
               <div v-if="target=='video'" style="width: 100%;height: 100%;">
                 <div style="width: 100%;height: 100%;" v-if="sideMap">
+                  <div class="time-style">
+                    <span class="t-class">{{time}}</span>
+                  </div>
                   <tusvn-map :target-id="deviceMapId" ref="tusvnMap3"
                              background="black" minX=325295.155400   minY=3461941.703700  minZ=50
                   maxX=326681.125700  maxY=3462723.022400  maxZ=80
@@ -321,10 +325,12 @@
                 })
               })
               _this.openVideoList.push(item);
+              _this.serialNum=item.serialNum;
               //根据摄像头调取视频
               _this.getVideo();
               //选中后重新请求
               _this.$refs.tusvnMap3.reset3DMap();
+              console.log("item:"+item);
               _this.cameraParam = JSON.parse(item.cameraParam);
               this.$refs.tusvnMap3.updateCameraPosition(_this.cameraParam.x,_this.cameraParam.y,_this.cameraParam.z,_this.cameraParam.radius,_this.cameraParam.pitch,_this.cameraParam.yaw);
               this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,item.serialNum);
@@ -578,13 +584,10 @@
           mapcomplete:function(){
             this.mapInit=true;
             getMap(this.$refs.tusvnMap3);
-            /*this.$refs.tusvnMap3.updateCameraPosition(326282.75554201024,3462316.8664064347,42.007991231815836,49.684198177964,-0.5303922863908559,-2.1753077372153995);
-            return;*/
             if(this.serialNum&&this.serialNum!=""){
               console.log("this.serialNum--"+this.serialNum)
-              /*let cameraParam = JSON.parse(this.selectedItem.cameraParam);*/
               this.$refs.tusvnMap3.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
-              this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,this.selectedItem.camSerialNum);
+              this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,this.serialNum);
               return;
             }
             let count = 0;
@@ -593,7 +596,7 @@
                 console.log("this.serialNum--"+this.serialNum)
                 let cameraParam = JSON.parse(this.selectedItem.cameraParam);
                 this.$refs.tusvnMap3.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
-                this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,this.selectedItem.camSerialNum);
+                this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,this.serialNum);
                 clearInterval(time);
               }
               //超过5s仍然没有响应 则停止渲染
@@ -658,6 +661,10 @@
               this.getDeviceList();
               this.getSideTree();
               this.getDeviceCountByCity();
+            }else{
+             if(this.$refs.tusvnMap3){
+               this.$refs.tusvnMap3.reset3DMap();
+             }
             }
           }
         },
@@ -824,7 +831,7 @@
       }
       .time-style{
         position: absolute;
-        top: 20px;
+        top: 0px;
         left: 10px;
         height:40px;
         color: #736e6e;
