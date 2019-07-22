@@ -60,7 +60,7 @@ export default {
 
             ,pitch:0
             ,yaw:0
-            ,roll:Math.PI*(65/90)
+            ,roll:Math.PI*(10/90)
             // ,lastUtmPosition: null
             // ,nowUtmPosition: null
             // ,utmposition: null
