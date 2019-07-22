@@ -14,12 +14,11 @@
     <div class="c-view-side c-view-right">
       <div class=" c-scroll-wrap">
         <div class="c-scroll-inner">
-          <right-list @queryDeviceDetail="queryDeviceDetail"></right-list>
+          <right-list @queryDeviceDetail="queryDeviceDetail" :visible="dialogVisible"></right-list>
         </div>
       </div>
     </div>
     <side-dialog :dialogVisible="dialogVisible" :selected-item="selectedItem" @closeDialog="closeDialog" :deviceMapId="'deviceMap1'" :target="target"></side-dialog>
-    <side-dialog :dialog-visible.sync="mapDialogVisible" :selected-item="mapSelectedItem" @closeDialog="mapDialogVisible=false" :deviceMapId="'deviceMap2'" :target="target"></side-dialog>
   </div>
 </template>
 <script>
@@ -36,8 +35,6 @@
       return {
         dialogVisible:false,
         selectedItem:{},
-        mapDialogVisible:false,
-        mapSelectedItem:{},
         getDevStatus:getDevStatus,
         target:""
       }
@@ -56,8 +53,8 @@
     },
     mounted() {
       this.$on("sideEvent",(item,target) =>{
-          this.mapDialogVisible=true;
-          this.mapSelectedItem=item;
+          this.dialogVisible=true;
+          this.selectedItem=item;
           this.target = target;
       })
     }
