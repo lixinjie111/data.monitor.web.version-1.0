@@ -47,6 +47,7 @@ Vue.use(ElementUI)
 // 全局静态资源
 import './assets/css/reset.css';
 import './assets/scss/public.scss';
+import './assets/scss/element-ui-reset.scss';
 
 // 设置页面切换进度条
 NProgress.inc(0.2)
