@@ -85,8 +85,8 @@
           muted:true,
           width:'270',
           height:'180',
-          /*bigPlayButton : false,*/
-          notSupportedMessage: '此视频暂无法播放，请稍候再试',
+          bigPlayButton : false,
+          notSupportedMessage: '此视频暂无法播放，请稍候再试!',
           controlBar: {
             timeDivider: false,
             durationDisplay: false,
@@ -233,9 +233,9 @@
           this.liveDeviceInfo = res.liveDeviceData;
           if(this.liveDeviceInfo.serialNum==''){
             this.playerOptions.sources[0].src='';
-            return;
+          }else{
+            this.getStream();
           }
-          this.getStream();
         });
       },
       getStream(){
@@ -247,9 +247,15 @@
           this.streamInfo = res.streamInfoRes;
           //获取视频地址并赋值
           this.rtmp = this.streamInfo.rtmp;
-          this.playerOptions.sources[0].src = this.rtmp;
-          //直播报活调用
-          this.repeatFn();//拉取流后，保活
+          if(this.rtmp&&this.rtmp!=''){
+            this.playerOptions.sources[0].src = this.rtmp;
+            this.playerOptions.bigPlayButton=true;
+            //直播报活调用
+            this.repeatFn();//拉取流后，保活
+          }else {
+            this.playerOptions.notSupportedMessage='视频流不存在，请稍候再试！';
+            this.playerOptions.bigPlayButton=false;
+          }
         });
       },
       keepStream(){
@@ -372,8 +378,12 @@
           return;
         }else{
           if(this.rtmp==''){
-            this.getStream();
-            return;
+            this.playerOptions.notSupportedMessage='视频流不存在，请稍候再试！';
+            this.playerOptions.bigPlayButton=false;
+            if(this.liveDeviceInfo&&this.liveDeviceInfo.serialNum!=''){
+              this.getStream();
+              return;
+            }
           }else{
             this.playerOptions.sources[0].src='';
             this.playerOptions.sources[0].src = this.rtmp;
