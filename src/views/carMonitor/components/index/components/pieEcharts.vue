@@ -111,6 +111,8 @@ export default {
 				 		right: "10%"
 				 	},
 				    legend: {
+		                itemWidth: 5,
+		                itemHeight: 15,
 				        orient: 'vertical',
 				        right: '2%',
 				        y: 'center',
@@ -119,7 +121,8 @@ export default {
 				        textStyle: {
 				        	color: '#ccc',
 				        	lineHeight: 20,
-				        	fontFamily: 'MicrosoftYaHei'
+				        	fontFamily: 'MicrosoftYaHei',
+                  			padding:[0,8]
 				        }
 				    },
 				    color: ["#139cbe", "#41b27e", "#9ccc68", "#f7ca49", "#9496a1", "#4666f1"],
