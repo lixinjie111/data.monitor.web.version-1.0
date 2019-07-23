@@ -10,7 +10,7 @@
             <span class="tip">{{formatTime || '--'}}</span>
             <span class="tip">
                 <em class="c-middle">{{city.province}}{{city.district}}</em>
-                <img src="@/assets/images/weather/default.png" class="weather-icon" /><em class="c-middle">{{weather.wendu || '--'}}°</em>
+                <img src="@/assets/images/weather/default.png" class="weather-icon"/><em class="c-middle">{{33 || '--'}}°</em>
             </span>
             <a href="javascript:;" class="tip" @click="DialogWarningFlag = !DialogWarningFlag">预警<em class="num">{{ warningNum || '--' }}</em></a>
             <a href="javascript:;" class="tip" @click="DialogFaultFlag = !DialogFaultFlag">故障<em class="num">{{ faultNum || '--' }}</em></a>
@@ -20,7 +20,6 @@
         </a> -->
         <dialog-warning v-if="DialogWarningFlag" @closeDialogWarning="closeDialogWarning"></dialog-warning>
         <dialog-fault v-if="DialogFaultFlag" @closeDialogFault="closeDialogFault"></dialog-fault>
-
     </div>
 </template>
 <script>
@@ -39,60 +38,59 @@ export default {
     },
     data() {
         return {
-            sysAdminName: this.$store.state.admin.adminName,
-            navList: [
-              {id:1,name:'概览',path:'/dataMonitor'},
-              {id:2,name:'车辆',path:'/carMonitor'},
-              {id:3,name:'路网',path:'/roadMonitor'},
-              {id:4,name:'路侧设备',path:'/sideDeviceMonitor'}
-            ],
-            responseData: {
-                timestamp: new Date().getTime()
-            },
-            city: {},
-            weather: {},
-            requestData: {
-                disCode: ''
-            },
-            DialogWarningFlag: false,
-            DialogFaultFlag: false
+          sysAdminName: this.$store.state.admin.adminName,
+          navList: [
+            {id:1,name:'概览',path:'/dataMonitor'},
+            {id:2,name:'车辆',path:'/carMonitor'},
+            {id:3,name:'路网',path:'/roadMonitor'},
+            {id:4,name:'路侧设备',path:'/sideDeviceMonitor'}
+          ],
+          responseData: {
+              timestamp: new Date().getTime()
+          },
+          city: {},
+          weather: {},
+          requestData: {
+            disCode: ''
+          },
+          DialogWarningFlag: false,
+          DialogFaultFlag: false
         }
     },
     computed: {
         formatTime() {
-            if(this.responseData.timestamp){
-                return this.$dateUtil.formatTime(this.responseData.timestamp);
-            }else {
-                return '--'
-            }
+          if(this.responseData.timestamp){
+              return this.$dateUtil.formatTime(this.responseData.timestamp);
+          }else {
+              return '--'
+          }
         },
         warningNum() {
-            if(this.responseData.warningNum || this.responseData.warningNum == 0){
-                return parseFloat(this.responseData.warningNum).toLocaleString();
-            }else {
-                return '--'
-            }
+          if(this.responseData.warningNum || this.responseData.warningNum == 0){
+              return parseFloat(this.responseData.warningNum).toLocaleString();
+          }else {
+              return '--'
+          }
         },
         faultNum() {
-            if(this.responseData.faultNum || this.responseData.faultNum == 0){
-                return parseFloat(this.responseData.faultNum).toLocaleString();
-            }else {
-                return '--'
-            }
+          if(this.responseData.faultNum || this.responseData.faultNum == 0){
+              return parseFloat(this.responseData.faultNum).toLocaleString();
+          }else {
+              return '--'
+          }
         }
     },
     watch: {
         deep: true,
         changeCenterPoint: {
-            handler(newVal, oldVal) {
-                this.getAddress(newVal);
-            }
+          handler(newVal, oldVal) {
+              this.getAddress(newVal);
+          }
         }
     },
     mounted(){
         this.getTopHead();
         this.changeTime();
-
         this.getAddress(this.changeCenterPoint);
     },
     methods: {
@@ -124,6 +122,7 @@ export default {
         },
         getTopWeather() {
             getTopWeather(this.requestData).then(res => {
+            /*  weather.wendu*/
                 this.weather = res.data;
             });
         },

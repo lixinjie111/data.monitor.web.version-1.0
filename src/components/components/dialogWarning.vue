@@ -8,7 +8,7 @@
             <div class="c-dialog-content">
                 <div class="c-scroll-wrap">
                     <ul class="c-scroll-inner">
-                        预警
+                      预警
                     </ul>
                 </div>
             </div>
@@ -19,11 +19,11 @@
 export default {
 	name: "DialogWarning",
     props: {
-        
+
     },
     data() {
         return {
-           
+
         }
     },
     mounted(){
@@ -37,7 +37,10 @@ export default {
 </script>
 <style scoped lang="scss">
 @import '@/assets/scss/theme.scss';
-
+  .pre-header{
+    line-height: 50px;
+    background: #333333;
+  }
 </style>
 
 

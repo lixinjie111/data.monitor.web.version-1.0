@@ -471,6 +471,7 @@
         box-sizing: border-box;
         @include layoutMode();
         cursor: pointer;
+        background: #2a2a2a;
       }
     }
   }
