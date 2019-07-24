@@ -10,7 +10,7 @@
             <span class="tip">{{formatTime || '--'}}</span>
             <span class="tip">
                 <em class="c-middle">{{city.province}}{{city.district}}</em>
-                <img src="@/assets/images/weather/default.png" class="weather-icon"/><em class="c-middle">{{33 || '--'}}°</em>
+                <img src="@/assets/images/weather/default.png" class="weather-icon" /><em class="c-middle">{{weather.wendu || '--'}}°</em>
             </span>
             <a href="javascript:;" class="tip" @click="DialogWarningFlag = !DialogWarningFlag">预警<em class="num">{{ warningNum || '--' }}</em></a>
             <a href="javascript:;" class="tip" @click="DialogFaultFlag = !DialogFaultFlag">故障<em class="num">{{ faultNum || '--' }}</em></a>
