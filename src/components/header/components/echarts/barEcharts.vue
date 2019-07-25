@@ -3,11 +3,6 @@
 	<div>
 		<div class="echarts-list-box" id="myBarChart"></div>
 	</div>
-	<!-- <ul class="echarts-list-wrap clearfix">
-		<li class="echarts-list">
-			<div class="echarts-list-box" id="myBarChart"></div>
-		</li>
-	</ul> -->
 </template>
 
 <script>
