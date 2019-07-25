@@ -12,14 +12,14 @@
                 <em class="c-middle">{{city.province}}{{city.district}}</em>
                 <img src="@/assets/images/weather/default.png" class="weather-icon" /><em class="c-middle">{{weather.wendu || '--'}}°</em>
             </span>
-            <a href="javascript:;" class="tip" @click="DialogWarningFlag = !DialogWarningFlag">预警<em class="num">{{ warningNum || '--' }}</em></a>
-            <a href="javascript:;" class="tip" @click="DialogFaultFlag = !DialogFaultFlag">故障<em class="num">{{ faultNum || '--' }}</em></a>
+            <a href="javascript:;" class="tip" @click="dialogWarning">预警<em class="num">{{ warningNum || '--' }}</em></a>
+            <a href="javascript:;" class="tip" @click="dialogFault">故障<em class="num">{{ faultNum || '--' }}</em></a>
         </div>
         <!-- <a href="javascript:;" class="userinfo" @click="logout">
             当前用户：{{sysAdminName}} 退出
         </a> -->
-        <dialog-warning v-if="DialogWarningFlag" @closeDialogWarning="closeDialogWarning"></dialog-warning>
-        <dialog-fault v-if="DialogFaultFlag" @closeDialogFault="closeDialogFault"></dialog-fault>
+        <dialog-warning :type="type" v-if="DialogWarningFlag" @closeDialogWarning="closeDialogWarning"></dialog-warning>
+        <!-- <dialog-fault :type="type" v-if="DialogFaultFlag" @closeDialogFault="closeDialogFault"></dialog-fault> -->
 
     </div>
 </template>
@@ -55,7 +55,8 @@ export default {
                 disCode: ''
             },
             DialogWarningFlag: false,
-            DialogFaultFlag: false
+            DialogFaultFlag: false,
+            type: 1
         }
     },
     computed: {
@@ -96,6 +97,14 @@ export default {
         this.getAddress(this.changeCenterPoint);
     },
     methods: {
+        dialogWarning() {
+            this.DialogWarningFlag = true;
+            this.type = 1;
+        },
+        dialogFault() {
+            this.DialogWarningFlag = true;
+            this.type = 2;
+        },
         getTopHead() {
             // console.log('获取天气数据、预警故障数量');
             getTopHead({}).then(res => {
