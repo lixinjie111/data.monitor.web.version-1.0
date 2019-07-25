@@ -55,9 +55,10 @@ export default {
 		// 根据窗口大小重新渲染
 		changeRander() {
 			let _option = this.defaultOption();
-			if(!this.myBarChart) {
-				this.myBarChart = this.$echarts.init(document.getElementById('myBarChart'));
-			}
+			// if(!this.myBarChart) {
+			// 	this.myBarChart = this.$echarts.init(document.getElementById('myBarChart'));
+			// }
+			this.myBarChart = this.$echarts.init(document.getElementById('myBarChart'));
 			this.myBarChart.setOption(_option);
 		},
 		defaultOption() {

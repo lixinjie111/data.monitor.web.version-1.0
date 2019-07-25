@@ -60,9 +60,10 @@ export default {
         // 根据窗口大小重新渲染
         drawLine() {
             let _option = this.defaultOption();
-            if (!this.myLineChart) {
-                this.myLineChart = this.$echarts.init(document.getElementById('myLineChart'));
-            }
+            // if (!this.myLineChart) {
+            //     this.myLineChart = this.$echarts.init(document.getElementById('myLineChart'));
+            // }
+            this.myLineChart = this.$echarts.init(document.getElementById('myLineChart'));
             this.myLineChart.setOption(_option);
         },
 		changeRander() {

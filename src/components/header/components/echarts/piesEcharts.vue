@@ -59,9 +59,10 @@ export default {
 		// 根据窗口大小重新渲染
 		changeRander() {
 			let _option = this.defaultOption();
-			if(!this.myChart) {
-				this.myChart = this.$echarts.init(document.getElementById('myChart'));
-			}
+			// if (!this.myChart) {
+			// 	this.myChart = this.$echarts.init(document.getElementById('myChart'));
+			// }
+			this.myChart = this.$echarts.init(document.getElementById('myChart'));
 			this.myChart.setOption(_option);
 		},
 		// 饼图右侧展示前5个数据
