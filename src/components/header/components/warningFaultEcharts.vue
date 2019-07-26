@@ -1,7 +1,7 @@
 <template>
 <div>
-    <el-form size="mini" :inline="true" ref="form" :model="searchKey" style="text-align: right;position: relative;z-index:22222">
-        <el-form-item label="预警时间:" class="warning-label">
+    <el-form size="mini" :inline="true" ref="form" :model="searchKey" style="text-align: right;margin-bottom:10px">
+        <el-form-item label="预警时间:" class="warning-label" style="margin: 0 5px 0 0;">
             <div class="block">
                 <el-date-picker
                     @change="handleChange"
@@ -17,41 +17,31 @@
             </div>
         </el-form-item>
     </el-form>
-    <!-- <div class="c-dialog-wrapper"> -->
-         <div class="c-dialog-content">
-            <!-- 预警 -->
-            <div class="c-scroll-wrap" v-if="type === 1 && this.waringDisEcharts">
+    <div class="c-dialog-content" style="margin-top: 20px; top: 90px;bottom:20px;padding: 0 0 0 15px">
+        <div class="c-scroll-wrap">
+            <div class="c-scroll-inner">
+                <!-- 预警 -->
                 <ul class="echarts-list-wrap clearfix">
-                    <li class="echarts-list">
-                       <p class="title" style="background-color:rgba(204, 204, 204, 0.1)" v-if="this.waringDisEcharts[0]">{{this.waringDisEcharts[0].scatName}}</p>
-                        <line-echarts :type="type" :lineEchartsData="lineEchartsData" :resizeLineFlag="resizeLineFlag" :activeName="activeName"></line-echarts>
+                    <!-- 折线图 -->
+                    <li class="echarts-list"  v-for="(item, index) in lineEchartsData">
+                        <p class="echarts-list-title">{{item.scatName}}</p>
+                        <line-echarts :type="type" :lineEchartsData="item.data" :count="count" :activeName="activeName" :id="'line' + index"></line-echarts>
                     </li>
-                     <li class="echarts-list" v-if="this.waringDisEcharts[1]">
-                       <p  class="title" style="background-color:rgba(204, 204, 204, 0.1)">{{this.waringDisEcharts[1].scatName}}</p>
-                        <pies-echarts :type="type" :pieEchartsData="pieEchartsData" :resizePiesFlag="resizePiesFlag" :activeName="activeName"></pies-echarts>     
+                    <!-- 饼图 -->
+                    <li class="echarts-list" v-for="(item, index) in pieEchartsData">
+                        <p  class="echarts-list-title">{{item.scatName}}</p>
+                        <pies-echarts :type="type"  :pieEchartsData="item.data" :count="count" :activeName="activeName" :id="'pie' + index"></pies-echarts>     
                     </li>
-                    <li class="echarts-list" v-if="this.waringDisEcharts[2]">
-                       <p  class="title" style="background-color:rgba(204, 204, 204, 0.1)">{{this.waringDisEcharts[2].scatName}}</p>
-                        <bar-echarts  :type="type" :barEchartsData="barEchartsData" :resizeBarFlag="resizeBarFlag" :activeName="activeName"></bar-echarts>     
-                    </li>
-                </ul>
-            </div> 
-            <!-- 故障 -->
-            <div class="c-scroll-wrap" v-if="type === 2 && this.faultDisEcharts">
-                <ul class="c-scroll-inner">
-                    <li class="echarts-classify-wrap">
-                        <more-line-echarts :type="type" :lineEchartsData="lineEchartsData" :resizeLineFlag="resizeLineFlag" :activeName="activeName"></more-line-echarts>
-                    </li>
-                </ul>
-                <ul class="echarts-list-wrap clearfix"> 
-                     <li class="echarts-list">
-                        <p  class="title" style="background-color: rgba(204, 204, 204, 0.1)" v-if="this.faultDisEcharts[3]">{{this.faultDisEcharts[3].scatName}}</p>
-                        <bar-echarts  :type="type" :barEchartsData="barEchartsData" :resizeBarFlag="resizeBarFlag" :activeName="activeName"></bar-echarts>
+                    <!-- 横向柱状图 -->
+                    <li class="echarts-list" v-for="(item, index) in barEchartsData">
+                        <p  class="echarts-list-title">{{item.scatName}}</p>
+                        <bar-echarts  :type="type"  :barEchartsData="item.data" :count="count" :activeName="activeName" :id="'bar' + index"></bar-echarts>     
                     </li>
                 </ul>
             </div>
         </div>
-    <!-- </div> -->
+    </div>
+   
    
 </div>
 </template>
@@ -61,7 +51,6 @@
 import barEcharts from './echarts/barEcharts';
 import lineEcharts from './echarts/lineEcharts';
 import piesEcharts from './echarts/piesEcharts';
-import moreLineEcharts from './echarts/moreLineEcharts';
 import {getWarningDis, getFaultDis} from '@/api/header';
 import Moment from 'moment';
 export default {
@@ -72,26 +61,27 @@ export default {
     components: {
         barEcharts,
         lineEcharts,
-        piesEcharts,
-        moreLineEcharts
+        piesEcharts
     },
     data() {
         return {
-            waringDisEcharts: [],
+
+            count: 0,
+
             pieEchartsData: [],
             lineEchartsData: [],
             barEchartsData: [],
+
+            waringDisEcharts: [],
             faultDisEcharts: [],
-            resizeLineFlag: false,
-            resizeBarFlag: false,
-            resizePiesFlag: false,
+
+            resizeFlag: false,
             searchKey: {
                 startTime: '',
                 endTime: '',
                 warningTime: [new Date(2019, 6, 11), new Date(2019, 6, 23)]
             },
             searchHistory: {},
-            waringDisEcharts: [],
             pickerOptions: {
                 shortcuts: [{
                     text: '最近一周',
@@ -124,9 +114,7 @@ export default {
     created() {
         let _this = this;
 		window.onresize = function(){ // 定义窗口大小变更通知事件
-            _this.resizeFlagPie = true;
-            _this.resizeFlagVertical = true;
-            _this.resizeFlagHorizontal = true;
+            _this.count += 5;
         };
         if (this.type === 1) {
             this.fetchWarningDis();
@@ -144,10 +132,6 @@ export default {
                 this.fetchFaultDis();
             }
         },
-        alreadyRender(classifyFlag) {
-			this[classifyFlag] = false;
-			// console.log(classifyFlag+'监听完毕');
-        },
         fetchWarningDis() {
             this.waringDisEcharts = [];
             this.lineEchartsData = [];
@@ -160,15 +144,19 @@ export default {
             this.searchHistory = this.searchKey;
             getWarningDis(params).then(res => {
                 this.waringDisEcharts = res.data.dataList;
-                this.lineEchartsData = this.waringDisEcharts[0].data;
-                this.pieEchartsData = this.waringDisEcharts[1].data;
-                this.barEchartsData = this.waringDisEcharts[2].data;
-                console.log('this.waringDisEcharts', this.waringDisEcharts);
+                this.lineEchartsData.push(this.waringDisEcharts[0]);
+                this.pieEchartsData.push(this.waringDisEcharts[1]);
+                this.barEchartsData.push(this.waringDisEcharts[2]);
+                // console.log('this.lineEchartsData --- 初始化数据', this.lineEchartsData);
+                // console.log('this.pieEchartsData --- 初始化数据', this.pieEchartsData);
+                // console.log('this.barEchartsData --- 初始化数据', this.barEchartsData);
+
+                this.count += 1;
             });
         },
         fetchFaultDis() {
             this.FaultDisEcharts = [];
-            this.lineEchartsData = [];
+            this.lineEchartsData = {};
             this.barEchartsData = [];
             this.pieEchartsData = [];
             let params = {
@@ -178,34 +166,26 @@ export default {
             this.searchHistory = this.searchKey;
             getFaultDis(params).then(res => {
                 this.faultDisEcharts = res.data.dataList;
-                this.lineEchartsData = this.faultDisEcharts.slice(0,3);
-                this.barEchartsData = this.faultDisEcharts[3].data;
-                console.log('this.barEchartsData -==== ', this.barEchartsData);
+                this.lineEchartsData = new Object(this.faultDisEcharts.slice(0,3))
+                this.barEchartsData.push(this.faultDisEcharts[3]);
+                // console.log('this.lineEchartsData -==== ', this.barEchartsData);
+
+                this.count += 1;
             });
         }
 		
-    },
-    computed: {
-        filterEchartsDis() {
-            if (this.type === 1) {
-                return this.waringDisEcharts;
-            } else {
-                return this.faultDisEcharts;
-            }
-        }
     }
 }
 </script>
 <style scoped lang="scss">
 @import "@/assets/scss/echarts.scss";
-.warning-echarts {
-    text-align: right;
-    position: absolute;
-    right: 0px;
-    top: 0px;
-    float: right;
-    .warning-label {
-        line-height: 0;
-    } 
+.echarts-list-title {
+    text-align: left;
+}
+.echarts-list-wrap {
+    .echarts-list {
+        margin-bottom: 18px;
+        margin-top: 0;
+    }
 }
 </style>

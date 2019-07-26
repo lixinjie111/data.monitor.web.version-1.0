@@ -15,27 +15,21 @@
             <a href="javascript:;" class="tip" @click="dialogWarning">预警<em class="num">{{ warningNum || '--' }}</em></a>
             <a href="javascript:;" class="tip" @click="dialogFault">故障<em class="num">{{ faultNum || '--' }}</em></a>
         </div>
-        <!-- <a href="javascript:;" class="userinfo" @click="logout">
-            当前用户：{{sysAdminName}} 退出
-        </a> -->
-        <dialog-warning :type="type" v-if="DialogWarningFlag" @closeDialogWarning="closeDialogWarning"></dialog-warning>
-        <!-- <dialog-fault :type="type" v-if="DialogFaultFlag" @closeDialogFault="closeDialogFault"></dialog-fault> -->
+        <dialog-warning-fault :type="type" v-if="DialogWarningFlag" @closeDialogWarning="closeDialogWarning"></dialog-warning-fault>
 
     </div>
 </template>
 <script>
 import { getTopHead, getTopWeather } from '@/api/header';
 import { mapActions } from 'vuex';
-import DialogWarning from './components/dialogWarning.vue';
-import DialogFault from './components/dialogFault.vue';
+import DialogWarningFault from './components/dialogWarningFault.vue';
 export default {
 	name: "Header",
     props: {
         changeCenterPoint: [Array, Object]
     },
     components: {
-        DialogWarning,
-        DialogFault
+        DialogWarningFault
     },
     data() {
         return {

@@ -1,11 +1,6 @@
 
 <template>
-	<!-- <ul class="echarts-list-wrap clearfix">
-		<li class="echarts-list">
-			<div class="echarts-list-box" id="myChart"></div>
-		</li>
-	</ul> -->
-	<div class="echarts-list-box" id="myChart"></div>
+	<div class="echarts-list-box" :id="id"></div>
 </template>
 
 <script>
@@ -13,7 +8,8 @@ export default {
 	props: {
 		pieEchartsData: Array,
 		activeName: String,
-		resizePiesFlag: Boolean
+		id: String,
+		count: Number
 	},
 	data () {
 		return {
@@ -23,80 +19,81 @@ export default {
 	},
 	watch: {
 		deep: true,
-		activeName(newVal, oldVal) {
-			if(newVal == 'tabTwo') {
-				let _option = this.defaultOption();
-				if(!this.myChart) {
-					this.myChart = this.$echarts.init(document.getElementById('myChart'));
-				}
-				this.myChart.setOption(_option);
+        activeName(newVal, oldVal) {
+            if(newVal == 'tabTwo') {
+                this.initEcharts();
+            }
+        },
+		count(newVal, oldVal) {
+            if(newVal-oldVal > 3) {
+            	this.changeRander();
+			}else {
+            	this.initEcharts();
 			}
-		},
-		resizePiesFlag: {
-			handler(newVal, oldVal) {
-				if(newVal) {
-					// console.log('改变窗口');
-					this.changeRander();
-					this.$emit("alreadyRender",'resizePiesFlag');
-				}
-			}
-		}
-	}, 
-	computed: {
-		filterData() {
-			let _filterData = [];
-			this.pieEchartsData.map(x => {
-				let obj = {};
-				obj.value = x.count;
-				obj.name = x.name;
-				_filterData.push(obj);
-			});
-			// console.log('_filterData', _filterData);
-			return _filterData;
 		}
 	},
 	methods: {
 		// 根据窗口大小重新渲染
 		changeRander() {
+            if (this.myChart) {
+                this.myChart.resize();
+            } else {
+                this.initEcharts();
+            }
+		},
+		initEcharts() {
 			let _option = this.defaultOption();
-			// if (!this.myChart) {
-			// 	this.myChart = this.$echarts.init(document.getElementById('myChart'));
-			// }
-			this.myChart = this.$echarts.init(document.getElementById('myChart'));
+			if(!this.myChart) {
+				this.myChart = this.$echarts.init(document.getElementById(this.id));
+			}
 			this.myChart.setOption(_option);
 		},
 		// 饼图右侧展示前5个数据
-		dealData() {
+		legendData() {
 			let arr = [];
-			this.filterData.map((x, index) => {
+			this.pieEchartsData.map((x, index) => {
 				if (index < 5) {
 					arr.push(x.name);
 				}
 			});
 			return arr;
 		},
+        dealData() {
+            let arr = [];
+            this.pieEchartsData.map(x => {
+                arr.push({
+					name: x.name,
+					value: x.count
+				});
+            });
+            return arr;
+        },
 		defaultOption() {
 			let option = {
               tooltip: {
-                trigger: 'item',
-                formatter: function(params) {
-                  return '<div>'+params.name+': <span style="color: #dc8c00;">'+params.value+'</span></div><div>占比: <span style="color: #dc8c00;">'+params.percent+'%</span></div>'
-                }
-              },
-              legend: {
-                itemWidth:5,
-                itemHeight:15,
-                orient: 'vertical',
-                right: '5%',
-                y: 'center',
-                // itemGap: 0,
-                textStyle: {
-                  color: '#ccc',
-                  lineHeight: 10,
-                  fontFamily: 'MicrosoftYaHei',
-                  padding:[0,8]
+					trigger: 'item',
+					formatter: function(params) {
+						return '<div>'+params.name+': <span style="color: #dc8c00;">'+params.value+'</span></div><div>占比: <span style="color: #dc8c00;">'+params.percent+'%</span></div>'
+					}
 				},
-				data: this.dealData()
+				grid: {
+					right: "10%"
+				},
+              legend: {
+                itemWidth: 5,
+				itemHeight: 15,
+				orient: 'vertical',
+				right: '2%',
+				y: 'center',
+				itemGap: 0,
+				padding: [0, 30, 0, 0],
+				textStyle: {
+					color: '#ccc',
+					lineHeight: 20,
+					fontFamily: 'MicrosoftYaHei',
+					padding:[0,8]
+				},
+				data: this.legendData()
               },
               color: ["#4666f1", "#35a376", "#91bb66", "#e5bf4d", "#9496a1" ],
               series: [
@@ -126,7 +123,7 @@ export default {
                       show: true
                     }
                   },
-                  data: this.filterData
+                  data: this.dealData()
                 }
               ]
             };

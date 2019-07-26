@@ -200,35 +200,12 @@
             setTimeout(()=>{
               this.map1Show=false;
             },3000)*/
-            if(!this.roadItem1.roadSiderId||this.roadItem1.roadSiderId==''){
-              this.$refs.tusvnMap1.updateCameraPosition(326297.1669125299,3462321.135051115,30.651420831899046,30.905553118989463,-0.5303922863908559,-2.6312825799826953);
-              this.map1Show=true;
-              setTimeout(()=>{
-                this.map1Show=false;
-              },3000)
-            }
             if(this.roadItem1.roadSiderId&&this.roadItem1.roadSiderId!=''){
               let cameraParam = JSON.parse(this.roadItem1.cameraParam);
               this.$refs.tusvnMap1.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
               this.$refs.tusvnMap1.changeRcuId(window.cfg.websocketUrl,this.roadItem1.camSerialNum);
               return;
             }
-            let count = 0;
-            let time = setInterval(()=>{
-              if(this.roadItem1.roadSiderId&&this.roadItem1.roadSiderId!=''){
-                console.log('roadItem1------'+this.roadItem1.camSerialNum+"====roadId1"+this.roadItem1.roadSiderId);
-//                this.$refs.tusvnMap1.updateCameraPosition(442483.4140577592,4427251.954939776,31.211585511525108,31.559324326695666,-0.5889099326599347,-0.6520903697733481);
-                let cameraParam = JSON.parse(this.roadItem1.cameraParam);
-                this.$refs.tusvnMap1.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
-                this.$refs.tusvnMap1.changeRcuId(window.cfg.websocketUrl,this.roadItem1.camSerialNum);
-                clearInterval(time);
-              }
-              //超过一分钟仍然没有响应 则停止渲染
-              if(count==5){
-                clearInterval(time);
-              }
-              count++;
-            },1000)
           },
           onMapComplete2:function(){
             console.log("onMapComplete2");
@@ -239,8 +216,7 @@
            /* setInterval(()=>{
               let obj = this.$refs.tusvnMap2.getCamera();
               console.log("x:"+obj.x+",y"+obj.y+",z:"+obj.z+",radius:"+obj.radius+",pitch:"+obj.pitch+",yaw:"+obj.yaw);
-            },5000)
-            return;*/
+            },5000)*/
 //            this.$refs.tusvnMap2.updateCameraPosition(326307.52403642295,3462319.729835483,55.56183747132579,61.31110395146773,-0.6314023874009567,0.8750067281934094);
            /* this.map2Show=true;
             this.message2='暂无数据，请稍候重试';
@@ -248,35 +224,12 @@
               this.map2Show=false;
             },3000)
             return;*/
-            if(!this.roadItem2.roadSiderId||this.roadItem2.roadSiderId==''){
-              this.$refs.tusvnMap2.updateCameraPosition(325994.544950895,3462549.120490024,26.547772446367873,23.382136948463224,-0.5808973368959062,1.47249100492297);
-              this.map2Show=true;
-              this.message2='暂无数据，请稍候重试';
-              setTimeout(()=>{
-                this.map2Show=false;
-              },3000)
-            }
             if(this.roadItem2.roadSiderId&&this.roadItem2.roadSiderId!=''){
               let cameraParam = JSON.parse(this.roadItem2.cameraParam);
               this.$refs.tusvnMap2.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
               this.$refs.tusvnMap2.changeRcuId(window.cfg.websocketUrl, this.roadItem2.camSerialNum);
               return;
             }
-            let count = 0;
-            let time = setInterval(()=>{
-              if(this.roadItem2.roadSiderId&&this.roadItem2.roadSiderId!=''){
-                console.log('roadItem2------'+this.roadItem2.camSerialNum+"====roadId2"+this.roadItem2.roadSiderId);
-                let cameraParam = JSON.parse(this.roadItem2.cameraParam);
-                this.$refs.tusvnMap2.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
-                this.$refs.tusvnMap2.changeRcuId(window.cfg.websocketUrl, this.roadItem2.camSerialNum);
-                clearInterval(time);
-              }
-              //超过一分钟仍然没有响应 则停止渲染
-              if(count==5){
-                clearInterval(time);
-              }
-              count++;
-            },1000)
           },
           getPlayerOptions(){
             var option={
@@ -788,8 +741,12 @@
       },
       destroyed(){
         //销毁Socket
-        this.$refs.tusvnMap1.reset3DMap();
-        this.$refs.tusvnMap2.reset3DMap();
+        if(this.$refs.tusvnMap1){
+          this.$refs.tusvnMap1.reset3DMap();
+        }
+        if(this.$refs.tusvnMap2){
+          this.$refs.tusvnMap2.reset3DMap();
+        }
       }
     }
 </script>

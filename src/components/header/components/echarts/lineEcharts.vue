@@ -1,18 +1,14 @@
 <template> 
-     <!-- <ul class="echarts-list-wrap clearfix ">
-		<li class="echarts-list">
-			<div class="echarts-list-box" id="myLineChart"></div>
-		</li>
-	</ul> -->
-    <div class="echarts-list-box" id="myLineChart"></div>
+    <div class="echarts-list-box" :id="id"></div>
 </template>
 <script>
+import Moment from 'moment';
 export default {
     props: {
         lineEchartsData: Array,
         activeName: String,
-        resizeLineFlag: Boolean,
-        type: Number
+        id: String,
+		count: Number
     },
     data () {
 		return {
@@ -26,63 +22,49 @@ export default {
         deep: true,
         activeName(newVal, oldVal) {
             if(newVal == 'tabTwo') {
-                // let _option = this.defaultOption();
-                // if(!this.myLineChart) {
-                //     this.myLineChart = this.$echarts.init(document.getElementById('myLineChart'));
-                // }
-                // this.myLineChart.setOption(_option);
-                this.drawLine();
+                this.initEcharts();
             }
         },
-        resizeLineFlag: {
-			handler(newVal, oldVal) {
-				if(newVal) {
-					// console.log('改变窗口');
-					this.changeRander();
-					this.$emit("alreadyRender",'resizeLineFlag');
-				}
+		count(newVal, oldVal) {
+            if(newVal-oldVal > 3) {
+            	this.changeRander();
+			}else {
+            	this.initEcharts();
 			}
 		}
     },
-    computed: {
-        filterData() {
-            let _filterData = [];
-			this.lineEchartsData.map(x => {
-				let obj = {};
-				obj.value = x.count;
-				obj.name = x.name;
-				_filterData.push(obj);
-            });
-            return _filterData;
-        }
-    },
     methods: {
-        // 根据窗口大小重新渲染
-        drawLine() {
+        changeRander() {
+            if (this.myLineChart) {
+                this.myLineChart.resize();
+            } else {
+                this.initEcharts();
+            }
+		},
+        initEcharts() {
             let _option = this.defaultOption();
-            // if (!this.myLineChart) {
-            //     this.myLineChart = this.$echarts.init(document.getElementById('myLineChart'));
-            // }
-            this.myLineChart = this.$echarts.init(document.getElementById('myLineChart'));
+            if (!this.myLineChart) {
+                this.myLineChart = this.$echarts.init(document.getElementById(this.id));
+            }
             this.myLineChart.setOption(_option);
         },
-		changeRander() {
-			// let _option = this.defaultOption();
-			// if(!this.myLineChart) {
-			// 	this.myLineChart = this.$echarts.init(document.getElementById('myLineChart'));
-			// }
-            // this.myLineChart.setOption(_option);
-            this.drawLine();
-		},
         dealData() {
             let arr = [];
-            this.filterData.map(x => {
-                arr.push(x.value);
+            this.lineEchartsData.map(x => {
+                arr.push(x.count);
             });
             return arr;
         },
         defaultOption() {
             let option = {
+                grid:{
+                    left: 0,
+                    right: 0,
+                    x: 25,
+                    y: 40,
+                    x2: 25,
+                    y2: 40
+                },
                 xAxis: {
                     type: 'category',
                     show: false
@@ -95,7 +77,6 @@ export default {
                     type: 'line',
                     smooth: true,
                     color: '#37ba7b',
-                    // symbol: 'circle',
                     lineStyle: {
                         color: '#37ba7b',
                         width: 1

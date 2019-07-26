@@ -1,8 +1,6 @@
 
 <template>
-	<div>
-		<div class="echarts-list-box" id="myBarChart"></div>
-	</div>
+	<div class="echarts-list-box" :id="id"></div>
 </template>
 
 <script>
@@ -10,7 +8,8 @@ export default {
 	props: {
 		barEchartsData: Array,
 		activeName: String,
-		resizeBarFlag: Boolean
+		id: String,
+		count: Number
 	},
 	data () {
 		return {
@@ -20,51 +19,38 @@ export default {
 	},
 	watch: {
 		deep: true,
-		activeName(newVal, oldVal) {
-			if(newVal == 'tabTwo') {
-				
-				let _option = this.defaultOption();
-				if(!this.myBarChart) {
-					this.myBarChart = this.$echarts.init(document.getElementById('myBarChart'));
-				}
-				this.myBarChart.setOption(_option);
+        activeName(newVal, oldVal) {
+            if(newVal == 'tabTwo') {
+                this.initEcharts();
+            }
+        },
+		count(newVal, oldVal) {
+            if(newVal-oldVal > 3) {
+            	this.changeRander();
+			}else {
+            	this.initEcharts();
 			}
-		},
-		resizeBarFlag: {
-			handler(newVal, oldVal) {
-				if(newVal) {
-					this.changeRander();
-					this.$emit("alreadyRender",'resizeBarFlag');
-				}
-			}
-		}
-	},
-	computed: {
-		filterData() {
-			let _filterData = [];
-			this.barEchartsData.map(x => {
-				let obj = {};
-				obj.value = x.count;
-				obj.name = x.name;
-				_filterData.unshift(obj);
-			});
-			return _filterData;
 		}
 	},
 	methods: {
-		// 根据窗口大小重新渲染
 		changeRander() {
+            if (this.myBarChart) {
+                this.myBarChart.resize();
+            } else {
+                this.initEcharts();
+            }
+		},
+		initEcharts() {
 			let _option = this.defaultOption();
-			// if(!this.myBarChart) {
-			// 	this.myBarChart = this.$echarts.init(document.getElementById('myBarChart'));
-			// }
-			this.myBarChart = this.$echarts.init(document.getElementById('myBarChart'));
+			if(!this.myBarChart) {
+				this.myBarChart = this.$echarts.init(document.getElementById(this.id));
+			}
 			this.myBarChart.setOption(_option);
 		},
 		defaultOption() {
 			let option = {
 				    dataset: {
-				        source: this.filterData
+				        source: this.barEchartsData
 				    },
 				    grid: {
 				    	left: 170,
@@ -101,7 +87,7 @@ export default {
 			            type: 'bar',
 			            encode: {
 			                x: 'count',
-			                y: 'platNo'
+			                y: 'name'
 			            },
 						barCategoryGap: '50%',
 			    		label: {

@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- 预警列表查询参数 -->
-       <el-form size="mini" :inline="true" ref="form" :model="searchKey">
+       <el-form size="mini" :inline="true" ref="form" :model="searchKey" >
            <el-form-item :label="type === 1 ? '预警来源:': '故障来源:'" class="warning-label">
                 <el-select v-model="searchKey.warningSource" placeholder="请选择" size="mini" @change="handleChange(1)">
                     <el-option
@@ -46,57 +46,65 @@
                 </el-date-picker>
            </el-form-item>
        </el-form>
-       <!-- 预警列表table表格数据 -->
-        <table class="c-table" v-if="type == 1">
-            <tr>
-                <th width="10%">序号</th>
-                <th width="15%">预警名称</th>
-                <th width="15%">预警来源</th>
-                <th width="15%">预警级别</th>
-                <th width="20%">预警时间</th>
-                <th width="15%">车牌号</th>
-                <th width="10%">设备ID</th>
-            </tr>
-            <tr v-for="(item,index) in warningData">
-                <td>{{index+1}}</td>
-                <td>{{item.warningName}}</td>
-                <td>{{item.warningSource}}</td>
-                <td>{{item.warningLevel}}</td>
-                <td>{{item.warningTime}}</td>
-                <td>{{item.plateNo}}</td>
-                <td></td>
-            </tr>
-       </table>
-        <table class="c-table" v-if="type == 2">
-            <tr>
-                <th width="5%">序号</th>
-                <th width="15%">故障名称</th>
-                <th width="15%">故障来源</th>
-                <th width="15%">故障类型</th>
-                <th width="10%">故障级别</th>
-                <th width="15%">故障发生时间</th>
-                <th width="15%">车牌号/设备编号</th>
-                <th width="10%">设备类型</th>
-            </tr>
-            <tr v-for="(item,index) in warningData">
-                <td>{{index+1}}</td>
-                <td>{{item.faultName}}</td>
-                <td>{{item.faultSource}}</td>
-                <td>{{item.faultType}}</td>
-                <td>{{item.faultLevel}}</td>
-                <td>{{item.faultTime}}</td>
-                <td>{{item.devId}}</td>
-                <td>{{item.devType}}</td>
-            </tr>
-       </table>
+        <!-- 预警列表table表格数据 -->
+        <div class="c-dialog-content" style="top: 109px;bottom:68px;padding:0px 15px">
+            <div class="c-scroll-wrap">
+                <div class="c-scroll-inner">
+                    <table class="c-table" v-if="type == 1">
+                        <tr>
+                            <th width="10%">序号</th>
+                            <th width="15%">预警名称</th>
+                            <th width="15%">预警来源</th>
+                            <th width="15%">预警级别</th>
+                            <th width="20%">预警时间</th>
+                            <th width="15%">车牌号</th>
+                            <th width="10%">设备ID</th>
+                        </tr>
+                        <tr v-for="(item,index) in warningData">
+                            <td>{{index+1}}</td>
+                            <td>{{item.warningName}}</td>
+                            <td>{{item.warningSource}}</td>
+                            <td>{{item.warningLevel}}</td>
+                            <td>{{item.warningTime}}</td>
+                            <td>{{item.plateNo}}</td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <table class="c-table" v-if="type == 2">
+                        <tr>
+                            <th width="5%">序号</th>
+                            <th width="15%">故障名称</th>
+                            <th width="15%">故障来源</th>
+                            <th width="15%">故障类型</th>
+                            <th width="10%">故障级别</th>
+                            <th width="15%">故障发生时间</th>
+                            <th width="15%">车牌号/设备编号</th>
+                            <th width="10%">设备类型</th>
+                        </tr>
+                        <tr v-for="(item,index) in warningData">
+                            <td>{{index+1}}</td>
+                            <td>{{item.faultName}}</td>
+                            <td>{{item.faultSource}}</td>
+                            <td>{{item.faultType}}</td>
+                            <td>{{item.faultLevel}}</td>
+                            <td>{{item.faultTime}}</td>
+                            <td>{{item.devId}}</td>
+                            <td>{{item.devType}}</td>
+                        </tr>
+                    </table>
+                </div>
+             </div>
+             <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :page-size="searchKey.size"
+                layout="total, prev, pager, next"
+                :total="type === 1 ? totalWarning : totalFault" >
+            </el-pagination>
+        </div>
+       
         <!-- 分页 -->
-        <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :page-size="searchKey.size"
-            layout="total, prev, pager, next"
-            :total="type === 1 ? totalWarning : totalFault" >
-        </el-pagination>
+    
     </div>
 </template>
 <script>
@@ -251,7 +259,6 @@ export default {
                this.warningData.map(x => {
                    x.warningTime = Moment(x.warningTime).format('YYYY-MM-DD HH:mm:ss');
                });
-               console.log('this.warningData --- 预警数据', this.warningData);
                this.totalWarning = res.data.total;
                this.tableLoading = false;
             });
@@ -274,7 +281,6 @@ export default {
                 this.warningData.map(x => {
                     x.warningTime = Moment(x.warningTime).format('YYYY-MM-DD HH:mm:ss');
                 });
-                console.log('this.warningData --- 故障数据', this.warningData);
                 this.totalFault = res.data.total;
                 this.tableLoading = false;
             })

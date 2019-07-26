@@ -3,6 +3,7 @@ let DLURL = '';
 let ROADURL = '';
 let TESTHTTPURL = '';
 
+
 if(process.env.NODE_ENV == 'development') { // 开发环境
     HTTPURL = window.cfg.url;
     DLURL = window.cfg.dlUrl;
