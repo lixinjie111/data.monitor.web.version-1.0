@@ -104,6 +104,7 @@
           getRoadCategory(){
             roadCategory().then(res=>{
               let result = res.data;
+              console.log('result', result);
               let data = [];
               result.forEach(item=>{
                 let obj = {};
@@ -111,6 +112,7 @@
                 obj.name = item.name;
                 data.unshift(obj);
               })
+              console.log('data --- 道路', data);
               let option = this.defaultOption(data);
               this.classifyPie.setOption(option);
             });

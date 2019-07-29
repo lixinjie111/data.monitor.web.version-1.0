@@ -57,8 +57,8 @@ export default {
             // console.log('获取车辆分析');
 			getVehStat().then(res => {
 
-				let _responseData = res.data.data,
-					_defaultOption = this.defaultOption();
+				let _responseData = res.data.data;
+					// _defaultOption = this.defaultOption();
 
 				this.responseData = _responseData.map((item, index) => {
 					item.id = "echarts-pie-" + index;
@@ -68,7 +68,7 @@ export default {
 					});
 					return item;
 				});
-
+				console.log('_responseData', _responseData);
 				setTimeout(() => {
 					this.responseData.forEach(item => {
 						if(item.data.length > 0) {
