@@ -141,7 +141,7 @@ export function getMap(map){
     [2313,5,325399.5044350000,3462378.4734600000,17.0019995756]]
   data.forEach((arr,index)=>{
     //信息牌
-    if(arr[1]==3){
+    if(arr[1]==3||arr[1]==7){
       map.addModel('traffic_sign_stop_'+index,'./static/map3d/models/traffic_sign_stop.3ds',arr[2],arr[3],12.68);
     }
     //路杆灯

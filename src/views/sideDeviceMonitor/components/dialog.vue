@@ -398,54 +398,6 @@
                 return ;
               })
             }
-
-
-            /*var hasChild = true;
-            if(node.level == 1) {
-              let data = [];
-              if (hasChild) {
-                var areaArray = this.newData[0].children;
-                for(var i=0;i<areaArray.length;i++){
-                  var obj = {};
-                  obj.label = areaArray[i].label;
-                  obj.code = areaArray[i].code;
-                  data.push(obj);
-                }
-              } else {
-                data = [];
-              }
-              resolve(data);
-            }
-            if(node.level == 2) {
-              let data = [];
-              this.$api.post('dataPlatApp/road/queryRoadCamList',{
-                roadCode:node.data.code
-              },response => {
-                if(response.status >= 200 && response.status < 300){
-                  if(response.data.code == 200){
-                    var roadCode = this.newData[0].children;
-                    var protocal = JSON.stringify(response.data.data[0].protocol);
-                    localStorage.setItem('protocal',protocal);
-                    var camDetail = response.data.data;
-                    for(var i=0;i<camDetail.length;i++){
-                      var obj = {};
-                      obj.label = camDetail[i].deviceId;
-                      obj.serialNum = camDetail[i].serialNum;
-                      obj.rsPtName = camDetail[i].rsPtName;
-                      obj.rsPtId = camDetail[i].rsPtId;
-                      obj.ptLon = camDetail[i].ptLon;
-                      obj.ptLat = camDetail[i].ptLat;
-                      obj.cameraRunStatus = camDetail[i].cameraRunStatus;
-                      data.push(obj);
-                    }
-                    resolve(data);
-                  }
-                }
-              })
-            }
-            if(node.level == 3) {
-              resolve([]);
-            }*/
           },
           handleNodeClick(node,resolve){
             //当切换树的时候，设备列表，感知结果进行切换

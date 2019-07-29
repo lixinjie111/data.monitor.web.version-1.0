@@ -230,12 +230,18 @@
         getLiveDeviceInfo({
           'vehicleId': this.vehicleId,
         }).then(res => {
-          this.liveDeviceInfo = res.liveDeviceData;
-          if(this.liveDeviceInfo.serialNum==''){
-            this.playerOptions.sources[0].src='';
-          }else{
-            this.getStream();
-          }
+          let result = res.data;
+          result.forEach(item=>{
+            //前向
+            if(item.toward==0){
+              this.liveDeviceInfo=item;
+              if(this.liveDeviceInfo.serialNum==''){
+                this.playerOptions.sources[0].src='';
+              }else{
+                this.getStream();
+              }
+            }
+          })
         });
       },
       getStream(){

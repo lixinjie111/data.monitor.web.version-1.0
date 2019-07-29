@@ -121,10 +121,11 @@ export default {
             });
         },
         getTopWeather() {
-            getTopWeather(this.requestData).then(res => {
-            /*  weather.wendu*/
-                this.weather = res.data;
-            });
+          debugger
+          getTopWeather(this.requestData).then(res => {
+          /*  weather.wendu*/
+              this.weather = res.data;
+          });
         },
         closeDialogWarning() {
             this.DialogWarningFlag = false;
