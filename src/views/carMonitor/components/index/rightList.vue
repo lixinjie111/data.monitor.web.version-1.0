@@ -4,7 +4,7 @@
     	<div class="right-list-head">
     		<div class="left clearfix">
 	    		<span class="model c-left">L{{item.autoLevel}}</span>
-	    		<span class="plate c-left">{{item.platNo}}</span>
+	    		<span class="plate c-left">{{item.plateNo}}</span>
 	    	</div>
 	    	<div class="right clearfix">
 	    		<span class="gears c-left">{{item.transmission}}</span>
@@ -38,7 +38,8 @@ export default {
 			// 获取指定车辆实时信息
             webSocket:{},
             webSocketData: {
-                action: 'vehicleList',
+                // action: 'vehicleList',
+                action: 'can_real_data',
                 token: 'fpx',
                 vehicleIds: 'B21E-00-017,B21E-00-018,B21E-00-019,B21E-00-020'
             }
@@ -82,7 +83,7 @@ export default {
 			_filterResult.turnLight = result.turnLight;
 			_filterResult.autoLevel = result.autoLevel;
 			_filterResult.vehicleLogo = result.vehicleLogo;
-			_filterResult.platNo = result.platNo;
+			_filterResult.plateNo = result.plateNo;
 
 			_filterResult.id = "echarts-" + attr;
 			_filterResult.echarts = null;

@@ -84,6 +84,8 @@
         /*var type = json.action;*/
         var data = json.result;
         // console.log("data.transmission========"+data.transmission);
+        // console.log("data.turnLight========"+this.realData.turnLight);
+        // console.log(this.realData.latitude, this.realData.longitude);
         if(data.transmission=='P'){
           this.realData.transmission='P';
           this.realData.oilDoor=0;
@@ -101,9 +103,11 @@
       },
       onopen(data){
         var real = {
-          'action':'vehicleDetail',
+          // 'action':'vehicleDetail',
+          // 'vehicleId':this.vehicleId
+          'action':'can_real_data',
           /*'vid':this.vehicleID,*/
-          'vehicleId':this.vehicleId
+          'vehicleIds':this.vehicleId
         }
         var realMsg = JSON.stringify(real);
         this.sendMsg(realMsg);
