@@ -32,7 +32,9 @@ export default {
 		}
 	},
     mounted() {
-        this.initEcharts();
+    	if(this.activeName == 'tabTwo') {
+        	this.initEcharts();
+    	}
     },
 	methods: {
 		changeRander() {

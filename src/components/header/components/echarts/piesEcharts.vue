@@ -32,8 +32,9 @@ export default {
 		}
 	},
     mounted() {
-    	console.log("------------------------");
-        this.initEcharts();
+    	if(this.activeName == 'tabTwo') {
+        	this.initEcharts();
+    	}
     },
 	methods: {
 		// 根据窗口大小重新渲染
@@ -45,7 +46,6 @@ export default {
             }
 		},
 		initEcharts() {
-    		console.log("?????????????????????????????????");
 			let _option = this.defaultOption();
 			if(!this.myChart) {
 				this.myChart = this.$echarts.init(document.getElementById(this.id));
