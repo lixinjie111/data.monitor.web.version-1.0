@@ -68,7 +68,7 @@ export default {
 					});
 					return item;
 				});
-				console.log('_responseData', _responseData);
+				// console.log('_responseData', _responseData);
 				setTimeout(() => {
 					this.responseData.forEach(item => {
 						if(item.data.length > 0) {

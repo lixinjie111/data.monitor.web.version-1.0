@@ -98,7 +98,7 @@
 </template>
 <script>
 import { getWarningList, getFaultList } from '@/api/header';
-import Moment from 'moment';
+// import Moment from 'moment';
 export default {
     props: {
         type: Number
@@ -238,16 +238,19 @@ export default {
             let params = {
                 'warningLevel': this.searchKey.warningLevel === '全部' ? null : this.searchKey.warningLevel,
                 'warningSource': this.searchKey.warningSource === 'null' ? null : this.searchKey.warningSource,
-                'startTime': Moment(this.searchKey.warningTime[0]).format('YYYY-MM-DD'),
-                'endTime': Moment(this.searchKey.warningTime[1]).format('YYYY-MM-DD'),
+                // 'startTime': Moment(this.searchKey.warningTime[0]).format('YYYY-MM-DD'),
+                // 'endTime': Moment(this.searchKey.warningTime[1]).format('YYYY-MM-DD'),
+                'startTime': this.$dateUtil.formatTime(this.searchKey.warningTime[0], 'yy-mm-dd'),
+                'endTime': this.$dateUtil.formatTime(this.searchKey.warningTime[1], 'yy-mm-dd'),
                 'index': this.searchKey.index,
                 'size': this.searchKey.size
             }
-            console.log('params ', params);
+            // console.log('params ', params);
             getWarningList(params).then(res => {
                this.warningData = res.data.res;
                this.warningData.map(x => {
-                   x.warningTime = Moment(x.warningTime).format('YYYY-MM-DD HH:mm:ss');
+                    // x.warningTime = Moment(x.warningTime).format('YYYY-MM-DD HH:mm:ss');
+                    x.warningTime = this.$dateUtil.formatTime(x.warningTime);
                });
                this.totalWarning = res.data.total;
                this.tableLoading = false;
@@ -261,15 +264,18 @@ export default {
                 'faultSource': this.searchKey.warningSource === 'null' ? null : this.searchKey.warningSource,
                 'faultType': this.searchKey.warningType === 'null' ? null : this.searchKey.warningType,
                 'faultLevel': this.searchKey.warningLevel === '全部' ? null : this.searchKey.warningLevel,
-                'startTime': Moment(this.searchKey.warningTime[0]).format('YYYY-MM-DD'),
-                'endTime': Moment(this.searchKey.warningTime[1]).format('YYYY-MM-DD'),
+                // 'startTime': Moment(this.searchKey.warningTime[0]).format('YYYY-MM-DD'),
+                // 'endTime': Moment(this.searchKey.warningTime[1]).format('YYYY-MM-DD'),
+                'startTime': this.$dateUtil.formatTime(this.searchKey.warningTime[0], 'yy-mm-dd'),
+                'endTime': this.$dateUtil.formatTime(this.searchKey.warningTime[1], 'yy-mm-dd'),
                 'index': this.searchKey.index,
                 'size': this.searchKey.size
             }
             getFaultList(params).then(res => {
                 this.warningData = res.data.res;
                 this.warningData.map(x => {
-                    x.warningTime = Moment(x.warningTime).format('YYYY-MM-DD HH:mm:ss');
+                    // x.faultTime = Moment(x.faultTime).format('YYYY-MM-DD HH:mm:ss');
+                    x.faultTime = this.$dateUtil.formatTime(x.faultTime);
                 });
                 this.totalFault = res.data.total;
                 this.tableLoading = false;

@@ -1,8 +1,8 @@
 <template> 
     <div class="echarts-list-box" :id="id"></div>
 </template>
+
 <script>
-import Moment from 'moment';
 export default {
     props: {
         lineEchartsData: Array,
@@ -13,9 +13,7 @@ export default {
     data () {
 		return {
 			myLineChart: null,
-            loaded: false,
-            warningEcharts: [],
-            faultEcharts: []
+            loaded: false
 		}
     },
     watch: {

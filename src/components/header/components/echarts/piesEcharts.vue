@@ -1,4 +1,3 @@
-
 <template>
 	<div class="echarts-list-box" :id="id"></div>
 </template>
@@ -33,6 +32,7 @@ export default {
 		}
 	},
     mounted() {
+    	console.log("------------------------");
         this.initEcharts();
     },
 	methods: {
@@ -45,6 +45,7 @@ export default {
             }
 		},
 		initEcharts() {
+    		console.log("?????????????????????????????????");
 			let _option = this.defaultOption();
 			if(!this.myChart) {
 				this.myChart = this.$echarts.init(document.getElementById(this.id));

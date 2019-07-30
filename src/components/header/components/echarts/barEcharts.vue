@@ -1,4 +1,3 @@
-
 <template>
 	<div class="echarts-list-box" :id="id"></div>
 </template>

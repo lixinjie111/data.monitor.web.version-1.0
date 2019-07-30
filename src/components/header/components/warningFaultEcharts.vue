@@ -55,7 +55,7 @@ import barEcharts from './echarts/barEcharts';
 import lineEcharts from './echarts/lineEcharts';
 import piesEcharts from './echarts/piesEcharts';
 import {getWarningDis, getFaultDis} from '@/api/header';
-import Moment from 'moment';
+// import Moment from 'moment';
 export default {
     props: {
         type: Number,
@@ -142,8 +142,10 @@ export default {
             this.barEchartsData = [];
             this.pieEchartsData = [];
             let params = {
-                'startTime': Moment(this.searchKey.warningTime[0]).format('YYYY-MM-DD'),
-                'endTime': Moment(this.searchKey.warningTime[1]).format('YYYY-MM-DD'),
+                // 'startTime': Moment(this.searchKey.warningTime[0]).format('YYYY-MM-DD'),
+                // 'endTime': Moment(this.searchKey.warningTime[1]).format('YYYY-MM-DD'),
+                'startTime':this.$dateUtil.formatTime(this.searchKey.warningTime[0], 'yy-mm-dd'),
+                'endTime': this.$dateUtil.formatTime(this.searchKey.warningTime[1], 'yy-mm-dd'),
             };
             this.searchHistory = this.searchKey;
             getWarningDis(params).then(res => {
@@ -161,8 +163,10 @@ export default {
             this.barEchartsData = [];
             this.pieEchartsData = [];
             let params = {
-                'startTime': Moment(this.searchKey.warningTime[0]).format('YYYY-MM-DD'),
-                'endTime': Moment(this.searchKey.warningTime[1]).format('YYYY-MM-DD'),
+                // 'startTime': Moment(this.searchKey.warningTime[0]).format('YYYY-MM-DD'),
+                // 'endTime': Moment(this.searchKey.warningTime[1]).format('YYYY-MM-DD'),
+                'startTime':this.$dateUtil.formatTime(this.searchKey.warningTime[0], 'yy-mm-dd'),
+                'endTime': this.$dateUtil.formatTime(this.searchKey.warningTime[1], 'yy-mm-dd'),
             };
             this.searchHistory = this.searchKey;
             getFaultDis(params).then(res => {
