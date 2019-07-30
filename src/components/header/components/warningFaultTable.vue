@@ -50,48 +50,39 @@
         <div class="c-dialog-content" style="top: 109px;bottom:68px;padding:0px 15px">
             <div class="c-scroll-wrap">
                 <div class="c-scroll-inner">
-                    <table class="c-table" v-if="type == 1">
-                        <tr>
-                            <th width="10%">序号</th>
-                            <th width="15%">预警名称</th>
-                            <th width="15%">预警来源</th>
-                            <th width="15%">预警级别</th>
-                            <th width="20%">预警时间</th>
-                            <th width="15%">车牌号</th>
-                            <th width="10%">设备ID</th>
-                        </tr>
-                        <tr v-for="(item,index) in warningData">
-                            <td>{{index+1}}</td>
-                            <td>{{item.warningName}}</td>
-                            <td>{{item.warningSource}}</td>
-                            <td>{{item.warningLevel}}</td>
-                            <td>{{item.warningTime}}</td>
-                            <td>{{item.plateNo}}</td>
-                            <td></td>
-                        </tr>
-                    </table>
-                    <table class="c-table" v-if="type == 2">
-                        <tr>
-                            <th width="5%">序号</th>
-                            <th width="15%">故障名称</th>
-                            <th width="15%">故障来源</th>
-                            <th width="15%">故障类型</th>
-                            <th width="10%">故障级别</th>
-                            <th width="15%">故障发生时间</th>
-                            <th width="15%">车牌号/设备编号</th>
-                            <th width="10%">设备类型</th>
-                        </tr>
-                        <tr v-for="(item,index) in warningData">
-                            <td>{{index+1}}</td>
-                            <td>{{item.faultName}}</td>
-                            <td>{{item.faultSource}}</td>
-                            <td>{{item.faultType}}</td>
-                            <td>{{item.faultLevel}}</td>
-                            <td>{{item.faultTime}}</td>
-                            <td>{{item.devId}}</td>
-                            <td>{{item.devType}}</td>
-                        </tr>
-                    </table>
+                    <el-table  
+                        v-if="type == 1"
+                        :data="warningData"
+                        border>
+                        <el-table-column label="序号" type="index" width="100"></el-table-column>
+                        <el-table-column label="预警名称" prop="warningName" min-width="15%"></el-table-column>
+                        <el-table-column label="预警来源" prop="warningSource" min-width="15%"></el-table-column>
+                        <el-table-column label="预警级别" prop="warningLevel" min-width="15%">
+                            <template slot-scope="scope">
+                              <p class="c-alert-level" style="background-color: #ae3717">{{scope.row.warningLevel}}</p>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="预警时间" prop="warningTime" min-width="20%"></el-table-column>
+                        <el-table-column label="车牌号" prop="plateNo" min-width="20%"></el-table-column>
+                        <el-table-column label="设备ID" min-width="15%"></el-table-column>
+                    </el-table>
+                    <el-table  
+                        v-if="type == 2"
+                        :data="warningData"
+                        border>
+                        <el-table-column label="序号" type="index" width="100"></el-table-column>
+                        <el-table-column label="故障名称" prop="faultName" min-width="15%"></el-table-column>
+                        <el-table-column label="故障来源" prop="faultSource" min-width="15%"></el-table-column>
+                        <el-table-column label="故障类型" prop="faultType" min-width="18%"></el-table-column>
+                        <el-table-column label="故障级别" prop="faultLevel" min-width="10%">
+                            <template slot-scope="scope">
+                              <p class="c-alert-level" style="background-color: #ae3717">{{scope.row.faultLevel}}</p>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="故障发生时间" prop="faultTime" min-width="15%"></el-table-column>
+                        <el-table-column label="车牌号/设备编号" prop="devId" min-width="15%"></el-table-column>
+                        <el-table-column label="设备类型" prop="devType" min-width="12%"></el-table-column>
+                    </el-table>
                 </div>
              </div>
              <el-pagination
@@ -102,8 +93,6 @@
                 :total="type === 1 ? totalWarning : totalFault" >
             </el-pagination>
         </div>
-       
-        <!-- 分页 -->
     
     </div>
 </template>
@@ -122,7 +111,8 @@ export default {
             searchHistory: {},
             tableLoading: false,
             searchKey: {
-                warningTime: [new Date(2019, 6, 11), new Date(2019, 6, 23)],
+                // warningTime: [new Date(2019, 6, 11), new Date(2019, 6, 23)],
+                warningTime: [new Date(), new Date()],
                 startTime: '',
                 endTime: '',
                 warningType: 'null',

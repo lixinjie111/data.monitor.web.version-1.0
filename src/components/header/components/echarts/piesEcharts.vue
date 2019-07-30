@@ -32,6 +32,9 @@ export default {
 			}
 		}
 	},
+    mounted() {
+        this.initEcharts();
+    },
 	methods: {
 		// 根据窗口大小重新渲染
 		changeRander() {

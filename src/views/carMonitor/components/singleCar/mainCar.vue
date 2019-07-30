@@ -116,47 +116,38 @@
       <span class="ts1">{{nowTime}}</span>
     </div>
     <single-dialog :dialogVisible="cloudDialog" :title="'预警信息'" @closeDialog="cloudDialog=false">
-      <table class="c-table">
-        <tr>
-          <th>序号</th>
-          <th>预警时间</th>
-          <th>预警类型</th>
-          <th>预警级别</th>
-          <th>预警位置</th>
-        </tr>
-        <tr v-for="(item,index) in cloudList">
-          <td>{{index+1}}</td>
-          <td>{{item.warningTime | dateFormat}}</td>
-          <td>{{item.warningName}}</td>
-          <td><p class="alert-level" style="background-color: #ae3717"><span class="alert-level-value">{{item.warningLevel}}</span></p></td>
-          <td>{{item.position}}</td>
-        </tr>
-      </table>
+      <el-table
+          :data="cloudList"
+          border>
+          <el-table-column label="序号" type="index" width="100"></el-table-column>
+          <el-table-column label="预警时间" min-width="25%">
+            <template slot-scope="scope">{{scope.row.warningTime | dateFormat}}</template>
+          </el-table-column>
+          <el-table-column label="预警类型" prop="warningName" min-width="25%"></el-table-column>
+          <el-table-column label="预警级别" min-width="25%">
+            <template slot-scope="scope">
+              <p class="c-alert-level">{{scope.row.warningLevel}}</p>
+            </template>
+          </el-table-column>
+          <el-table-column label="预警位置" prop="position" min-width="25%"></el-table-column>
+      </el-table>
     </single-dialog>
     <single-dialog :dialogVisible="vehicleDialog" :title="'告警信息'" @closeDialog="vehicleDialog=false">
-      <table class="c-table">
-        <tr>
-          <th>序号</th>
-          <th>告警时间</th>
-          <th>告警名称</th>
-          <th>告警级别</th>
-          <th>告警车辆</th>
-        </tr>
-        <tr v-for="(item,index) in vehicleList">
-          <td>{{index+1}}</td>
-          <td>{{item.warningTime | dateFormat}}</td>
-          <td>{{item.warningName}}</td>
-          <td><p class="alert-level" style="background-color: #ae3717"><span class="alert-level-value">{{item.warningLevel}}</span></p></td>
-          <td>{{item.plateNo}}</td>
-        </tr>
-        <!--<tr>
-          <td>2</td>
-          <td>2019-08-27 09:05:34:322</td>
-          <td>前向碰撞预警</td>
-          <td><p class="alert-level" style="background-color: #fd8610"><span class="alert-level-value">5</span></p></td>
-          <td>沪A5237490</td>
-        </tr>-->
-      </table>
+      <el-table
+          :data="vehicleList"
+          border>
+          <el-table-column label="序号" type="index" width="100"></el-table-column>
+          <el-table-column label="告警时间" min-width="25%">
+            <template slot-scope="scope">{{scope.row.warningTime | dateFormat}}</template>
+          </el-table-column>
+          <el-table-column label="告警名称" prop="warningName" min-width="25%"></el-table-column>
+          <el-table-column label="告警级别" min-width="25%">
+            <template slot-scope="scope">
+              <p class="c-alert-level">{{scope.row.warningLevel}}</p>
+            </template>
+          </el-table-column>
+          <el-table-column label="告警车辆" prop="plateNo" min-width="25%"></el-table-column>
+      </el-table>
     </single-dialog>
   </div>
 </template>

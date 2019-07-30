@@ -32,6 +32,9 @@ export default {
 			}
 		}
 	},
+    mounted() {
+        this.initEcharts();
+    },
 	methods: {
 		changeRander() {
             if (this.myBarChart) {

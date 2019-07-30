@@ -70,5 +70,11 @@
     height:100%;
     background-color: #262626;
   }
+  .c-dialog-content {
+    padding: 20px;
+    &:before {
+      right: 20px;
+    }
+  }
 
 </style>

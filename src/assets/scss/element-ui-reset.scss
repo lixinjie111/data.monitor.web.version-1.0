@@ -1,40 +1,53 @@
 @charset "UTF-8";
 @import './theme.scss';
-.c-table{
-    border:1px solid #5e5970;
-    /*background-color: #5e5970;*/
-    width:96%;
-    text-align: center;
-    color: #ffffff;
-    font-family: MicrosoftYaHei;
-    letter-spacing: 1px;
-	tr{
-		height: 50px;
-		th{
-			background: #5e5970;
-		}
-		td{
-			background: #2c2b2e;
-		}
-		th,td{
-			border:1px solid #5e5970;
-			opacity: 0.6;
-			color: #ffffff;
-			line-height: 40px;
+.c-alert-level {
+	display: inline-block;
+	min-width: 26px;
+	height: 26px;
+	border-radius: 13px;
+	box-sizing: border-box;
+	padding: 0 5px;
+	line-height: 26px;
+	text-align: center;
+	background-color: #ae3717;
+}
+.el-table {
+	color: #fff;
+	background-color: transparent;
+	&.el-table--border, 
+	&.el-table--group {
+		border-color: #5e5970;
+		&:before, &:after {
+			background-color: #5e5970;
 		}
 	}
-    .alert-level{
-		display: inline-block;
-		width: 26px;
-		height: 26px;
-		border-radius: 50%;
-		vertical-align: middle;
-		position: relative;
-		.alert-level-value{
-			position: relative;
-			top: -7px;
+	thead {
+		color: #fff;
+		font-weight: normal;
+		tr {
+			background-color: rgba(94, 89, 112, 0.3);
 		}
-    }
+	}
+	.el-table__body {
+		tr {
+			background-color: rgba(94, 89, 112, 0.1);
+		}
+	}
+	&.el-table--enable-row-hover .el-table__body tr:hover>td {
+		background-color: rgba(94, 89, 112, 0.3);
+	}
+	td, th, th.is-leaf {
+		border-color: #5e5970 !important;
+		text-align: center;
+		background-color: transparent;
+		line-height: 24px;
+	}
+	.el-table__empty-block {
+		background-color: rgba(94, 89, 112, 0.1);
+	}
+	.el-table__empty-text {
+		color: #fff;
+	}
 }
 
 
@@ -77,12 +90,13 @@
 	}
 	.el-form-item__content {
 		vertical-align: middle;
-		// width: 100px;
+		// width: 150px;
 	}
 	.el-input__inner {
 		border: 1px solid grey;
 		background-color: transparent;
 		color: #fff;
+		width: 150px;
 	}
 	.el-select-dropdown__list{
 	}
@@ -97,6 +111,9 @@
 	}
 	.el-date-editor .el-range-input {
 		color: #fff;
+	}
+	.el-date-editor--daterange.el-input, .el-date-editor--daterange.el-input__inner, .el-date-editor--timerange.el-input, .el-date-editor--timerange.el-input__inner {
+		width: 260px;
 	}
 }
 

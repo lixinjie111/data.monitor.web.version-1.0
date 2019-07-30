@@ -1,7 +1,7 @@
 <template>
 <div>
     <el-form size="mini" :inline="true" ref="form" :model="searchKey" style="text-align: right;margin-bottom:10px">
-        <el-form-item label="预警时间:" class="warning-label" style="margin: 0 5px 0 0;">
+        <el-form-item label="预警时间:" style="margin: 0 5px 0 0;">
             <div class="block">
                 <el-date-picker
                     @change="handleChange"
@@ -23,19 +23,22 @@
                 <!-- 预警 -->
                 <ul class="echarts-list-wrap clearfix">
                     <!-- 折线图 -->
-                    <li class="echarts-list"  v-for="(item, index) in lineEchartsData">
+                    <li class="echarts-list"  v-for="(item, index) in lineEchartsData" :key="item.scatType">
                         <p class="echarts-list-title">{{item.scatName}}</p>
-                        <line-echarts :type="type" :lineEchartsData="item.data" :count="count" :activeName="activeName" :id="'line' + index"></line-echarts>
+                        <line-echarts :type="type" :lineEchartsData="item.data" :count="count" :activeName="activeName" :id="'line' + index" v-if="item.data.length"></line-echarts>
+                        <p class="echarts-list-box echarts-empty" v-else>暂无数据</p>
                     </li>
                     <!-- 饼图 -->
-                    <li class="echarts-list" v-for="(item, index) in pieEchartsData">
+                    <li class="echarts-list" v-for="(item, index) in pieEchartsData" :key="item.scatType">
                         <p  class="echarts-list-title">{{item.scatName}}</p>
-                        <pies-echarts :type="type"  :pieEchartsData="item.data" :count="count" :activeName="activeName" :id="'pie' + index"></pies-echarts>     
+                        <pies-echarts :type="type"  :pieEchartsData="item.data" :count="count" :activeName="activeName" :id="'pie' + index" v-if="item.data.length"></pies-echarts>
+                        <p class="echarts-list-box echarts-empty" v-else>暂无数据</p>     
                     </li>
                     <!-- 横向柱状图 -->
-                    <li class="echarts-list" v-for="(item, index) in barEchartsData">
+                    <li class="echarts-list" v-for="(item, index) in barEchartsData" :key="item.scatType">
                         <p  class="echarts-list-title">{{item.scatName}}</p>
-                        <bar-echarts  :type="type"  :barEchartsData="item.data" :count="count" :activeName="activeName" :id="'bar' + index"></bar-echarts>     
+                        <bar-echarts  :type="type"  :barEchartsData="item.data" :count="count" :activeName="activeName" :id="'bar' + index" v-if="item.data.length"></bar-echarts>
+                        <p class="echarts-list-box echarts-empty" v-else>暂无数据</p>     
                     </li>
                 </ul>
             </div>
@@ -79,7 +82,8 @@ export default {
             searchKey: {
                 startTime: '',
                 endTime: '',
-                warningTime: [new Date(2019, 6, 11), new Date(2019, 6, 23)]
+                // warningTime: [new Date(2019, 6, 11), new Date(2019, 6, 23)]
+                warningTime: [new Date(), new Date()],
             },
             searchHistory: {},
             pickerOptions: {
@@ -147,9 +151,6 @@ export default {
                 this.lineEchartsData.push(this.waringDisEcharts[0]);
                 this.pieEchartsData.push(this.waringDisEcharts[1]);
                 this.barEchartsData.push(this.waringDisEcharts[2]);
-                // console.log('this.lineEchartsData --- 初始化数据', this.lineEchartsData);
-                // console.log('this.pieEchartsData --- 初始化数据', this.pieEchartsData);
-                // console.log('this.barEchartsData --- 初始化数据', this.barEchartsData);
 
                 this.count += 1;
             });
@@ -168,7 +169,6 @@ export default {
                 this.faultDisEcharts = res.data.dataList;
                 this.lineEchartsData = new Object(this.faultDisEcharts.slice(0,3))
                 this.barEchartsData.push(this.faultDisEcharts[3]);
-                // console.log('this.lineEchartsData -==== ', this.barEchartsData);
 
                 this.count += 1;
             });
@@ -178,14 +178,20 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+@import "@/assets/scss/theme.scss";
 @import "@/assets/scss/echarts.scss";
-.echarts-list-title {
-    text-align: left;
-}
 .echarts-list-wrap {
     .echarts-list {
         margin-bottom: 18px;
         margin-top: 0;
+    }
+    .echarts-list-title {
+        text-align: left;
+    }
+    .echarts-empty {
+        font-size: 16px;
+        color: #ccc;
+        @include layoutMode(both);
     }
 }
 </style>

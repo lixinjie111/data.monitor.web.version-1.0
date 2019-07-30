@@ -45,7 +45,7 @@ export default {
     },
     methods: {
         handleClick(tab, event) {
-            console.log(this.activeName);
+            // console.log(this.activeName);
         },
         closeDialog() {
             this.$emit("closeDialogWarning");
