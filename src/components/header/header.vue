@@ -1,7 +1,7 @@
 <template>
 	<div class="header clearfix">
         <router-link tag="a" class="logo-wrap" to="/">
-            <img class="logo" src="@/assets/images/logo.png">
+            <img class="logo" src="static/images/logo.png">
         </router-link>
         <ul class="menu-box clearfix">
            <router-link tag="li" v-for="item in navList" :key="item.id" class="menu-list" :to="item.path">{{item.name}}</router-link>

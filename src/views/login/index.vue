@@ -3,7 +3,7 @@
     <!-- 登录 -->
     <div class="login-card">
         <div class="login-header">
-            <img class="login-logo" src="@/assets/images/logo.png">        
+            <img class="login-logo" src="static/images/logo.png">        
             <div class="login-title">启迪智能网联汽车监控管理平台</div>
         </div>
         <div class="login-item-box">
@@ -106,7 +106,7 @@ export default {
         padding: 10px 30px;
         border-bottom: 1px dashed #545350; 
         .login-logo {
-            height: 30px;
+            margin: 0 auto;
         }
         .login-title {
             font-size: 30px;
