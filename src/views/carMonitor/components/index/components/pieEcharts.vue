@@ -100,7 +100,7 @@ export default {
 					tooltip: {
 				        trigger: 'item',
 				        formatter: function(params) {
-				        	return '<div>'+params.name+': <span style="color: #dc8c00;">'+params.value+'</span></div><div>占比: <span style="color: #dc8c00;">'+params.percent+'%</span></div>'
+				        	return '<div>'+params.name+': <span style="color: #dc8c00;">'+params.value+'</span></div><div>占比: <span style="color: #dc8c00;">'+params.percent.toFixed(1)+'%</span></div>'
 				        }
 				        // formatter: "{b}: {c} <br/>占比: {d}%",
 				        // textStyle: {
