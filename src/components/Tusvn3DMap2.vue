@@ -401,7 +401,7 @@ export default {
                         model1.rotation.set( this.pitch,this.yaw,this.roll );
                         model1.castShadow = true;
                         model1.receiveShadow = true;
-                        model1.setUpdate(true);
+                        // model1.setUpdate(true);
 
                         this.scene.add(model1);
                         this.deviceModels[deviceid].cars[m] = model1;
