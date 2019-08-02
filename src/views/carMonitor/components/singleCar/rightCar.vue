@@ -69,7 +69,7 @@
         ],
         playerOptions: {
           overNative: true,
-            autoplay: false,
+            autoplay: true,
             controls: true,
             techOrder: ['flash', 'html5'],
             sourceOrder: true,
@@ -85,7 +85,7 @@
           muted:true,
           width:'270',
           height:'180',
-          bigPlayButton : false,
+         /* bigPlayButton : false,*/
           notSupportedMessage: '此视频暂无法播放，请稍候再试!',
           controlBar: {
             timeDivider: false,
@@ -257,12 +257,12 @@
           this.rtmp = this.streamInfo.rtmp;
           if(this.rtmp&&this.rtmp!=''){
             this.playerOptions.sources[0].src = this.rtmp;
-            this.playerOptions.bigPlayButton=true;
+          /*  this.playerOptions.bigPlayButton=true;*/
             //直播报活调用
             this.repeatFn();//拉取流后，保活
           }else {
             this.playerOptions.notSupportedMessage='视频流不存在，请稍候再试！';
-            this.playerOptions.bigPlayButton=false;
+          /*  this.playerOptions.bigPlayButton=false;*/
           }
         });
       },
@@ -387,7 +387,7 @@
         }else{
           if(this.rtmp==''){
             this.playerOptions.notSupportedMessage='视频流不存在，请稍候再试！';
-            this.playerOptions.bigPlayButton=false;
+            /*this.playerOptions.bigPlayButton=false;*/
             if(this.liveDeviceInfo&&this.liveDeviceInfo.serialNum!=''){
               this.getStream();
               return;
