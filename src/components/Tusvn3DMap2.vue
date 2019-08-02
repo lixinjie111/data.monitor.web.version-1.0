@@ -375,6 +375,7 @@ export default {
             this.count = 0;
         },
         onMessage:function(data){
+            // return;
             this.models={};
             this.count++;
             if((this.count%this.interval)!=0)
@@ -400,6 +401,7 @@ export default {
                         model1.rotation.set( this.pitch,this.yaw,this.roll );
                         model1.castShadow = true;
                         model1.receiveShadow = true;
+                        model1.setUpdate(true);
 
                         this.scene.add(model1);
                         this.deviceModels[deviceid].cars[m] = model1;
@@ -475,11 +477,12 @@ export default {
                     if(i<this.deviceModels[deviceid].cars.length)
                     {
                         let mdl = this.deviceModels[deviceid].cars[i];
+                        
                         mdl.position.x = dUTM[0];
                         mdl.position.y = dUTM[1];
                         mdl.position.z = this.defualtZ+4;
 
-                        mdl.rotation.set( this.pitch,this.yaw,Math.PI*(d.heading/180.0) );
+                        // mdl.setHeading(Math.PI*(d.heading-90)/180.0);
 
                         let text = this.deviceModels[deviceid].texts[i];
                         text.setText(d.target.uuid.substr(0,8));
