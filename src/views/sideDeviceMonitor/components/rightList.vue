@@ -752,6 +752,9 @@
 </script>
 
 <style>
+  .c-size-style .vjs-custom-skin > .video-js .vjs-big-play-button{
+    display: none!important;
+  }
   .c-size-style .vjs-error .vjs-error-display .vjs-modal-dialog-content{
     padding:80px 24px 30px!important;
     color: #ccc;
@@ -762,6 +765,7 @@
     top:60%;
     display: none;
   }
+
   .c-size-style .video-js{
       height: 200px!important;
     }

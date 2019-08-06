@@ -626,7 +626,7 @@
     }
 </script>
 <style>
-  .vjs-custom-skin > .video-js .vjs-big-play-button{
+  .side-dialog-map .vjs-custom-skin > .video-js .vjs-big-play-button,.device-video-style .vjs-custom-skin > .video-js .vjs-big-play-button{
     display: none!important;
   }
   .video-style-height .video-js{

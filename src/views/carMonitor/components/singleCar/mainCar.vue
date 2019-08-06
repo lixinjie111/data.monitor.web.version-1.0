@@ -297,7 +297,7 @@
           // let _nowtime = new Date().getTime();
           // console.log(_nowtime, json.time, data.gpsTime, json.time-_nowtime, data.gpsTime-_nowtime);
           if(_this.isInit){
-            platNo=data.platNo;
+            platNo=data.plateNo;
             data.source.forEach(item=>{
               source+=item+",";
             })
@@ -629,6 +629,7 @@
         _this.warningWebsocket.onopen = _this.onWarningOpen;
       },
       onWarningMessage(mesasge){
+
 //        console.log("时间----"+new Date().getTime())
         var _this=this;
         /*if(this.i>4){
@@ -641,15 +642,7 @@
             this.vehicleCount++;
         }
         if(type=='CLOUD'){
-          warningData.forEach(item=>{
-            _this.v2xUuid.forEach(e=>{
-//              console.log("uuid-------"+e);
-            })
-//            console.log("集合是否包含某个元素-----"+_this.v2xUuid.indexOf(item.uuid));
-            if(_this.v2xUuid.indexOf(item.uuid)==-1){
-              this.cloudCount++;
-            }
-          })
+            this.cloudCount++;
         }
         if(warningData.length>0){
           if(type=='VEHICLE'){

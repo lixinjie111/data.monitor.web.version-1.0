@@ -88,9 +88,7 @@
         <p><span class="legend-size" style="background: #595450"></span>EVENT</p>
         <p><span class="legend-size" style="background: #2acdc2"></span>BSM</p>
         <p><span class="legend-size" style="background: #d3d12d"></span>PER</p>
-        <p><span class="legend-size" style="background: #f75b30"></span>RSI</p>
         <p><span class="legend-size" style="background: #6ec9fd"></span>SPAT</p>
-        <p><span class="legend-size" style="background: #41c66d"></span>RSM</p>
 
       </div>
     </div>
@@ -129,32 +127,20 @@
         webSocket:{},
         reportWebSocket:{},
 
-        gpsIsFirst:true,
-        bsmIsFirst:true,
-        perIsFirst:true,
-        eventIsFirst:true,
-
-        spatIsFirst:true,
-        v2xIsFirst:true,
-        rsiIsFirst:true,
         i:0,
         k:3,
         m : 6,
         n :9,
 
         j:0,
-        k1:4,
-        m1:8,
         upRandom:0.1,
         canRandom:0,
         gpsRandom:0,
         perRandom:0,
         eventRandom:0,
 
-        downRandom:0.1,
+        downRandom:0.2,
         spatRandom:0,
-        v2xRandom:0,
-        rsiRandom:0,
 
         n1:0
 
@@ -451,7 +437,6 @@
         _this.reportWebSocket.onopen = _this.onReportOpen;
       },
       onReportMessage(message){
-        // console.log("动画 vehicleDataCount @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         let _this=this;
         var json = JSON.parse(message.data);
         var data = json.result.reportItems;
@@ -462,9 +447,7 @@
         var perData=[];
         var eventData=[];
 
-        var rsmRcuData = [];
         var spatData = [];
-        var rsiData = [];
 
         if(_this.i>=3){
           _this.i=0;
@@ -482,12 +465,7 @@
         if(_this.j>=4){
           _this.j=0;
         }
-        if(_this.k1>=8){
-          _this.k1=4;
-        }
-        if(_this.m1>=12){
-          _this.m1=8;
-        }
+
 
         if(data.length>0) {
           data.forEach(function (item) {
@@ -504,124 +482,39 @@
               eventData.push(item);
             }
 
-            if (item.type == 'RSM/RCU') {
-              rsmRcuData.push(item);
-            }
             if (item.type == 'SPAT') {
               spatData.push(item);
-            }
-            if (item.type == 'RSI') {
-              rsiData.push(item);
             }
           })
 
           if(canGpsData.length>0){
-            var curve1 = new Curve();
-            //开始画gps的第一条线
-            if(_this.gpsIsFirst){
-              // console.log("canGps-----"+_this.upRandom);
-              curve1.drawLines(_this.upRandom,'#d47b24','up',0,[130, 142], [320, 58]);
-              curve1.drawImgs(_this.upRandom,'GPS+CAN','up',12,[130, 142], [320, 58],'#6ec9fd');
-              _this.gpsRandom = _this.upRandom;
-              _this.upRandom=_this.upRandom+0.2;
-              _this.gpsIsFirst=false;
-            }else {
-              curve1.drawImgs(_this.gpsRandom,'GPS+CAN','up',_this.i,[130, 142], [320, 58],'#6ec9fd');
-              _this.i++;
-            }
+            let curve1 = new Curve();
+            curve1.drawImgs(_this.gpsRandom,'GPS+CAN','up',_this.i,[130, 142], [320, 58],'#6ec9fd');
+            _this.i++;
           }
           if(bsmData.length>0){
-            var curve2 = new Curve();
-            //开始画can的第一条线
-            if(_this.bsmIsFirst){
-              curve2.drawLines(_this.upRandom,'#2acdc2','up',1,[130, 142], [320, 58]);
-              curve2.drawImgs(_this.upRandom,'BSM','up',13,[130, 142], [320, 58],'#3db765');
-              _this.canRandom = _this.upRandom;
-              _this.upRandom=_this.upRandom+0.2;
-              _this.bsmIsFirst=false;
-            }else{
-              curve2.drawImgs(_this.canRandom,'BSM','up',_this.k,[130, 142], [320, 58],'#3db765');
-              _this.k++;
-            }
+            let curve2 = new Curve();
+            curve2.drawImgs(_this.canRandom,'BSM','up',_this.k,[130, 142], [320, 58],'#3db765');
+            _this.k++;
           }
 
           if(perData.length>0){
-            var curve3 = new Curve();
-            //开始画perception的第一条线
-            if(_this.perIsFirst){
-              curve3.drawLines(_this.upRandom,'#d3d12d','up',2,[130, 142], [320, 58]);
-              curve3.drawImgs(_this.upRandom,'PER','up',14,[130, 142], [320, 58],'#d47b24');
-              _this.perRandom = _this.upRandom;
-              _this.upRandom=_this.upRandom+0.2;
-              _this.perIsFirst=false;
-            }else {
-              curve3.drawImgs(_this.perRandom,'PER','up',_this.m,[130, 142], [320, 58],'#d47b24');
-              _this.m++;
-            }
+            let curve3 = new Curve();
+            curve3.drawImgs(_this.perRandom,'PER','up',_this.m,[130, 142], [320, 58],'#d47b24');
+            _this.m++;
           }
 
           if(eventData.length>0){
-            var curve4 = new Curve();
-            //开始画perception的第一条线
-            if(_this.eventIsFirst){
-              curve4.drawLines(_this.upRandom,'#595450','up',3,[130, 142], [320, 58]);
-              curve4.drawImgs(_this.upRandom,'EVENT','up',15,[130, 142], [320, 58],'#59d44f');
-              _this.eventRandom = _this.upRandom;
-              _this.upRandom=_this.upRandom+0.2;
-              _this.eventIsFirst=false;
-            }else {
-              curve4.drawImgs(_this.eventRandom,'EVENT','up',_this.n,[130, 142], [320, 58],'#59d44f');
-              _this.n++;
-            }
+            let curve4 = new Curve();
+            curve4.drawImgs(_this.eventRandom,'EVENT','up',_this.n,[130, 142], [320, 58],'#59d44f');
+            _this.n++;
           }
 
 
           if(spatData.length>0){
-          /*if(_this.n1==1){*/
-            var downCurve1 = new Curve();
-            //开始画spat的第一条线
-            if(_this.spatIsFirst){
-              downCurve1.drawLines(_this.downRandom,'#6ec9fd','down',0,[366, 60], [560, 156]);
-              downCurve1.drawImgs(_this.downRandom,'SPAT','down',12,[366, 60], [560, 156],'#59d44f');//信号灯
-              _this.spatRandom = _this.downRandom;
-              _this.downRandom=_this.downRandom+0.2;
-              _this.spatIsFirst=false;
-            }else {
-              downCurve1.drawImgs(_this.spatRandom,'SPAT','down',_this.j,[366, 60], [560, 156],'#59d44f');//信号灯
-              _this.j++;
-            }
-          }
-
-          if(rsmRcuData.length>0){
-          /*if(_this.n1==10){*/
-            var downCurve2 = new Curve();
-            //开始画v2x的第一条线
-            if(_this.v2xIsFirst){
-              downCurve2.drawLines(_this.downRandom,'#41c66d','down',1,[366, 60], [560, 156]);
-              downCurve2.drawImgs(_this.downRandom,'RSM/RCU','down',13,[366, 60], [560, 156],'#59d44f');
-              _this.v2xRandom = _this.downRandom;
-              _this.downRandom=_this.downRandom+0.2;
-              _this.v2xIsFirst=false;
-            }else{
-              downCurve2.drawImgs(_this.v2xRandom,'RSM/RCU','down',_this.k1,[366, 60], [560, 156],'#59d44f');
-              _this.k1++;
-            }
-          }
-
-          if(rsiData.length>0){
-          /*if(_this.n1==15){*/
-            var downCurve3 = new Curve();
-            //开始画can的第一条线
-            if(_this.rsiIsFirst){
-              downCurve3.drawLines(_this.downRandom,'#f75b30','down',2,[366, 60], [560, 156]);
-              downCurve3.drawImgs(_this.downRandom,'RSI','down',14,[366, 60], [560, 156],'#59d44f');//有大雾  road side information  信息预报
-              _this.rsiRandom = _this.downRandom;
-              _this.downRandom=_this.downRandom+0.2;
-              _this.rsiIsFirst=false;
-            }else {
-              downCurve3.drawImgs(_this.rsiRandom,'RSI','down',_this.m1,[366, 60], [560, 156],'#59d44f');//有大雾  road side information  信息预报
-              _this.m1++;
-            }
+            let downCurve1 = new Curve();
+            downCurve1.drawImgs(_this.spatRandom,'SPAT','down',_this.j,[560, 156],[366, 60],'#59d44f');//信号灯
+            _this.j++;
           }
         }
       },
@@ -657,10 +550,36 @@
       //速度和加速度
       _this.speedChart = _this.$echarts.init(document.getElementById('speedChart'));
       _this.accelerateChart = _this.$echarts.init(document.getElementById('accelerateChart'));
+      //开始画gps的第一条线
+      let curve1 = new Curve();
+      curve1.drawLines(_this.upRandom,'#d47b24','up',0,[130, 142], [320, 58]);
+      curve1.drawImgs(_this.upRandom,'GPS+CAN','up',12,[130, 142], [320, 58],'#6ec9fd');
+      _this.gpsRandom = _this.upRandom;
+      _this.upRandom=_this.upRandom+0.2;
+      //开始画can的第一条线
+      let curve2 = new Curve();
+      curve2.drawLines(_this.upRandom,'#2acdc2','up',1,[130, 142], [320, 58]);
+      curve2.drawImgs(_this.upRandom,'BSM','up',13,[130, 142], [320, 58],'#3db765');
+      _this.canRandom = _this.upRandom;
+      _this.upRandom=_this.upRandom+0.2;
+      //开始画perception的第一条线
+      let curve3 = new Curve();
+      curve3.drawLines(_this.upRandom,'#d3d12d','up',2,[130, 142], [320, 58]);
+      curve3.drawImgs(_this.upRandom,'PER','up',14,[130, 142], [320, 58],'#d47b24');
+      _this.perRandom = _this.upRandom;
+      _this.upRandom=_this.upRandom+0.2;
+      //开始画event的第一条线
+      let curve4 = new Curve();
+      curve4.drawLines(_this.upRandom,'#595450','up',3,[130, 142], [320, 58]);
+      curve4.drawImgs(_this.upRandom,'EVENT','up',15,[130, 142], [320, 58],'#59d44f');
+      _this.eventRandom = _this.upRandom;
+      _this.upRandom=_this.upRandom+0.2;
+      //开始画spat的第一条线
+      let downCurve1 = new Curve();
+      downCurve1.drawLines("-"+_this.downRandom,'#6ec9fd','down',0,[552, 150],[356, 55]);
+      downCurve1.drawImgs("-"+_this.downRandom,'SPAT','down',12, [552, 150],[356, 55],'#59d44f');//信号灯
+      _this.spatRandom = _this.downRandom;
 
-      // this.xData = new Array(1,2,3,4,5);
-      // this.accelerateData = [1,2,0,-3,-1];
-      // this.getAccelerateChart();
       _this.initWebSocket();
       _this.realReportWebSocket();
     },

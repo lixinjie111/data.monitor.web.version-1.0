@@ -4,6 +4,9 @@
       <div class="c-scroll-inner">
         <p class="monitor-title c-title">车端视频</p>
         <div class="monitor-video right-title">
+          <!--<div class="c-loading-overview">
+            <div class="c-loading"></div>
+          </div>-->
           <!--<video src="movie.ogg" controls="controls" autoplay width="270" height="200">
             您的浏览器不支持 video 标签。
           </video>-->
@@ -69,7 +72,7 @@
         ],
         playerOptions: {
           overNative: true,
-            autoplay: true,
+            autoplay: false,
             controls: true,
             techOrder: ['flash', 'html5'],
             sourceOrder: true,
@@ -85,7 +88,7 @@
           muted:true,
           width:'270',
           height:'180',
-         /* bigPlayButton : false,*/
+          bigPlayButton : true,
           notSupportedMessage: '此视频暂无法播放，请稍候再试!',
           controlBar: {
             timeDivider: false,
@@ -231,18 +234,21 @@
           'vehicleId': this.vehicleId,
         }).then(res => {
           let result = res.data;
-          if(result.length) {
+          if(result.length>0) {
             result.forEach(item=>{
               //前向
               if(item.toward==0){
                 this.liveDeviceInfo=item;
                 if(this.liveDeviceInfo.serialNum==''){
                   this.playerOptions.sources[0].src='';
+                  this.playerOptions.bigPlayButton=false;
                 }else{
                   this.getStream();
                 }
               }
             })
+          }else{
+            this.playerOptions.bigPlayButton=false;
           }
         });
       },
@@ -256,13 +262,14 @@
           //获取视频地址并赋值
           this.rtmp = this.streamInfo.rtmp;
           if(this.rtmp&&this.rtmp!=''){
+            console.log("rtmp:"+this.rtmp);
             this.playerOptions.sources[0].src = this.rtmp;
-          /*  this.playerOptions.bigPlayButton=true;*/
+            this.playerOptions.bigPlayButton=true;
             //直播报活调用
             this.repeatFn();//拉取流后，保活
           }else {
             this.playerOptions.notSupportedMessage='视频流不存在，请稍候再试！';
-          /*  this.playerOptions.bigPlayButton=false;*/
+            this.playerOptions.bigPlayButton=false;
           }
         });
       },
@@ -387,7 +394,7 @@
         }else{
           if(this.rtmp==''){
             this.playerOptions.notSupportedMessage='视频流不存在，请稍候再试！';
-            /*this.playerOptions.bigPlayButton=false;*/
+           /* this.playerOptions.bigPlayButton=false;*/
             if(this.liveDeviceInfo&&this.liveDeviceInfo.serialNum!=''){
               this.getStream();
               return;
@@ -395,6 +402,7 @@
           }else{
             this.playerOptions.sources[0].src='';
             this.playerOptions.sources[0].src = this.rtmp;
+            this.playerOptions.bigPlayButton=true;
           }
         }
       },
@@ -481,6 +489,9 @@
     color: #ccc;
     top:60%;
     display: none;
+  }
+  .c-loading{
+
   }
 </style>
 <style scoped lang="scss">
