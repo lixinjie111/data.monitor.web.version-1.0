@@ -52,7 +52,7 @@ export default {
                 let _responseData = _result.map( item => {
                     let _option = {
                         vehicleId: item.vehicleId,
-                        platNo: item.platNo,
+                        plateNo: item.plateNo,
                         source: item.source.join(','),
                         heading: item.heading,
                         // position: new AMap.LngLat(item.longitude, item.latitude)
@@ -91,9 +91,9 @@ export default {
             if(_responseDataDrawLength > 0) {
                 for(let m = 0; m < _this.responseDataDraw.length; m++) {
                     _this.responseDataDraw[m].marker.off('click', _this.showView);
-                    _this.responseDataDraw[m].platNoMarker.off('click', _this.showView);
+                    _this.responseDataDraw[m].plateNoMarker.off('click', _this.showView);
                     _this.AMap.remove(_this.responseDataDraw[m].marker);
-                    _this.AMap.remove(_this.responseDataDraw[m].platNoMarker);
+                    _this.AMap.remove(_this.responseDataDraw[m].plateNoMarker);
                 }
                 _this.responseDataDraw = [];
             }
@@ -102,7 +102,7 @@ export default {
                 if(_data.position) {
                     let _markerObj = {
                         marker: null,
-                        platNoMarker: null
+                        plateNoMarker: null
                     };
                     _markerObj.marker = new AMap.Marker({
                         map: _this.AMap,
@@ -113,9 +113,9 @@ export default {
                         zIndex: 50,
                         vehicleId: _data.vehicleId
                     });
-                    _markerObj.platNoMarker = new AMap.Text({
+                    _markerObj.plateNoMarker = new AMap.Text({
                         map: _this.AMap,
-                        text: _data.platNo+"<br/><span style='color:#e6a23c'>"+_data.source+'</span>',
+                        text: _data.plateNo+"<br/><span style='color:#e6a23c'>"+_data.source+'</span>',
                         // text: '京N123456',
                         anchor: 'center', // 设置文本标记锚点
                         style: {
@@ -134,7 +134,7 @@ export default {
                         vehicleId: _data.vehicleId
                     });
                     _markerObj.marker.on('click', _this.showView);
-                    _markerObj.platNoMarker.on('click', _this.showView);
+                    _markerObj.plateNoMarker.on('click', _this.showView);
 
                     _this.responseDataDraw.push(_markerObj);
                 }
