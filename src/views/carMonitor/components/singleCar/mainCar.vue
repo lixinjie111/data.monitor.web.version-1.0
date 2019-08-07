@@ -631,22 +631,17 @@
       onWarningMessage(mesasge){
 
 //        console.log("时间----"+new Date().getTime())
-        var _this=this;
+        let _this=this;
         /*if(this.i>4){
           return;
         }*/
-        var json = JSON.parse(mesasge.data);
-        var warningData = json.result.data;
-        var type = json.result.type;
-        if(type=='VEHICLE'){
-            this.vehicleCount++;
-        }
-        if(type=='CLOUD'){
-            this.cloudCount++;
-        }
+        let json = JSON.parse(mesasge.data);
+        let warningData = json.result.data;
+        let type = json.result.type;
         if(warningData.length>0){
           if(type=='VEHICLE'){
             warningData.forEach(item=>{
+              _this.vehicleCount++;
               var dist = parseInt(item.dis);
               if(!dist){
                 dist=-1;
@@ -671,6 +666,7 @@
           if(type=='CLOUD'){
             let eventType = json.result.eventType;
             warningData.forEach(item=>{
+              _this.cloudCount++;
               var dist = parseInt(item.dis);
               if(!dist){
                 dist=-1;

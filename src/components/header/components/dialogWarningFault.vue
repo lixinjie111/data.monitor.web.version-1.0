@@ -57,10 +57,10 @@ export default {
 @import '@/assets/scss/theme.scss';
 .c-wraning-dialog {
     .c-dialog-content {
-        padding: 0;
+        padding: 0!important;
         &:before {
             // right: 5px;
-            background: none;
+            background: none!important;
         }
     }
 }
