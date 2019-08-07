@@ -78,7 +78,7 @@ export const getVehicleCalendarData = params => {return axios.post(`${HTTPURL}si
  * 4-03-01	获取行车概览当前行程的历史路径
  */
  export const getRouteDataByVehId = params => {return axios.post(`${HTTPURL}vl/routeStat/getRouteDataByVehId`, params).then(res => res.data); };
- 
+
  /**
  * 4-04-03 获取车辆实时视频数据
  */
@@ -104,6 +104,12 @@ export const getAlarmInformation = params => {return axios.post(`${HTTPURL}singl
  * 预警的接口
  * */
 export const getV2xInformation = params => {return axios.post(`${HTTPURL}singleMoniter/getEarlyWarningInformation`, params).then(res => res.data); };
+
+
+/**
+ * 获取闸机信息
+ * */
+export const getBrakeInfo = params => {return axios.post(`${HTTPURL}xa/order/findDevStatus`, params).then(res => res.data); };
 
 
 
