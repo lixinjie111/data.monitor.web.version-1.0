@@ -56,13 +56,13 @@ export default {
 <style lang="scss">
 @import '@/assets/scss/theme.scss';
 .c-wraning-dialog {
-    .c-dialog-content {
-        padding: 0;
-        &:before {
-            // right: 5px;
-            background: none;
-        }
+  .c-dialog-content {
+    padding: 0!important;
+    &:before {
+      // right: 5px;
+      background: none!important;
     }
+  }
 }
 </style>
 
