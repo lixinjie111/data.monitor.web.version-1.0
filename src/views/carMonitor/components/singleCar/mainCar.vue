@@ -18,24 +18,6 @@
         <span class="detail2">{{nowTime}}</span>
       </div>
     </div>
-    <ul class="bake-style">
-      <li>
-        <span>9号门东杆-进/出</span>
-        <span :class="geat.status3 == '01' ? 'park-green-bgc' : 'park-red-bgc'" class="park-switch">{{geat.status3}}</span>
-      </li>
-      <li>
-        <span>9号门西杆-进/出</span>
-        <span :class="geat.status4 == '01' ? 'park-green-bgc' : 'park-red-bgc'" class="park-switch">{{geat.status4}}</span>
-      </li>
-      <li>
-        <span>停车场-进</span>
-        <span :class="geat.status6 == '01' ? 'park-green-bgc' : 'park-red-bgc'" class="park-switch">{{geat.status6}}</span>
-      </li>
-      <li>
-        <span>停车场-出</span>
-        <span :class="geat.status5 == '01' ? 'park-green-bgc' : 'park-red-bgc'" class="park-switch">{{geat.status5}}</span>
-      </li>
-    </ul>
     <div class="spat-detail">
       <div  v-for="(item,key) in lightData" class="spat-layout" :key="key">
         <div v-show="key=='key_3'&&item.flag" class="spat-detail-style">
@@ -102,7 +84,6 @@
         <span>{{vehicleCount}}</span>
       </div>
     </div>
-   
     <!--v-show="warningData.show"-->
 
     <div class="pre-warning">
@@ -173,7 +154,7 @@
 <script>
   import AMap from 'AMap';
   import SingleDialog from '@/views/carMonitor/components/singleCar/dialog.vue'
-  import { getAlarmInformation,getV2xInformation,getBrakeInfo } from '@/api/carMonitor'
+  import { getAlarmInformation,getV2xInformation } from '@/api/carMonitor'
   import DateFormat from '@/assets/js/utils/date.js'
   import ConvertCoord from '@/assets/js/utils/coordConvert.js'
   export default {
@@ -189,7 +170,6 @@
         deviceWebsocket:{},
         lightWebsocket:{},
         warningWebsocket:{},
-        geatWebsocket:{},
         warningData:{},
         vehicleId: this.$route.params.vehicleId,
         whetherData:{},
@@ -224,26 +204,7 @@
         alertInit:true,
         v2xInit:true,
         v2xUuid:[],
-        lastPoint:[],
-        geat:{
-          status5:'',
-          status6:'',
-          status3:'',
-          status4:'',
-        },
-        geatListArr:[],
-        zoomStyleMapping:{
-          11:0,
-          12:0,
-          13:0,
-          14:0,
-          15:0,
-          16:0,
-          17:0,
-          18:0,
-          19:0,
-          20:0
-        },
+        lastPoint:[]
       }
     },
     props:{
@@ -670,22 +631,17 @@
       onWarningMessage(mesasge){
 
 //        console.log("时间----"+new Date().getTime())
-        var _this=this;
+        let _this=this;
         /*if(this.i>4){
           return;
         }*/
-        var json = JSON.parse(mesasge.data);
-        var warningData = json.result.data;
-        var type = json.result.type;
-        if(type=='VEHICLE'){
-            this.vehicleCount++;
-        }
-        if(type=='CLOUD'){
-            this.cloudCount++;
-        }
+        let json = JSON.parse(mesasge.data);
+        let warningData = json.result.data;
+        let type = json.result.type;
         if(warningData.length>0){
           if(type=='VEHICLE'){
             warningData.forEach(item=>{
+              _this.vehicleCount++;
               var dist = parseInt(item.dis);
               if(!dist){
                 dist=-1;
@@ -710,6 +666,7 @@
           if(type=='CLOUD'){
             let eventType = json.result.eventType;
             warningData.forEach(item=>{
+              _this.cloudCount++;
               var dist = parseInt(item.dis);
               if(!dist){
                 dist=-1;
@@ -819,59 +776,6 @@
           return;
         }
       },
-      initGeatWebSocket(){
-        let _this=this;
-        if ('WebSocket' in window) {
-          _this.geatWebsocket = new WebSocket(window.cfg.websocketUrl);  //获得WebSocket对象
-        }
-        _this.geatWebsocket.onmessage = _this.onGeatMessage;
-        _this.geatWebsocket.onclose = _this.onGeatClose;
-        _this.geatWebsocket.onopen = _this.onGeatOpen;
-      },
-      onGeatMessage(mesasge){
-        var json = JSON.parse(mesasge.data);
-        var geatData = json.result;
-        var geatStatus = geatData.status;
-        var statusText = geatStatus == "01" ? "开" : "关";
-        // 01-开 02-关
-        switch(geatData.devId) {
-          case "05":
-            this.geat.status5 = statusText;
-            break;
-          case "06":
-            this.geat.status6 = statusText;
-            break;
-          case "03":
-            this.geat.status3 = statusText;
-            break;
-          case "04":
-            this.geat.status4 = statusText;
-            break;
-        }
-      },
-      onGeatClose(){
-        console.log("结束连接");
-      },
-      onGeatOpen(){  
-        //闸机     
-        var geat = {
-          "action": "dtu_dev_status",
-          "devId": this.geatListArr.join(",")
-        }
-        var geatMsg = JSON.stringify(geat);
-        this.sendGeatMsg(geatMsg);
-      },
-      sendGeatMsg(msg) {
-        let _this=this;
-        if(window.WebSocket){
-          if(_this.geatWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-            _this.geatWebsocket.send(msg); //send()发送消息
-            console.log("warning已发送消息:"+ msg);
-          }
-        }else{
-          return;
-        }
-      },
       /**
        * 传入最小最大像素坐标
        * **/
@@ -920,65 +824,6 @@
       getVehicleEvent(){
         this.vehicleDialog=true;
         this.getAlarmInformation();
-      },
-      getBrakeInfo(){
-        let _this = this;
-        getBrakeInfo().then(res=>{
-          let data = res.data;  
-          data.forEach(item=>{
-            this.geatListArr.push(item.devId);
-            let newPosition = ConvertCoord.wgs84togcj02(item.lon, item.lat);
-            let geatImgPath = '';
-            let geatImgSize = '';
-            let geatImgAncher = '';
-            
-            if(item.devId == "05" || item.devId == "06"){
-              geatImgPath = 'static/images/car/car-8.png';
-              geatImgSize = [48,50];
-              geatImgAncher = [24,50];
-            }else{
-              geatImgPath = 'static/images/car/car-9.png';  
-              geatImgSize = [36,90];
-              geatImgAncher = [18,45];
-            }
-
-            let marker = new AMap.ElasticMarker({
-              position:newPosition,
-              zooms:[10,20],
-              styles:[{
-                icon:{
-                  img:geatImgPath,
-                  size:geatImgSize,//图标的原始大小
-                  ancher:geatImgAncher,//锚点，图标原始大小下锚点所处的位置，相对左上角
-                  fitZoom:17,//最合适的级别，在此级别下显示为原始大小
-                  scaleFactor:1.3,//地图放大一级的缩放比例系数
-                  maxScale:1.3,//最大放大比例 达到此处图片不在变化
-                  minScale:0.5//最小放大比例
-                }
-              }],
-              zoomStyleMapping:_this.zoomStyleMapping
-            })
-            _this.distanceMap.add(marker);
-            var geatStatus = item.status;
-            var statusText = geatStatus == "01" ? "开" : "关";
-            // 01-开 02-关
-            switch(item.devId) {
-              case "05":
-                this.geat.status5 = statusText;
-                break;
-              case "06":
-                this.geat.status6 = statusText;
-                break;
-              case "03":
-                this.geat.status3 = statusText;
-                break;
-              case "04":
-                this.geat.status4 = statusText;
-                break;
-            }
-          })
-          this.initGeatWebSocket();
-        })
       }
     },
     mounted () {
@@ -989,6 +834,24 @@
         zoom:18,
         rotateEnable:'true'
       });
+      /*let marker1 = new AMap.Marker({
+        position: [121.18653381418872,31.274421462567677],
+        icon: 'static/images/car/car-1.png', // 添加 Icon 图标 URL
+        zIndex:500
+      });
+      let marker2 = new AMap.Marker({
+        position: [121.18696087827043,31.274363226403192],
+        icon: 'static/images/car/car-2.png', // 添加 Icon 图标 URL
+        zIndex:500
+      });
+      let marker3 = new AMap.Marker({
+        position: [121.18684514591077,31.27437144715565],
+        icon: 'static/images/car/car-6.png', // 添加 Icon 图标 URL
+        zIndex:500
+      });
+      this.distanceMap.add(marker1);
+      this.distanceMap.add(marker2);
+      this.distanceMap.add(marker3);*/
       this.initWebSocket();
       this.initSideWebSocket();
       this.initDeviceWebSocket();
@@ -997,7 +860,6 @@
       //云端和车端此次行程统计
       this.getV2xInformation();
       this.getAlarmInformation();
-      this.getBrakeInfo();
     },
     destroyed(){
       //销毁Socket
@@ -1006,7 +868,6 @@
       this.deviceWebsocket.close();
       this.lightWebsocket.close();
       this.warningWebsocket.close();
-      this.geatWebsocket.close();
     }
   }
 </script>
@@ -1114,32 +975,6 @@
         img{
           display: block;
           margin: 0 auto;
-        }
-      }
-    }
-    .bake-style{
-      position: absolute;
-      right: 70px;
-      top: 20px;
-      z-index:1;
-      li{
-        margin-right: 30px;
-        float: left;
-        @include layoutMode(align);
-        .park-switch{
-          margin: 5px 0;
-          width: 22px;
-          height: 22px;  
-          font-size: 16px;
-          display: inline-block;
-          text-align: center;
-          margin-left: 10px;
-        }
-        .park-green-bgc{
-           background-color: #156f33;
-        }
-        .park-red-bgc{
-           background-color: #aa1111;
         }
       }
     }

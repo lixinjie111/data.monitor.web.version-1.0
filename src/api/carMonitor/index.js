@@ -106,12 +106,6 @@ export const getAlarmInformation = params => {return axios.post(`${HTTPURL}singl
 export const getV2xInformation = params => {return axios.post(`${HTTPURL}singleMoniter/getEarlyWarningInformation`, params).then(res => res.data); };
 
 
-/**
- * 获取闸机信息
- * */
-export const getBrakeInfo = params => {return axios.post(`${HTTPURL}xa/order/findDevStatus`, params).then(res => res.data); };
-
-
 
 
 
