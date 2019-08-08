@@ -626,9 +626,10 @@
   .monitor-car{
     background:#24212c;
     text-align: center;
-    padding-top:16px;
-     padding-bottom:16px;
+    /*padding-top:16px;
+     padding-bottom:16px;*/
     height:160px;
+    line-height: 160px;
   }
 
   .monitor-left{

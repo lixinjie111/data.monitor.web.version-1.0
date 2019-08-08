@@ -64,7 +64,7 @@
         /*vehicleId:'B21E-00-017',*/
         vehicleId:this.$route.params.vehicleId,
         webSocket:{},
-        isStop:true
+        isStop:false
       }
     },
     methods: {
@@ -93,7 +93,6 @@
           this.routeStartTime="";
           this.isStop=true;
         }else{
-          debugger
           this.realData = json.result;
           this.isStop=false;
          /* console.log("转向灯---"+this.realData.turnLight)*/
