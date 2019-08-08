@@ -8,7 +8,7 @@
           <span class="car-level">L{{singleVehicle.autoLevel}}</span>
         </p>
         <div class="monitor-car">
-          <img class="car-img" src="@/assets/images/car/car.png" ></img>
+          <img class="car-img" :src="singleVehicle.vehicleLogo" ></img>
         </div>
         <p class="c-title monitor-title">行车统计</p>
         <div class="clearfix">
@@ -618,16 +618,17 @@
   .car-img{
     // width: 80%;
     // height:auto;
-    width: auto;
-    height: 118px;
+    width: 260px;
+    height: auto;
     margin: 0 auto;
 
   }
   .monitor-car{
     background:#24212c;
     text-align: center;
-    padding-top:34px;
-     padding-bottom:34px;
+    padding-top:16px;
+     padding-bottom:16px;
+    height:160px;
   }
 
   .monitor-left{
