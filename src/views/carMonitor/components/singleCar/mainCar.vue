@@ -407,7 +407,7 @@
               _this.lastPoint = newPosition;*/
               //设置中心点
 //              console.log("newPosition----"+newPosition)
-              // _this.distanceMap.setCenter(newPosition);
+              _this.distanceMap.setCenter(newPosition);
               //设置旋转角度
               _this.headingAngle = data.heading;
               _this.marker.setAngle(_this.headingAngle);
@@ -1183,8 +1183,7 @@
       this.getAlarmInformation();
       this.getBrakeInfo();
       this.initAddRsu();
-      this.distanceMap.setCenter([115.908519,39.046633])
-     
+    
     },
     destroyed(){
       //销毁Socket
