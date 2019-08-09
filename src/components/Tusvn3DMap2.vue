@@ -33,8 +33,9 @@ export default {
 
             ,modelPersonArr:[]
             ,cacheModelNum:200
-            ,interval:1
+            ,interval:5
             ,count:0
+            ,lastData:null
 
             // ,websocketUrl:"ws://10.0.1.57:9999/ws"
             // ,websocketUrl:"ws://192.168.1.132:9998/ws"
@@ -92,8 +93,11 @@ export default {
 
                 //上海自采 裁剪  全局
                 // this.updateCameraPosition(326181.72659014474,3462354.6747002415,737.3642832288795,741.5052736914325,-1.5707963267948966,-0.05266622778143515);
-
+                setInterval(()=>{
+                    this.processData();
+                },100);
             },500);
+
         },
         /**
          *获取相机参数
@@ -374,14 +378,18 @@ export default {
             this.interval = interval;
             this.count = 0;
         },
-        onMessage:function(data){
-            // return;
-            this.models={};
-            this.count++;
-            if((this.count%this.interval)!=0)
+        processData:function(){
+            let data = this.lastData;
+            if(data==null)
             {
                 return;
             }
+            this.models={};
+            // this.count++;
+            // if((this.count%this.interval)!=0)
+            // {
+            //     return;
+            // }
             let rsuDatas = JSON.parse(data.data);
             var deviceid = null;
             if(rsuDatas.result.length>0)
@@ -490,6 +498,10 @@ export default {
                     }
                 }
             }
+        },
+        onMessage:function(data){
+            this.lastData=data;
+            return;
         },
         onClose:function(data){
             console.log("结束连接");
