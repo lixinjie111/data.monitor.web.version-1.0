@@ -407,7 +407,7 @@
               _this.lastPoint = newPosition;*/
               //设置中心点
 //              console.log("newPosition----"+newPosition)
-              _this.distanceMap.setCenter(newPosition);
+              // _this.distanceMap.setCenter(newPosition);
               //设置旋转角度
               _this.headingAngle = data.heading;
               _this.marker.setAngle(_this.headingAngle);
@@ -980,28 +980,25 @@
             geatAnother = this.geat.status3;
             geatNow = this.geat.status4;
             markerArr = {
-              '00':'geat-2',
-              '11':'geat-6',
+              '00':'geat-6',
+              '11':'geat-2',
             };
             break;
           case "status4":
             geatAnother = this.geat.status4;
             geatNow = this.geat.status3;
             markerArr = {
-              '00':'geat-2',
-              '11':'geat-6',
+              '00':'geat-6',
+              '11':'geat-2',
             };
             break;       
         }
 
         // 00为开 开  11 为关 关
-        console.log(geatNow)
-        console.log(geatAnother)
-        console.log(markerArr)
+      
       
         if(geatNow == "开" && geatAnother == "开"){
-          for(let i in markerArr) {  
-           
+          for(let i in markerArr) {          
               if(i == '00'){
                 this[markerArr[i]].show();
               }else{
@@ -1016,7 +1013,7 @@
                 }else{
                 this[markerArr[i]].hide();  
                 }
-            }else{
+            }else{     
                 if(i == '10'){
                 this[markerArr[i]].show();
                 }else{
@@ -1028,7 +1025,7 @@
         }else if(geatNow == "关" && geatAnother == "开"){
            if(this.geat.status5 == "开" || this.geat.status3 == "开"){
             for(let i in markerArr) {
-                if(i == '10'){
+                if(i == '01'){
                   this[markerArr[i]].show();
                 }else{
                   this[markerArr[i]].hide();  
@@ -1036,7 +1033,7 @@
             }
            }else{
             for(let i in markerArr) {
-                if(i == '01'){
+                if(i == '10'){
                   this[markerArr[i]].show();
                 }else{
                   this[markerArr[i]].hide();  
@@ -1078,8 +1075,8 @@
                   styles:[{
                     icon:{
                       img:'static/images/car/'+geatImgArr[i]+'.png',
-                      size:[48,50],
-                      ancher:[24,50],
+                      size:[48,53],
+                      ancher:[24,53],
                       fitZoom:17,//最合适的级别，在此级别下显示为原始大小
                       scaleFactor:1.3,//地图放大一级的缩放比例系数
                       maxScale:1.3,//最大放大比例 达到此处图片不在变化
@@ -1148,11 +1145,11 @@
             styles:[{
               icon:{
                 img:'static/images/car/rsu.png',
-                size:[32,32],
-                ancher:[16,16],
-                fitZoom:15,//最合适的级别，在此级别下显示为原始大小
+                size:[24,24],
+                ancher:[12,24],
+                fitZoom:16,//最合适的级别，在此级别下显示为原始大小
                 scaleFactor:1.3,//地图放大一级的缩放比例系数
-                maxScale:1.6,//最大放大比例 达到此处图片不在变化
+                maxScale:1.5,//最大放大比例 达到此处图片不在变化
                 minScale:0.6//最小放大比例
               }
             }],
@@ -1186,6 +1183,8 @@
       this.getAlarmInformation();
       this.getBrakeInfo();
       this.initAddRsu();
+      this.distanceMap.setCenter([115.908519,39.046633])
+     
     },
     destroyed(){
       //销毁Socket
