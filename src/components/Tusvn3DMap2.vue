@@ -503,6 +503,7 @@ export default {
         },
         onMessage:function(data){
             this.lastData=data;
+            // this.processData(data);
             return;
         },
         onClose:function(data){
