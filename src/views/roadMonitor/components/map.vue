@@ -106,7 +106,7 @@
               //获取车辆分布数据
               this.getDistributeWms();
               this.timer = setInterval(()=>{
-                console.log("调用了---")
+                // console.log("调用了---")
                 if(this.layerList.length>0){
                   this.map.remove(this.layerList);
                   this.layerList=[];
@@ -132,7 +132,7 @@
         rwDis({
           'disType': disParam,
         }).then(res => {
-          console.log("长度-----"+res.data.length)
+          // console.log("长度-----"+res.data.length)
           this.rwDisMap(res.data,disParam);
         });
       },
@@ -154,7 +154,7 @@
                           icon: 'static/images/sideDevice/1.png', // 添加 Icon 图标 URL
                           offset:new AMap.Pixel(-15, -15)
                         });*/
-                        console.log('position---'+subItem.position);
+                        // console.log('position---'+subItem.position);
                         let marker = new AMap.ElasticMarker({
                           position:subItem.position,
                           zooms:[11,20],
@@ -243,7 +243,7 @@
       },
       getWms() {
         var wms  = new AMap.TileLayer.WMS({
-          url:'http://10.0.1.22:8080/geoserver/shanghai_qcc/wms',
+          url:window.config.dlWmsUrl+'geoserver/shanghai_qcc/wms',
           blend: false,
           tileSize: 256,
           params:{'LAYERS': 'shanghai_qcc:gd_road_centerline',VERSION:'1.1.0'}
@@ -252,7 +252,7 @@
       },
       getDistributeWms() {
         var wms  = new AMap.TileLayer.WMS({
-          url:'http://10.0.1.22:8080/geoserver/shanghai_qcc/wms',
+          url:window.config.dlWmsUrl+'geoserver/shanghai_qcc/wms',
           blend: false,
           tileSize: 256,
           params:{'LAYERS': 'shanghai_qcc:gd_road_centerline','STYLES':'shanghai_qcc:dl_shcsq_wgs84_road_centerline_car_statistics',VERSION:'1.1.0'}
@@ -265,7 +265,7 @@
       initWebSocket(){
         let _this=this;
         if ('WebSocket' in window) {
-          _this.webSocket = new WebSocket(window.cfg.websocketUrl);  //获得WebSocket对象
+          _this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
         }
         _this.webSocket.onmessage = _this.onmessage;
         _this.webSocket.onclose = _this.onclose;

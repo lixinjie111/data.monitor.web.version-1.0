@@ -140,7 +140,7 @@
               _this.roadList.forEach(item=>{
                 item.map=new AMap.Map(item.id, this.mapOption);
                 let wms  = new AMap.TileLayer.WMS({
-                  url:'http://10.0.1.22:8080/geoserver/shanghai_qcc/wms',
+                  url:window.config.dlWmsUrl+'geoserver/shanghai_qcc/wms',
                   blend: false,
                   tileSize: 256,
                   params:{'LAYERS': 'shanghai_qcc:dl_shcsq_wgs84_gjlk',VERSION:'1.1.0'}
@@ -229,7 +229,7 @@
           }).then(res=>{
             let result = res.data.data;
             let wms  = new AMap.TileLayer.WMS({
-              url:'http://10.0.1.22:8080/geoserver/shanghai_qcc/wms',
+              url:window.config.dlWmsUrl+'geoserver/shanghai_qcc/wms',
               blend: false,
               tileSize: 256,
               params:{'LAYERS': 'shanghai_qcc:dl_shcsq_wgs84_gjlk',VERSION:'1.1.0'}
@@ -305,7 +305,7 @@
               _this.roadList.forEach(item=>{
                 item.map=new AMap.Map(item.id, this.mapOption);
                 let wms  = new AMap.TileLayer.WMS({
-                  url:'http://10.0.1.22:8080/geoserver/shanghai_qcc/wms',
+                  url:window.config.dlWmsUrl+'geoserver/shanghai_qcc/wms',
                   blend: false,
                   tileSize: 256,
                   params:{'LAYERS': 'shanghai_qcc:dl_shcsq_wgs84_gjlk',VERSION:'1.1.0'}
@@ -320,7 +320,7 @@
         initWebSocket(){
           let _this=this;
           if ('WebSocket' in window) {
-            _this.webSocket = new WebSocket(window.cfg.websocketUrl);  //获得WebSocket对象
+            _this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
           }
           _this.webSocket.onmessage = _this.onmessage;
           _this.webSocket.onclose = _this.onclose;

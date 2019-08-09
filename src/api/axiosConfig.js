@@ -15,7 +15,7 @@ let isOutLogin = true;
 function axiosFilter(vm) {
     // request
     axios.create({
-      baseURL: cfg.url,
+      baseURL: window.config.url,
       // withCredentials: true,
       headers: {
         'Content-Type': 'application/json;charset=UTF-8'

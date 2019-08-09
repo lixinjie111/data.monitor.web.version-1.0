@@ -274,7 +274,7 @@
                       _this.$refs.tusvnMap3.reset3DMap();
 //                      let cameraParam = JSON.parse(item.cameraParam);
                       _this.$refs.tusvnMap3.updateCameraPosition(_this.cameraParam.x,_this.cameraParam.y,_this.cameraParam.z,_this.cameraParam.radius,_this.cameraParam.pitch,_this.cameraParam.yaw);
-                      _this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,item.serialNum);
+                      _this.$refs.tusvnMap3.changeRcuId(window.config.websocketUrl,item.serialNum);
                     }
                   }
                 }else{
@@ -333,7 +333,7 @@
               console.log("item:"+item);
               _this.cameraParam = JSON.parse(item.cameraParam);
               this.$refs.tusvnMap3.updateCameraPosition(_this.cameraParam.x,_this.cameraParam.y,_this.cameraParam.z,_this.cameraParam.radius,_this.cameraParam.pitch,_this.cameraParam.yaw);
-              this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,item.serialNum);
+              this.$refs.tusvnMap3.changeRcuId(window.config.websocketUrl,item.serialNum);
             }else{
               var options = _this.getPlayerOptions();
               options.sources[0].src =  '';
@@ -539,7 +539,7 @@
             if(this.serialNum&&this.serialNum!=""){
               console.log("this.serialNum--"+this.serialNum)
               this.$refs.tusvnMap3.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
-              this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,this.serialNum);
+              this.$refs.tusvnMap3.changeRcuId(window.config.websocketUrl,this.serialNum);
               return;
             }
             let count = 0;
@@ -548,7 +548,7 @@
                 console.log("this.serialNum--"+this.serialNum)
                 let cameraParam = JSON.parse(this.selectedItem.cameraParam);
                 this.$refs.tusvnMap3.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
-                this.$refs.tusvnMap3.changeRcuId(window.cfg.websocketUrl,this.serialNum);
+                this.$refs.tusvnMap3.changeRcuId(window.config.websocketUrl,this.serialNum);
                 clearInterval(time);
               }
               //超过5s仍然没有响应 则停止渲染

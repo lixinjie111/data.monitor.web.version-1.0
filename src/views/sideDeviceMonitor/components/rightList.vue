@@ -203,7 +203,7 @@
             if(this.roadItem1.roadSiderId&&this.roadItem1.roadSiderId!=''){
               let cameraParam = JSON.parse(this.roadItem1.cameraParam);
               this.$refs.tusvnMap1.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
-              this.$refs.tusvnMap1.changeRcuId(window.cfg.websocketUrl,this.roadItem1.camSerialNum);
+              this.$refs.tusvnMap1.changeRcuId(window.config.websocketUrl,this.roadItem1.camSerialNum);
               return;
             }
           },
@@ -227,7 +227,7 @@
             if(this.roadItem2.roadSiderId&&this.roadItem2.roadSiderId!=''){
               let cameraParam = JSON.parse(this.roadItem2.cameraParam);
               this.$refs.tusvnMap2.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
-              this.$refs.tusvnMap2.changeRcuId(window.cfg.websocketUrl, this.roadItem2.camSerialNum);
+              this.$refs.tusvnMap2.changeRcuId(window.config.websocketUrl, this.roadItem2.camSerialNum);
               return;
             }
           },
@@ -309,7 +309,7 @@
           initWebSocket1(){
             let _this=this;
             if ('WebSocket' in window) {
-              _this.websocket1 = new WebSocket(window.cfg.websocketUrl);  //获得WebSocket对象
+              _this.websocket1 = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
             }
             _this.websocket1.onmessage = _this.onmessage1;
             _this.websocket1.onclose = _this.onclose1;
@@ -418,7 +418,7 @@
           initWebSocket2(){
             let _this=this;
             if ('WebSocket' in window) {
-              _this.websocket2 = new WebSocket(window.cfg.websocketUrl);  //获得WebSocket对象
+              _this.websocket2 = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
             }
             _this.websocket2.onmessage = _this.onmessage2;
             _this.websocket2.onclose = _this.onclose2;
@@ -658,7 +658,7 @@
               }else{
                 if(_this.sideMap1){
 //                  this.$refs.tusvnMap1.reset3DMap();
-                  this.$refs.tusvnMap1.changeRcuId(window.cfg.websocketUrl,this.roadItem1.camSerialNum);
+                  this.$refs.tusvnMap1.changeRcuId(window.config.websocketUrl,this.roadItem1.camSerialNum);
                   this.map1Show=true;
                   this.message1='数据正在加载，请稍候...';
                   setTimeout(()=>{
@@ -679,7 +679,7 @@
               }else{
                 if(_this.sideMap2){
 //                  this.$refs.tusvnMap2.reset3DMap();
-                  this.$refs.tusvnMap2.changeRcuId(window.cfg.websocketUrl,this.roadItem2.camSerialNum);
+                  this.$refs.tusvnMap2.changeRcuId(window.config.websocketUrl,this.roadItem2.camSerialNum);
                   this.map2Show=true;
                   this.message2='数据正在加载，请稍候...';
                   setTimeout(()=>{

@@ -22,7 +22,7 @@ export default {
     methods: {
         getWms() {
             var wms  = new AMap.TileLayer.WMS({
-                url:'http://10.0.1.22:8080/geoserver/shanghai_qcc/wms',
+                url:window.config.dlWmsUrl+'geoserver/shanghai_qcc/wms',
                 blend: false,
                 tileSize: 256,
                 params:{'LAYERS': 'shanghai_qcc:gd_dlzc',VERSION:'1.1.0'}

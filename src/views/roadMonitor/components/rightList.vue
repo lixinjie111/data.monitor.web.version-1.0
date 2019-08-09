@@ -78,7 +78,7 @@
                 position = new AMap.LngLat(baseData.x,baseData.y);
 //                position = ConvertCoord.wgs84togcj02(baseData.x,baseData.y);
                 wms  = new AMap.TileLayer.WMS({
-                  url:'http://10.0.1.22:8080/geoserver/shanghai_qcc/wms',
+                  url:window.config.dlWmsUrl+'geoserver/shanghai_qcc/wms',
                   blend: false,
                   tileSize: 256,
                   params:{'LAYERS': 'shanghai_qcc:dl_shcsq_wgs84_gjlk',VERSION:'1.1.0'}
@@ -119,7 +119,7 @@
           initWebSocket1(){
             let _this=this;
             if ('WebSocket' in window) {
-              _this.webSocket1 = new WebSocket(window.cfg.websocketUrl);  //获得WebSocket对象
+              _this.webSocket1 = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
             }
             _this.webSocket1.onmessage = _this.onmessage1;
             _this.webSocket1.onclose = _this.onclose1;
@@ -180,7 +180,7 @@
           initWebSocket2(){
             let _this=this;
             if ('WebSocket' in window) {
-              _this.webSocket2 = new WebSocket(window.cfg.websocketUrl);  //获得WebSocket对象
+              _this.webSocket2 = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
             }
             _this.webSocket2.onmessage = _this.onmessage2;
             _this.webSocket2.onclose = _this.onclose2;
@@ -241,7 +241,7 @@
           initWebSocket3(){
             let _this=this;
             if ('WebSocket' in window) {
-              _this.webSocket3 = new WebSocket(window.cfg.websocketUrl);  //获得WebSocket对象
+              _this.webSocket3 = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
             }
             _this.webSocket3.onmessage = _this.onmessage3;
             _this.webSocket3.onclose = _this.onclose3;
@@ -302,7 +302,7 @@
           initWebSocket4(){
             let _this=this;
             if ('WebSocket' in window) {
-              _this.webSocket4 = new WebSocket(window.cfg.websocketUrl);  //获得WebSocket对象
+              _this.webSocket4 = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
             }
             _this.webSocket4.onmessage = _this.onmessage4;
             _this.webSocket4.onclose = _this.onclose4;
