@@ -18,6 +18,24 @@
         <span class="detail2">{{nowTime}}</span>
       </div>
     </div>
+    <ul class="bake-style">
+      <li>
+        <span>9号门东杆-进/出</span>
+        <span :class="geat.status3 == '开' ? 'park-green-bgc' : 'park-red-bgc'" class="park-switch">{{geat.status3}}</span>
+      </li>
+      <li>
+        <span>9号门西杆-进/出</span>
+        <span :class="geat.status4 == '开' ? 'park-green-bgc' : 'park-red-bgc'" class="park-switch">{{geat.status4}}</span>
+      </li>
+      <li>
+        <span>停车场-进</span>
+        <span :class="geat.status6 == '开' ? 'park-green-bgc' : 'park-red-bgc'" class="park-switch">{{geat.status6}}</span>
+      </li>
+      <li>
+        <span>停车场-出</span>
+        <span :class="geat.status5 == '开' ? 'park-green-bgc' : 'park-red-bgc'" class="park-switch">{{geat.status5}}</span>
+      </li>
+    </ul>
     <div class="spat-detail">
       <div  v-for="(item,key) in lightData" class="spat-layout" :key="key">
         <div v-show="key=='key_3'&&item.flag" class="spat-detail-style">
@@ -84,6 +102,7 @@
         <span>{{vehicleCount}}</span>
       </div>
     </div>
+   
     <!--v-show="warningData.show"-->
 
     <div class="pre-warning">
@@ -154,7 +173,7 @@
 <script>
   import AMap from 'AMap';
   import SingleDialog from '@/views/carMonitor/components/singleCar/dialog.vue'
-  import { getAlarmInformation,getV2xInformation } from '@/api/carMonitor'
+  import { getAlarmInformation,getV2xInformation,getBrakeInfo } from '@/api/carMonitor'
   import DateFormat from '@/assets/js/utils/date.js'
   import ConvertCoord from '@/assets/js/utils/coordConvert.js'
   export default {
@@ -170,6 +189,7 @@
         deviceWebsocket:{},
         lightWebsocket:{},
         warningWebsocket:{},
+        geatWebsocket:{},
         warningData:{},
         vehicleId: this.$route.params.vehicleId,
         whetherData:{},
@@ -204,7 +224,46 @@
         alertInit:true,
         v2xInit:true,
         v2xUuid:[],
-        lastPoint:[]
+        lastPoint:[],
+        geat:{
+          status5:'',
+          status6:'',
+          status3:'',
+          status4:'',
+        },
+        geatListArr:[],
+        zoomStyleMapping:{
+          11:0,
+          12:0,
+          13:0,
+          14:0,
+          15:0,
+          16:0,
+          17:0,
+          18:0,
+          19:0,
+          20:0
+        },
+        rsuPl:{
+          1:[ 115.908519,39.046633],
+          2:[ 115.905150,39.046712],
+          3:[ 115.909713,39.047693],
+          4:[ 115.908525,39.047519],
+          5:[ 115.905044,39.047584],
+          6:[ 115.909566,39.049398],
+          7:[ 115.908472,39.049454],
+          8:[ 115.905020,39.049431],
+          9:[ 115.909394,39.051029],
+          10:[ 115.907396,39.051035],
+          11:[ 115.905091,39.050994],
+          12:[ 115.878286,39.041891],
+          13:[ 115.872194,39.041960],
+          14:[ 115.866564,39.042019],
+          15:[ 115.867074,39.041671],
+          16:[ 115.859773,39.041669],
+          17:[ 115.892292,39.036231],
+          18:[ 115.894425,39.033434],
+        },
       }
     },
     props:{
@@ -257,7 +316,19 @@
           console.log("第一次是否走此方法")
           this.initSideWebSocket();
         }
-      }
+      },
+      'geat.status5'(newVal,oldVal){
+           this.showGeat(newVal,"status6");  
+      },
+      'geat.status6'(newVal,oldVal){
+           this.showGeat(newVal,"status5");
+      },
+      'geat.status3'(newVal,oldVal){
+           this.showGeat(newVal,"status4"); 
+      },
+      'geat.status4'(newVal,oldVal){
+           this.showGeat(newVal,"status3");     
+      },
     },
     components:{
       SingleDialog
@@ -776,6 +847,60 @@
           return;
         }
       },
+      initGeatWebSocket(){
+        let _this=this;
+        if ('WebSocket' in window) {
+          _this.geatWebsocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+        }
+        _this.geatWebsocket.onmessage = _this.onGeatMessage;
+        _this.geatWebsocket.onclose = _this.onGeatClose;
+        _this.geatWebsocket.onopen = _this.onGeatOpen;
+      },
+      onGeatMessage(mesasge){
+        var json = JSON.parse(mesasge.data);
+        var geatData = json.result;
+        var geatStatus = geatData.status;
+        var statusText = geatStatus == "01" ? "开" : "关";
+        // 01-开 02-关
+        switch(geatData.devId) {
+          case "05":
+            this.geat.status5 = statusText;
+            break;
+          case "06":
+            this.geat.status6 = statusText;
+            break;
+          case "03":
+            this.geat.status3 = statusText;
+            break;
+          case "04":
+            this.geat.status4 = statusText;
+            break;
+        }
+        // this.showGeat();
+      },
+      onGeatClose(){
+        console.log("结束连接");
+      },
+      onGeatOpen(){  
+        //闸机     
+        var geat = {
+          "action": "dtu_dev_status",
+          "devId": this.geatListArr.join(",")
+        }
+        var geatMsg = JSON.stringify(geat);
+        this.sendGeatMsg(geatMsg);
+      },
+      sendGeatMsg(msg) {
+        let _this=this;
+        if(window.WebSocket){
+          if(_this.geatWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+            _this.geatWebsocket.send(msg); //send()发送消息
+            console.log("warning已发送消息:"+ msg);
+          }
+        }else{
+          return;
+        }
+      },
       /**
        * 传入最小最大像素坐标
        * **/
@@ -824,6 +949,223 @@
       getVehicleEvent(){
         this.vehicleDialog=true;
         this.getAlarmInformation();
+      },
+      showGeat(value,flag){
+       
+        let geatAnother
+        let geatNow
+        let markerArr = {};
+        switch (flag) {
+          case "status5":
+            geatAnother = this.geat.status5;
+            geatNow = this.geat.status6;
+            markerArr = {
+              '00':'geat-3',
+              '01':'geat-5',
+              '10':'geat-4',
+              '11':'geat-1',
+            };
+            break;
+          case "status6":
+            geatAnother = this.geat.status6;
+            geatNow = this.geat.status5;
+            markerArr = {
+              '00':'geat-3',
+              '01':'geat-5',
+              '10':'geat-4',
+              '11':'geat-1',
+            };
+            break;
+          case "status3":
+            geatAnother = this.geat.status3;
+            geatNow = this.geat.status4;
+            markerArr = {
+              '00':'geat-2',
+              '11':'geat-6',
+            };
+            break;
+          case "status4":
+            geatAnother = this.geat.status4;
+            geatNow = this.geat.status3;
+            markerArr = {
+              '00':'geat-2',
+              '11':'geat-6',
+            };
+            break;       
+        }
+
+        // 00为开 开  11 为关 关
+        console.log(geatNow)
+        console.log(geatAnother)
+        console.log(markerArr)
+      
+        if(geatNow == "开" && geatAnother == "开"){
+          for(let i in markerArr) {  
+           
+              if(i == '00'){
+                this[markerArr[i]].show();
+              }else{
+                this[markerArr[i]].hide();  
+              }
+          }
+        }else if(geatNow == "开" && geatAnother == "关"){
+          for(let i in markerArr) {
+            if(this.geat.status5 == "开" || this.geat.status3 == "开"){
+                if(i == '01'){
+                this[markerArr[i]].show();
+                }else{
+                this[markerArr[i]].hide();  
+                }
+            }else{
+                if(i == '10'){
+                this[markerArr[i]].show();
+                }else{
+                this[markerArr[i]].hide();  
+                }
+            }
+             
+          }
+        }else if(geatNow == "关" && geatAnother == "开"){
+           if(this.geat.status5 == "开" || this.geat.status3 == "开"){
+            for(let i in markerArr) {
+                if(i == '10'){
+                  this[markerArr[i]].show();
+                }else{
+                  this[markerArr[i]].hide();  
+                }
+            }
+           }else{
+            for(let i in markerArr) {
+                if(i == '01'){
+                  this[markerArr[i]].show();
+                }else{
+                  this[markerArr[i]].hide();  
+                }
+            }
+           }       
+        }else if(geatNow == "关" && geatAnother == "关"){
+          for(let i in markerArr) {
+              if(i == '11'){
+                this[markerArr[i]].show();
+              }else{
+                this[markerArr[i]].hide();  
+              }
+          }
+        }
+ 
+      },
+      getBrakeInfo(){
+        let _this = this;
+        getBrakeInfo().then(res=>{
+          let data = res.data;  
+          let pFlag = true;
+          let gFlag = true;
+          data.forEach(item=>{
+            this.geatListArr.push(item.devId);
+            let newPosition = ConvertCoord.wgs84togcj02(item.lon, item.lat);
+            let geatImgPath = '';
+            let geatImgSize = '';
+            let geatImgAncher = '';
+            let geatImgArr = [];
+            
+            if((item.devId == "05" || item.devId == "06") && pFlag){
+              geatImgArr = ['geat-1','geat-3','geat-4','geat-5'];
+              pFlag = false;
+              for (let i = 0; i < geatImgArr.length; i++) {
+                this[geatImgArr[i]] = new AMap.ElasticMarker({
+                  position:newPosition,
+                  zooms:[10,20],
+                  styles:[{
+                    icon:{
+                      img:'static/images/car/'+geatImgArr[i]+'.png',
+                      size:[48,50],
+                      ancher:[24,50],
+                      fitZoom:17,//最合适的级别，在此级别下显示为原始大小
+                      scaleFactor:1.3,//地图放大一级的缩放比例系数
+                      maxScale:1.3,//最大放大比例 达到此处图片不在变化
+                      minScale:0.5//最小放大比例
+                    }
+                  }],
+                  zoomStyleMapping:_this.zoomStyleMapping
+                })
+                _this.distanceMap.add(this[geatImgArr[i]]);   
+                this[geatImgArr[i]].hide();            
+              }
+            }else if((item.devId == "03" || item.devId == "04") && gFlag){
+              geatImgArr = ['geat-2','geat-6'];
+              gFlag = false;
+              for (let i = 0; i < geatImgArr.length; i++) {
+                this[geatImgArr[i]] = new AMap.ElasticMarker({
+                  position:newPosition,
+                  zooms:[10,20],
+                  styles:[{
+                    icon:{
+                      img:'static/images/car/'+geatImgArr[i]+'.png',
+                      size:[36,90],
+                      ancher:[18,45],
+                      fitZoom:17,//最合适的级别，在此级别下显示为原始大小
+                      scaleFactor:1.3,//地图放大一级的缩放比例系数
+                      maxScale:1.3,//最大放大比例 达到此处图片不在变化
+                      minScale:0.5//最小放大比例
+                    }
+                  }],
+                  zoomStyleMapping:_this.zoomStyleMapping
+                })
+                _this.distanceMap.add(this[geatImgArr[i]]); 
+                this[geatImgArr[i]].hide();                 
+              }
+            }
+              
+            var geatStatus = item.status;
+            var statusText = geatStatus == "01" ? "开" : "关";
+            // 01-开 02-关
+            switch(item.devId) {
+              case "05":
+                this.geat.status5 = statusText;
+                break;
+              case "06":
+                this.geat.status6 = statusText;
+                break;
+              case "03":
+                this.geat.status3 = statusText;
+                break;
+              case "04":
+                this.geat.status4 = statusText;
+                break;
+            }
+          })
+        
+          this.initGeatWebSocket();
+        })
+      },
+      initAddRsu(){
+        let _this = this;
+        for (let i in this.rsuPl) {
+          let _positon = ConvertCoord.wgs84togcj02(this.rsuPl[i][0], this.rsuPl[i][1]);
+          let marker = new AMap.ElasticMarker({
+            position:_positon,
+            zooms:[9,20],
+            styles:[{
+              icon:{
+                img:'static/images/car/rsu.png',
+                size:[32,32],
+                ancher:[16,16],
+                fitZoom:15,//最合适的级别，在此级别下显示为原始大小
+                scaleFactor:1.3,//地图放大一级的缩放比例系数
+                maxScale:1.6,//最大放大比例 达到此处图片不在变化
+                minScale:0.6//最小放大比例
+              }
+            }],
+            zoomStyleMapping:_this.zoomStyleMapping
+          })
+         
+         
+          // let marker = new AMap.Marker({
+          //   position: _positon,
+          //   icon: 'static/images/car/rsu.png', // 添加 Icon 图标 URL
+          // });
+          _this.distanceMap.add(marker);
+        }
       }
     },
     mounted () {
@@ -834,24 +1176,6 @@
         zoom:18,
         rotateEnable:'true'
       });
-      /*let marker1 = new AMap.Marker({
-        position: [121.18653381418872,31.274421462567677],
-        icon: 'static/images/car/car-1.png', // 添加 Icon 图标 URL
-        zIndex:500
-      });
-      let marker2 = new AMap.Marker({
-        position: [121.18696087827043,31.274363226403192],
-        icon: 'static/images/car/car-2.png', // 添加 Icon 图标 URL
-        zIndex:500
-      });
-      let marker3 = new AMap.Marker({
-        position: [121.18684514591077,31.27437144715565],
-        icon: 'static/images/car/car-6.png', // 添加 Icon 图标 URL
-        zIndex:500
-      });
-      this.distanceMap.add(marker1);
-      this.distanceMap.add(marker2);
-      this.distanceMap.add(marker3);*/
       this.initWebSocket();
       this.initSideWebSocket();
       this.initDeviceWebSocket();
@@ -860,6 +1184,8 @@
       //云端和车端此次行程统计
       this.getV2xInformation();
       this.getAlarmInformation();
+      this.getBrakeInfo();
+      this.initAddRsu();
     },
     destroyed(){
       //销毁Socket
@@ -868,6 +1194,7 @@
       this.deviceWebsocket.close();
       this.lightWebsocket.close();
       this.warningWebsocket.close();
+      this.geatWebsocket.close();
     }
   }
 </script>
@@ -975,6 +1302,32 @@
         img{
           display: block;
           margin: 0 auto;
+        }
+      }
+    }
+    .bake-style{
+      position: absolute;
+      right: 70px;
+      top: 20px;
+      z-index:1;
+      li{
+        margin-right: 30px;
+        float: left;
+        @include layoutMode(align);
+        .park-switch{
+          margin: 5px 0;
+          width: 22px;
+          height: 22px;  
+          font-size: 16px;
+          display: inline-block;
+          text-align: center;
+          margin-left: 10px;
+        }
+        .park-green-bgc{
+           background-color: #156f33;
+        }
+        .park-red-bgc{
+           background-color: #aa1111;
         }
       }
     }
