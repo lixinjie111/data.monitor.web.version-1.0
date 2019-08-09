@@ -289,13 +289,13 @@ export default {
 			}
 		}
 		.car-middle-info {
-			height: 55px;
-			margin-top: 42px;
-			margin-bottom: 27px;
+			height: 74px;
+			margin-top: 35px;
+			margin-bottom: 15px;
 			line-height: 26px;
 			@include layoutMode(all);
 			.car-img {
-				width: 110px;
+				width: 140px;
 				height: 100%;
 				object-fit: cover;
 			}
