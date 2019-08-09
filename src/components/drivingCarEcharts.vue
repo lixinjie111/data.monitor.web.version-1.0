@@ -52,7 +52,7 @@ export default {
         initWebSocket(){
             // console.log('websocket获取当前时间节点的车辆分布数量');
             if ('WebSocket' in window) {
-                this.webSocket = new WebSocket(window.cfg.socketUrl);  //获得WebSocket对象
+                this.webSocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
             }
             this.webSocket.onmessage = this.onmessage;
             this.webSocket.onclose = this.onclose;

@@ -296,7 +296,7 @@
               return;
           }
           // 实例化socket
-          this.socket = new WebSocket(window.cfg.socketUrl)
+          this.socket = new WebSocket(window.config.socketUrl)
           // 监听socket连接
           this.socket.onopen = this.openSocket
           // 监听socket错误信息

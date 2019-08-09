@@ -346,7 +346,7 @@
       initWebSocket(){
         let _this=this;
         if ('WebSocket' in window) {
-          _this.webSocket = new WebSocket(window.cfg.socketUrl);  //获得WebSocket对象
+          _this.webSocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
         }
         _this.webSocket.onmessage = _this.onmessage;
         _this.webSocket.onclose = _this.onclose;
@@ -430,7 +430,7 @@
       realReportWebSocket(){
         let _this=this;
         if ('WebSocket' in window) {
-          _this.reportWebSocket = new WebSocket(window.cfg.websocketUrl);  //获得WebSocket对象
+          _this.reportWebSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
         }
         _this.reportWebSocket.onmessage = _this.onReportMessage;
         _this.reportWebSocket.onclose = _this.onReportClose;

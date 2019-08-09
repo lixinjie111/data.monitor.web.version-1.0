@@ -81,7 +81,7 @@
         getDevDis({
           'devTypes': disParams,
         }).then(res => {
-          console.log("长度-----"+res.data.length)
+          // console.log("长度-----"+res.data.length)
           this.deviceMap(res.data);
         });
       },

@@ -280,7 +280,7 @@
       initWebSocket(){
         let _this=this;
         if ('WebSocket' in window) {
-          _this.hostWebsocket = new WebSocket(window.cfg.socketUrl);  //获得WebSocket对象
+          _this.hostWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
         }
         _this.hostWebsocket.onmessage = _this.onmessage;
         _this.hostWebsocket.onclose = _this.onclose;
@@ -373,7 +373,7 @@
       initSideWebSocket(){
         let _this=this;
         if ('WebSocket' in window) {
-          _this.sideWebsocket = new WebSocket(window.cfg.socketUrl);  //获得WebSocket对象
+          _this.sideWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
         }
         _this.sideWebsocket.onmessage = _this.onSideMessage;
         _this.sideWebsocket.onclose = _this.onSideClose;
@@ -451,7 +451,7 @@
       initDeviceWebSocket(){
         let _this=this;
         if ('WebSocket' in window) {
-          _this.deviceWebsocket = new WebSocket(window.cfg.socketUrl);  //获得WebSocket对象
+          _this.deviceWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
         }
         _this.deviceWebsocket.onmessage = _this.onDeviceMessage;
         _this.deviceWebsocket.onclose = _this.onDeviceClose;
@@ -527,7 +527,7 @@
       initLightWebSocket(){
         let _this=this;
         if ('WebSocket' in window) {
-          _this.lightWebsocket = new WebSocket(window.cfg.socketUrl);  //获得WebSocket对象
+          _this.lightWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
         }
         _this.lightWebsocket.onmessage = _this.onLightMessage;
         _this.lightWebsocket.onclose = _this.onLightClose;
@@ -622,7 +622,7 @@
       initWarningWebSocket(){
         let _this=this;
         if ('WebSocket' in window) {
-          _this.warningWebsocket = new WebSocket(window.cfg.socketUrl);  //获得WebSocket对象
+          _this.warningWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
         }
         _this.warningWebsocket.onmessage = _this.onWarningMessage;
         _this.warningWebsocket.onclose = _this.onWarningClose;
