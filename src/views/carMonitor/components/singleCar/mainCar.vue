@@ -21,19 +21,19 @@
     <ul class="bake-style">
       <li>
         <span>9号门东杆-进/出</span>
-        <span :class="geat.status3 == '开' ? 'park-green-bgc' : 'park-red-bgc'" class="park-switch">{{geat.status3}}</span>
+        <span :class="geat.status3.value == '开' ? 'park-green-bgc' : 'park-red-bgc'" class="park-switch">{{geat.status3.value}}</span>
       </li>
       <li>
         <span>9号门西杆-进/出</span>
-        <span :class="geat.status4 == '开' ? 'park-green-bgc' : 'park-red-bgc'" class="park-switch">{{geat.status4}}</span>
+        <span :class="geat.status4.value == '开' ? 'park-green-bgc' : 'park-red-bgc'" class="park-switch">{{geat.status4.value}}</span>
       </li>
       <li>
         <span>停车场-进</span>
-        <span :class="geat.status6 == '开' ? 'park-green-bgc' : 'park-red-bgc'" class="park-switch">{{geat.status6}}</span>
+        <span :class="geat.status6.value == '开' ? 'park-green-bgc' : 'park-red-bgc'" class="park-switch">{{geat.status6.value}}</span>
       </li>
       <li>
         <span>停车场-出</span>
-        <span :class="geat.status5 == '开' ? 'park-green-bgc' : 'park-red-bgc'" class="park-switch">{{geat.status5}}</span>
+        <span :class="geat.status5.value == '开' ? 'park-green-bgc' : 'park-red-bgc'" class="park-switch">{{geat.status5.value}}</span>
       </li>
     </ul>
     <div class="spat-detail">
@@ -225,12 +225,26 @@
         v2xInit:true,
         v2xUuid:[],
         lastPoint:[],
+        timerTime:7000,
         geat:{
-          status5:'',
-          status6:'',
-          status3:'',
-          status4:'',
+          status5:{
+            value:'', 
+            timer:null
+          },
+          status6:{
+            value:'',
+            timer:null
+          },
+          status3:{
+            value:'',
+            timer:null
+          },
+          status4:{
+            value:'',
+            timer:null
+          },
         },
+     
         geatListArr:[],
         zoomStyleMapping:{
           11:0,
@@ -313,20 +327,20 @@
           }
           this.sideWebsocket.close();
         }else{
-          console.log("第一次是否走此方法")
+        
           this.initSideWebSocket();
         }
       },
-      'geat.status5'(newVal,oldVal){
+      'geat.status5.value'(newVal,oldVal){
            this.showGeat(newVal,"status6");  
       },
-      'geat.status6'(newVal,oldVal){
+      'geat.status6.value'(newVal,oldVal){
            this.showGeat(newVal,"status5");
       },
-      'geat.status3'(newVal,oldVal){
+      'geat.status3.value'(newVal,oldVal){
            this.showGeat(newVal,"status4"); 
       },
-      'geat.status4'(newVal,oldVal){
+      'geat.status4.value'(newVal,oldVal){
            this.showGeat(newVal,"status3");     
       },
     },
@@ -762,8 +776,7 @@
             //如果发过来的数据存在，则进行计数,不存在的如果3s消失
             if(_this.event.length>0){
               _this.event.forEach(item=>{
-                console.log(item.uuid+"-----uuid")
-                console.log(item.type+"-----eventType")
+              
                 let flag=false;
                 warningData.forEach(item1=>{
                   if(item.uuid==item1.uuid){
@@ -777,7 +790,7 @@
                   clearTimeout(item.timer);
                   item.timer = setTimeout(()=>{
                     item.flag = false;//控制隐藏
-//                console.log('如果存在，更新定时器'+item.count)
+
                   },3000)
                 }
               })
@@ -797,7 +810,7 @@
                   obj.count=1;
                   obj.timer=setTimeout(()=>{
                     obj.flag=false;
-//                console.log('我要消失了====='+item.vehicleId);
+
                   },3000);
                   obj.flag=true;
                   obj.type=eventType;
@@ -808,7 +821,7 @@
                 obj.count=1;
                 obj.timer=setTimeout(()=>{
                   obj.flag=false;
-//              console.log('我要消失了===='+item.vehicleId);
+
                 },3000);
                 obj.flag=true;
                 obj.type=eventType;
@@ -864,16 +877,16 @@
         // 01-开 02-关
         switch(geatData.devId) {
           case "05":
-            this.geat.status5 = statusText;
+            this.geat.status5.value = statusText;
             break;
           case "06":
-            this.geat.status6 = statusText;
+            this.geat.status6.value = statusText;
             break;
           case "03":
-            this.geat.status3 = statusText;
+            this.geat.status3.value = statusText;
             break;
           case "04":
-            this.geat.status4 = statusText;
+            this.geat.status4.value = statusText;
             break;
         }
         // this.showGeat();
@@ -951,52 +964,56 @@
         this.getAlarmInformation();
       },
       showGeat(value,flag){
-       
+  
         let geatAnother
         let geatNow
         let markerArr = {};
         switch (flag) {
           case "status5":
-            geatAnother = this.geat.status5;
-            geatNow = this.geat.status6;
+            geatAnother = this.geat.status5.value;
+            geatNow = this.geat.status6.value;
             markerArr = {
               '00':'geat-3',
               '01':'geat-5',
               '10':'geat-4',
               '11':'geat-1',
             };
+            this.geatTimeout("geat.status6.timer")
             break;
           case "status6":
-            geatAnother = this.geat.status6;
-            geatNow = this.geat.status5;
+            geatAnother = this.geat.status6.value;
+            geatNow = this.geat.status5.value;
             markerArr = {
               '00':'geat-3',
               '01':'geat-5',
               '10':'geat-4',
               '11':'geat-1',
             };
+            this.geatTimeout("geat.status5.timer")
             break;
           case "status3":
-            geatAnother = this.geat.status3;
-            geatNow = this.geat.status4;
+            geatAnother = this.geat.status3.value;
+            geatNow = this.geat.status4.value;
             markerArr = {
               '00':'geat-6',
               '11':'geat-2',
             };
+             this.geatTimeout("geat.status3.timer")
             break;
           case "status4":
-            geatAnother = this.geat.status4;
-            geatNow = this.geat.status3;
+            geatAnother = this.geat.status4.value;
+            geatNow = this.geat.status3.value;
             markerArr = {
               '00':'geat-6',
               '11':'geat-2',
             };
+             this.geatTimeout("geat.status4.timer")
             break;       
         }
 
         // 00为开 开  11 为关 关
       
-      
+    
         if(geatNow == "开" && geatAnother == "开"){
           for(let i in markerArr) {          
               if(i == '00'){
@@ -1007,7 +1024,7 @@
           }
         }else if(geatNow == "开" && geatAnother == "关"){
           for(let i in markerArr) {
-            if(this.geat.status5 == "开" || this.geat.status3 == "开"){
+            if(this.geat.status5.value == "开" || this.geat.status3.value == "开"){
                 if(i == '01'){
                 this[markerArr[i]].show();
                 }else{
@@ -1023,7 +1040,7 @@
              
           }
         }else if(geatNow == "关" && geatAnother == "开"){
-           if(this.geat.status5 == "开" || this.geat.status3 == "开"){
+           if(this.geat.status5.value == "开" || this.geat.status3.value == "开"){
             for(let i in markerArr) {
                 if(i == '01'){
                   this[markerArr[i]].show();
@@ -1050,6 +1067,33 @@
           }
         }
  
+      },
+      geatTimeout(timer){
+       
+        clearTimeout(this[timer]);
+        this[timer] = setTimeout(() => {   
+          if(timer == "geat.status3.timer"){
+            if(this.geat.status3.value == "开"){
+              this.geat.status3.value = "关"
+              this.geat.status4.value = "关"
+            }
+          }else if(timer == "geat.status4.timer"){
+            if(this.geat.status4.value == "开"){
+              this.geat.status3.value = "关"
+              this.geat.status4.value = "关"
+            }
+          }else if(timer == "geat.status5.timer"){
+            // 5-出
+            if(this.geat.status5.value == "开"){
+              this.geat.status5.value = "关"
+            }
+          }else if(timer == "geat.status6.timer"){
+             // 6-进
+            if(this.geat.status6.value == "开"){
+              this.geat.status6.value = "关"
+            }
+          }
+        }, this.timerTime);
       },
       getBrakeInfo(){
         let _this = this;
@@ -1118,20 +1162,22 @@
             // 01-开 02-关
             switch(item.devId) {
               case "05":
-                this.geat.status5 = statusText;
+                this.geat.status5.value = statusText;
                 break;
               case "06":
-                this.geat.status6 = statusText;
+                this.geat.status6.value = statusText;
                 break;
               case "03":
-                this.geat.status3 = statusText;
+                this.geat.status3.value = statusText;
                 break;
               case "04":
-                this.geat.status4 = statusText;
+                this.geat.status4.value = statusText;
                 break;
             }
+
+
           })
-        
+     
           this.initGeatWebSocket();
         })
       },
@@ -1183,7 +1229,7 @@
       this.getAlarmInformation();
       this.getBrakeInfo();
       this.initAddRsu();
-    
+     
     },
     destroyed(){
       //销毁Socket
