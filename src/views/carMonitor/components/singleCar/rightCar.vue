@@ -72,7 +72,7 @@
         ],
         playerOptions: {
           overNative: true,
-            autoplay: false,
+            autoplay: true,
             controls: true,
             techOrder: ['flash', 'html5'],
             sourceOrder: true,
@@ -88,7 +88,7 @@
           muted:true,
           width:'270',
           height:'180',
-          bigPlayButton : true,
+          bigPlayButton : false,
           notSupportedMessage: '此视频暂无法播放，请稍候再试!',
           controlBar: {
             timeDivider: false,
