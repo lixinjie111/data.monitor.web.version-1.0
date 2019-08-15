@@ -51,9 +51,9 @@ export default new Router({
     meta: {
       showHeader: true
     }
-  },{ 
-    path: '/refresh', 
-    name: 'Refresh', 
+  },{
+    path: '/refresh',
+    name: 'Refresh',
     component: Refresh,
     meta: {}
   },{

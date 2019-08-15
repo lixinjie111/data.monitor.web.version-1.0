@@ -66,10 +66,8 @@
             scalefactor: 0,//一个像素相当于多少度
         },
         //自车数据
-        currentCar:{
-        },
-        carsData:[
-        ],
+        currentCar:{},
+        carsData:[],
         playerOptions: {
           overNative: true,
             autoplay: true,
@@ -262,9 +260,9 @@
           //获取视频地址并赋值
           this.rtmp = this.streamInfo.rtmp;
           if(this.rtmp&&this.rtmp!=''){
+            this.playerOptions.bigPlayButton=true;
             console.log("rtmp:"+this.rtmp);
             this.playerOptions.sources[0].src = this.rtmp;
-            this.playerOptions.bigPlayButton=true;
             //直播报活调用
             this.repeatFn();//拉取流后，保活
           }else {
