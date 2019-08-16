@@ -90,7 +90,7 @@
                 techOrder: ['flash', 'html5'],
                 sourceOrder: true,
                 flash: {
-                  swf: isProduction ? '/dataMonitor/static/media/video-js.swf' : '/static/media/video-js.swf'
+                  swf: isProduction ? '/monPlatform/static/media/video-js.swf' : '/static/media/video-js.swf'
                 },
                 sources: [
                   {
@@ -124,7 +124,7 @@
                 techOrder: ['flash', 'html5'],
                 sourceOrder: true,
                 flash: {
-                  swf: isProduction ? '/dataMonitor/static/media/video-js.swf' : '/static/media/video-js.swf'
+                  swf: isProduction ? '/monPlatform/static/media/video-js.swf' : '/static/media/video-js.swf'
                 },
                 sources: [
                   {
@@ -240,7 +240,7 @@
               techOrder: ['flash', 'html5'],
               sourceOrder: true,
               flash: {
-                swf: isProduction ? '/dataMonitor/static/media/video-js.swf' : '/static/media/video-js.swf'
+                swf: isProduction ? '/monPlatform/static/media/video-js.swf' : '/static/media/video-js.swf'
               },
               sources: [
                 {
