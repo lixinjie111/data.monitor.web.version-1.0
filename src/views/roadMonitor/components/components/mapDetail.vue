@@ -33,6 +33,7 @@
               let position;
               let wms;
                 baseData = this.mapData.baseData;
+
                 position = new AMap.LngLat(baseData.x,baseData.y);
 //                position = ConvertCoord.wgs84togcj02(baseData.x,baseData.y);
                 wms  = new AMap.TileLayer.WMS({
@@ -91,13 +92,13 @@
           },
           onopen(data){
             //获取在驶车辆状态
-            var cross1 = {
+            let _params = {
               'action':'cross_real_data',
               'token':'tusvn',
               'crossId':this.cross.crossId
             }
-            var cross1Msg = JSON.stringify(cross1);
-            this.sendMsg(cross1Msg);
+            let _paramsMsg = JSON.stringify(_params);
+            this.sendMsg(_paramsMsg);
           },
           sendMsg(msg) {
             let _this=this;
