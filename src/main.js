@@ -40,7 +40,7 @@ Vue.prototype.$echarts = echarts
 // });
 
 // 权限
-import { setAuthInfo, getAdminId, getAuthInfo, removeAuthInfo } from '@/cookie/index';
+import { setAuthInfo, getAdminId, getAuthInfo, removeAuthInfo } from '@/cookie/session.js';
 
 Vue.use(ElementUI)
 
@@ -77,15 +77,15 @@ router.beforeEach((to,from,next) => {
     NProgress.start()
     // _hmt.push(['_trackPageview', to.fullPath]);
     const ADMINID = getAdminId();
-    if(ADMINID) {
+    if(ADMINID) {//已登录
         // 回填用户信息
-        store.dispatch('setAuthInfo', getAuthInfo());
+        //store.dispatch('setAuthInfo', getAuthInfo());
         if(to.path === '/login') {
             next({path: '/dataMonitor'});
         }else {
             next();
         }
-    }else {
+    }else {//未登录
         if (whiteList.indexOf(to.path) !== -1) { // 在免登录白名单，直接进入
           next()
         } else {

@@ -1,7 +1,7 @@
 import { requestLogin, requestLogout} from '@/api/login';
 import { 
 	setAuthInfo, removeAuthInfo
-} from '@/cookie/index';
+} from '@/cookie/session.js';
 
 const admin = {
 	state: {
