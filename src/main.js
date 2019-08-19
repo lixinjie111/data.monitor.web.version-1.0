@@ -40,7 +40,7 @@ Vue.prototype.$echarts = echarts
 // });
 
 // 权限
-import { setAuthInfo, getAdminId, getAuthInfo, removeAuthInfo } from '@/utils/auth';
+import { setAuthInfo, getAdminId, getAuthInfo, removeAuthInfo } from '@/cookie/index';
 
 Vue.use(ElementUI)
 
@@ -68,11 +68,11 @@ Vue.prototype.$dateUtil = TDate;
 
 // 在免登录白名单，直接进入
 const whiteList = ['/login','/404'];
-// setAuthInfo({
-//     adminName: "********",
-//     adminId: "********"
-// });
-removeAuthInfo();
+setAuthInfo({
+    userNo: "********",
+    id: "********"
+});
+// removeAuthInfo();
 // router global config
 router.beforeEach((to,from,next) => {
     NProgress.start()
