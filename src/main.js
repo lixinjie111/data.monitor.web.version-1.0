@@ -40,7 +40,7 @@ Vue.prototype.$echarts = echarts
 // });
 
 // 权限
-import { setAuthInfo, getAdminId, getAuthInfo, removeAuthInfo } from '@/cookie/session.js';
+import { setAuthInfo, getAdminId, getAuthInfo, removeAuthInfo } from '@/session/index.js';
 
 Vue.use(ElementUI)
 
@@ -79,7 +79,7 @@ router.beforeEach((to,from,next) => {
     const ADMINID = getAdminId();
     if(ADMINID) {//已登录
         // 回填用户信息
-        //store.dispatch('setAuthInfo', getAuthInfo());
+        store.dispatch('setAuthInfo', getAuthInfo());
         if(to.path === '/login') {
             next({path: '/dataMonitor'});
         }else {
