@@ -75,14 +75,6 @@ export default {
                 if (valid) {
                     this.loading = true;
                     this.goLogin(this.loginForm).then(res => {
-
-                        // var res = {
-                        //     status: 200,
-                        //     data: {
-                        //         adminId: "shilu",
-                        //         adminName: 123456
-                        //     }
-                        // };
                         this.$message.success(res.message);
                         this.$router.push({ path: '/dataMonitor' });
                         this.loading = false;
