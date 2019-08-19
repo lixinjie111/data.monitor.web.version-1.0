@@ -68,11 +68,10 @@ Vue.prototype.$dateUtil = TDate;
 
 // 在免登录白名单，直接进入
 const whiteList = ['/login','/404'];
-setAuthInfo({
-    userNo: "********",
-    id: "********"
-});
-// removeAuthInfo();
+// setAuthInfo({
+//     userNo: "********",
+//     id: "********"
+// });
 // router global config
 router.beforeEach((to,from,next) => {
     NProgress.start()
@@ -82,7 +81,7 @@ router.beforeEach((to,from,next) => {
         // 回填用户信息
         store.dispatch('setAuthInfo', getAuthInfo());
         if(to.path === '/login') {
-            next({path: '/'});
+            next({path: '/dataMonitor'});
         }else {
             next();
         }

@@ -84,7 +84,7 @@ export default {
                         //     }
                         // };
                         this.$message.success(res.message);
-                        this.$router.push({ path: '/' });
+                        this.$router.push({ path: '/dataMonitor' });
                         this.loading = false;
                     }).catch(err => {
                         this.loading = false;

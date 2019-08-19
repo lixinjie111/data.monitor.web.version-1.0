@@ -7,7 +7,7 @@ const admin = {
 	state: {
 		adminId: '',
 		adminName: '',
-		platform: "20000",
+		platform: "10000",
         operations:[],
         token:''
 	},
