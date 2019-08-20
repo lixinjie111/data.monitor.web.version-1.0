@@ -7,114 +7,112 @@
   import {typeCross} from '@/api/roadMonitor'
   import ConvertCoord from '@/assets/js/utils/coordConvert.js'
     export default {
-        props:['id','reqData'],
-        data() {
-            return {
-              cross:{},
-              map:{},
-              mapOption:{
-                center: [121.262939,31.245149],
-                zoom: 18,
-                mapStyle: "amap://styles/bc5a63d154ee0a5221a1ee7197607a00"
-              },
-              webSocket:{},
-              mapList:[],
-              count:0,
+      props:['id','reqData'],
+      data() {
+          return {
+            cross:{},
+            map:{},
+            mapOption:{
+              center: [121.262939,31.245149],
+              zoom: 18,
+              mapStyle: "amap://styles/bc5a63d154ee0a5221a1ee7197607a00"
+            },
+            webSocket:{},
+            mapList:[],
+            count:0,
+          }
+      },
+      computed: {
+        mapData(){
+          return this.reqData;
+        }
+      },
+      mounted() {
+        this.map = new AMap.Map(this.id, this.mapOption);
+        this.getTypeCross();
+      },
+      methods: {
+        getTypeCross(){
+            let baseData = this.mapData.baseData;
+            let position;
+            if(baseData.x && baseData.y) {
+              position = new AMap.LngLat(baseData.x,baseData.y);
+              this.map.setCenter(position);
             }
+//                position = ConvertCoord.wgs84togcj02(baseData.x,baseData.y);
+             let wms  = new AMap.TileLayer.WMS({
+                url:window.config.dlWmsUrl+'geoserver/shanghai_qcc/wms',
+                blend: false,
+                tileSize: 256,
+                params:{'LAYERS': 'shanghai_qcc:dl_shcsq_wgs84_gjlk',VERSION:'1.1.0'}
+              })
+              wms.setMap(this.map);
+
+              this.cross = this.mapData;
+              this.initWebSocket();
         },
-        computed: {
-          mapData(){
-            return this.reqData;
+        initWebSocket(){
+          let _this=this;
+          if ('WebSocket' in window) {
+            _this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+          }
+          _this.webSocket.onmessage = _this.onmessage;
+          _this.webSocket.onclose = _this.onclose;
+          _this.webSocket.onopen = _this.onopen;
+          _this.webSocket.onerror = _this.onerror;
+        },
+        onmessage(mesasge){
+          let _this=this;
+          let json = JSON.parse(mesasge.data);
+          let result = json.result.vehData;
+          let position;
+          if(_this.count==0){
+            //在接受请求前清除地图上的点
+            _this.map.remove(_this.mapList);
+            _this.mapList=[];
+            result.forEach(item =>{
+              position = new AMap.LngLat(item.longitude,item.latitude);
+//                position = ConvertCoord.wgs84togcj02(item.longitude,item.latitude);
+              _this.count++;
+              let marker = new AMap.Marker({
+                position: position,
+                icon: 'static/images/road/car.png', // 添加 Icon 图标 URL
+                angle: item.heading,
+                offset:new AMap.Pixel(-8, -16)
+              });
+              _this.map.add(marker);
+              _this.mapList.push(marker);
+
+            });
+            if(this.count==result.length){
+              _this.count=0;
+            }
           }
         },
-        methods: {
-          getTypeCross(){
-              let baseData;
-              let position;
-              let wms;
-                baseData = this.mapData.baseData;
-
-                position = new AMap.LngLat(baseData.x,baseData.y);
-//                position = ConvertCoord.wgs84togcj02(baseData.x,baseData.y);
-                wms  = new AMap.TileLayer.WMS({
-                  url:window.config.dlWmsUrl+'geoserver/shanghai_qcc/wms',
-                  blend: false,
-                  tileSize: 256,
-                  params:{'LAYERS': 'shanghai_qcc:dl_shcsq_wgs84_gjlk',VERSION:'1.1.0'}
-                })
-                  this.cross = this.mapData;
-                  wms.setMap(this.map);
-                  //将坐标点转换成高德的位置
-                  this.map.setCenter(position);
-                  this.map.setZoom(18);
-                  this.initWebSocket();
-          },
-          initWebSocket(){
-            let _this=this;
-            if ('WebSocket' in window) {
-              _this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
-            }
-            _this.webSocket.onmessage = _this.onmessage;
-            _this.webSocket.onclose = _this.onclose;
-            _this.webSocket.onopen = _this.onopen;
-            _this.webSocket.onerror = _this.onerror;
-          },
-          onmessage(mesasge){
-            let _this=this;
-            let json = JSON.parse(mesasge.data);
-            let result = json.result.vehData;
-            let position;
-            if(_this.count==0){
-              //在接受请求前清除地图上的点
-              _this.map.remove(_this.mapList);
-              _this.mapList=[];
-              result.forEach(item =>{
-                position = new AMap.LngLat(item.longitude,item.latitude);
-//                position = ConvertCoord.wgs84togcj02(item.longitude,item.latitude);
-                _this.count++;
-                let marker = new AMap.Marker({
-                  position: position,
-                  icon: 'static/images/road/car.png', // 添加 Icon 图标 URL
-                  angle: item.heading,
-                  offset:new AMap.Pixel(-8, -16)
-                });
-                _this.map.add(marker);
-                _this.mapList.push(marker);
-
-              });
-              if(this.count==result.length){
-                _this.count=0;
-              }
-            }
-          },
-          onclose(data){
-            console.log("结束连接");
-          },
-          onopen(data){
-            //获取在驶车辆状态
-            let _params = {
-              'action':'cross_real_data',
-              'token':'tusvn',
-              'crossId':this.cross.crossId
-            }
-            let _paramsMsg = JSON.stringify(_params);
-            this.sendMsg(_paramsMsg);
-          },
-          sendMsg(msg) {
-            let _this=this;
-            if(window.WebSocket){
-              if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-                _this.webSocket.send(msg); //send()发送消息
-              }
-            }else{
-              return;
-            }
-          },
+        onclose(data){
+          console.log("结束连接");
         },
-        mounted() {
-          this.map = new AMap.Map(this.id, this.mapOption);
-          this.getTypeCross();
+        onopen(data){
+          //获取在驶车辆状态
+          let _params = {
+            'action':'cross_real_data',
+            'token':'tusvn',
+            'crossId':this.cross.crossId
+          }
+          let _paramsMsg = JSON.stringify(_params);
+          this.sendMsg(_paramsMsg);
         },
+        sendMsg(msg) {
+          let _this=this;
+          if(window.WebSocket){
+            if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+              _this.webSocket.send(msg); //send()发送消息
+            }
+          }else{
+            return;
+          }
+        },
+      },
       destroyed(){
         //销毁Socket
         this.webSocket.close();

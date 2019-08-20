@@ -18,7 +18,7 @@
       },
         data() {
             return {
-              resultData:''
+              resultData: []
             }
         },
         methods: {
