@@ -911,4 +911,15 @@
       }
     }
   }
+  .side-map-tip{
+    text-align: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding-top:25%;
+    color: #ccc;
+    background: #000;
+  }
 </style>

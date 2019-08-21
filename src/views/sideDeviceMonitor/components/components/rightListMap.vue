@@ -1,24 +1,32 @@
 <template>
   <div>
     <div class="c-size-style " :id="roadItem.camSerialNum">
-      <div class="road-mask-style">
-        <div @click="queryDeviceDetail(roadItem,'map')" class="road-mask-title">路侧点：{{roadItem.roadSiderId}}</div>
-        <img src="@/assets/images/carMonitor/refresh.png" class="road-mask-img" v-if="roadItem.online==1" @click="refresh('map')"/>
-      </div>
-      <div class="map-show-style" v-show="mapShow">
-        <div class="text-show">
-          {{message}}
+      <div class="c-size-inner">
+        <div class="c-mask-title">
+          <div @click="queryDeviceDetail(roadItem,'map')">路侧点：{{roadItem.roadSiderId}}</div>
+          <img src="@/assets/images/carMonitor/refresh.png" class="c-mask-refresh" v-if="roadItem.online==1" @click="refresh('map')"/>
         </div>
-      </div>
-      <div style="width: 100%;height: 100%;" v-if="sideMap">
-        <tusvn-map :target-id="'mapMonitor'+roadItem.camSerialNum" :ref="roadItem.camSerialNum"
-                    background="black" minX=325295.155400   minY=3461941.703700  minZ=50
-        maxX=326681.125700  maxY=3462723.022400  maxZ=80
-        @mapcomplete="onMapComplete">
+        <div class="c-mask-tip" v-show="mapShow">
+          <div class="c-mask-text">
+            {{message}}
+          </div>
+        </div>
+        <tusvn-map 
+          class="c-map-style" 
+          v-if="sideMap" 
+          :target-id="'mapMonitor'+roadItem.camSerialNum" 
+          :ref="roadItem.camSerialNum"
+          minX=325295.155400   
+          minY=3461941.703700  
+          minZ=50
+          maxX=326681.125700  
+          maxY=3462723.022400  
+          maxZ=80
+          @mapcomplete="onMapComplete">
         </tusvn-map>
-      </div>
-      <div v-else class="side-map-tip">
-        {{mapMessage}}
+        <div class="c-mask-tip" v-else>
+          {{mapMessage}}
+        </div>
       </div>
     </div>
   </div>
@@ -140,51 +148,6 @@
       }
     }
 </script>
-
-
 <style lang="scss" scoped>
   @import '@/assets/scss/theme.scss';
-    .road-mask-style{
-      position: absolute;
-      width: 310px;
-      top: 0;
-      cursor: pointer;
-      z-index:1;
-      @include layoutMode(all);
-      .road-mask-title{
-        padding-left: 5px;
-        font-size: 12px;
-        color: #fff;
-      }
-      .road-mask-img{
-        width: 14px;
-        height: 14px;
-      }
-    }
-    .map-show-style{
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      @include layoutMode(both);
-      z-index:3;
-      text-align: center;
-      padding: 80px 60px;
-      .text-show{
-        position: relative;
-        padding:0 4px;
-        background:#d6922b;
-      }
-
-    }
- 
-  .tips-show{
-    animation: myfirst 5s;
-  }
-  @keyframes myfirst
-  {
-    from {opacity: 1;}
-    to {opacity: 0;}
-  }
 </style>
