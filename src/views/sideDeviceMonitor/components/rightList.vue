@@ -1,6 +1,6 @@
 <template>
   <div class="c-info-style">
-    <div v-for="item in roadList" :key="item.camSerialNum">
+    <div v-for="item in roadList" :key="item.camSerialNum" class="m-info-list">
       <right-list-video :roadItem="item"  :visible="visible" :roadList="roadList" @queryDeviceDetail="queryDeviceDetail" ></right-list-video>
       <right-list-map   :roadItem="item" :roadList="roadList" @queryDeviceDetail="queryDeviceDetail"></right-list-map>
     </div>
@@ -39,3 +39,19 @@
      
     }
 </script>
+<style lang="scss" scoped>
+.m-info-list {
+  .c-size-style {
+    &:last-child {
+      margin-bottom: 30px;
+    }
+  }
+  &:last-child {
+    .c-size-style {
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+</style>

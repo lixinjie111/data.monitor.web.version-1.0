@@ -1,6 +1,6 @@
 <template>
-    <div class="c-size-style " :id="roadItem.camSerialNum">
-      <div class="c-size-inner">
+    <div class="c-size-style">
+      <div class="c-size-inner" :id="roadItem.camSerialNum">
         <div class="c-mask-title">
           <div @click="queryDeviceDetail(roadItem,'map')">路侧点：{{roadItem.roadSiderId}}</div>
           <img src="@/assets/images/carMonitor/refresh.png" class="c-mask-refresh" v-if="roadItem.online==1" @click="refresh('map')"/>

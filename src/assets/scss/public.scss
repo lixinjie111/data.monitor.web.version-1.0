@@ -347,9 +347,9 @@ img {
   border:1px solid #5e5970;
   box-sizing: border-box;
   padding: 5px;
-  // &:last-child{
-  //   margin-bottom:0
-  // }
+  &:last-child{
+    margin-bottom:0
+  }
 }
 .c-size-inner {
   position: absolute;
