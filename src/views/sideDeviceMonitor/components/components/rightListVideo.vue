@@ -1,5 +1,4 @@
 <template>
-  <div>
     <div class="c-size-style">
       <div class="c-size-inner">
         <video-player class="c-map-video-style" :options="option" @error="playerError"></video-player>
@@ -9,7 +8,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 <script>
   import VideoPlayer from "../../../../../node_modules/vue-video-player/src/player.vue";

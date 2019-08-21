@@ -1,5 +1,4 @@
 <template>
-  <div>
     <div class="c-size-style " :id="roadItem.camSerialNum">
       <div class="c-size-inner">
         <div class="c-mask-title">
@@ -12,7 +11,7 @@
           </div>
         </div>
         <tusvn-map 
-          class="c-map-style" 
+          class="c-map-video-style" 
           v-if="sideMap" 
           :target-id="'mapMonitor'+roadItem.camSerialNum" 
           :ref="roadItem.camSerialNum"
@@ -29,7 +28,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 <script>
   import {getVideoByNum} from '@/api/sideDeviceMonitor'

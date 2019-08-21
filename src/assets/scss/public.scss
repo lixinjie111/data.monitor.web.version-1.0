@@ -347,9 +347,9 @@ img {
   border:1px solid #5e5970;
   box-sizing: border-box;
   padding: 5px;
-  &:last-child {
-    margin-bottom: 0;
-  }
+  // &:last-child{
+  //   margin-bottom:0
+  // }
 }
 .c-size-inner {
   position: absolute;
@@ -374,6 +374,10 @@ img {
   }
 }
 .c-map-video-style{
+  height:100%;
+  background-color: #000;
+}
+.c-map-style{
   height:100%;
   background-color: #000;
 }
