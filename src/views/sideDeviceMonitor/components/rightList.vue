@@ -101,7 +101,7 @@
                 muted:true,
                 width:'100%',
                 height:'100%',
-                notSupportedMessage: '此视频暂无法播放，请稍候再试',
+                notSupportedMessage: '视频正在加载，请稍候...',
                 /*errorDisplay : false,*/
                 controlBar: {
                   timeDivider: false,
@@ -135,7 +135,7 @@
                 muted:true,
                 width:'100%',
                 height:'100%',
-                notSupportedMessage: '此视频暂无法播放，请稍候再试',
+                notSupportedMessage: '视频正在加载，请稍候...',
                /* errorDisplay : false,*/
                 controlBar: {
                   timeDivider: false,
@@ -277,7 +277,7 @@
                   "serialNum": item.camSerialNum
                 }).then(res => {
                   if(index==0){
-                    _this.rtmp1 = res.data.rtmp;
+                      _this.rtmp1 = res.data.rtmp;
                     if(_this.rtmp1==''){
                       _this.option1.notSupportedMessage='视频流不存在，请稍候再试！';
                     }else{
@@ -287,6 +287,7 @@
                     _this.roadItem1=item;
                   }
                   if(index==1){
+                    _this.rtmp2 = res.data.rtmp;
                     _this.rtmp2 = res.data.rtmp;
                     if(_this.rtmp2==''){
                       _this.option2.notSupportedMessage='视频流不存在，请稍候再试！';
@@ -305,266 +306,6 @@
             this.$emit("queryDeviceDetail",item,target);
             /*_this.selectedItem = item;
             this.dialogVisible = true;*/
-          },
-          initWebSocket1(){
-            let _this=this;
-            if ('WebSocket' in window) {
-              _this.websocket1 = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
-            }
-            _this.websocket1.onmessage = _this.onmessage1;
-            _this.websocket1.onclose = _this.onclose1;
-            _this.websocket1.onopen = _this.onopen1;
-          },
-          onmessage1(mesasge){
-            var _this=this;
-            var json = JSON.parse(mesasge.data);
-            var data = json.result;
-
-            if(_this.center1.length==0){
-              console.log("设置中心点----")
-              var longitude = json.result[0].target.longitude;
-              var latitude = json.result[0].target.latitude;
-              _this.center1 = new AMap.LngLat(longitude, latitude);
-              //设置中心点
-              _this.map1.setCenter(_this.center1);
-            }
-
-            if(data.length>0) {
-              //从地图上清除marker点
-              if(_this.roadList1.length>0){
-                _this.map1.remove(_this.roadList1);
-                _this.roadList1=[];
-              }
-              var resultData=[];
-              data.forEach(item=>{
-                let option;
-                let target = item.target;
-                if(target.longitude|| target.latitude){
-                  option={
-                    position:new AMap.LngLat(target.longitude, target.latitude),
-                    type:target.type
-                    /*type:item.type,
-                    deviceId:item.deviceId,
-                    path:item.path*/
-                  }
-                  resultData.push(option);
-                }
-              });
-              var count=0;
-              //转成高德地图的坐标
-              resultData.forEach((item, index, arr)=>{
-                AMap.convertFrom(resultData[index].position, 'gps', function (status, result){
-                  if (result.info === 'ok') {
-                    let _point = result.locations[0];
-                    resultData[index].position = _point;
-                    count ++;
-//                console.log("count-------"+count);
-                    if(count == arr.length) {
-                      //绘制线的轨迹
-                      var color;
-                      resultData.forEach(function (item,index) {
-                        if(item.type==0||item.type==1||item.type==3){
-                          color='#C4B17A';
-                        }else{
-                          color='#7337E3';
-                        }
-                        var circleMarker = new AMap.CircleMarker({
-                          center:item.position,
-                          radius:6,//3D视图下，CircleMarker半径不要超过64px
-                          strokeColor:color,
-                          strokeWeight:0,
-                          strokeOpacity:0.5,
-                          fillColor:color,
-                          fillOpacity:0.5,
-                          zIndex:10
-                        });
-                        _this.map1.add(circleMarker);
-                        _this.roadList1.push(circleMarker);
-                        //绘制完后，重新设置
-                        /* console.log("index-------"+index);*/
-                        if(index==resultData.length-1){
-                          _this.map1.setFitView();
-                        }
-                      })
-
-                    }
-                  }
-                });
-              })
-            }
-          },
-          onclose1(data){
-            console.log("结束连接");
-          },
-          onopen1(data){
-            //自车
-            var roadSide1 = {
-              "action": "RCUPer",
-              "devId": this.roadItem1.camSerialNum
-            }
-            var roadSide1Msg = JSON.stringify(roadSide1);
-            this.sendMsg1(roadSide1Msg);
-          },
-          sendMsg1(msg) {
-            let _this=this;
-            if(window.WebSocket){
-              if(_this.websocket1.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-                _this.websocket1.send(msg); //send()发送消息
-              }
-            }else{
-              return;
-            }
-          },
-          initWebSocket2(){
-            let _this=this;
-            if ('WebSocket' in window) {
-              _this.websocket2 = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
-            }
-            _this.websocket2.onmessage = _this.onmessage2;
-            _this.websocket2.onclose = _this.onclose2;
-            _this.websocket2.onopen = _this.onopen2;
-          },
-          onmessage2(mesasge){
-            var _this=this;
-            var json = JSON.parse(mesasge.data);
-            var data = json.result;
-            if(_this.center2.length==0){
-              console.log("设置中心点----")
-              var longitude = json.result[0].target.longitude;
-              var latitude = json.result[0].target.latitude;
-              _this.center2 = new AMap.LngLat(longitude, latitude);
-              //设置中心点
-              _this.map2.setCenter(_this.center2);
-              //给地图绑定点击事件
-
-            }
-
-            if(data.length>0) {
-              //从地图上清除marker点
-              if(_this.roadList1.length>0){
-                _this.map1.remove(_this.roadList1);
-                _this.roadList1=[];
-              }
-              var resultData=[];
-              data.forEach(item=>{
-                let option;
-                let target = item.target;
-                if(target.longitude|| target.latitude){
-                  option={
-                    position:new AMap.LngLat(target.longitude, target.latitude),
-                    type:target.type
-                    /*type:item.type,
-                    deviceId:item.deviceId,
-                    path:item.path*/
-                  }
-                  resultData.push(option);
-                }
-              });
-              var count=0;
-              //转成高德地图的坐标
-              resultData.forEach((item, index, arr)=>{
-                AMap.convertFrom(resultData[index].position, 'gps', function (status, result){
-                  console.log("status============="+status);
-                  console.log("count============="+count);
-                  if (result.info === 'ok') {
-                    let _point = result.locations[0];
-                    resultData[index].position = _point;
-                    count ++;
-//                console.log("count-------"+count);
-                    if(count == arr.length) {
-                      //绘制线的轨迹
-                      var color;
-                      resultData.forEach(function (item,index) {
-                        if(item.type==0||item.type==1||item.type==3){
-                          color='#C4B17A';
-                        }else{
-                          color='#7337E3';
-                        }
-                        var circleMarker = new AMap.CircleMarker({
-                          center:item.position,
-                          radius:6,//3D视图下，CircleMarker半径不要超过64px
-                          strokeColor:color,
-                          strokeWeight:0,
-                          strokeOpacity:0.5,
-                          fillColor:color,
-                          fillOpacity:0.5,
-                          zIndex:10,
-                          bubble:true,
-                          cursor:'pointer'
-                        });
-                        _this.map2.add(circleMarker);
-                        _this.roadList2.push(circleMarker);
-                        //绘制完后，重新设置
-                        /* console.log("index-------"+index);*/
-                        if(index==resultData.length-1){
-                          _this.map2.setFitView();
-                        }
-                      })
-
-                    }
-                  }
-                });
-              })
-            }
-          },
-          onclose2(data){
-            console.log("结束连接");
-          },
-          onopen2(data){
-            //自车
-            var roadSide2 = {
-              "action": "RCUPer",
-              "devId": this.roadItem1.camSerialNum
-            }
-            var roadSide2Msg = JSON.stringify(roadSide2);
-            this.sendMsg2(roadSide2Msg);
-          },
-          sendMsg2(msg) {
-            let _this=this;
-            if(window.WebSocket){
-              if(_this.websocket2.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-                _this.websocket2.send(msg); //send()发送消息
-              }
-            }else{
-              return;
-            }
-          },
-          perFullScreen(e){
-            this.isFullScreen=true;
-            let element = document.getElementById('device1');
-            this.openFullscreen(element);
-          },
-          perShrinkScreen(e){
-            this.isFullScreen=false;
-            this.exitFullScreen();
-          },
-          //打开全屏方法
-          openFullscreen(element) {
-            if (element.requestFullscreen) {
-              element.requestFullscreen();
-            } else if (element.mozRequestFullScreen) {
-              element.mozRequestFullScreen();
-            } else if (element.msRequestFullscreen) {
-              element.msRequestFullscreen();
-            } else if (element.webkitRequestFullscreen) {
-              element.webkitRequestFullScreen();
-            }
-          },
-
-          //退出全屏方法
-          exitFullScreen() {
-            if (document.exitFullscreen) {
-              document.exitFullscreen();
-            } else if (document.mozCancelFullScreen) {
-              document.mozCancelFullScreen();
-            } else if (document.msExitFullscreen) {
-              document.msExiFullscreen();
-            } else if (document.webkitCancelFullScreen) {
-              document.webkitCancelFullScreen();
-
-            } else if (document.webkitExitFullscreen) {
-              document.webkitExitFullscreen();
-            }
           },
           //视频报错的方法
           playerError1(e) {
@@ -594,6 +335,7 @@
               /*"serialNum": "3402000000132000001401"*/
               "serialNum": _this.roadList[0].camSerialNum
             }).then(res => {
+
               _this.rtmp1 = res.data.rtmp;
               if(_this.rtmp1==""){
 //                console.log("rtmp1----")
@@ -698,7 +440,7 @@
           //当窗口关闭
           if(!this.visible) {
             //重新连接数据和视频
-            if(_this.roadList==0){
+            if(_this.roadList.length==0){
               _this.option1.notSupportedMessage='';
               _this.option1.notSupportedMessage='路侧设备不存在!';
               _this.option2.notSupportedMessage='';

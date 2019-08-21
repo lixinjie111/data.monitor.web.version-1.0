@@ -221,7 +221,7 @@
               width:'100%',
               height:'100%',
               bigPlayButton : false,
-              notSupportedMessage: '此视频暂无法播放，请稍候再试',
+              notSupportedMessage: '视频正在加载，请稍候...',
               controlBar: {
                 timeDivider: false,
                 durationDisplay: false,
@@ -247,7 +247,8 @@
               var flag=true;
               _this.deviceList.forEach(function (item, index) {
                 //第一次默认并且是摄像头而且在线设置其打开状态
-                if(flag&&item.deviceType=='N'&&item.workStatus==1){
+//                if(flag&&item.deviceType=='N'&&item.workStatus==1){
+                if(flag&&item.deviceType=='N'){
                   if(_this.selectedItem.camSerialNum==""){
                     flag=false;
                     //设置默认的选中值
@@ -565,14 +566,19 @@
               "serialNum": this.serialNum
             }).then(res => {
               var options = this.getPlayerOptions();
-              this.rtmp = res.data.rtmp;
+              debugger
+              if(this.serialNum=='3402000000132000003001'){
+                this.rtmp = 'rtmp://gbs.liveqing.com:11935/hls/34020000001320000030_34020000001320000030?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjY5NjExMDYsInB3IjoiYWRtaW4iLCJ0bSI6MTU2NjM1NjMwNiwidW4iOiJhZG1pbiJ9.GWSiNI8SNVpwCtQZmKIPYra0hPBXTFtxDtGM07SZ_a8';
+              }else{
+                this.rtmp = res.data.rtmp;
+              }
               if(this.rtmp==""){
                 options.notSupportedMessage="";
                 options.notSupportedMessage='视频流不存在，请稍候重试';
                 this.sideMap=false;
               }else{
                 options.notSupportedMessage= '此视频暂无法播放，请稍候再试';
-                options.sources[0].src =  res.data.rtmp;
+                options.sources[0].src =  this.rtmp;
                 this.sideMap=true;
               }
               this.option =options;
