@@ -566,7 +566,6 @@
               "serialNum": this.serialNum
             }).then(res => {
               var options = this.getPlayerOptions();
-              debugger
               if(this.serialNum=='3402000000132000003001'){
                 this.rtmp = 'rtmp://gbs.liveqing.com:11935/hls/34020000001320000030_34020000001320000030?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjY5NjExMDYsInB3IjoiYWRtaW4iLCJ0bSI6MTU2NjM1NjMwNiwidW4iOiJhZG1pbiJ9.GWSiNI8SNVpwCtQZmKIPYra0hPBXTFtxDtGM07SZ_a8';
               }else{

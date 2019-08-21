@@ -294,6 +294,7 @@
                     }else{
                       _this.option2.sources[0].src=_this.rtmp2;
                       _this.sideMap2=true;
+
                     }
                     _this.roadItem2=item;
                   }
@@ -366,7 +367,6 @@
               _this.roadItem2=_this.roadList[1];
             })
           },
-
           //后端请求超时的解决办法
           refresh(param){
             let _this = this;
@@ -480,6 +480,13 @@
       },
       mounted() {
         this.getRoadList();
+        setInterval(()=>{
+          let connectionInfo = navigator.connection;
+          /*let date = new Date();
+          let time = date.toLocaleString();*/
+//          let time =
+          console.log("下载速度："+connectionInfo.downlink);
+        },10)
       },
       destroyed(){
         //销毁Socket
