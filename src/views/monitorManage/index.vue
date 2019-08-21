@@ -80,7 +80,6 @@
               cameraList:[],
               deviceStatus:{},
               monitorSocket:{},
-              monitorUrl:'ws://120.133.21.14:29998/ws',
               time:''
             }
         },
@@ -137,7 +136,7 @@
           initWebSocket(){
             let _this=this;
             if ('WebSocket' in window) {
-              _this.monitorSocket = new WebSocket(_this.monitorUrl);  //获得WebSocket对象
+              _this.monitorSocket = new WebSocket(window.config.monitorWebsocket);  //获得WebSocket对象
             }
             _this.monitorSocket.onmessage = _this.onmessage;
             _this.monitorSocket.onclose = _this.onclose;

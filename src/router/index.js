@@ -156,7 +156,7 @@ export default new Router({
   //   }
   // },{
     path: '/',
-    redirect: '/dataMonitor'
+    redirect: '/login'
   },{
     path: '/monitorManage',
     name: 'MonitorManage',
