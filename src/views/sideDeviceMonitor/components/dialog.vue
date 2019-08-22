@@ -1,4 +1,5 @@
 <template>
+<div>
   <div class="c-dialog-wrapper" v-if="dialogVisible">
     <div class="c-dialog-container">
       <div class="c-dialog-header">
@@ -180,6 +181,7 @@
         </div>
       </div>
     </div>
+  </div>
   </div>
 </template>
 <script>
@@ -397,24 +399,25 @@ export default {
         //根据摄像头调取视频
         _this.getVideo();
         //选中后重新请求
-        //  if (this.$refs.tusvnMap3) {
-        //   this.$refs.tusvnMap3.reset3DMap();
-        // }
-        _this.$refs.tusvnMap3.reset3DMap();
-        console.log("item:" + item);
-        _this.cameraParam = JSON.parse(item.cameraParam);
-        this.$refs.tusvnMap3.updateCameraPosition(
-          _this.cameraParam.x,
-          _this.cameraParam.y,
-          _this.cameraParam.z,
-          _this.cameraParam.radius,
-          _this.cameraParam.pitch,
-          _this.cameraParam.yaw
-        );
-        this.$refs.tusvnMap3.changeRcuId(
-          window.config.websocketUrl,
-          item.serialNum
-        );
+         if (this.$refs.tusvnMap3) {
+          this.$refs.tusvnMap3.reset3DMap();
+           console.log("item:" + item);
+          _this.cameraParam = JSON.parse(item.cameraParam);
+          this.$refs.tusvnMap3.updateCameraPosition(
+            _this.cameraParam.x,
+            _this.cameraParam.y,
+            _this.cameraParam.z,
+            _this.cameraParam.radius,
+            _this.cameraParam.pitch,
+            _this.cameraParam.yaw
+          );
+          this.$refs.tusvnMap3.changeRcuId(
+            window.config.websocketUrl,
+            item.serialNum
+          );
+        }
+       // _this.$refs.tusvnMap3.reset3DMap();
+       
       } else {
         var options = _this.getPlayerOptions();
         options.sources[0].src = "";
@@ -550,31 +553,32 @@ export default {
             if (e.code == _this.cityCode) {
               //找到市辖区
               _this.regionList = e.dataList;
-              _this.regionList.forEach(function(item) {
-                //绘制树
-                var obj = {};
-                obj.name = item.name;
-                /*obj.leaf=true;*/
-                obj.code = item.code;
-                obj.type = 1;
-                /*  var children = [];
-                        var childrenList = item.dataList;
-                        //找到路
-                        childrenList.forEach(function (item1) {
-                          var  obj1 = {};
-                          obj1.name =item1.name;
-                          obj1.leaf = true;
-                          children.push(obj1);
-                        })
-                        obj.children=children;*/
-                _this.treeData.push(obj);
-              });
             }
           });
           if (_this.isFirst) {
             _this.defaultArr.push(_this.selectAddr[2]);
           }
         }
+      });
+      _this.regionList.forEach(function(item) {
+        _this.treeData=[];
+        //绘制树
+        var obj = {};
+        obj.name = item.name;
+        /*obj.leaf=true;*/
+        obj.code = item.code;
+        obj.type = 1;
+        /*  var children = [];
+                var childrenList = item.dataList;
+                //找到路
+                childrenList.forEach(function (item1) {
+                  var  obj1 = {};
+                  obj1.name =item1.name;
+                  obj1.leaf = true;
+                  children.push(obj1);
+                })
+                obj.children=children;*/
+        _this.treeData.push(obj);
       });
     },
     getDevListByRoadId: function(roadId) {
