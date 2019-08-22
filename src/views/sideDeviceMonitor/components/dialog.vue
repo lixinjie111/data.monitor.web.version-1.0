@@ -41,8 +41,13 @@
             </div>
           </div>
           <div class="device-distribute">
-            <el-tree :data="treeData" :props="props" lazy :load="loadNode"  @node-click="handleNodeClick"
-                     highlight-current node-key="code" ref="tree" :default-expanded-keys="defaultArr"></el-tree>
+            <div class="c-scroll-wrap">
+              <div class="c-scroll-inner">
+                <el-tree :data="treeData" :props="props" lazy :load="loadNode"  @node-click="handleNodeClick"
+                                    highlight-current node-key="code" ref="tree" :default-expanded-keys="defaultArr"></el-tree>
+              </div>
+            </div>
+           
           </div>
         </div>
         <div class="side-device-right">
@@ -770,6 +775,7 @@
       }
       .device-distribute{
         margin-top: 10px;
+        height:570px
       }
     }
     .side-device-right{
