@@ -47,7 +47,7 @@
                                     highlight-current node-key="code" ref="tree" :default-expanded-keys="defaultArr"></el-tree>
               </div>
             </div>
-           
+
           </div>
         </div>
         <div class="side-device-right">
@@ -581,7 +581,7 @@
                 options.notSupportedMessage='视频流不存在，请稍候重试';
                 this.sideMap=false;
               }else{
-                options.notSupportedMessage= '此视频暂无法播放，请稍候再试';
+                options.notSupportedMessage= '此视频暂无法播放，请稍候再试!';
                 options.sources[0].src =  this.rtmp;
                 this.sideMap=true;
               }
