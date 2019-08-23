@@ -376,7 +376,6 @@ export default {
       }
       if (item.value) {
         //如果开启一个摄像头，则将另一个开启的摄像头关闭
-        console.log(_this.openVideoList)
         _this.openVideoList.forEach(function(item1, index) {
           _this.deviceList.forEach(function(item2) {
             if (item1.deviceId == item2.deviceId) {
@@ -394,7 +393,6 @@ export default {
         //选中后重新请求
          if (this.$refs.tusvnMap3) {
           this.$refs.tusvnMap3.reset3DMap();
-           console.log("item:" + item);
           _this.cameraParam = JSON.parse(item.cameraParam);
           this.$refs.tusvnMap3.updateCameraPosition(
             _this.cameraParam.x,
@@ -552,7 +550,7 @@ export default {
         }
       });
       _this.regionList.forEach(function(item) {
-       // _this.treeData=[];
+        _this.treeData=[];
         //绘制树
         var obj = {};
         obj.name = item.name;
