@@ -528,6 +528,7 @@ export default {
       });
     },
     getTree(code) {
+      console.log(code);
       var _this = this;
       _this.cityCode = code;
       _this.getRegion();
@@ -542,6 +543,26 @@ export default {
             if (e.code == _this.cityCode) {
               //找到市辖区
               _this.regionList = e.dataList;
+               _this.treeData=[];
+              _this.regionList.forEach(function(item) {
+              //绘制树
+              var obj = {};
+              obj.name = item.name;
+              /*obj.leaf=true;*/
+              obj.code = item.code;
+              obj.type = 1;
+              /*  var children = [];
+                      var childrenList = item.dataList;
+                      //找到路
+                      childrenList.forEach(function (item1) {
+                        var  obj1 = {};
+                        obj1.name =item1.name;
+                        obj1.leaf = true;
+                        children.push(obj1);
+                      })
+                      obj.children=children;*/
+              _this.treeData.push(obj);
+            });
             }
           });
           if (_this.isFirst) {
@@ -549,26 +570,7 @@ export default {
           }
         }
       });
-      _this.regionList.forEach(function(item) {
-        _this.treeData=[];
-        //绘制树
-        var obj = {};
-        obj.name = item.name;
-        /*obj.leaf=true;*/
-        obj.code = item.code;
-        obj.type = 1;
-        /*  var children = [];
-                var childrenList = item.dataList;
-                //找到路
-                childrenList.forEach(function (item1) {
-                  var  obj1 = {};
-                  obj1.name =item1.name;
-                  obj1.leaf = true;
-                  children.push(obj1);
-                })
-                obj.children=children;*/
-        _this.treeData.push(obj);
-      });
+      
     },
     getDevListByRoadId: function(roadId) {
       getDevListByRoadId({
