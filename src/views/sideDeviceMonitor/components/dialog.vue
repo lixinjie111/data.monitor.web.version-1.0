@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div class="c-dialog-wrapper" v-if="dialogVisible">
+  <div class="c-dialog-wrapper">
     <div class="c-dialog-container">
       <div class="c-dialog-header">
         <span class="c-dialog-title">路侧点数据</span>
@@ -68,7 +68,7 @@
                   @click="refresh"
                 />
               </div>
-              <video-player class="c-map-video-style" :options="option"></video-player>
+              <video-player class="c-map-video-style" :options="option" ref="videoPlayer1"></video-player>
             </div>
             <div v-if="target=='map'" style="width: 100%;height: 100%;">
               <div style="width: 100%;height: 100%;" v-if="sideMap">
@@ -143,7 +143,7 @@
                   <span v-if="target=='video'">感知结果</span>
                 </p>
                 <div class="device-video-style">
-                  <div v-show="target=='map'" class="side-video-style">
+                  <div v-if="target=='map'" class="side-video-style">
                     <div class="road-mask-style">
                       <img
                         src="@/assets/images/carMonitor/refresh.png"
@@ -151,7 +151,7 @@
                         @click="refresh"
                       />
                     </div>
-                    <video-player class="c-map-video-style" :options="option"></video-player>
+                    <video-player class="c-map-video-style" :options="option" ref="videoPlayer"></video-player>
                   </div>
                   <div v-if="target=='video'" style="width: 100%;height: 100%;">
                     <div style="width: 100%;height: 100%;" v-if="sideMap">
@@ -231,26 +231,19 @@ export default {
       rtmp: "",
       sideMap: false,
       mapMessage: "该路口没有数据，请稍候再试！",
-      cameraParam: {}
+      cameraParam: {},
+      deviceMapId:"deviceMap1"
     };
   },
   components: {
     TusvnMap
   },
   props: {
-    dialogVisible: {
-      type: Boolean,
-      default: false
-    },
     selectedItem: {
       type: Object,
       default() {
         return {};
       }
-    },
-    deviceMapId: {
-      type: String,
-      default: ""
     },
     target: {
       type: String,
@@ -299,7 +292,6 @@ export default {
     },
     getDeviceList() {
       var _this = this;
-      _this.deviceList = [];
       getDeviceList({
         roadSiderId: this.roadId
       }).then(res => {
@@ -308,18 +300,18 @@ export default {
         _this.deviceList.forEach(function(item, index) {
           //第一次默认并且是摄像头而且在线设置其打开状态
           if (flag && item.deviceType == "N" && item.workStatus == 1) {
-            if (_this.selectedItem.camSerialNum == "") {
+            if (_this.selectedItem.camSerialNum == "") {//通过地图点击进来的
               flag = false;
               //设置默认的选中值
               item.value = true;
               _this.openVideoList.push(item);
               _this.serialNum = item.serialNum;
-            } else {
+            } else {//通过右侧列表点击进来的
               item.value = false;
               if (item.serialNum == _this.selectedItem.camSerialNum) {
                 flag = false;
                 //设置默认的选中值
-                item.value = true;
+                 item.value = true;
                 _this.openVideoList.push(item);
                 _this.serialNum = item.serialNum;
               }
@@ -357,7 +349,9 @@ export default {
           var options = _this.getPlayerOptions();
           options.sources[0].src = "";
           _this.option = options;
-          _this.$refs.tusvnMap3.reset3DMap();
+          if (this.$refs.tusvnMap3) {
+            this.$refs.tusvnMap3.reset3DMap();
+          }
           _this.sideMap = false;
         }
       });
@@ -380,10 +374,9 @@ export default {
           _this.$set(item, "value", false);
         });
       }
-      /*this.$forceUpdate();*/
-      /*console.log("value----"+item.value);*/
       if (item.value) {
         //如果开启一个摄像头，则将另一个开启的摄像头关闭
+        console.log(_this.openVideoList)
         _this.openVideoList.forEach(function(item1, index) {
           _this.deviceList.forEach(function(item2) {
             if (item1.deviceId == item2.deviceId) {
@@ -422,7 +415,9 @@ export default {
         var options = _this.getPlayerOptions();
         options.sources[0].src = "";
         _this.option = options;
-        _this.$refs.tusvnMap3.reset3DMap();
+        if (this.$refs.tusvnMap3) {
+          _this.$refs.tusvnMap3.reset3DMap();
+        }
         //地图关闭
         _this.sideMap = false;
       }
@@ -513,8 +508,6 @@ export default {
           _this.getCitys(_this.provinceCode);
           /* _this.cityCode=_this.selectAddr[1];*/
           _this.cityValue = _this.selectAddr[1];
-          var childrenNodes = this.$refs.tree.children;
-          _this.removeTree(childrenNodes);
           _this.getRegion();
         }
       });
@@ -539,8 +532,6 @@ export default {
     getTree(code) {
       var _this = this;
       _this.cityCode = code;
-      var childrenNodes = this.$refs.tree.children;
-      _this.removeTree(childrenNodes);
       _this.getRegion();
       _this.getDeviceCountByCity();
     },
@@ -561,7 +552,7 @@ export default {
         }
       });
       _this.regionList.forEach(function(item) {
-        _this.treeData=[];
+       // _this.treeData=[];
         //绘制树
         var obj = {};
         obj.name = item.name;
@@ -586,14 +577,6 @@ export default {
         roadId: roadId
       }).then(res => {});
     },
-    removeTree(childrenNodes) {
-      var _this = this;
-      if (childrenNodes) {
-        childrenNodes.forEach(function(item) {
-          _this.$refs.tree.remove(item);
-        });
-      }
-    },
     getDeviceCountByCity() {
       getDeviceCountByCity({
         distCodeCity: this.cityCode
@@ -602,18 +585,22 @@ export default {
       });
     },
     closeDialog() {
-      //            this.dialogVisible=false;
       var options = this.getPlayerOptions();
       options.sources[0].src = "";
       this.option = options;
-
+       if(this.$refs.videoPlayer){
+        this.$refs.videoPlayer.dispose();
+      }
+      if (this.$refs.tusvnMap3) {
+        this.$refs.tusvnMap3.reset3DMap();
+      }
       this.$emit("closeDialog");
     },
     showTimeStamp(time) {
       this.time = time;
     },
     mapcomplete: function() {
-      this.mapInit = true;
+      //this.mapInit = true;
       getMap(this.$refs.tusvnMap3);
       if (this.serialNum && this.serialNum != "") {
         console.log("this.serialNum--" + this.serialNum);
@@ -697,29 +684,19 @@ export default {
       }
     }
   },
-  watch: {
-    dialogVisible() {
-      if (this.dialogVisible) {
-        this.sideMap = false;
-        this.isFirst = true;
-        this.mapInit = false; //打开窗口只加载一次地图
-        this.selectAddr = this.selectedItem.path.split("|");
-        this.provinceCode = this.selectAddr[0];
-        this.cityCode = this.selectAddr[1];
-        /* this.dialogVisible=true;*/
-        //默认选中的
-        this.roadId = this.selectedItem.roadSiderId;
-        this.getDeviceList();
-        this.getSideTree();
-        this.getDeviceCountByCity();
-      } else {
-        if (this.$refs.tusvnMap3) {
-          this.$refs.tusvnMap3.reset3DMap();
-        }
-      }
-    }
-  },
-  mounted() {}
+  mounted() {
+    //this.sideMap = false;
+    //this.isFirst = true;
+    //this.mapInit = false; //打开窗口只加载一次地图
+    this.selectAddr = this.selectedItem.path.split("|");
+    this.provinceCode = this.selectAddr[0];
+    this.cityCode = this.selectAddr[1];
+    //默认选中的
+    this.roadId = this.selectedItem.roadSiderId;
+    this.getDeviceList();
+    this.getSideTree();
+    this.getDeviceCountByCity();
+  }
 };
 </script>
 

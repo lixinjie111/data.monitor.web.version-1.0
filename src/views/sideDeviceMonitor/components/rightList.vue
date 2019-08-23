@@ -1,9 +1,20 @@
 <template>
   <div class="c-info-style">
-    <div v-for="item in roadList" :key="item.camSerialNum" class="m-info-list">
-      <right-list-video :roadItem="item"  :visible="visible" :roadList="roadList" @queryDeviceDetail="queryDeviceDetail" ></right-list-video>
-      <right-list-map   :roadItem="item" :roadList="roadList" @queryDeviceDetail="queryDeviceDetail"></right-list-map>
-    </div>
+    <template v-if="!roadList.length">
+      <div v-for="item in roadList" :key="item.camSerialNum" class="m-info-list" >
+        <right-list-video :roadItem="item"  :visible="visible" :roadList="roadList" @queryDeviceDetail="queryDeviceDetail" ></right-list-video>
+        <right-list-map   :roadItem="item" :visible="visible" :roadList="roadList" @queryDeviceDetail="queryDeviceDetail"></right-list-map>
+      </div>
+    </template>
+    <template v-else>
+      <div class="c-size-style" v-for="item in new Array(4)">
+        <div class="c-size-inner">
+          <div class="c-mask-tip">
+            暂无数据
+          </div>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 <script>
