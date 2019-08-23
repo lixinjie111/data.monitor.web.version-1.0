@@ -214,7 +214,7 @@ export default {
 	},
     destroyed(){
         //销毁Socket
-        this.webSocket.close();
+         this.webSocket&&this.webSocket.close();
     }
 }
 </script>
