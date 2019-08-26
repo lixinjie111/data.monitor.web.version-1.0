@@ -1,13 +1,13 @@
 <template>
-  <div>
-    <div class="c-size-style" >
-      <video-player  class="vjs-custom-skin" :options="option" @error="playerError"></video-player>
-      <div class="road-mask-style" >
-        <div @click="queryDeviceDetail(roadItem,'video')" class="road-mask-title">路侧点：{{roadItem.roadSiderId}}</div>
-        <img src="@/assets/images/carMonitor/refresh.png" class="road-mask-img" v-if="roadItem.online==1" @click="refresh('video')"/>
+    <div class="c-size-style">
+      <div class="c-size-inner">
+        <video-player class="c-map-video-style" :options="option" @error="playerError"></video-player>
+        <div class="c-mask-title" >
+          <div @click="queryDeviceDetail(roadItem,'video')">路侧点：{{roadItem.roadSiderId}}</div>
+          <img src="@/assets/images/carMonitor/refresh.png" class="c-mask-refresh" v-if="roadItem.online==1" @click="refresh('video')"/>
+        </div>
       </div>
     </div>
-  </div>
 </template>
 <script>
   import VideoPlayer from "../../../../../node_modules/vue-video-player/src/player.vue";
@@ -144,31 +144,6 @@
       
     }
 </script>
-<style lang="scss" scoped>
-  @import '@/assets/scss/theme.scss';
-    .road-mask-style{
-      position: absolute;
-      width: 310px;
-      top: 0;
-      cursor: pointer;
-      z-index:1;
-      @include layoutMode(all);
-      .road-mask-title{
-        padding-left: 5px;
-        font-size: 12px;
-        color: #fff;
-      }
-      .road-mask-img{
-        width: 14px;
-        height: 14px;
-      }
-    }
-    .tips-show{
-    animation: myfirst 5s;
-  }
-  @keyframes myfirst
-  {
-    from {opacity: 1;}
-    to {opacity: 0;}
-  }
+<style lang="scss">
+  @import '@/assets/scss/video-reset.scss';
 </style>

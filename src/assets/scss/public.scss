@@ -312,8 +312,7 @@ img {
     }
   }
 }
-
-
+//路网&&路侧
 .c-button-style{
   font-size:14px;
   position: absolute;
@@ -336,33 +335,64 @@ img {
     position: relative;
   }
 }
-.c-map-style{
-  height:100%;
-}
-.c-size-style{
-  width: 330px;
-  height: 210px;
-  margin-bottom: 30px;
-  position: relative;
-  padding: 5px;
-  border:1px solid #5e5970;
-  box-sizing: border-box;
-}
 .c-info-style {
   position: absolute;
   right: 20px;
 }
-
-.c-mask-style{
-  position: absolute;
-  width: 310px;
-  top: 0;
-  cursor: pointer;
-  z-index:1;
-  p{
-    margin-top: 10px;
-    margin-left: 10px;
-    font-size: 12px;
-    color: #fff;
+.c-size-style{
+  position: relative;
+  width: 330px;
+  height: 210px;
+  margin-bottom: 30px;
+  border:1px solid #5e5970;
+  box-sizing: border-box;
+  padding: 5px;
+  &:last-child{
+    margin-bottom:0
   }
 }
+.c-size-inner {
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  right: 5px;
+  bottom: 5px;
+}
+.c-mask-title {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  padding: 0 5px;
+  cursor: pointer;
+  z-index:3;
+  height: 40px;
+  @include layoutMode(all);
+  .c-mask-refresh {
+    width: 14px;
+    height: 14px;
+  }
+}
+.c-map-video-style{
+  height:100%;
+  background-color: #000;
+}
+.c-map-style{
+  height:100%;
+  background-color: #000;
+}
+.c-mask-tip{
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  @include layoutMode(both);
+  background-color: #000;
+  z-index:2;
+  .c-mask-text{
+    padding:0 4px;
+    background:#d6922b;
+  }
+}
+

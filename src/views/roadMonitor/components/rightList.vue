@@ -1,10 +1,12 @@
 <template>
   <div class="c-info-style">
       <div class="c-size-style" v-for="item in resultData" :key="item.crossId">
-        <div class="c-mask-style" >
-          <p @click="queryCrossDetail(item)">路口：{{item.crossId}}</p>
+        <div class="c-size-inner">
+          <div class="c-mask-title" >
+            <p @click="queryCrossDetail(item)">路口：{{item.crossId}}</p>
+          </div>
+          <map-detail :id="'map'+item.crossId" class="c-map-video-style" :reqData="item"></map-detail>
         </div>
-        <map-detail :id="'map'+item.crossId" class="c-map-style" :reqData="item"></map-detail>
       </div>
   </div>
 </template>
