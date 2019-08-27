@@ -1,8 +1,12 @@
 <template>
   <div class="c-view-wrapper">
-    <div class="c-view-side c-view-left road-left">
-        <left-top></left-top>
-        <left-bottom></left-bottom>
+    <div class="c-view-side c-view-left">
+      <div class="c-scroll-wrap">
+        <div class="c-scroll-inner">
+          <left-top></left-top>
+          <left-bottom></left-bottom>
+        </div>
+      </div>
     </div>
     <map-container></map-container>
     <div class="c-view-side c-view-right">
