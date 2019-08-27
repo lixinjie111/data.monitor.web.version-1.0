@@ -10,7 +10,6 @@
     </div>
 </template>
 <script>
-  import VideoPlayer from "../../../../../node_modules/vue-video-player/src/player.vue";
   import {getVideoByNum} from '@/api/sideDeviceMonitor'
   const isProduction = process.env.NODE_ENV === 'production'
     export default {
@@ -52,11 +51,7 @@
                 }
               },
               rtmp:"",
-
             }
-        },
-        components:{
-          VideoPlayer
         },
         props:['visible','roadItem','roadList'],
         mounted() {

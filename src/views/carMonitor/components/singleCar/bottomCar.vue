@@ -586,7 +586,7 @@
     destroyed(){
       //销毁Socket
       this.reportWebSocket.close();
-      this.webSocket.close();
+      this.webSocket&&this.webSocket.close();
 
     }
   }

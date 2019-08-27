@@ -120,7 +120,7 @@
               return;
             }
             if(this.roadItem.online!=1){
-              this.option.notSupportedMessage='路侧设备不在线!';
+              this.mapMessage='路侧设备不在线!';
               return;
             }
             if(_this.rtmp==''){

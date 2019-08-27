@@ -263,7 +263,7 @@
           if(item.isActive){
             this.crossId = item.crossId;
             this.getCrossById();
-            this.webSocket.close();
+            this.webSocket&&this.webSocket.close();
             this.initWebSocket();
           }
         },
