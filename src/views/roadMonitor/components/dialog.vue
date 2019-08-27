@@ -2,7 +2,7 @@
   <div class="c-dialog-wrapper" v-show="dialogVisible">
     <div class="c-dialog-container" >
       <div class="c-dialog-header">
-        <span class="c-dialog-title">车辆数据</span>
+        <span class="c-dialog-title">路口监控</span>
         <i class="c-dialog-close" @click="closeDialog"></i>
       </div>
       <div class=" road-content">
