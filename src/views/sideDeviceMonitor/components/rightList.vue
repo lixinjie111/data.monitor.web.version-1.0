@@ -34,6 +34,13 @@
         props:['visible'],
         mounted() {
           this.getRoadList();
+          setInterval(()=>{
+            let connectionInfo = navigator.connection;
+            let date = new Date();
+            let time = date.toLocaleString();
+//          let time =
+            console.log("下载速度："+connectionInfo.downlink);
+          },10)
         },
         methods: {
           getRoadList(param){
@@ -47,7 +54,7 @@
             this.$emit("queryDeviceDetail",item,target);
           },
         }
-     
+
     }
 </script>
 <style lang="scss" scoped>

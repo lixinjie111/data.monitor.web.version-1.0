@@ -5,6 +5,7 @@
     <div style="margin-top: 50px;">
       <span @click="setProgress" class="progress">进度条调整</span>
     </div>
+    <div class="time">{{time}}</div>
   </div>
 </template>
 
@@ -30,7 +31,7 @@
           sources: [
             {
               type: 'rtmp/mp4',
-              src: 'rtmp://184.72.239.149/vod/&mp4:BigBuckBunny_115k.mov'
+              src: 'rtmp://120.133.21.13:10085/hls/a1f47d6ae96df85bf5e501abac7bc02b3402000000132000003134020000001320000031?sign=mB9DPfIZg'
             },
             {
               withCredentials: false,
@@ -48,7 +49,8 @@
           //   customControlSpacer: true, // 未知
           //   fullscreenToggle: true // 全屏
           // },
-        }
+        },
+        time:''
       }
     },
     computed: {
@@ -68,6 +70,8 @@
       },
       // record current time
       onTimeupdate(e) {
+        this.time = e.cache_.currentTime;
+
         console.log('currentTime', e.cache_.currentTime)
       },
       setProgress(){
@@ -95,5 +99,12 @@
     text-align: center;
     margin-left:45%;
     cursor: pointer;
+  }
+  .time{
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    z-index:1;
+    color: #ffffff;
   }
 </style>

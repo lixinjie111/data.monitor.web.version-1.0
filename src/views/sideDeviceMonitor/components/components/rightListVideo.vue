@@ -60,10 +60,10 @@
         methods: {
           getVideoByNum(param){
             var _this = this;
-            if(this.roadItem.online!=1){
+            /*if(this.roadItem.online!=1){
               this.option.notSupportedMessage='路侧设备不在线!';
               return;
-            }
+            }*/
             if(param){
               _this.option.notSupportedMessage='';
               _this.option.notSupportedMessage='路侧设备不存在!';
@@ -72,13 +72,16 @@
               "protocal": 1,
               "serialNum": this.roadItem.camSerialNum
             }).then(res => {
-              console.log(res.data.rtmp)
-                _this.rtmp = res.data.rtmp;
-                  if(_this.rtmp==''){
-                    _this.option.notSupportedMessage='视频流不存在，请稍候再试！';
-                  }else{
-                    _this.option.sources[0].src=_this.rtmp;
-                  }
+                if(this.roadItem.camSerialNum=='3402000000132000003001'){
+                  this.rtmp = 'rtmp://gbs.liveqing.com:11935/hls/34020000001320000030_34020000001320000030?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjY1NDEyNzUsInB3IjoidGVzdCIsInRtIjoxNTY2NTQwNjc1LCJ1biI6InRlc3QifQ.uo0kWe8GkzigfWtUKzmTkcNWWPkoPRXxtnfhgsuJcxQ';
+                }else{
+                  _this.rtmp = res.data.rtmp;
+                }
+                if(_this.rtmp==''){
+                  _this.option.notSupportedMessage='视频流不存在，请稍候再试！';
+                }else{
+                  _this.option.sources[0].src=_this.rtmp;
+                }
             })
           },
           queryDeviceDetail(item,target) {
@@ -136,7 +139,7 @@
           }
         }
       },
-      
+
     }
 </script>
 <style lang="scss">

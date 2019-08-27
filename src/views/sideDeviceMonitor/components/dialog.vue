@@ -408,7 +408,7 @@ export default {
           );
         }
        // _this.$refs.tusvnMap3.reset3DMap();
-       
+
       } else {
         var options = _this.getPlayerOptions();
         options.sources[0].src = "";
@@ -570,7 +570,7 @@ export default {
           }
         }
       });
-      
+
     },
     getDevListByRoadId: function(roadId) {
       getDevListByRoadId({
@@ -721,10 +721,10 @@ export default {
   .el-select .el-input__inner:focus {
     border-color: #5e5970;
   }
-  
-  
 
- 
+
+
+
   .el-tree {
     background: #262626;
     color: #cccccc;
@@ -732,13 +732,13 @@ export default {
   .el-tree-node.is-current > .el-tree-node__content {
     color: #ba7907;
   }
-    .el-tree--highlight-current 
+    .el-tree--highlight-current
     .el-tree-node.is-current
     > .el-tree-node__content {
     background-color: transparent;
   }
 
-  
+
 }
  .el-select-dropdown__list {
     padding: 0px !important;
