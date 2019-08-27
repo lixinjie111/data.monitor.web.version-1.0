@@ -72,6 +72,7 @@
         lightList:[],
         crossList:[],
         trafficList:[],
+        trafficData:[],
         count:0,
         zoomStyleMapping:{
           11:0,
@@ -88,6 +89,29 @@
         layerList:[],
         timer:0
       }
+    },
+    watch: {
+        trafficData: {
+            handler: function (newVal, oldVal) {
+              if(newVal.length>0){
+                  oldVal.forEach(item=>{
+                    newVal.forEach(item1=>{
+                      newVal.for
+                    })
+                  })
+              }
+            },
+            deep: true
+        }
+    },
+    watch:{
+        trafficData:function(newVal,oldVal){
+            if(this.trafficList.length){
+              this.trafficData.forEach(item=>{
+           
+          })
+        }
+        }
     },
     methods: {
       getMarkers(item) {
@@ -273,7 +297,7 @@
                        if(disParam=='traffic'){
                         var marker = new AMap.Marker({
                           position: subItem.position,
-                          icon: window.config.url+subItem.icon, // 添加 Icon 图标 URL
+                          icon: subItem.icon, // 添加 Icon 图标 URL
                           offset:new AMap.Pixel(-15, -15)
                         });
                         _this.map.add(marker);
@@ -365,13 +389,13 @@
           },
           onmessage(mesasge){
             let _this=this;
-            var json = JSON.parse(mesasge.data);
-            console.log(json)
-            this.rwDisMap(json.result.data,"traffic")
-          // this.trafficCount=json.result.eventCount;
-          // this.trafficData=json.result.data;
-            //var result = json.result.roadVeh;
-
+            this.trafficData = JSON.parse(mesasge.data);
+            if(this.trafficList.length){
+              this.map.remove(this.trafficList);
+              this.trafficList=[];
+            }
+            console.log(this.trafficData.result.data)
+            this.rwDisMap(this.trafficData.result.data,"traffic")
           },
           onclose(data){
             console.log("结束连接");
