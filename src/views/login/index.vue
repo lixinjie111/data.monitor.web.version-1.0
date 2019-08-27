@@ -76,7 +76,7 @@ export default {
                         this.clearCookie();
                     }
                     this.goLogin(this.loginForm).then(res => {
-                        this.$message.success(res.message);
+                        //this.$message.success(res.message);
                         this.$router.push({ path: '/dataMonitor' });
                         this.loading = false;
                     }).catch(err => {
