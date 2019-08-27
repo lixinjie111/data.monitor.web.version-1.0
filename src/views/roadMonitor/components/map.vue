@@ -90,30 +90,64 @@
         timer:0
       }
     },
+    // created() {
+    //   var arr1=[{id:1,longitude:2,latitude:3},{id:2,longitude:2,latitude:3},{id:3,longitude:3,latitude:3}]
+    //   var arr2=[{id:2,longitude:2,latitude:3},{id:3,longitude:2,latitude:3},{id:4,longitude:2,latitude:3}]
+    //   this.compare(arr2,arr1);//新增和改变的
+    // },
     watch: {
         trafficData: {
             handler: function (newVal, oldVal) {
-              if(newVal.length>0){
-                  oldVal.forEach(item=>{
-                    newVal.forEach(item1=>{
-                      newVal.for
-                    })
-                  })
+              //console.log(newVal, oldVal)
+              if(oldVal.length>0){
+                this.compare(newVal,oldVal);
+              }else{
+                this.rwDisMap(this.trafficData,"traffic")
               }
             },
             deep: true
         }
     },
-    watch:{
-        trafficData:function(newVal,oldVal){
-            if(this.trafficList.length){
-              this.trafficData.forEach(item=>{
-           
-          })
-        }
-        }
-    },
     methods: {
+      compare(newArr,oldArr){
+        let newData = [];//新增的数据
+        let sameData=[];
+        let sameIdData=[];//更新的数据
+        let arrData=[];
+        for(let i = 0; i < newArr.length; i++){
+            let newId = newArr[i].id;
+            let newlon = newArr[i].longitude;
+            let newlat = newArr[i].latitude;
+            let isExist = false;
+            for(let j = 0; j < oldArr.length; j++){
+                let oldId = oldArr[j].id;
+                let oldlon = oldArr[j].longitude;
+                let oldlat = oldArr[j].latitude;
+                if(newId == oldId){//存在id一样的数据
+                    isExist = true;
+                    arrData.push(oldArr[j]);
+                  if(newlon==oldlon && newlat==oldlat){//存在id一样;位置相同的的数据
+                    sameData.push(oldArr[j]);
+                  }else{//存在id一样位置不同的数据;更新的数据
+                    sameIdData.push(oldArr[j]);
+                  }
+                }
+            }
+            if(!isExist){//新增的数据
+                newData.push(newArr[i]);
+            }
+        }
+        let set=arrData.map(item=>item.id);
+        let delData=oldArr.filter(item=>!set.includes(item.id));//删除的数据
+        console.log(newData);//新增的数据
+        console.log(arrData);//相同和需要更新的数据
+        console.log(sameData);//相同的数据
+        console.log(sameIdData);//需要更新的数据
+        console.log(delData);//需要删除的数据
+        this.rwDisMap(newData,"traffic");
+        this.rwDisMap(sameIdData,"traffic");
+        this.map.remove(delData);
+      },
       getMarkers(item) {
         var disParams=[];
         //首次加载时
@@ -297,14 +331,15 @@
                        if(disParam=='traffic'){
                         var marker = new AMap.Marker({
                           position: subItem.position,
-                          icon: subItem.icon, // 添加 Icon 图标 URL
+                          icon: subItem.mapIcon?subItem.mapIcon:'', // 添加 Icon 图标 URL
                           offset:new AMap.Pixel(-15, -15)
                         });
                         _this.map.add(marker);
                         var item={
-                          crossId:subItem.id
+                          crossId:subItem
                         }
                         marker.on('click', function(e) {
+                          console.log(item)
                           _this.$parent.$emit("trafficEvent",item);
                         });
                         _this.trafficList.push(marker)
@@ -389,13 +424,14 @@
           },
           onmessage(mesasge){
             let _this=this;
-            this.trafficData = JSON.parse(mesasge.data);
-            if(this.trafficList.length){
-              this.map.remove(this.trafficList);
-              this.trafficList=[];
-            }
-            console.log(this.trafficData.result.data)
-            this.rwDisMap(this.trafficData.result.data,"traffic")
+            this.trafficData = JSON.parse(mesasge.data).result.data;
+            //console.log(this.trafficData)
+            // if(this.trafficList.length){
+            //   this.map.remove(this.trafficList);
+            //   this.trafficList=[];
+            // }
+            // console.log(this.trafficData.result.data)
+            
           },
           onclose(data){
             console.log("结束连接");
