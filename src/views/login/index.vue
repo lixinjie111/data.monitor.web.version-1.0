@@ -61,6 +61,9 @@ export default {
             loading: false
         }
     },
+    mounted() {
+        this.getCookie();
+    },
     methods: {
         ...mapActions(['goLogin']),
         handleLogin() {
