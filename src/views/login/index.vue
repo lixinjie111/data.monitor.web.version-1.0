@@ -212,6 +212,7 @@ export default {
         @include layoutMode(pack);
         color: #fff !important;
         border-radius: 0;
+        width: 100% !important;
     }
     .login-remember-item {
         .el-form-item__content {
