@@ -21,17 +21,22 @@
         </ul>
       </div>
     </div>
+    <traffic-dialog v-if="trafficDialog" :selectedItem="trafficDialogData" @closeDialog="closeDialog"></traffic-dialog>
   </div>
 </template>
 <script>
   import { rwDis } from '@/api/roadMonitor'
   import ConvertCoord from '@/assets/js/utils/coordConvert.js'
+  import trafficDialog from './components/trafficDialog.vue'
   export default {
     name: "MapContainer",
+    components: {trafficDialog},
     data() {
       return {
         id: "road-map-container",
         map: null,
+        trafficDialog:false,
+        trafficDialogData:{},
         webSocket: {},
         webSocketData: {
           action: "event_real_data",
@@ -87,7 +92,8 @@
           20:0
         },
         layerList:[],
-        timer:0
+        timer:0,
+        trafficMarker:{}
       }
     },
     // created() {
@@ -98,11 +104,13 @@
     watch: {
         trafficData: {
             handler: function (newVal, oldVal) {
-              //console.log(newVal, oldVal)
-              if(oldVal.length>0){
+              //console.log(newVal.length)
+              if(oldVal.length>0 && newVal.length>0){
                 this.compare(newVal,oldVal);
+              }else if(newVal.length<=0){
+               //console.log(222222222222)
               }else{
-                this.rwDisMap(this.trafficData,"traffic")
+                this.rwDisMap(newVal,"traffic")
               }
             },
             deep: true
@@ -139,14 +147,14 @@
         }
         let set=arrData.map(item=>item.id);
         let delData=oldArr.filter(item=>!set.includes(item.id));//删除的数据
-        console.log(newData);//新增的数据
-        console.log(arrData);//相同和需要更新的数据
-        console.log(sameData);//相同的数据
-        console.log(sameIdData);//需要更新的数据
-        console.log(delData);//需要删除的数据
-        this.rwDisMap(newData,"traffic");
-        this.rwDisMap(sameIdData,"traffic");
-        this.map.remove(delData);
+        // console.log(newData);//新增的数据
+        // console.log(arrData);//相同和需要更新的数据
+        // console.log(sameData);//相同的数据
+        // console.log(sameIdData);//需要更新的数据
+        // console.log(delData);//需要删除的数据
+        this.rwDisMap(newData,"traffic","newData");
+        this.rwDisMap(sameIdData,"traffic","sameIdData");
+        this.rwDisMap(delData,"traffic","delData");
       },
       getMarkers(item) {
         var disParams=[];
@@ -162,7 +170,6 @@
             //如果是车辆分布，弹出弹出框
             if(item.id=='car'){
 //              clearInterval(this.timer);
-
                 this.message={
                   title:"车辆分布:显示车辆在每段路上的分布情况",
                   legend:[{
@@ -196,12 +203,9 @@
                 this.getDistributeWms();
               },5000)
               return;
-            }
-            if(item.id=='traffic'){
+            }else if(item.id=='traffic'){
               this.initWebSocket();
-            }
-            this.getRwDis(item.id);
-            if(item.id=='speed'){
+            }else if(item.id=='speed'){
 //              clearInterval(this.timer);
               this.message={
                 title:"通行速度:显示每条车道的通行速度",
@@ -229,16 +233,18 @@
               this.distributeShow = true;
               //获取车辆分布数据
               //this.getDistributeWms();
-              this.timer = setInterval(()=>{
-                // console.log("调用了---")
-                if(this.layerList.length>0){
-                  this.map.remove(this.layerList);
-                  this.layerList=[];
-                }
-                //获取车辆分布数据
-                this.getDistributeWms();
-              },5000)
-              return;
+              // this.timer = setInterval(()=>{
+              //   // console.log("调用了---")
+              //   if(this.layerList.length>0){
+              //     this.map.remove(this.layerList);
+              //     this.layerList=[];
+              //   }
+              //   //获取车辆分布数据
+              //   this.getDistributeWms();
+              // },5000)
+              // return;
+            }else{
+              this.getRwDis(item.id);
             }
             
           }else{
@@ -257,6 +263,7 @@
             }
           }
       },
+      
       getRwDis(disParam){
         rwDis({
           'disType': disParam,
@@ -265,7 +272,7 @@
           this.rwDisMap(res.data,disParam);
         });
       },
-      rwDisMap(resultData,disParam){
+      rwDisMap(resultData,disParam,type){
         var _this = this;
         if(_this.count==0){
           if(resultData.length>0) {
@@ -319,7 +326,7 @@
                           offset:new AMap.Pixel(-15, -15)
                         });
                         _this.map.add(marker);
-                        var item={
+                        let item={
                           crossId:subItem.uid
                         }
                         marker.on('click', function(e) {
@@ -327,33 +334,41 @@
                         });
                         _this.crossList.push(marker)
                       }
-                       //交通事件
-                       if(disParam=='traffic'){
-                        var marker = new AMap.Marker({
-                          position: subItem.position,
-                          icon: subItem.mapIcon?subItem.mapIcon:'', // 添加 Icon 图标 URL
-                          offset:new AMap.Pixel(-15, -15)
-                        });
-                        _this.map.add(marker);
-                        var item={
-                          crossId:subItem
-                        }
-                        marker.on('click', function(e) {
-                          console.log(item)
-                          _this.$parent.$emit("trafficEvent",item);
-                        });
-                        _this.trafficList.push(marker)
+                      if(disParam =='traffic'){
+                         if(type=="delData"){
+                            _this.map.remove(_this.trafficMarker[subItem.id]);
+                            for(var i in _this.trafficMarker){
+                              if (i == subItem.id) {
+                                  delete _this.trafficMarker[i];
+                              }
+                            }
+                         }else if(_this.trafficMarker[subItem.id]){//存在需要更新的
+                            _this.trafficMarker[subItem.id].setPosition(subItem.position);
+                         }else{//不存在需要添加的
+                            // let markerIcon = new AMap.Icon({
+                            //     // 图标尺寸
+                            //     size: new AMap.Size(800, 800),
+                            //     // 图标的取图地址
+                            //     image: subItem.mapIcon,
+                            //     // 图标所用图片大小
+                            //     imageSize: new AMap.Size(50, 50),
+                            //     // 图标取图偏移量
+                            //     imageOffset: new AMap.Pixel(-15, -15)
+                            // });
+                            _this.trafficMarker[subItem.id] = new AMap.Marker({
+                              position: subItem.position,
+                              icon: subItem.mapIcon, // 添加 Icon 图标 URL
+                              offset:new AMap.Pixel(-15, -15),
+                            });
+                            _this.map.add(_this.trafficMarker[subItem.id]);
+                            //_this.trafficList.push(_this.trafficMarker[subItem.id])
+                            _this.trafficMarker[subItem.id].on('click', function(e) {
+                              _this.trafficDialog=true;
+                              _this.trafficDialogData=subItem;
+                            });
+                         }
+                        
                       }
-                      //rcu
-                      /*if(disParam=='cross'){
-                        var marker = new AMap.Marker({
-                          position: subItem.position,
-                          icon: 'static/images/sideDevice/2.png', // 添加 Icon 图标 URL
-
-                        });
-                        _this.map.add(marker);
-                        _this.rcuList.push(marker)
-                      }*/
                       //绘制完后，重新设置
                       if(subIndex==resultData.length-1){
                        /* _this.map.setFitView();*/
@@ -379,9 +394,13 @@
           this.map.remove(this.crossList);
           this.crossList=[];
         }
-        if(type=='traffic'&&this.trafficList.length>0){
-          this.map.remove(this.trafficList);
-          this.trafficList=[];
+        if(type=='traffic'&& Object.keys(this.trafficMarker).length>0){
+          this.webSocket&&this.webSocket.close();
+          this.trafficData=[];
+          for(var i in this.trafficMarker){
+            this.map.remove(this.trafficMarker[i])
+          }
+          this.trafficMarker={};
         }
        /* if(type==2&&this.sideList.length>0){
           this.map.remove(this.sideList);
@@ -390,6 +409,7 @@
       },
       closeDialog(){
         this.distributeShow=false;
+        this.trafficDialog=false;
       },
       getWms() {
         var wms  = new AMap.TileLayer.WMS({
@@ -425,6 +445,7 @@
           onmessage(mesasge){
             let _this=this;
             this.trafficData = JSON.parse(mesasge.data).result.data;
+            //this.drawMarker(this.trafficData,"traffic")
             //console.log(this.trafficData)
             // if(this.trafficList.length){
             //   this.map.remove(this.trafficList);

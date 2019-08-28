@@ -63,10 +63,10 @@
           },
           getVideoByNum(param){
             var _this = this;
-            /*if(this.roadItem.online!=1){
+            if(this.roadItem.online!=1){
               this.mapMessage='路侧设备不在线!';
               return;
-            }*/
+            }
             if(param){
               setTimeout(()=>{
                 _this.mapMessage='路侧设备不存在!';
