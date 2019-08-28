@@ -21,7 +21,7 @@
         </ul>
       </div>
     </div>
-    <traffic-dialog v-if="trafficDialog" :selectedItem="trafficDialogData" @closeDialog="closeDialog"></traffic-dialog>
+    <traffic-dialog v-if="trafficDialog" :selectedId="trafficeItemId" @closeDialog="closeDialog"></traffic-dialog>
   </div>
 </template>
 <script>
@@ -36,7 +36,7 @@
         id: "road-map-container",
         map: null,
         trafficDialog:false,
-        trafficDialogData:{},
+        trafficeItemId:{},
         webSocket: {},
         webSocketData: {
           action: "event_real_data",
@@ -60,7 +60,7 @@
             'text':'车辆分布',
             'isActive':false
           },
-          {
+         /*  {
             'id':'traffic',
             'text':'交通事件',
             'isActive':false
@@ -69,7 +69,7 @@
             'id':'speed',
             'text':'通行速度',
             'isActive':false
-          }
+          } */
         ],
         distributeShow:false,
         message:{},
@@ -203,7 +203,7 @@
                 this.getDistributeWms();
               },5000)
               return;
-            }else if(item.id=='traffic'){
+            }/* else if(item.id=='traffic'){
               this.initWebSocket();
             }else if(item.id=='speed'){
 //              clearInterval(this.timer);
@@ -243,7 +243,7 @@
               //   this.getDistributeWms();
               // },5000)
               // return;
-            }else{
+            } */else{
               this.getRwDis(item.id);
             }
             
@@ -253,11 +253,11 @@
               this.distributeShow = false;
               this.getWms();
             }
-            if(item.id=='speed'){
+           /*  if(item.id=='speed'){
               //clearInterval(this.timer);
               this.distributeShow = false;
               //this.getWms();
-            }
+            } */
               //取消选中，将设备从地图中消除
               this.removeMarkers(item.id);
             }
@@ -364,7 +364,7 @@
                             //_this.trafficList.push(_this.trafficMarker[subItem.id])
                             _this.trafficMarker[subItem.id].on('click', function(e) {
                               _this.trafficDialog=true;
-                              _this.trafficDialogData=subItem;
+                              _this.trafficeItemId=subItem.id;
                             });
                          }
                         
@@ -433,45 +433,45 @@
 //        this.$parent.$parent.changeCenterPoint = this.setCenter;
       },
       initWebSocket(){
-            let _this=this;
-            if ('WebSocket' in window) {
-              _this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
-            }
-            _this.webSocket.onmessage = _this.onmessage;
-            _this.webSocket.onclose = _this.onclose;
-            _this.webSocket.onopen = _this.onopen;
-            _this.webSocket.onerror = _this.onerror;
-          },
-          onmessage(mesasge){
-            let _this=this;
-            this.trafficData = JSON.parse(mesasge.data).result.data;
-            //this.drawMarker(this.trafficData,"traffic")
-            //console.log(this.trafficData)
-            // if(this.trafficList.length){
-            //   this.map.remove(this.trafficList);
-            //   this.trafficList=[];
-            // }
-            // console.log(this.trafficData.result.data)
-            
-          },
-          onclose(data){
-            console.log("结束连接");
-          },
-          onopen(data){
-            //获取在驶车辆状态
-            var _traffic = JSON.stringify(this.webSocketData);
-            this.sendMsg(_traffic);
-          },
-          sendMsg(msg) {
-            let _this=this;
-            if(window.WebSocket){
-              if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-                _this.webSocket.send(msg); //send()发送消息
-              }
-            }else{
-              return;
-            }
+        let _this=this;
+        if ('WebSocket' in window) {
+          _this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+        }
+        _this.webSocket.onmessage = _this.onmessage;
+        _this.webSocket.onclose = _this.onclose;
+        _this.webSocket.onopen = _this.onopen;
+        _this.webSocket.onerror = _this.onerror;
+      },
+      onmessage(mesasge){
+        let _this=this;
+        this.trafficData = JSON.parse(mesasge.data).result.data;
+        //this.drawMarker(this.trafficData,"traffic")
+        //console.log(this.trafficData)
+        // if(this.trafficList.length){
+        //   this.map.remove(this.trafficList);
+        //   this.trafficList=[];
+        // }
+        // console.log(this.trafficData.result.data)
+        
+      },
+      onclose(data){
+        console.log("结束连接");
+      },
+      onopen(data){
+        //获取在驶车辆状态
+        var _traffic = JSON.stringify(this.webSocketData);
+        this.sendMsg(_traffic);
+      },
+      sendMsg(msg) {
+        let _this=this;
+        if(window.WebSocket){
+          if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+            _this.webSocket.send(msg); //send()发送消息
           }
+        }else{
+          return;
+        }
+      }
       
     },
     mounted() {

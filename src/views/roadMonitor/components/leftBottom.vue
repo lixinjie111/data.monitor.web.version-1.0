@@ -11,7 +11,7 @@
 
       </div>
     </div>
-    <div class="c-car-list">
+    <!-- <div class="c-car-list">
       <h3 class="c-title">交通事件<span class="c-sub-title">今日总数:{{trafficCount}}</span></h3>
       <marquee behavior="" direction="down" scrollamount="2" id="marquee">
         <div class="m-traffic-list">
@@ -20,7 +20,7 @@
           </div>
         </div>
       </marquee>
-    </div>
+    </div> -->
     
   </div>
 </template>
