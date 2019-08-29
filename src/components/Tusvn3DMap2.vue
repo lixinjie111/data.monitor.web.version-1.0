@@ -55,6 +55,7 @@ export default {
             ,defualtPitch:-0.8
             ,defualtZ:12.816
             ,rcuId:"2046A1037E1F"
+            ,tempData:null
 
             ,matStdObjects : new THREE.MeshStandardMaterial( { color: 0x7337E3, roughness: 1, metalness: 0 } )
             ,person : new THREE.MeshStandardMaterial( { color: 0xC4B17A, roughness: 1, metalness: 0 } )
@@ -174,8 +175,15 @@ export default {
                 //科技园
                 // this.updateCameraPosition(442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606);
                 //上海
-                this.updateCameraPosition(326181.72659014474,3462354.6747002415,737.3642832288795,741.5052736914325,-1.5707963267948966,-0.05266622778143515);
+                // this.updateCameraPosition(326181.72659014474,3462354.6747002415,737.3642832288795,741.5052736914325,-1.5707963267948966,-0.05266622778143515);
                 this.$emit("mapcomplete",this);
+                // x:326331.9853091738
+                // y: 3462302.7814067435
+                // z: 51.25735802865094
+                // radius: 109.53291179078343
+                // yaw: 1.0544398484286588
+                // _pitch: -0.4434753718877327
+                 this.updateCameraPosition(326331.9853091738,3462302.7814067435,51.25735802865094,741.5052736914325,-0.4434753718877327,1.0544398484286588);
             },500);
 
 
@@ -186,7 +194,13 @@ export default {
             // setTimeout(()=>{
             //     this.changeRcuId(this.websocketUrl,"2046A1037E1F");
             // },8000);
+            setTimeout(()=>{
+                this.changeRcuId("ws://172.17.1.13:9998/ws",null);
+            },8000);
 
+            setInterval(() => {
+                this.processMessage();
+            }, 500);
 
         },
         initView:function(x1,y1,z1,x2,y2,z2){
@@ -225,7 +239,7 @@ export default {
         updateCameraPosition:function(x,y,z,radius,pitch,yaw){
             dl.moveTo({
                 position: [x,y, z],
-                radius: radius,
+                radius: 0.1,
                 yaw: yaw,
                 pitch: pitch
             });
@@ -446,16 +460,23 @@ export default {
                 }
             }
         },
-        onMessage:function(data){
-            this.models={};
-
-            let rsuDatas = JSON.parse(data.data);
-            var deviceid = null;
-            if(rsuDatas.result.length>0)
+        onMessage:function(data)
+        {
+            this.tempData = data;
+        },
+        processMessage:function(){
+            if(this.tempData==null)
             {
-              var time = this.timetrans(rsuDatas.result[0].timestamp);
+                return;
+            }
+            this.models={};
+            let rsuDatas = JSON.parse(this.tempData.data);
+            var deviceid = null;
+            if(rsuDatas.length>0)
+            {
+              var time = this.timetrans(rsuDatas[0].timestamp);
               this.$emit('showTimeStamp',time);
-                deviceid = rsuDatas.result[0].deviceId;
+                deviceid = rsuDatas[0].deviceId;
                 if(this.deviceModels[deviceid]==null)
                 {
                     this.deviceModels[deviceid]={cars:[],persons:[],texts:[]};
@@ -520,13 +541,13 @@ export default {
                 }
 
             }
-            for(let i = 0;i<rsuDatas.result.length;i++)
+            for(let i = 0;i<rsuDatas.length;i++)
             {
-                let d = rsuDatas.result[i];
+                let d = rsuDatas[i];
                 // // console.log(rsuDatas[i]);
-                let dUTM = proj4(this.sourceProject,this.destinatePorject,[d.target.longitude,d.target.latitude]);
+                let dUTM = proj4(this.sourceProject,this.destinatePorject,[d.longitude,d.latitude]);
 
-                if(d.target.type==0||d.target.type==1||d.target.type==3)
+                if(d.type==0||d.type==1||d.type==3)
                 {
                     if(i<this.deviceModels[deviceid].persons.length)
                     {
@@ -536,7 +557,7 @@ export default {
                         mdl.position.z = this.defualtZ+4;
 
                         let text = this.deviceModels[deviceid].texts[i];
-                        text.setText(d.target.uuid.substr(0,8));
+                        text.setText(d.objId.substr(0,8));
                         text.setPositon([dUTM[0],dUTM[1],this.defualtZ+5]);
                     }
                 }else{
@@ -548,7 +569,7 @@ export default {
                         mdl.position.z = this.defualtZ+4;
 
                         let text = this.deviceModels[deviceid].texts[i];
-                        text.setText(d.target.uuid.substr(0,8));
+                        text.setText(d.objId.substr(0,8));
                         text.setPositon([dUTM[0],dUTM[1],this.defualtZ+6]);
                     }
                 }
@@ -583,9 +604,9 @@ export default {
         onOpen:function(){
             console.log("建立连接");
             // 2046A1035893
-            // var hostVehicle = '{"action":"rcu","data":{"rcuId":"2046A1037E1F"},"token":"fpx"}';
+            var hostVehicle = '{"action":"rcu","data":{"rcuId":"2046A10357D5_3402000000132000003101"},"token":"fpx"}';
             // var hostVehicleMsg = JSON.stringify(hostVehicle);
-            var hostVehicle = '{"action":"RCUPer","rcuId":"'+this.rcuId+'"}';
+            // var hostVehicle = '{"action":"RCUPer","rcuId":"'+this.rcuId+'"}';
             this.sendMsg(hostVehicle);
         },
         sendMsg:function(msg){
