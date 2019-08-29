@@ -412,23 +412,32 @@
         this.trafficDialog=false;
       },
       getWms() {
-        var wms  = new AMap.TileLayer.WMS({
-          url:window.config.dlWmsUrl+'geoserver/shanghai_qcc/wms',
-          blend: false,
-          tileSize: 256,
-          params:{'LAYERS': 'shanghai_qcc:gd_road_centerline',VERSION:'1.1.0'}
-        })
-        wms.setMap(this.map);
+
+        let _optionWms = Object.assign(
+              {},
+              window.dlWmsDefaultOption,
+              {
+                  params:{'LAYERS': window.dlWmsOption.LAYERS_centerline, 'VERSION': window.dlWmsOption.VERSION}
+              }
+          );
+
+        let _wms  = new AMap.TileLayer.WMS(_optionWms);
+        _wms.setMap(this.map);
       },
       getDistributeWms() {
-        var wms  = new AMap.TileLayer.WMS({
-          url:window.config.dlWmsUrl+'geoserver/shanghai_qcc/wms',
-          blend: false,
-          tileSize: 256,
-          params:{'LAYERS': 'shanghai_qcc:gd_road_centerline','STYLES':'shanghai_qcc:dl_shcsq_wgs84_road_centerline_car_statistics',VERSION:'1.1.0'}
-        })
-        this.layerList.push(wms);
-        wms.setMap(this.map);
+        let _optionWms = Object.assign(
+              {},
+              window.dlWmsDefaultOption,
+              {
+                  params:{'LAYERS': window.dlWmsOption.LAYERS_centerline,'STYLES': window.dlWmsOption.STYLES, 'VERSION': window.dlWmsOption.VERSION}
+              }
+          );
+
+        let _wms  = new AMap.TileLayer.WMS(_optionWms);
+
+
+        this.layerList.push(_wms);
+        _wms.setMap(this.map);
 //        console.log("放大级别---"+this.map.getZoom())
 //        this.$parent.$parent.changeCenterPoint = this.setCenter;
       },
@@ -476,7 +485,7 @@
     },
     mounted() {
       let _this = this;
-      this.map = new AMap.Map(this.id, this.$parent.$parent.defaultMapOption);
+      this.map = new AMap.Map(this.id, window.defaultMapOption);
       this.map.setZoom(12);
       this.getWms();
       

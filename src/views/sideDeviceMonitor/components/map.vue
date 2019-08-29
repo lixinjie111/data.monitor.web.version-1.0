@@ -19,11 +19,7 @@
       return {
         id: "device-map-container",
         map: null,
-        mapOption: {
-          center: this.$parent.defalutCenterPoint,
-          zoom: 11,
-          mapStyle: "amap://styles/7b007636f01d8a19e9cc2841a85dc083"
-        },
+      
         // 获取在驶车辆实时数据（辆）
         webSocket: {},
         webSocketData: {
@@ -186,7 +182,16 @@
       }
     },
     mounted() {
-      this.map = new AMap.Map(this.id, this.mapOption);
+      let _option = Object.assign(
+        {},
+        window.defaultMapOption,
+        {
+          center: window.mapOption.defaultCenterPoint,
+          zoom: 11,
+          mapStyle:window.mapOption.mapStyleSingle
+        }
+      );
+      this.map = new AMap.Map(this.id, _option);
       var item = {
         'id':'0'
       };

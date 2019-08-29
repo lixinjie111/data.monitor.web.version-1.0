@@ -12,11 +12,6 @@
           return {
             cross:{},
             map:{},
-            mapOption:{
-              center: [121.262939,31.245149],
-              zoom: 18,
-              mapStyle: "amap://styles/bc5a63d154ee0a5221a1ee7197607a00"
-            },
             webSocket:{},
             mapList:[],
             count:0,
@@ -27,8 +22,17 @@
           return this.reqData;
         }
       },
-      mounted() {
-        this.map = new AMap.Map(this.id, this.mapOption);
+      mounted() {  
+        let _option = Object.assign(
+          {},
+          window.defaultMapOption,
+          {
+            center: window.mapOption.defaultCenterPoint,
+            zoom: 18,
+            mapStyle:window.mapOption.mapStyleEmpty
+          }
+        );
+        this.map = new AMap.Map(this.id, _option);
         this.getTypeCross();
       },
       methods: {
@@ -40,13 +44,16 @@
               this.map.setCenter(position);
             }
 //                position = ConvertCoord.wgs84togcj02(baseData.x,baseData.y);
-             let wms  = new AMap.TileLayer.WMS({
-                url:window.config.dlWmsUrl+'geoserver/shanghai_qcc/wms',
-                blend: false,
-                tileSize: 256,
-                params:{'LAYERS': 'shanghai_qcc:dl_shcsq_wgs84_gjlk',VERSION:'1.1.0'}
-              })
-              wms.setMap(this.map);
+              let _optionWms = Object.assign(
+                  {},
+                  window.dlWmsDefaultOption,
+                  {
+                      params:{'LAYERS': window.dlWmsOption.LAYERS_gjlk, 'VERSION': window.dlWmsOption.VERSION}
+                  }
+              );
+
+              let _wms  = new AMap.TileLayer.WMS(_optionWms);
+              _wms.setMap(this.map);
 
               this.cross = this.mapData;
               this.initWebSocket();

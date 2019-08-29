@@ -14,12 +14,14 @@
         methods: {},
         mounted() {
           var _this =this;
-          this.distanceMap = new AMap.Map("realTraffic", {
-            center: [120.76587313387385,31.293174755041118],
-            mapStyle:'amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8',
-            /*zoom:18,*/
-            rotateEnable:'true'
-          });
+          let _option = Object.assign(
+            {},
+            window.defaultMapOption,
+            {
+              center: [120.76587313387385,31.293174755041118],
+            }
+          );
+          this.distanceMap = new AMap.Map('realTraffic', _option);
           this.marker = new AMap.Marker({
             position: new AMap.LngLat(116.482362,39.997718),
             icon: 'static/images/car/car-6.png', // 添加 Icon 图标 URL
