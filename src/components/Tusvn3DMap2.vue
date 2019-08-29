@@ -152,6 +152,14 @@ export default {
             this.scene.add(model);
             this.models[name]=model;
         },
+        removeModel:function(name){
+            let m = this.getModel(name);
+            if(m!=null)
+            {
+                dl.removeModel(m,this.viewer);
+                delete  this.models[name];
+            }
+        },
         getModel:function(id){
           return this.models[id];
         },
