@@ -27,7 +27,7 @@ export default {
         this.initWebSocket();
     },
     mounted() {
-        this.AMap = new AMap.Map(this.id, this.$parent.$parent.defaultMapOption);
+        this.AMap = new AMap.Map(this.id, window.defaultMapOption);
     },
     methods: {
         initWebSocket(){
@@ -132,6 +132,7 @@ export default {
                             'margin-top': '14px',  //车头
                             'color': '#ccc'
                         },
+                        offset: new AMap.Pixel(0, -35),
                         position: _data.position,
                         vehicleId: _data.vehicleId
                     });
