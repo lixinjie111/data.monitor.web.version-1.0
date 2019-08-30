@@ -42,27 +42,6 @@ export default {
             let _this = this,
                 _json = JSON.parse(message.data),
                 _result = _json.result.allVehicle;
-                // console.log("?????????????????????????????");
-                // for (let id in _this.prevData) {
-                //     console.log(_this.prevData[id].plateNo);
-                //     if(_this.prevData[id].plateNo =="沪A923456" || _this.prevData[id].plateNo =="沪A823456") {
-
-                //         console.log(_this.prevData[id].plateNo, "remove");
-                //         _this.prevData[id].marker.off('click', _this.showView);
-                //         _this.prevData[id].plateNoMarker.off('click', _this.showView);
-                //         _this.AMap.remove(_this.prevData[id].marker);
-                //         _this.AMap.remove(_this.prevData[id].plateNoMarker);
-                //         delete _this.prevData[id];
-                //     }
-
-                //     // _this.prevData[id].marker.remove();
-                //     // _this.prevData[id].plateNoMarker.remove();
-                // }
-            // this.count ++;
-            // if(this.count%5 == 0) {
-            //     _result = [];
-            // }
-            // console.log(_result.length);
             if (_result.length > 0) {
                 // console.log(_result.length);
                 let _filterData = {};
@@ -91,6 +70,8 @@ export default {
                         // console.log(_this.prevData[id].plateNo, "remove");
                         _this.prevData[id].marker.off('click', _this.showView);
                         _this.prevData[id].plateNoMarker.off('click', _this.showView);
+                        _this.prevData[id].marker.stopMove();
+                        _this.prevData[id].plateNoMarker.stopMove();
                         _this.AMap.remove(_this.prevData[id].marker);
                         _this.AMap.remove(_this.prevData[id].plateNoMarker);
                         delete _this.prevData[id];
@@ -115,6 +96,10 @@ export default {
                     // console.log("delete:-"+_this.prevData[id].plateNo);
                     _this.prevData[id].marker.off('click', _this.showView);
                     _this.prevData[id].plateNoMarker.off('click', _this.showView);
+                    // _this.prevData[id].marker.setMap(null);
+                    // _this.prevData[id].plateNoMarker.setMap(null);
+                    _this.prevData[id].marker.stopMove();
+                    _this.prevData[id].plateNoMarker.stopMove();
                     _this.AMap.remove(_this.prevData[id].marker);
                     _this.AMap.remove(_this.prevData[id].plateNoMarker);
                     delete _this.prevData[id];
