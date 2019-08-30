@@ -62,7 +62,7 @@ export default {
             // if(this.count%5 == 0) {
             //     _result = [];
             // }
-            console.log(_result.length);
+            // console.log(_result.length);
             if (_result.length > 0) {
                 // console.log(_result.length);
                 let _filterData = {};
@@ -99,38 +99,8 @@ export default {
                 for (let id in _filterData) {
                     if(!_this.prevData[id]) {   //表示新增该点，做add
                         // console.log(_filterData[id].plateNo, "add");
-                        _filterData[id].marker = new AMap.Marker({
-                            map: _this.AMap,
-                            position: _filterData[id].position,
-                            icon: "static/images/car/point.png",
-                            offset: new AMap.Pixel(-2, -2),
-                            angle: _filterData[id].heading,
-                            zIndex: 50,
-                            vehicleId: _filterData[id].vehicleId
-                        });
-                        _filterData[id].plateNoMarker = new AMap.Text({
-                            map: _this.AMap,
-                            text: _filterData[id].plateNo+"<br/><span style='color:#e6a23c'>"+_filterData[id].source+'</span>',
-                            // text: '京N123456',
-                            anchor: 'center', // 设置文本标记锚点
-                            style: {
-                                'padding': '0 5px',
-                                'border-radius': '4px',
-                                'background-color': 'rgba(55, 186, 123, .2)',
-                                'border-width': 0,
-                                'text-align': 'center',
-                                'font-size': '10px',
-                                'line-height': '16px',
-                                'letter-spacing': '0',
-                                'margin-top': '14px',  //车头
-                                'color': '#ccc'
-                            },
-                            offset: new AMap.Pixel(0, -35),
-                            position: _filterData[id].position,
-                            vehicleId: _filterData[id].vehicleId
-                        });
-                        _filterData[id].marker.on('click', _this.showView);
-                        _filterData[id].plateNoMarker.on('click', _this.showView);
+                        _this.addMarker(_filterData[id]);
+                        _this.addPlateNoMarker(_filterData[id]);
                     }       
                 }
 
@@ -149,8 +119,44 @@ export default {
                     _this.AMap.remove(_this.prevData[id].plateNoMarker);
                     delete _this.prevData[id];
                 }
-                // _this.prevData = {};
+                // this.prevData = {};
             }
+        },
+        addMarker(obj) {
+            obj.marker = new AMap.Marker({
+                map: this.AMap,
+                position: obj.position,
+                icon: "static/images/car/point.png",
+                offset: new AMap.Pixel(-2, -2),
+                angle: obj.heading,
+                zIndex: 50,
+                vehicleId: obj.vehicleId
+            });
+            obj.marker.on('click', this.showView);
+        },
+        addPlateNoMarker(obj) {
+            obj.plateNoMarker = new AMap.Text({
+                map: this.AMap,
+                text: obj.plateNo+"<br/><span style='color:#e6a23c'>"+obj.source+'</span>',
+                // text: '京N123456',
+                anchor: 'center', // 设置文本标记锚点
+                style: {
+                    'padding': '0 5px',
+                    'border-radius': '4px',
+                    'background-color': 'rgba(55, 186, 123, .2)',
+                    'border-width': 0,
+                    'text-align': 'center',
+                    'font-size': '10px',
+                    'line-height': '16px',
+                    'letter-spacing': '0',
+                    'margin-top': '14px',  //车头
+                    'color': '#ccc'
+                },
+                offset: new AMap.Pixel(0, -35),
+                position: obj.position,
+                vehicleId: obj.vehicleId
+            });
+            obj.plateNoMarker.on('click', this.showView);
         },
         showView(e) {
             const { href } = this.$router.resolve({
