@@ -160,6 +160,7 @@
         this.rwDisMap(delData,"traffic","delData");
       },
       getMarkers(item) {
+        console.log(item)
         var disParams=[];
         //首次加载时
         if(item.id==0){
@@ -288,46 +289,53 @@
                     resultData.forEach(function (subItem,subIndex) {
                       //红绿灯
                       if(disParam=='spat'){
-                        /*var marker = new AMap.Marker({
-                          position: subItem.position,
-                          icon: 'static/images/sideDevice/1.png', // 添加 Icon 图标 URL
-                          offset:new AMap.Pixel(-15, -15)
-                        });*/
-                        // console.log('position---'+subItem.position);
                         let marker = new AMap.ElasticMarker({
                           position:subItem.position,
                           zooms:[11,20],
                           styles:[{
                             icon:{
                               img:'static/images/road/light.png',
-                              size:[16,16],//图标的原始大小
-                              ancher:[4,8],//锚点，图标原始大小下锚点所处的位置，相对左上角
+                              size:[8,8],//图标的原始大小
+                              ancher:[4,4],//锚点，图标原始大小下锚点所处的位置，相对左上角
                               imageOffset:[0,0],
                               //可缺省，当使用精灵图时可用，标示图标在整个图片中左上角的位置
-                              imageSize:[4,4],
+                              imageSize:[8,8],
                               //可缺省，当使用精灵图时可用，整张图片的大小
-                              fitZoom:11,//最合适的级别，在此级别下显示为原始大小
-                              scaleFactor:2,//地图放大一级的缩放比例系数
-                              maxScale:3,//最大放大比例 达到此处图片不在变化
+                              fitZoom:15,//最合适的级别，在此级别下显示为原始大小
+                              scaleFactor:1.4,//地图放大一级的缩放比例系数
+                              maxScale:2,//最大放大比例 达到此处图片不在变化
                               minScale:1//最小放大比例
-
                             }
                           }],
                           zoomStyleMapping:_this.zoomStyleMapping
                         })
-                        /*marker.on('click', function(e) {
-                          console.log("position:"+subItem.position);
-                        })*/
                         _this.map.add(marker);
                         _this.lightList.push(marker)
                       }
                       //路口
                       if(disParam=='cross'){
-                        var marker = new AMap.Marker({
-                          position: subItem.position,
-                          icon: 'static/images/road/cross.png', // 添加 Icon 图标 URL
-                          offset:new AMap.Pixel(-15, -15)
-                        });
+
+                        let marker = new AMap.ElasticMarker({
+                          position:subItem.position,
+                          zooms:[11,20],
+                          styles:[{
+                            icon:{
+                              img:'static/images/road/cross.png',
+                              size:[30,30],//图标的原始大小
+                              ancher:[15,15],//锚点，图标原始大小下锚点所处的位置，相对左上角
+                              imageOffset:[0,0],
+                              //可缺省，当使用精灵图时可用，标示图标在整个图片中左上角的位置
+                              imageSize:[30,30],
+                              //可缺省，当使用精灵图时可用，整张图片的大小
+                              fitZoom:15,//最合适的级别，在此级别下显示为原始大小
+                              scaleFactor:1.5,//地图放大一级的缩放比例系数
+                              maxScale:3,//最大放大比例 达到此处图片不在变化
+                              minScale:0.8//最小放大比例
+                            }
+                          }],
+                          zoomStyleMapping:_this.zoomStyleMapping
+                        })  
+
                         _this.map.add(marker);
                         let item={
                           crossId:subItem.uid

@@ -18,6 +18,12 @@ img {
   object-position: center center;
 }
 
+//地图上打点
+.amap-container img {
+  display:inline-block !important;
+  vertical-align: top !important;
+}
+
 /*滚动条样式*/
 .c-scroll-wrap {
     height: 100%;
