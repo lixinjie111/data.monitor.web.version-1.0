@@ -176,15 +176,6 @@ export default {
         updateCameraPosition:function(x,y,z,radius,pitch,yaw){
             dl.moveTo({
                 position: [x,y, z],
-                radius: 0.001,
-                yaw: yaw,
-                pitch: pitch,
-                viewer:this.viewer
-            });
-        },
-        updateCameraPosition2:function(x,y,z,radius,pitch,yaw){
-            dl.moveTo({
-                position: [x,y, z],
                 radius: radius,
                 yaw: yaw,
                 pitch: pitch,
