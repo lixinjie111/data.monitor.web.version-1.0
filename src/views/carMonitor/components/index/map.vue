@@ -86,6 +86,7 @@ export default {
                         _this.prevVehiclesData[id].plateNoMarker.off('click', _this.showView);
                         _this.AMap.remove(_this.prevVehiclesData[id].marker);
                         _this.AMap.remove(_this.prevVehiclesData[id].plateNoMarker);
+                        delete _this.prevVehiclesData[id];
                     }
                 }
                 for (let id in _filterData) {
