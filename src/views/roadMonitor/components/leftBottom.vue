@@ -13,13 +13,16 @@
     </div>
     <div class="c-car-list">
       <h3 class="c-title">交通事件<span class="c-sub-title">今日总数:{{trafficCount}}</span></h3>
-      <marquee behavior="" direction="down" scrollamount="2" id="marquee">
-        <div class="m-traffic-list">
-          <div v-for="item in trafficData" :key="Math.random()" class="m-traffic-item">
-            <span>{{$dateUtil.formatTime(Number(item.beginTime))}}</span> <span>{{item.eventName}}</span> <span>{{item.roadName}}</span>
-          </div>
-        </div>
-      </marquee>
+
+      
+      <ul class="m-traffic-list">
+          <li v-for="(item, index) in trafficData" :key="index" class="m-traffic-item clearfix">
+            <span class="m-traffic-span">{{$dateUtil.formatTime(Number(item.beginTime))}}</span>
+            <span class="m-traffic-span">{{item.eventName}}</span>
+            <span class="m-traffic-span">{{item.roadName}}</span>     
+          </li>
+      </ul>
+        
     </div>
     
   </div>
@@ -148,7 +151,10 @@
             let _this=this;
             var json = JSON.parse(mesasge.data);
             this.trafficCount=json.result.eventCount;
-            this.trafficData=json.result.data;
+            Array.prototype.push.apply(this.trafficData, json.result.data);
+            if(this.trafficData.length > 5) {
+              this.trafficData.splice(0, this.trafficData.length - 5);
+            }
             //var result = json.result.roadVeh;
 
           },
@@ -189,15 +195,27 @@
   .m-pie-style{
     height: 160px;
   }
-  #marquee{
-    margin:20px;
-    .m-traffic-list{
-      height:200px;
-      .m-traffic-item{
-        @include layoutMode(all)
+  .m-traffic-list{
+    margin:12px 0;
+    line-height: 36px;
+    height:180px;
+    text-align: center;
+    .m-traffic-item{    
+      .m-traffic-span{
+        @include lineClampOne();
+        margin-right: 10px;
+        float: left;
+        &:nth-of-type(1){
+          width: 176px;
+        }
+        &:nth-of-type(2){
+          width: 100px;
+        }
+        &:nth-of-type(3){
+          width: 60px;
+          margin-right: 0;   
+        }
       }
     }
   }
-  
- 
 </style>
