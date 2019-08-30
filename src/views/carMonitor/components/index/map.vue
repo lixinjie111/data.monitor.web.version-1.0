@@ -17,7 +17,7 @@ export default {
                 vehicleId: 'vehicleOnline'
             },
             // responseData: [],
-            prevVehiclesData: [],
+            prevData: [],
             setFitViewFlag: true,
             count: 0,
             flag: true
@@ -42,20 +42,27 @@ export default {
             let _this = this,
                 _json = JSON.parse(message.data),
                 _result = _json.result.allVehicle;
-                // for (let id in _this.prevVehiclesData) {
-                //     if(_this.prevVehiclesData[id].plateNo =="沪A923456" || _this.prevVehiclesData[id].plateNo =="沪A823456") {
+                // console.log("?????????????????????????????");
+                // for (let id in _this.prevData) {
+                //     console.log(_this.prevData[id].plateNo);
+                //     if(_this.prevData[id].plateNo =="沪A923456" || _this.prevData[id].plateNo =="沪A823456") {
 
-                //         console.log(_this.prevVehiclesData[id].plateNo, "remove");
-                //         _this.prevVehiclesData[id].marker.off('click', _this.showView);
-                //         _this.prevVehiclesData[id].plateNoMarker.off('click', _this.showView);
-                //         _this.AMap.remove(_this.prevVehiclesData[id].marker);
-                //         _this.AMap.remove(_this.prevVehiclesData[id].plateNoMarker);
-                //         delete _this.prevVehiclesData[id];
+                //         console.log(_this.prevData[id].plateNo, "remove");
+                //         _this.prevData[id].marker.off('click', _this.showView);
+                //         _this.prevData[id].plateNoMarker.off('click', _this.showView);
+                //         _this.AMap.remove(_this.prevData[id].marker);
+                //         _this.AMap.remove(_this.prevData[id].plateNoMarker);
+                //         delete _this.prevData[id];
                 //     }
 
-                //     // _this.prevVehiclesData[id].marker.remove();
-                //     // _this.prevVehiclesData[id].plateNoMarker.remove();
+                //     // _this.prevData[id].marker.remove();
+                //     // _this.prevData[id].plateNoMarker.remove();
                 // }
+            // this.count ++;
+            // if(this.count%5 == 0) {
+            //     _result = [];
+            // }
+            console.log(_result.length);
             if (_result.length > 0) {
                 // console.log(_result.length);
                 let _filterData = {};
@@ -71,26 +78,26 @@ export default {
                         plateNoMarker: null
                     };
                 });
-                for (let id in _this.prevVehiclesData) {
+                for (let id in _this.prevData) {
                     if(_filterData[id]) {   //表示有该点，做setPosition
-                        // console.log(_this.prevVehiclesData[id].plateNo, "moveTo");
-                        _filterData[id].marker = _this.prevVehiclesData[id].marker;
-                        _filterData[id].plateNoMarker = _this.prevVehiclesData[id].plateNoMarker;
+                        // console.log(_this.prevData[id].plateNo, "moveTo");
+                        _filterData[id].marker = _this.prevData[id].marker;
+                        _filterData[id].plateNoMarker = _this.prevData[id].plateNoMarker;
                         let _currentCar = _filterData[id];
                         _filterData[id].marker.setAngle(_currentCar.heading);
                         _filterData[id].marker.moveTo(_currentCar.position, _currentCar.speed);
                         _filterData[id].plateNoMarker.moveTo(_currentCar.position, _currentCar.speed);
                     }else {   //表示没有该点，做remove
-                        // console.log(_this.prevVehiclesData[id].plateNo, "remove");
-                        _this.prevVehiclesData[id].marker.off('click', _this.showView);
-                        _this.prevVehiclesData[id].plateNoMarker.off('click', _this.showView);
-                        _this.AMap.remove(_this.prevVehiclesData[id].marker);
-                        _this.AMap.remove(_this.prevVehiclesData[id].plateNoMarker);
-                        delete _this.prevVehiclesData[id];
+                        // console.log(_this.prevData[id].plateNo, "remove");
+                        _this.prevData[id].marker.off('click', _this.showView);
+                        _this.prevData[id].plateNoMarker.off('click', _this.showView);
+                        _this.AMap.remove(_this.prevData[id].marker);
+                        _this.AMap.remove(_this.prevData[id].plateNoMarker);
+                        delete _this.prevData[id];
                     }
                 }
                 for (let id in _filterData) {
-                    if(!_this.prevVehiclesData[id]) {   //表示新增该点，做add
+                    if(!_this.prevData[id]) {   //表示新增该点，做add
                         // console.log(_filterData[id].plateNo, "add");
                         _filterData[id].marker = new AMap.Marker({
                             map: _this.AMap,
@@ -131,16 +138,18 @@ export default {
                     _this.AMap.setFitView();
                     _this.setFitViewFlag = false;
                 }
-                _this.prevVehiclesData = _filterData;
+                _this.prevData = _filterData;
             } else {
                 // 返回的数据为空
-                for (let id in _this.prevVehiclesData) {
-                    _this.prevVehiclesData[id].marker.off('click', _this.showView);
-                    _this.prevVehiclesData[id].plateNoMarker.off('click', _this.showView);
-                    _this.aMap.remove(_this.prevVehiclesData[id].marker);
-                    _this.aMap.remove(_this.prevVehiclesData[id].plateNoMarker);
+                for (let id in _this.prevData) {
+                    // console.log("delete:-"+_this.prevData[id].plateNo);
+                    _this.prevData[id].marker.off('click', _this.showView);
+                    _this.prevData[id].plateNoMarker.off('click', _this.showView);
+                    _this.AMap.remove(_this.prevData[id].marker);
+                    _this.AMap.remove(_this.prevData[id].plateNoMarker);
+                    delete _this.prevData[id];
                 }
-                _this.prevVehiclesData = {};
+                // _this.prevData = {};
             }
         },
         showView(e) {
