@@ -21,7 +21,7 @@
         </ul>
       </div>
     </div>
-    <traffic-dialog v-if="trafficDialog" :selectedId="trafficeItemId" @closeDialog="closeDialog"></traffic-dialog>
+    <traffic-dialog v-if="trafficDialog" :selectedItem="trafficeItem" @closeDialog="closeDialog"></traffic-dialog>
   </div>
 </template>
 <script>
@@ -36,7 +36,7 @@
         id: "road-map-container",
         map: null,
         trafficDialog:false,
-        trafficeItemId:{},
+        trafficeItem:{},
         webSocket: {},
         webSocketData: {
           action: "event_real_data",
@@ -60,7 +60,7 @@
             'text':'车辆分布',
             'isActive':false
           },
-         /*  {
+          {
             'id':'traffic',
             'text':'交通事件',
             'isActive':false
@@ -69,7 +69,7 @@
             'id':'speed',
             'text':'通行速度',
             'isActive':false
-          } */
+          }
         ],
         distributeShow:false,
         message:{},
@@ -92,7 +92,9 @@
           20:0
         },
         layerList:[],
+        speedList:[],
         timer:0,
+        timer1:0,
         trafficMarker:{}
       }
     },
@@ -104,12 +106,13 @@
     watch: {
         trafficData: {
             handler: function (newVal, oldVal) {
-              //console.log(newVal.length)
+              
               if(oldVal.length>0 && newVal.length>0){
                 this.compare(newVal,oldVal);
               }else if(newVal.length<=0){
-               //console.log(222222222222)
+               // console.log(222222222222)
               }else{
+               // console.log(33333333333)
                 this.rwDisMap(newVal,"traffic")
               }
             },
@@ -203,7 +206,7 @@
                 this.getDistributeWms();
               },5000)
               return;
-            }/* else if(item.id=='traffic'){
+            }else if(item.id=='traffic'){
               this.initWebSocket();
             }else if(item.id=='speed'){
 //              clearInterval(this.timer);
@@ -232,18 +235,18 @@
               };
               this.distributeShow = true;
               //获取车辆分布数据
-              //this.getDistributeWms();
-              // this.timer = setInterval(()=>{
-              //   // console.log("调用了---")
-              //   if(this.layerList.length>0){
-              //     this.map.remove(this.layerList);
-              //     this.layerList=[];
-              //   }
-              //   //获取车辆分布数据
-              //   this.getDistributeWms();
-              // },5000)
-              // return;
-            } */else{
+              this.getSpeedWms();
+              this.timer1 = setInterval(()=>{
+                // console.log("调用了---")
+                if(this.speedList.length>0){
+                  this.map.remove(this.speedList);
+                  this.speedList=[];
+                }
+                //获取车辆分布数据
+                this.getSpeedWms();
+              },5000)
+              return;
+            }else{
               this.getRwDis(item.id);
             }
             
@@ -253,11 +256,11 @@
               this.distributeShow = false;
               this.getWms();
             }
-           /*  if(item.id=='speed'){
-              //clearInterval(this.timer);
+            if(item.id=='speed'){
+              clearInterval(this.timer1);
               this.distributeShow = false;
-              //this.getWms();
-            } */
+              this.getWms();
+            }
               //取消选中，将设备从地图中消除
               this.removeMarkers(item.id);
             }
@@ -361,10 +364,11 @@
                               offset:new AMap.Pixel(-15, -15),
                             });
                             _this.map.add(_this.trafficMarker[subItem.id]);
+                            console.log(666666)
                             //_this.trafficList.push(_this.trafficMarker[subItem.id])
                             _this.trafficMarker[subItem.id].on('click', function(e) {
                               _this.trafficDialog=true;
-                              _this.trafficeItemId=subItem.id;
+                              _this.trafficeItem=subItem;
                             });
                          }
                         
@@ -432,14 +436,22 @@
                   params:{'LAYERS': window.dlWmsOption.LAYERS_centerline,'STYLES': window.dlWmsOption.STYLES, 'VERSION': window.dlWmsOption.VERSION}
               }
           );
-
         let _wms  = new AMap.TileLayer.WMS(_optionWms);
-
-
         this.layerList.push(_wms);
         _wms.setMap(this.map);
-//        console.log("放大级别---"+this.map.getZoom())
-//        this.$parent.$parent.changeCenterPoint = this.setCenter;
+      },
+      getSpeedWms() {
+
+        let _optionWms = Object.assign(
+              {},
+              window.dlWmsDefaultOption,
+              {
+                  params:{'LAYERS': window.dlWmsOption.LAYERS_centerline,'STYLES': window.dlWmsOption.STYLES, 'VERSION': window.dlWmsOption.VERSION}
+              }
+          );
+        let _wms  = new AMap.TileLayer.WMS(_optionWms);
+        this.speedList.push(_wms);
+        _wms.setMap(this.map);  
       },
       initWebSocket(){
         let _this=this;
@@ -453,6 +465,7 @@
       },
       onmessage(mesasge){
         let _this=this;
+        console.log(1111111)
         this.trafficData = JSON.parse(mesasge.data).result.data;
         //this.drawMarker(this.trafficData,"traffic")
         //console.log(this.trafficData)

@@ -182,6 +182,15 @@ export default {
                 viewer:this.viewer
             });
         },
+        updateCameraPosition2:function(x,y,z,radius,pitch,yaw){
+            dl.moveTo({
+                position: [x,y, z],
+                radius: radius,
+                yaw: yaw,
+                pitch: pitch,
+                viewer:this.viewer
+            });
+        },
         animate:function(time){
             requestAnimationFrame( animate );
             TWEEN.update( time );

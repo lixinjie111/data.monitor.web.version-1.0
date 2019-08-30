@@ -23,9 +23,11 @@ export default {
             flag: true
         }
     },
-    mounted() {
+    created(){
         this.initWebSocket();
-        this.AMap = new AMap.Map(this.id, window.defaultMapOption);
+    },
+    mounted() {
+        this.AMap = new AMap.Map(this.id, this.$parent.$parent.defaultMapOption);
     },
     methods: {
         initWebSocket(){

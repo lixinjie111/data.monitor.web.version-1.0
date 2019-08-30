@@ -10,109 +10,111 @@
         <div class="side-device-left">
           <div class="c-scroll-wrap">
             <div class="c-scroll-inner">
-                <div class="side-device-detail">
-                  <span>事件类型:</span>
-                  <span class="device-detail-style">{{itemData.eventName}}</span>
+                <div class="side-device-detail clearfix">
+                  <span class="side-device-label">事件类型:</span>
+                  <span class="device-detail-style">{{itemData.eventName || '--'}}</span>
                 </div>
-                <div class="side-device-detail">
-                  <span>发生时间:</span>
-                  <span class="device-detail-style">{{itemData.beginTime}}</span>
+                <div class="side-device-detail clearfix">
+                  <span class="side-device-label">发生时间:</span>
+                  <span class="device-detail-style">{{itemData.beginTime || '--'}}</span>
                 </div>
-                <div class="side-device-detail">
-                  <span>发生地点:</span>
-                  <span class="device-detail-style">{{itemData.longitude}} {{itemData.latitude}}</span>
+                <div class="side-device-detail clearfix">
+                  <span class="side-device-label">发生地点:</span>
+                  <span class="device-detail-style">{{itemData.longitude || '--'}} , {{itemData.latitude || '--'}}</span>
                 </div>
-                <div class="side-device-detail">
-                  <span>道路名称:</span>
-                  <span class="device-detail-style">{{itemData.roadName|| '--'}}</span>
+                <div class="side-device-detail clearfix">
+                  <span class="side-device-label">道路名称:</span>
+                  <span class="device-detail-style">{{itemData.roadName || '--'}}</span>
                 </div>
             </div>
           </div>
         </div>
-        <div class="side-device-right">
-          <div class="side-dialog-map">
-            <div style="width: 100%;height: 100%;">
-              <div style="width: 100%;height: 100%;" v-if="sideMap">
-                <div class="time-style">
-                  <span class="t-class">{{time}}</span>
-                </div>
-                <tusvn-map
-                  :target-id="deviceMapId"
-                  ref="tusvnMap3"
-                  background="black"
-                  minX="325295.155400"
-                  minY="3461941.703700"
-                  minZ="50"
-                  maxX="326681.125700"
-                  maxY="3462723.022400"
-                  maxZ="80"
-                  @mapcomplete="mapcomplete"
-                  @showTimeStamp="showTimeStamp"
-                ></tusvn-map>
+        <div class="side-dialog-map">
+          <div style="width: 100%;height: 100%;">
+            <div style="width: 100%;height: 100%;" v-if="sideMap">
+              <div class="time-style">
+                <span class="t-class">{{time}}</span>
               </div>
-              <div v-else class="side-map-tip side-tip-style">{{mapMessage}}</div>
+              <tusvn-map
+                :target-id="deviceMapId"
+                ref="tusvnMap3"
+                background="black"
+                minX="325295.155400"
+                minY="3461941.703700"
+                minZ="50"
+                maxX="326681.125700"
+                maxY="3462723.022400"
+                maxZ="80"
+                @mapcomplete="mapcomplete"
+                @showTimeStamp="showTimeStamp"
+              ></tusvn-map>
             </div>
+            <div v-else class="side-map-tip side-tip-style">{{mapMessage}}</div>
           </div>
-          <div class="side-device-list">
-            <div class="c-scroll-wrap">
-              <div class="c-scroll-inner">
-                <p class="side-device-title">设备列表</p>
-                <div class="device-list-style">
-                  <div class="table-header-group">
-                    <ul class="table-row">
-                      <li class="table-cell device-num" style="text-align: center">设备编号</li>
-                      <li class="table-cell device-style">联网状态</li>
-                      <li class="table-cell device-style">开启监控</li>
-                    </ul>
-                  </div>
-                  <div class="table-row-group">
-                    <ul class="table-row" v-for="(item,index) in deviceList" :key="item.deviceId">
-                      <li class="table-cell device-num">
-                        <img
-                          src="@/assets/images/monitorManage/monitor-3.png"
-                          class="monitor-device-img-1"
-                          v-if="item.deviceType=='N'"
-                        />
-                        <img
-                          src="@/assets/images/monitorManage/monitor-4.png"
-                          class="monitor-device-img-2"
-                          v-if="item.deviceType=='D'"
-                        />
-                        <span class="monitor-device-text">{{item.deviceId}}</span>
-                      </li>
-                      <li class="table-cell">
-                        <span
-                          class="monitor-device-symbol"
-                          :class="[item.workStatus==1?'online':'offline']"
-                        ></span>
-                      </li>
-                      <li class="table-cell">
-                        <div
-                          class="c-switch-style"
-                          :class="[item.value?active:unActive]"
-                          @click="switchChange(item)"
-                          v-show="item.deviceType=='N'"
-                        >
-                          <i></i>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
+        </div>
+        <div class="side-device-list">
+          <div class="c-scroll-wrap">
+            <div class="c-scroll-inner">
+              <p class="side-device-title">设备列表</p>
+              <div class="device-list-style">
+                <div class="table-header-group">
+                  <ul class="table-row">
+                    <li class="table-cell device-num" style="text-align: center">设备编号</li>
+                    <li class="table-cell device-style">联网状态</li>
+                    <li class="table-cell device-style">开启监控</li>
+                  </ul>
                 </div>
-                <p class="side-device-title">
-                  <span>监控视频</span>
-                </p>
-                <div class="device-video-style">
-                  <div v-if="target=='map'" class="side-video-style">
-                    <div class="road-mask-style">
+                <div class="table-row-group">
+                  <ul class="table-row" v-for="item in deviceObj" :key="item.deviceId">
+                    <li class="table-cell device-num">
                       <img
-                        src="@/assets/images/carMonitor/refresh.png"
-                        class="road-mask-img"
-                        @click="refresh"
+                        src="@/assets/images/monitorManage/monitor-3.png"
+                        class="monitor-device-img-1"
+                        v-if="item.type=='N'"
                       />
-                    </div>
-                    <video-player class="c-map-video-style" :options="option" ref="videoPlayer"></video-player>
+                      <img
+                        src="@/assets/images/monitorManage/monitor-4.png"
+                        class="monitor-device-img-2"
+                        v-else
+                      />
+                      <span class="monitor-device-text">{{item.deviceId}}</span>
+                    </li>
+                    <li class="table-cell">
+                      <span
+                        class="monitor-device-symbol"
+                        :class="[item.cameraRunStatus==1?'online':'offline']"
+                      ></span>
+                    </li>
+                    <li class="table-cell">
+                      <div
+                        class="c-switch-style"
+                        :class="[item.value?active:unActive]"
+                        @click="switchChange(item)"
+                        v-show="item.type=='N'"
+                      >
+                        <i></i>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <p class="side-device-title">
+                <span>监控视频</span>
+              </p>
+              <div class="device-video-style">
+                <div  class="side-video-style">
+                  <div class="road-mask-style">
+                    <img
+                      src="@/assets/images/carMonitor/refresh.png"
+                      class="road-mask-img"
+                      @click="refresh"
+                    />
                   </div>
+                  <video-player 
+                    class="c-map-video-style" 
+                    :options="option" 
+                    ref="videoPlayer">
+                  </video-player>
                 </div>
               </div>
             </div>
@@ -132,6 +134,7 @@ import {
   getDeviceCountByCity
 } from "@/api/sideDeviceMonitor";
 import TusvnMap from "@/components/Tusvn3DMap2";
+ import ConvertCoord from '@/assets/js/utils/coordConvert.js'
 import { getMap } from "@/utils/tusvnMap.js";
 const isProduction = process.env.NODE_ENV === "production";
 export default {
@@ -144,53 +147,178 @@ export default {
         token: 'tusvn',
         id:'',
       },
+      socketflag:false,
+      deviceId:'',
       itemData:{},
-      option: {},
-      provinceOptions: [],
-      provinceValue: "",
-      cityOptions: [],
-      treeList: [], //存放返回的数据
-      cityValue: "",
-      props: {
-        label: "name",
-        children: "children",
-        code: "code",
-        type: "type",
-        isLeaf: "leaf"
-      },
+      option:{},
       deviceList: [],
       active: "active",
       unActive: "close-active",
-      provinceCode: "",
-      cityCode: "",
-      regionList: [],
-      treeData: [],
       openVideoList: [],
-      defaultArr: [], //默认展开
-      selectAddr: [], //第一次默认选中的地址
-      isFirst: true, //第一次展开，
-      roadDevicePoint: {},
       time: "",
       serialNum: "",
-      mapInit: false,
-      roadId: "", //存储路的id
       rtmp: "",
-      sideMap: false,
+      sideMap: true,
       mapMessage: "该路口没有数据，请稍候再试！",
       cameraParam: {},
       deviceMapId:"deviceMap1",
+      deviceObj:{},
+      isFirst:true,
+      isOne:true,
+      position: []
     };
   },
   components: {
     TusvnMap
   },
-  props:['selectedId'],
+  props:['selectedItem'],
   created() {
+    this.webSocketData.id=this.selectedItem.id;
+    this.serialNum=this.selectedItem.cameraId;//点击进来的设备编号
     
-    this.webSocketData.id=this.selectedId;
-    this.initWebSocket();
+    console.log(this.serialNum)
+  },
+  mounted() {
+     if (this.$refs.tusvnMap3) {
+        this.$refs.tusvnMap3.reset3DMap();
+        //console.log(this.position)
+        //this.$refs.tusvnMap3.addModel("Girl walking N090814","./static/map3d/models/Girl walking N090814.3DS",item.ptLon,item.ptLat,20);
+        //this.$refs.tusvnMap3.updateCameraPosition(this.position[0],this.position[1],20,0,0,0);
+      }
+    if(this.serialNum){
+      this.getVideo();
+      // if (this.$refs.tusvnMap3) {
+      //     this.$refs.tusvnMap3.reset3DMap();
+      // }
+      // this.$refs.tusvnMap3.updateCameraPosition(
+      //   this.cameraParam.x,
+      //   this.cameraParam.y,
+      //   this.cameraParam.z,
+      //   this.cameraParam.radius,
+      //   this.cameraParam.pitch,
+      //   this.cameraParam.yaw
+      // );
+      // this.$refs.tusvnMap3.changeRcuId(
+      //   window.config.websocketUrl,
+      //   this.serialNum
+      // );
+      // return;
+  
+    }
+   
+  },
+  watch: {
+    deviceList: {
+        handler: function (newVal, oldVal) {
+          //console.log(newVal.length)
+          if(oldVal.length>0 && newVal.length>0){
+            this.compare(newVal,oldVal);
+          }else if(newVal.length<=0){
+            //console.log(222222222222)
+          }else{
+            this.handleData(newVal)
+          }
+        },
+        deep: true
+    }
   },
   methods: {
+    compare(newArr,oldArr){
+      let newData = [];//新增的数据
+      let sameData=[];//相同的数据
+      let sameIdData=[];//更新的数据
+      let arrData=[];
+      for(let i = 0; i < newArr.length; i++){
+          let newId = newArr[i].deviceId;
+          let newCameraRunStatus = newArr[i].cameraRunStatus;
+          let isExist = false;
+          for(let j = 0; j < oldArr.length; j++){
+              let oldId = oldArr[j].deviceId;
+              let oldCameraRunStatus = newArr[i].cameraRunStatus;
+              if(newId == oldId){//存在id一样的数据
+                  isExist = true;
+                  arrData.push(oldArr[j]);
+                  if(newCameraRunStatus==oldCameraRunStatus){//存在id一样;在线状态相同的的数据
+                    sameData.push(oldArr[j]);
+                  }else{//存在id一样状态不同的数据;更新的数据
+                    sameIdData.push(oldArr[j]);
+                  }
+              }
+          }
+          if(!isExist){//新增的数据
+              newData.push(newArr[i]);
+          }
+      }
+      let set=arrData.map(item=>item.deviceId);
+      let delData=oldArr.filter(item=>!set.includes(item.deviceId));//删除的数据
+       //console.log("新增的数据"+newData);//新增的数据
+      // console.log(arrData);//相同和需要更新的数据
+      // console.log(sameData);//相同的数据
+      //console.log("需要更新的数据"+sameIdData);//需要更新的数据
+      //console.log("删除的数据"+delData);//需要删除的数据
+      this.handleData(newData,"traffic","newData");
+      this.handleData(sameIdData,"traffic","sameIdData");
+      this.handleData(delData,"traffic","delData");
+    },
+    handleData(resultData,type){
+      var _this=this;
+      resultData.forEach(item=>{
+        if(type=="delData"){
+          for(var i in _this.deviceObj){
+            if (i == item.deviceId) {
+                if(item.value){//如果切换的按钮是正在播放状态，先清除视频源，后删除
+                   var options = _this.getPlayerOptions();
+                   options.sources[0].src = "";
+                   _this.option = options;
+                }
+                if(item.serialNum==this.selectedItem.cameraId){//如果事件源数据被要删除，先清空地图;后删除
+                   if (this.$refs.tusvnMap3) {
+                      this.$refs.tusvnMap3.reset3DMap();
+                    }
+                }
+                delete _this.deviceObj[i];
+            }
+          }
+        }else if(_this.deviceObj[item.deviceId]){//已经存在的数据需要更新
+          _this.deviceObj[item.deviceId].cameraRunStatus=item.cameraRunStatus;
+        }else{//不存在设备id,需要添加的
+          _this.deviceObj[item.deviceId] = item;
+        }
+      })
+      //this.deviceListNew=[];
+      //console.log(_this.deviceObj)
+      //let isFirst = true;
+      for(var i in _this.deviceObj){
+          //this.deviceListNew.push(_this.deviceObj[i]) ;
+          let item=_this.deviceObj[i];
+          if(this.isFirst){
+            if (item.type == "N" && item.cameraRunStatus == 1) {
+                item.value = false;
+                // console.log(typeOf(item.serialNum))
+                // console.log(typeOf(item.serialNum))
+                if (item.serialNum == this.selectedItem.cameraId) {
+                 // console.log("相同"+item)
+                  this.isFirst = false;
+                  //设置默认的选中值
+                  _this.deviceObj[i].value = true;
+                  _this.openVideoList.push(item);
+                  this.cameraParam = JSON.parse(item.cameraParam);
+                  
+                  //_this.serialNum = item.serialNum;
+                   
+                  //                      
+                   
+                  
+                }
+            } else {
+              /*_this.$set(item, 'value', false);*/
+              item.value = false;
+              //_this.sideMap = false;
+            }
+          }    
+      }
+      //console.log(this.deviceListNew);
+    },
     initWebSocket(){
       let _this=this;
       if ('WebSocket' in window) {
@@ -203,12 +331,52 @@ export default {
     },
     onmessage(mesasge){
       let _this=this;
-      console.log(JSON.parse(mesasge.data))
       this.itemData = JSON.parse(mesasge.data).result.data;
-      this.deviceList = JSON.parse(mesasge.data).result.deviceList;
-      this.time = this.$dateUtil.formatTime(JSON.parse(mesasge.data).time)
-      this.serialNum=this.itemData.cameraId;
+      //this.position = ConvertCoord.wgs84togcj02(this.itemData.longitude, this.itemData.latitude);
+      this.position = this.coordinateTransfer("EPSG:4326","+proj=utm +zone=51 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",this.itemData.longitude,this.itemData.latitude);
+      _this.deviceList = JSON.parse(mesasge.data).result.deviceList;
+
+
+    if(this.isOne){
+        this.$refs.tusvnMap3.addModel("11","./static/map3d/models/Girl walking N090814.3DS",this.position[0],this.position[1],13);
+        getMap(this.$refs.tusvnMap3);
+        console.log(this.cameraParam);
+        // if (this.selectedItem.cameraId){
+        //   if(this.cameraParam!=''){
+        //     this.$refs.tusvnMap3.updateCameraPosition(
+        //       this.cameraParam.x,
+        //       this.cameraParam.y,
+        //       this.cameraParam.z,
+        //       this.cameraParam.radius,
+        //       this.cameraParam.pitch,
+        //       this.cameraParam.yaw
+        //     );
+        //   }else{
+        //     this.$refs.tusvnMap3.updateModelPostion("Girl walking N090814",this.position[0],this.position[1],20);
+        //   }
+        //   this.$refs.tusvnMap3.changeRcuId(
+        //     window.config.websocketUrl,
+        //     this.selectedItem.cameraId
+        //   );
+        // }else{
+          this.$refs.tusvnMap3.updateCameraPosition2(this.position[0],this.position[1],15,8,-0.2,0.97+(Math.PI/180.0)*180);
+          this.isOne=false;
+        //}
+    }else{
+        if(this.$refs.tusvnMap3){
+          // this.$refs.tusvnMap3.updateModelPostion("11",this.position[0],this.position[1],20);
+        }
+    }
+     
+     // if (this.$refs.tusvnMap3) {
+        //this.$refs.tusvnMap3.reset3DMap();
+        //console.log(this.position[0],this.position[1])
+       
+     // }
+      //this.time = this.$dateUtil.formatTime(JSON.parse(mesasge.data).time)
+      //this.serialNum=this.itemData.cameraId;//点击进来的设备编号
     },
+    
     onclose(data){
       console.log("结束连接");
     },
@@ -226,6 +394,10 @@ export default {
       }else{
         return;
       }
+    },
+    coordinateTransfer(sourceProject,destinatePorject,longitude,latitude){
+        let targetCoor = proj4(sourceProject,destinatePorject,[longitude,latitude]);
+        return targetCoor;
     },
     getPlayerOptions() {
       var option = {
@@ -266,78 +438,10 @@ export default {
       };
       return option;
     },
-    getDeviceList() {
-      var _this = this;
-      getDeviceList({
-        roadSiderId: this.roadId
-      }).then(res => {
-        _this.deviceList = res.data;
-        var flag = true;
-        _this.deviceList.forEach(function(item, index) {
-          //cameraMonitorStatus:0关闭，1开启 监控状态
-          //cameraRunStatus:0未知，1在线，2离线，3未注册 联网状态
-          //第一次默认并且是摄像头而且在线设置其打开状态
-          if (flag && item.deviceType == "N" && item.workStatus == 1) {
-            if (_this.selectedItem.camSerialNum == "") {//通过地图点击进来的
-              flag = false;
-              //设置默认的选中值
-              item.value = true;
-              _this.openVideoList.push(item);
-              _this.serialNum = item.serialNum;
-            } else {//通过右侧列表点击进来的
-              item.value = false;
-              if (item.serialNum == _this.selectedItem.camSerialNum) {
-                flag = false;
-                //设置默认的选中值
-                 item.value = true;
-                _this.openVideoList.push(item);
-                _this.serialNum = item.serialNum;
-              }
-            }
-            _this.cameraParam = JSON.parse(item.cameraParam);
-            if (_this.serialNum != "") {
-              _this.getVideo();
-              //切换路侧点时，重新切换3D地图
-              //第一次地图加载后调整位置即可
-              //                    console.log("地图初始化---"+_this.mapInit)
-              if (_this.mapInit) {
-                _this.$refs.tusvnMap3.reset3DMap();
-                //                      let cameraParam = JSON.parse(item.cameraParam);
-                _this.$refs.tusvnMap3.updateCameraPosition(
-                  _this.cameraParam.x,
-                  _this.cameraParam.y,
-                  _this.cameraParam.z,
-                  _this.cameraParam.radius,
-                  _this.cameraParam.pitch,
-                  _this.cameraParam.yaw
-                );
-                _this.$refs.tusvnMap3.changeRcuId(
-                  window.config.websocketUrl,
-                  item.serialNum
-                );
-              }
-            }
-          } else {
-            /*_this.$set(item, 'value', false);*/
-            item.value = false;
-            _this.sideMap = false;
-          }
-        });
-        if (_this.serialNum == "") {
-          var options = _this.getPlayerOptions();
-          options.sources[0].src = "";
-          _this.option = options;
-          if (this.$refs.tusvnMap3) {
-            this.$refs.tusvnMap3.reset3DMap();
-          }
-          _this.sideMap = false;
-        }
-      });
-    },
     switchChange(item) {
       var _this = this;
       //如果设备不在线进行提示
-      if (item.workStatus != 1) {
+      if (item.cameraRunStatus != 1) {
         _this.$message.error("设备不在线");
         return;
       }
@@ -355,212 +459,25 @@ export default {
       if (item.value) {
         //如果开启一个摄像头，则将另一个开启的摄像头关闭
         _this.openVideoList.forEach(function(item1, index) {
-          _this.deviceList.forEach(function(item2) {
+          for(var i in _this.deviceObj){
+            let item2= _this.deviceObj[i]
             if (item1.deviceId == item2.deviceId) {
               //                    item2.value=false;
-              _this.$set(item2, "value", false);
+              _this.$set(_this.deviceObj[i],"value",false);
               //将原来的删除
               _this.openVideoList.splice(index, 1);
             }
-          });
+          }
         });
         _this.openVideoList.push(item);
         _this.serialNum = item.serialNum;
         //根据摄像头调取视频
         _this.getVideo();
-        //选中后重新请求
-         if (this.$refs.tusvnMap3) {
-          this.$refs.tusvnMap3.reset3DMap();
-          _this.cameraParam = JSON.parse(item.cameraParam);
-          this.$refs.tusvnMap3.updateCameraPosition(
-            _this.cameraParam.x,
-            _this.cameraParam.y,
-            _this.cameraParam.z,
-            _this.cameraParam.radius,
-            _this.cameraParam.pitch,
-            _this.cameraParam.yaw
-          );
-          this.$refs.tusvnMap3.changeRcuId(
-            window.config.websocketUrl,
-            item.serialNum
-          );
-        }
-       // _this.$refs.tusvnMap3.reset3DMap();
-
       } else {
         var options = _this.getPlayerOptions();
         options.sources[0].src = "";
         _this.option = options;
-        if (this.$refs.tusvnMap3) {
-          _this.$refs.tusvnMap3.reset3DMap();
-        }
-        //地图关闭
-        _this.sideMap = false;
       }
-    },
-    loadNode(node, resolve) {
-      var _this = this;
-      //懒加载路
-      if (node.level == 1) {
-        var children = [];
-        _this.regionList.forEach(function(item) {
-          if (item.code == node.data.code) {
-            var list = item.dataList;
-            list.forEach(function(item1) {
-              var obj = {};
-              obj.name = item1.name;
-              /*obj.leaf=true;*/
-              obj.code = item1.code;
-              obj.type = 2;
-              children.push(obj);
-            });
-          }
-        });
-        resolve(children);
-        if (_this.isFirst) {
-          _this.defaultArr.push(_this.selectAddr[3]);
-          _this.isFirst = false;
-        }
-        return;
-      }
-      if (node.level > 2) return resolve([]);
-
-      if (node.level == 2) {
-        getDevListByRoadId({
-          roadId: node.data.code
-        }).then(res => {
-          var deviceList = res.data;
-          var children = [];
-          if (deviceList.length > 0) {
-            //默认选中的样式
-            var roadId = _this.selectedItem.roadSiderId;
-            /*var roadId = '110108_002';*/
-            deviceList.forEach(function(item1) {
-              var obj = {};
-              obj.name = item1.rsPtId;
-              obj.code = item1.rsPtId;
-              obj.type = 3;
-              obj.leaf = true;
-              children.push(obj);
-              /*if(item1.rsPtId==roadId){
-                      _this.$refs.tree.setCurrentKey(roadId);
-                    }*/
-            });
-          }
-          resolve(children);
-          //设置点击后默认选中项
-          _this.$refs.tree.setCurrentKey(roadId);
-          return;
-        });
-      }
-    },
-    handleNodeClick(node, resolve) {
-      //当切换树的时候，设备列表，感知结果进行切换
-      this.serialNum = "";
-      this.selectedItem.camSerialNum = "";
-      this.roadId = node.code;
-      this.getDeviceList();
-      this.getDeviceCountByCity();
-    },
-    getSideTree() {
-      var _this = this;
-      _this.treeList = [];
-      //当点击某一个路侧设备后，默认选中的项
-
-      getSideTree().then(res => {
-        _this.treeList = res.data;
-        _this.provinceOptions = [];
-        if (_this.treeList.length > 0) {
-          _this.treeList.forEach(function(item) {
-            var obj = {};
-            obj.code = item.code;
-            obj.name = item.name;
-            _this.provinceOptions.push(obj);
-          });
-        }
-        if (_this.isFirst) {
-          /* _this.provinceCode=_this.selectAddr[0];*/
-          _this.provinceValue = _this.selectAddr[0];
-          _this.getCitys(_this.provinceCode);
-          /* _this.cityCode=_this.selectAddr[1];*/
-          _this.cityValue = _this.selectAddr[1];
-          _this.getRegion();
-        }
-      });
-    },
-    getCitys(code) {
-      var _this = this;
-      _this.cityValue = "";
-      _this.provinceCode = code;
-      _this.cityOptions = [];
-      _this.treeList.forEach(function(item) {
-        if (item.code == code) {
-          var cityList = item.dataList;
-          cityList.forEach(function(e) {
-            var obj = {};
-            obj.code = e.code;
-            obj.name = e.name;
-            _this.cityOptions.push(obj);
-          });
-        }
-      });
-    },
-    getTree(code) {
-      console.log(code);
-      var _this = this;
-      _this.cityCode = code;
-      _this.getRegion();
-      _this.getDeviceCountByCity();
-    },
-    getRegion() {
-      var _this = this;
-      _this.treeList.forEach(function(item) {
-        if (item.code == _this.provinceCode) {
-          var cityList = item.dataList;
-          cityList.forEach(function(e) {
-            if (e.code == _this.cityCode) {
-              //找到市辖区
-              _this.regionList = e.dataList;
-               _this.treeData=[];
-              _this.regionList.forEach(function(item) {
-              //绘制树
-              var obj = {};
-              obj.name = item.name;
-              /*obj.leaf=true;*/
-              obj.code = item.code;
-              obj.type = 1;
-              /*  var children = [];
-                      var childrenList = item.dataList;
-                      //找到路
-                      childrenList.forEach(function (item1) {
-                        var  obj1 = {};
-                        obj1.name =item1.name;
-                        obj1.leaf = true;
-                        children.push(obj1);
-                      })
-                      obj.children=children;*/
-              _this.treeData.push(obj);
-            });
-            }
-          });
-          if (_this.isFirst) {
-            _this.defaultArr.push(_this.selectAddr[2]);
-          }
-        }
-      });
-
-    },
-    getDevListByRoadId: function(roadId) {
-      getDevListByRoadId({
-        roadId: roadId
-      }).then(res => {});
-    },
-    getDeviceCountByCity() {
-      getDeviceCountByCity({
-        distCodeCity: this.cityCode
-      }).then(res => {
-        this.roadDevicePoint = res.data;
-      });
     },
     closeDialog() {
       // var options = this.getPlayerOptions();
@@ -569,88 +486,40 @@ export default {
       //  if(this.$refs.videoPlayer){
       //   this.$refs.videoPlayer.dispose();
       // }
-      // if (this.$refs.tusvnMap3) {
-      //   this.$refs.tusvnMap3.reset3DMap();
-      // }
+      if (this.$refs.tusvnMap3) {
+        this.$refs.tusvnMap3.reset3DMap();
+      }
       this.$emit("closeDialog");
     },
     showTimeStamp(time) {
       this.time = time;
     },
-    mapcomplete: function() {
-      //this.mapInit = true;
-      getMap(this.$refs.tusvnMap3);
-      if (this.serialNum && this.serialNum != "") {
-        console.log("this.serialNum--" + this.serialNum);
-        this.$refs.tusvnMap3.updateCameraPosition(
-          this.cameraParam.x,
-          this.cameraParam.y,
-          this.cameraParam.z,
-          this.cameraParam.radius,
-          this.cameraParam.pitch,
-          this.cameraParam.yaw
-        );
-        this.$refs.tusvnMap3.changeRcuId(
-          window.config.websocketUrl,
-          this.serialNum
-        );
-        return;
-      }
-      let count = 0;
-      let time = setInterval(() => {
-        if (this.serialNum && this.serialNum != "") {
-          console.log("this.serialNum--" + this.serialNum);
-          let cameraParam = JSON.parse(this.selectedItem.cameraParam);
-          this.$refs.tusvnMap3.updateCameraPosition(
-            this.cameraParam.x,
-            this.cameraParam.y,
-            this.cameraParam.z,
-            this.cameraParam.radius,
-            this.cameraParam.pitch,
-            this.cameraParam.yaw
-          );
-          this.$refs.tusvnMap3.changeRcuId(
-            window.config.websocketUrl,
-            this.serialNum
-          );
-          clearInterval(time);
-        }
-        //超过5s仍然没有响应 则停止渲染
-        if (count == 5) {
-          clearInterval(time);
-        }
-        count++;
-      }, 1000);
+    mapcomplete(){
+      this.initWebSocket();
     },
     getVideo() {
       getVideoByNum({
         protocal: 1,
-        /*"serialNum": "3402000000132000001401"*/
         serialNum: this.serialNum
       }).then(res => {
-        var options = this.getPlayerOptions();
-        this.rtmp = res.data.rtmp;
-        if (this.rtmp == "") {
-          options.notSupportedMessage = "";
-          options.notSupportedMessage = "视频流不存在，请稍候重试";
-          this.sideMap = false;
-        } else {
+        if(res.status==200){
+          var options = this.getPlayerOptions();
+          this.rtmp = res.data.rtmp;
+          if (this.rtmp == "") {
+            options.notSupportedMessage = "";
+            options.notSupportedMessage = "视频流不存在，请稍候重试";
+          } else {
+            options.notSupportedMessage = "此视频暂无法播放，请稍候再试";
+            options.sources[0].src = res.data.rtmp;
+          }
+          this.option = options;
+        }else{
           options.notSupportedMessage = "此视频暂无法播放，请稍候再试";
-          options.sources[0].src = res.data.rtmp;
-          this.sideMap = true;
+          options.sources[0].src = '';
         }
-        this.option = options;
       });
     },
     refresh() {
-      if (this.roadId == "") {
-        this.$message.error("请先选择具体的路侧点");
-        return;
-      }
-      if (this.deviceList.length == 0) {
-        this.getDeviceList();
-        return;
-      }
       if (this.rtmp == "") {
         this.getVideo();
         return;
@@ -662,80 +531,58 @@ export default {
       }
     }
   },
-  mounted() {
-    //this.sideMap = false;
-    //this.isFirst = true;
-    //this.mapInit = false; //打开窗口只加载一次地图
-    // this.selectAddr = this.selectedItem.path.split("|");
-    // this.provinceCode = this.selectAddr[0];
-    // this.cityCode = this.selectAddr[1];
-    // //默认选中的
-    // this.roadId = this.selectedItem.roadSiderId;
-    // this.getDeviceList();
-    // this.getSideTree();
-    // this.getDeviceCountByCity();
-  }
 };
 </script>
-
+<style lang="scss">
+@import '@/assets/scss/video-reset.scss';
+</style>
 <style lang="scss" scoped>
 @import "@/assets/scss/dialog.scss";
-@import '@/assets/scss/video-reset.scss';
-
-</style>
-
-<style lang="scss">
 .m-side-dialog-content {
-  .el-input__inner {
-    background-color: #262626;
-    border: 1px solid #5e5970;
-    -webkit-border-radius: 0px;
-    -moz-border-radius: 0px;
-    border-radius: 0px;
-    width: 90px;
-    height: 30px;
+  padding: 0;
+  background-color: #000;
+  .side-device-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 2;
+    padding: 20px 0 20px 20px;
+    height: auto;
+    width: 280px;
+    line-height: 36px;
+    background: linear-gradient(to right, rgba(0, 0 ,0 , .6) 30%, rgba(0, 0 ,0 , 0)); /* 标准的语法 */
+    .side-device-detail{
+      display:block !important;
+      .side-device-label {
+        float: left;
+      }
+      .device-detail-style {
+        display: block;
+        margin-left: 70px;
+        color: #fff;
+      }
+    }
   }
-  .el-select .el-input.is-focus .el-input__inner,
-  .el-select .el-input__inner:focus {
-    border-color: #5e5970;
+  .side-dialog-map {
+    width: 100%;
+    height: 100%;
   }
-
-
-
-
-  .el-tree {
-    background: #262626;
-    color: #cccccc;
+  .side-device-list {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 2;
+    margin: 0;
+    height: auto;
+    padding: 20px 0 20px 20px;
+    background: linear-gradient(90deg, rgba(0, 0 ,0 , 0), rgba(0, 0 ,0 , .5) 70%); /* 标准的语法 */
+    .device-list-style {
+      background-color:#000;
+    }
   }
-  .el-tree-node.is-current > .el-tree-node__content {
-    color: #ba7907;
-  }
-    .el-tree--highlight-current
-    .el-tree-node.is-current
-    > .el-tree-node__content {
-    background-color: transparent;
-  }
-
-
 }
- .el-select-dropdown__list {
-    padding: 0px !important;
-  }
-.el-tree-node__content:hover {
-    background-color: #262626;
-  }
-  .el-tree-node:focus > .el-tree-node__content {
-    background-color: #262626;
-  }
-  .el-select-dropdown{
-    background-color: #262626 !important;
-    border: 1px solid #535457 !important;
-    margin-top: -2px !important;
-  }
-  .el-popper .popper__arrow,
-  .el-popper .popper__arrow::after {
-    border-style: none !important;
-  }
 </style>
 
 
