@@ -204,11 +204,12 @@ export default {
     }
     .el-input__inner {
         background: transparent;        
-        border: none;
+        border: none !important;
         height: 50px;
         padding: 0 21px;
         @include layoutMode(pack);
         color: #333 !important;
+        width: 100% !important;
     }
     input:-webkit-autofill {
         -webkit-box-shadow: 0 0 0px 1000px white inset;

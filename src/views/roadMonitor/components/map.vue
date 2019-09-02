@@ -7,7 +7,7 @@
         {{item.text}}
       </li>
     </ul>
-    <div class="road-distribute trans1" v-show="distributeShow">
+    <div class="road-distribute trans" v-show="distributeShow">
       <div class="road-title">
         <span >{{message.title}}</span>
         <i class="road-title-close" @click="closeDialog"></i>
@@ -406,7 +406,10 @@
                 /*}
               });*/
             })
-            this.setMassMarker(posotionData,disParam);
+            if(disParam !='traffic'){
+                this.setMassMarker(posotionData,disParam);
+            }
+           
           }
         }
       },
@@ -666,8 +669,6 @@
   .trans{
     background-color: rgba(94,89,112,.2);
   }
-  .trans1{
-    background-color: rgba(31,29,37,.5);
-  }
+ 
 </style>
 
