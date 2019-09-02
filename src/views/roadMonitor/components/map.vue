@@ -406,7 +406,10 @@
                 /*}
               });*/
             })
-            this.setMassMarker(posotionData,disParam);
+            if(disParam !='traffic'){
+                this.setMassMarker(posotionData,disParam);
+            }
+           
           }
         }
       },
