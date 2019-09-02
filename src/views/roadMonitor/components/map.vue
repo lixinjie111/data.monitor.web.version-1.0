@@ -92,10 +92,12 @@
           20:0
         },
         massNum : "",
-        layerList:[],
-        speedList:[],
-        timer:0,
-        timer1:0,
+//      layerList:[],
+				carWms: null,
+//      speedList:[],
+				speedWms: null,
+        carTimer:0,
+        speedTimer:0,
         trafficMarker:{}
       }
     },
@@ -161,16 +163,14 @@
         var disParams=[];
         //首次加载时
         if(item.id==0){
-          /*disParams.push('spat');*/
           this.getRwDis('spat');
         }else{
           item.isActive=!item.isActive;
           //当选中后才进行请求
           if(item.isActive){
-            /*disParams.push(item.id);*/
             //如果是车辆分布，弹出弹出框
             if(item.id=='car'){
-//              clearInterval(this.timer);
+//              clearInterval(this.carTimer);
                 this.message={
                   title:"车辆分布:显示车辆在每段路上的分布情况",
                   legend:[{
@@ -193,25 +193,20 @@
                 };
               this.distributeShow = true;
               //获取车辆分布数据
-              this.getDistributeWms();
-              this.timer = setInterval(()=>{
-
-                if(this.layerList.length>0){
-                  this.map.remove(this.layerList);
-                  this.layerList=[];
-                }
+              this.getCarWms();
+              this.carTimer = setInterval(()=>{
                 //获取车辆分布数据
-                this.getDistributeWms();
+                this.getCarWms();
               },5000)
               return;
             }else if(item.id=='traffic'){
               this.initWebSocket();
             }else if(item.id=='speed'){
-//              clearInterval(this.timer);
+//              clearInterval(this.carTimer);
               this.message={
                 title:"通行速度:显示每条车道的通行速度",
                 legend:[{
-                  msg:"<=10 km/h",
+                  msg:"≤ 10 km/h",
                   color:'#7a0a09'
                 },
                 {
@@ -227,19 +222,14 @@
                   color:'#e7cc19'
                 },
                 {
-                  msg:">=35 km/h",
+                  msg:"≥ 35 km/h",
                   color:'#5cc93a'
                 }]
               };
               this.distributeShow = true;
               //获取车辆分布数据
               this.getSpeedWms();
-              this.timer1 = setInterval(()=>{
-             
-                if(this.speedList.length>0){
-                  this.map.remove(this.speedList);
-                  this.speedList=[];
-                }
+              this.speedTimer = setInterval(()=>{
                 //获取车辆分布数据
                 this.getSpeedWms();
               },5000)
@@ -250,14 +240,14 @@
             
           }else{
             if(item.id=='car'){
-              clearInterval(this.timer);
+              clearInterval(this.carTimer);
               this.distributeShow = false;
-              this.getWms();
+              this.map.remove(this.carWms);
             }
             if(item.id=='speed'){
-              clearInterval(this.timer1);
+              clearInterval(this.speedTimer);
               this.distributeShow = false;
-              this.getWms();
+              this.map.remove(this.speedWms);
             }
               //取消选中，将设备从地图中消除
               this.removeMarkers(item.id);
@@ -443,7 +433,6 @@
         this.trafficDialog=false;
       },
       getWms() {
-
         let _optionWms = Object.assign(
               {},
               window.dlWmsDefaultOption,
@@ -455,7 +444,10 @@
         let _wms  = new AMap.TileLayer.WMS(_optionWms);
         _wms.setMap(this.map);
       },
-      getDistributeWms() {
+      getCarWms() {
+      	if(this.carWms) {
+      		this.map.remove(this.carWms);
+      	}
         let _optionWms = Object.assign(
               {},
               window.dlWmsDefaultOption,
@@ -463,22 +455,24 @@
                   params:{'LAYERS': window.dlWmsOption.LAYERS_centerline,'STYLES': window.dlWmsOption.STYLES, 'VERSION': window.dlWmsOption.VERSION}
               }
           );
-        let _wms  = new AMap.TileLayer.WMS(_optionWms);
-        this.layerList.push(_wms);
-        _wms.setMap(this.map);
+        this.carWms  = new AMap.TileLayer.WMS(_optionWms);
+        //this.layerList.push(_wms);
+        this.carWms.setMap(this.map);
       },
       getSpeedWms() {
-
+      	if(this.speedWms) {
+      		this.map.remove(this.speedWms);
+      	}
         let _optionWms = Object.assign(
               {},
               window.dlWmsDefaultOption,
               {
-                  params:{'LAYERS': window.dlWmsOption.LAYERS_centerline,'STYLES': window.dlWmsOption.STYLES, 'VERSION': window.dlWmsOption.VERSION}
+                  params:{'LAYERS': window.dlWmsOption.LAYERS_laneavgspeed, 'VERSION': window.dlWmsOption.VERSION}
               }
           );
-        let _wms  = new AMap.TileLayer.WMS(_optionWms);
-        this.speedList.push(_wms);
-        _wms.setMap(this.map);  
+        this.speedWms = new AMap.TileLayer.WMS(_optionWms);
+        //this.speedList.push(_wms);
+        this.speedWms.setMap(this.map);  
       },
       initWebSocket(){
         let _this=this;
@@ -612,7 +606,8 @@
     },
     destroyed(){
       //清除定时器
-      clearInterval(this.timer);
+      clearInterval(this.carTimer);
+      clearInterval(this.speedTimer);
     }
   }
 </script>

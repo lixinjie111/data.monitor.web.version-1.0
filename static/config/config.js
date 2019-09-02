@@ -77,6 +77,7 @@ window.dlWmsOption = {
     'LAYERS_dlzc': 'shanghai_qcc:gd_dlzc',
     'LAYERS_gjlk': 'shanghai_qcc:dl_shcsq_wgs84_gjlk',
     'LAYERS_centerline': 'shanghai_qcc:gd_road_centerline',
+    'LAYERS_laneavgspeed': 'shanghai_qcc:dl_shcsq_wgs84_laneavgspeed',
     'STYLES':'shanghai_qcc:dl_shcsq_wgs84_road_centerline_car_statistics',
     'VERSION':'1.1.0',
 }
