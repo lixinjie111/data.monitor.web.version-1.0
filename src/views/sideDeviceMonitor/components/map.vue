@@ -182,16 +182,7 @@
       }
     },
     mounted() {
-      let _option = Object.assign(
-        {},
-        window.defaultMapOption,
-        {
-          center: window.mapOption.defaultCenterPoint,
-          zoom: 11,
-          mapStyle:window.mapOption.mapStyleSingle
-        }
-      );
-      this.map = new AMap.Map(this.id, _option);
+      this.map = new AMap.Map(this.id, window.defaultMapOption);
       var item = {
         'id':'0'
       };

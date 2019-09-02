@@ -204,15 +204,7 @@
     },
     methods: {
       initMap() {    
-        let _option = Object.assign(
-          {},
-          window.defaultMapOption,
-          {
-            zoom: this.zoom,
-            mapStyle: window.mapOption.mapStyleSingle
-          }
-        );
-        this.distanceMap = new AMap.Map('distanceContainer', _option);
+        this.distanceMap = new AMap.Map('distanceContainer', window.defaultMapOption);
         // console.log(this.distanceMap.getZoom());
 
       
