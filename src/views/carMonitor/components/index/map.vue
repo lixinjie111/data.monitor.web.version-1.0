@@ -43,7 +43,6 @@ export default {
                 _json = JSON.parse(message.data),
                 _result = _json.result.allVehicle;
             if (_result.length > 0) {
-                // console.log(_result.length);
                 let _filterData = {};
                 _result.forEach((item, index) => {
                     _filterData[item.vehicleId] = {
@@ -64,14 +63,14 @@ export default {
                         _filterData[id].plateNoMarker = _this.prevData[id].plateNoMarker;
                         let _currentCar = _filterData[id];
                         _filterData[id].marker.setAngle(_currentCar.heading);
-                        _filterData[id].marker.moveTo(_currentCar.position, _currentCar.speed);
-                        _filterData[id].plateNoMarker.moveTo(_currentCar.position, _currentCar.speed);
-                    }else {   //表示没有该点，做remove
+                        _filterData[id].marker.setPosition(_currentCar.position);
+                        _filterData[id].plateNoMarker.setPosition(_currentCar.position);
+                    } else {   //表示没有该点，做remove
                         // console.log(_this.prevData[id].plateNo, "remove");
                         _this.prevData[id].marker.off('click', _this.showView);
                         _this.prevData[id].plateNoMarker.off('click', _this.showView);
-                        _this.prevData[id].marker.stopMove();
-                        _this.prevData[id].plateNoMarker.stopMove();
+                        // _this.prevData[id].marker.stopMove();
+                        // _this.prevData[id].plateNoMarker.stopMove();
                         _this.AMap.remove(_this.prevData[id].marker);
                         _this.AMap.remove(_this.prevData[id].plateNoMarker);
                         delete _this.prevData[id];
@@ -79,15 +78,18 @@ export default {
                 }
                 for (let id in _filterData) {
                     if(!_this.prevData[id]) {   //表示新增该点，做add
-                        // console.log(_filterData[id].plateNo, "add");
                         _this.addMarker(_filterData[id]);
                         _this.addPlateNoMarker(_filterData[id]);
                     }       
                 }
 
                 if(_this.setFitViewFlag) {
-                    _this.AMap.setFitView();
-                    _this.setFitViewFlag = false;
+                    setTimeout(_ => {
+                        _this.AMap.setFitView();
+                        _this.setFitViewFlag = false;
+                    }, 500);
+                   
+                   
                 }
                 _this.prevData = _filterData;
             } else {
@@ -98,8 +100,8 @@ export default {
                     _this.prevData[id].plateNoMarker.off('click', _this.showView);
                     // _this.prevData[id].marker.setMap(null);
                     // _this.prevData[id].plateNoMarker.setMap(null);
-                    _this.prevData[id].marker.stopMove();
-                    _this.prevData[id].plateNoMarker.stopMove();
+                    // _this.prevData[id].marker.stopMove();
+                    // _this.prevData[id].plateNoMarker.stopMove();
                     _this.AMap.remove(_this.prevData[id].marker);
                     _this.AMap.remove(_this.prevData[id].plateNoMarker);
                     delete _this.prevData[id];
