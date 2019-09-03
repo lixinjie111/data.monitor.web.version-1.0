@@ -35,7 +35,7 @@
 								<!-- <div class="time-style">
                 <span class="t-class">{{time}}</span>
                 </div>-->
-								<tusvn-map :target-id="deviceMapId" ref="tusvnMap3" background="black" minX="325295.155400" minY="3461941.703700" minZ="50" maxX="326681.125700" maxY="3462723.022400" maxZ="80" @mapcomplete="mapcomplete" @showTimeStamp="showTimeStamp"></tusvn-map>
+								<tusvn-map :target-id="deviceMapId" ref="tusvnMap3" background="black" minX="325295.155400" minY="3461941.703700" minZ="50" maxX="326681.125700" maxY="3462723.022400" maxZ="80" @CameraChanged="CameraChanged" @mapcomplete="mapcomplete" @showTimeStamp="showTimeStamp"></tusvn-map>
 							</div>
 							<div v-else class="side-map-tip side-tip-style">{{mapMessage}}</div>
 						</div>
@@ -309,29 +309,28 @@
 						getMap(this.$refs.tusvnMap3);
 						if(this.selectedItem.cameraId) {
 							if(this.cameraParam) {
-								//						   this.$refs.tusvnMap3.updateCameraPosition(
-								//				               this.cameraParam.x,
-								//				               this.cameraParam.y,
-								//				               this.cameraParam.z,
-								//				               this.cameraParam.radius,
-								//				               this.cameraParam.pitch,
-								//				               this.cameraParam.yaw
-								//				             );
-								this.$refs.tusvnMap3.updateCameraPosition(this.position[0], this.position[1], 19, 18, -0.2, 0.97 + (Math.PI / 180.0) * 180);
+//							   this.$refs.tusvnMap3.updateCameraPosition(
+//					               this.cameraParam.x,
+//					               this.cameraParam.y,
+//					               this.cameraParam.z,
+//					               this.cameraParam.radius,
+//					               this.cameraParam.pitch,
+//					               this.cameraParam.yaw
+//					             );
+								this.$refs.tusvnMap3.updateCameraPosition1(this.position[0], this.position[1], 25.78, 19.91, -0.2, 4.11);
 							} else {
-								this.$refs.tusvnMap3.updateCameraPosition(this.position[0], this.position[1], 19, 18, -0.2, 0.97 + (Math.PI / 180.0) * 180);
+								this.$refs.tusvnMap3.updateCameraPosition1(this.position[0], this.position[1], 25.78, 19.91, -0.2, 4.11);
 							}
 							//this.$refs.tusvnMap3.changeRcuId(window.config.websocketUrl,"3402000000132000003101");
 						} else {
-							//console.log(888888888)
-							this.$refs.tusvnMap3.updateCameraPosition(this.position[0], this.position[1], 19, 18, -0.2, 0.97 + (Math.PI / 180.0) * 180);
+							this.$refs.tusvnMap3.updateCameraPosition1(this.position[0], this.position[1], 25.78, 19.91, -0.2, 4.11);
 							//this.$refs.tusvnMap3.changeRcuId(window.config.websocketUrl,this.firstDeviceId);
 						}
 						//this.$refs.tusvnMap3.addModel(this.selectedItem.cameraId,this.itemData.modelIcon,this.position[0],this.position[1],13); //添加模型
-						this.$refs.tusvnMap3.addStaticModel(this.selectedItem.cameraId, "./static/map3d/models/traffic_cone.3ds", this.position[0], this.position[1], 14); //添加模型
+						this.$refs.tusvnMap3.addStaticModel(this.selectedItem.cameraId, "./static/map3d/models/traffic_cone.3ds", this.position[0], this.position[1], 40); //添加模型
 					} else {
 						if(this.$refs.tusvnMap3) {
-							this.$refs.tusvnMap3.updateStaticModelPostion(this.selectedItem.cameraId, this.position[0], this.position[1], 13, 0.97 + (Math.PI / 180.0) * 90);
+							this.$refs.tusvnMap3.updateStaticModelPostion(this.selectedItem.cameraId, this.position[0], this.position[1], 14, 0.97 + (Math.PI / 180.0) * 90);
 						}
 					}
 				}
@@ -407,6 +406,7 @@
 				//				}
 
 			},
+			
 			onclose1(data) {
 				console.log("结束连接");
 			},
@@ -430,6 +430,9 @@
 					latitude
 				]);
 				return targetCoor;
+			},
+			CameraChanged(data){
+				console.log(data)
 			},
 			switchChange(item) {
 				var _this = this;
