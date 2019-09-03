@@ -173,7 +173,7 @@
 		},
 		props: ["selectedItem"],
 		created() {
-			console.log(this.selectedItem);
+			//console.log(this.selectedItem);
 			this.webSocketData.id = this.selectedItem.id;
 			this.serialNum = this.selectedItem.cameraId; //点击进来的设备编号
 			this.webSocketData1 = {
@@ -317,17 +317,17 @@
 //					               this.cameraParam.pitch,
 //					               this.cameraParam.yaw
 //					             );
-								this.$refs.tusvnMap3.updateCameraPosition1(this.position[0], this.position[1], 25.78, 19.91, -0.2, 4.11);
+								this.$refs.tusvnMap3.updateCameraPosition1(this.position[0], this.position[1], 15, 8, -0.2, 0.97 + (Math.PI / 180.0) * 180);
 							} else {
-								this.$refs.tusvnMap3.updateCameraPosition1(this.position[0], this.position[1], 25.78, 19.91, -0.2, 4.11);
+								this.$refs.tusvnMap3.updateCameraPosition1(this.position[0], this.position[1], 15, 8, -0.2, 0.97 + (Math.PI / 180.0) * 180);
 							}
 							//this.$refs.tusvnMap3.changeRcuId(window.config.websocketUrl,"3402000000132000003101");
 						} else {
-							this.$refs.tusvnMap3.updateCameraPosition1(this.position[0], this.position[1], 25.78, 19.91, -0.2, 4.11);
+							this.$refs.tusvnMap3.updateCameraPosition1(this.position[0], this.position[1], 15, 8, -0.2, 0.97 + (Math.PI / 180.0) * 180);
 							//this.$refs.tusvnMap3.changeRcuId(window.config.websocketUrl,this.firstDeviceId);
 						}
 						//this.$refs.tusvnMap3.addModel(this.selectedItem.cameraId,this.itemData.modelIcon,this.position[0],this.position[1],13); //添加模型
-						this.$refs.tusvnMap3.addStaticModel(this.selectedItem.cameraId, "./static/map3d/models/traffic_cone.3ds", this.position[0], this.position[1], 40); //添加模型
+						this.$refs.tusvnMap3.addStaticModel(this.selectedItem.cameraId, "./static/map3d/models/traffic_cone.3ds", this.position[0], this.position[1], 13); //添加模型
 					} else {
 						if(this.$refs.tusvnMap3) {
 							this.$refs.tusvnMap3.updateStaticModelPostion(this.selectedItem.cameraId, this.position[0], this.position[1], 14, 0.97 + (Math.PI / 180.0) * 90);
