@@ -317,14 +317,12 @@
 //					               this.cameraParam.pitch,
 //					               this.cameraParam.yaw
 //					             );
-								this.$refs.tusvnMap3.updateCameraPosition1(this.position[0], this.position[1], 15, 8, -0.2, 0.97 + (Math.PI / 180.0) * 180);
+								this.updateCameraPosition();
 							} else {
-								this.$refs.tusvnMap3.updateCameraPosition1(this.position[0], this.position[1], 15, 8, -0.2, 0.97 + (Math.PI / 180.0) * 180);
+								this.updateCameraPosition();
 							}
-							//this.$refs.tusvnMap3.changeRcuId(window.config.websocketUrl,"3402000000132000003101");
 						} else {
-							this.$refs.tusvnMap3.updateCameraPosition1(this.position[0], this.position[1], 15, 8, -0.2, 0.97 + (Math.PI / 180.0) * 180);
-							//this.$refs.tusvnMap3.changeRcuId(window.config.websocketUrl,this.firstDeviceId);
+							this.updateCameraPosition();
 						}
 						//this.$refs.tusvnMap3.addModel(this.selectedItem.cameraId,this.itemData.modelIcon,this.position[0],this.position[1],13); //添加模型
 						this.$refs.tusvnMap3.addStaticModel(this.selectedItem.cameraId, "./static/map3d/models/traffic_cone.3ds", this.position[0], this.position[1], 13); //添加模型
@@ -335,6 +333,9 @@
 					}
 				}
 
+			},
+			updateCameraPosition(){
+				this.$refs.tusvnMap3.updateCameraPosition1(this.position[0], this.position[1], 15, 8, -0.2, 0.97 + (Math.PI / 180.0) * 180);
 			},
 			initWebSocket() {
 				if("WebSocket" in window) {
