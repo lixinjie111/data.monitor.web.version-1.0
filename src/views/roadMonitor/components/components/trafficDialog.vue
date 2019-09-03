@@ -506,7 +506,12 @@
 					this.option.sources[0].src = this.rtmp;
 				}
 			}
-		}
+		},
+	    destroyed(){
+	      	//清除定时器
+	      	this.webSocket && this.webSocket.close();
+			this.webSocket1 && this.webSocket1.close();
+	    }
 	};
 </script>
 <style lang="scss">
