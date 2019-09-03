@@ -1,7 +1,7 @@
 <template>
   <div class="c-info-style">
     <template v-if="roadList.length">
-      <div v-for="item in roadList" :key="item.camSerialNum" class="m-info-list" >
+      <div v-for="item in roadList" :key="item.camSerialNum" class="m-info-list"  >
         <right-list-video :roadItem="item"  :visible="visible" :roadList="roadList" @queryDeviceDetail="queryDeviceDetail" ></right-list-video>
         <right-list-map   :roadItem="item" :visible="visible" :roadList="roadList" @queryDeviceDetail="queryDeviceDetail"></right-list-map>
       </div>
@@ -46,6 +46,7 @@
           getRoadList(param){
             var _this = this;
             getRoadList().then(res=>{
+              debugger
               console.log(res.data)
               _this.roadList = res.data;
             });

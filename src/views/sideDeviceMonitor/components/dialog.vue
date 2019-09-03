@@ -459,7 +459,7 @@ export default {
             /*var roadId = '110108_002';*/
             deviceList.forEach(function(item1) {
               var obj = {};
-              obj.name = item1.rsPtId;
+              obj.name = item1.rsPtName;
               obj.code = item1.rsPtId;
               obj.type = 3;
               obj.leaf = true;

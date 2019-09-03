@@ -648,7 +648,6 @@
               }
 
               var obj = {type: item.eventType,timer: null, flag: true,dist:dist,message:item.warnMsg,icon:item.warnIcon,warnColor:item.warnColor};
-              console.log("dist...."+obj.dist);
               obj.timer=setTimeout(()=>{
                 obj.flag=false;
                 _this.warningList.forEach(item=>{
