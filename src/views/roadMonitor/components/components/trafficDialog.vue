@@ -186,10 +186,10 @@
 			}
 		},
 		mounted() {
-			// setInterval(()=>{
-			//     let camera = this.$refs.tusvnMap3.getCamera();
-			//     console.log(camera.x,camera.y,camera.z,camera.radius,camera.pitch,camera.yaw)
-			// },500)
+			setInterval(()=>{
+			    let camera = this.$refs.tusvnMap3.getCamera();
+			    console.log(camera.x,camera.y,camera.z,camera.radius,camera.pitch,camera.yaw)
+			},500)
 		},
 		watch: {
 			deviceList: {
@@ -301,11 +301,6 @@
 					this.$refs.tusvnMap3.addPerceptionData(this.carData);
 					if(this.isOne) {
 						this.isOne = false;
-						//http://120.133.21.14:9090/file/warn/rsi/rsi_model_244.3DS
-						// ./static/map3d/models/Girl walking N090814.3DS
-
-						//this.$refs.tusvnMap3.addModel(this.selectedItem.cameraId,"http://120.133.21.14:9090/file/warn/rsi/rsi_model_244.3DS",this.position[0],this.position[1],13); //添加模型
-						//this.$refs.tusvnMap3.updateCameraPosition(this.position[0],this.position[1],15,8, -0.2,0.97 + (Math.PI / 180.0) * 180);
 						getMap(this.$refs.tusvnMap3);
 						if(this.selectedItem.cameraId) {
 							if(this.cameraParam) {
@@ -335,7 +330,7 @@
 
 			},
 			updateCameraPosition(){
-				this.$refs.tusvnMap3.updateCameraPosition1(this.position[0], this.position[1], 15, 8, -0.2, 0.97 + (Math.PI / 180.0) * 180);
+				this.$refs.tusvnMap3.updateCameraPosition1(this.position[0], this.position[1], 17, 13, -0.2, 0.97 + (Math.PI / 180.0) * 180);
 			},
 			initWebSocket() {
 				if("WebSocket" in window) {
