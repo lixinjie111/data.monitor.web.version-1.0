@@ -311,6 +311,14 @@ export default {
         getModel:function(id){
           return this.models[id];
         },
+        removeStaticModel:function(name){
+            let m = this.getStaticModel(name);
+            if(m!=null)
+            {
+                dl.removeModel(m,this.viewer);
+                delete  this.staticmodels[name];
+            }
+        },
         addStaticModel:function(name,url,x,y,z,pitch,yaw,roll){
             let model = new dl.Model({
                 url: url
@@ -335,6 +343,16 @@ export default {
         },
         getStaticModel:function(id){
           return this.staticmodels[id];
+        },
+        updateStaticModelPostion:function(modelId,x,y,z,heading){
+            let model = this.staticmodels[modelId];
+            if(model!=null)
+            {
+                model.position.x = x;
+                model.position.y = y;
+                model.position.z = z;
+                model.setHeading(heading);
+            }
         },
         remove3DInforLabel:function(name){
             let gan = this.infoLabels["gan"][name];
@@ -395,6 +413,15 @@ export default {
             dl.moveTo({
                 position: [x,y, z],
                 radius: 0.001,
+                yaw: yaw,
+                pitch: pitch,
+                viewer:this.viewer
+            });
+        },
+        updateCameraPosition:function(x,y,z,radius,pitch,yaw){
+            dl.moveTo({
+                position: [x,y,z],
+                radius: radius,
                 yaw: yaw,
                 pitch: pitch,
                 viewer:this.viewer

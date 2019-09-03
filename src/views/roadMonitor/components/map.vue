@@ -222,7 +222,7 @@
                   color:'#e7cc19'
                 },
                 {
-                  msg:"≥ 35 km/h",
+                  msg:"> 35 km/h",
                   color:'#5cc93a'
                 }]
               };
