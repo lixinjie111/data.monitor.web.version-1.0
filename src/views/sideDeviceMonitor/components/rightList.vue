@@ -46,8 +46,6 @@
           getRoadList(param){
             var _this = this;
             getRoadList().then(res=>{
-              debugger
-              console.log(res.data)
               _this.roadList = res.data;
             });
           },
