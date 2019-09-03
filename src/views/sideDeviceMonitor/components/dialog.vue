@@ -115,7 +115,7 @@
                         <img
                           src="@/assets/images/monitorManage/monitor-4.png"
                           class="monitor-device-img-2"
-                          v-if="item.deviceType=='D'"
+                          v-else
                         />
                         <span class="monitor-device-text">{{item.deviceId}}</span>
                       </li>
