@@ -1,22 +1,22 @@
 <template>
-  <ul class="c-info-wrap clearfix road-overview">
-    <li class="c-info-list road-left-font">
-    	<p class="c-info-title">总里程(公里)</p>
-    	<p class="c-info-text">{{responseData.distance|| '--'}}</p>
-    </li>
-    <li class="c-info-list road-left-font">
-    	<p class="c-info-title">路口数</p>
-    	<p class="c-info-text">{{responseData.crossing|| '--'}}</p>
-    </li>
-    <li class="c-info-list road-left-font">
-    	<p class="c-info-title">红绿灯数</p>
-    	<p class="c-info-text">{{responseData.trafficLight|| '--'}}</p>
-    </li>
-    <li class="c-info-list road-left-font">
-    	<p class="c-info-title">路侧点数</p>
-    	<p class="c-info-text">{{responseData.roadSide|| '--'}}</p>
-    </li>
-  </ul>
+    <ul class="c-car-list c-info-wrap clearfix">
+      <li class="c-info-list">
+        <p class="c-info-title">总里程(公里)</p>
+        <p class="c-info-text">{{responseData.distance|| '--'}}</p>
+      </li>
+      <li class="c-info-list">
+        <p class="c-info-title">路口数</p>
+        <p class="c-info-text">{{responseData.crossing|| '--'}}</p>
+      </li>
+      <li class="c-info-list">
+        <p class="c-info-title">红绿灯数</p>
+        <p class="c-info-text">{{responseData.trafficLight|| '--'}}</p>
+      </li>
+      <li class="c-info-list">
+        <p class="c-info-title">路侧点数</p>
+        <p class="c-info-text">{{responseData.roadSide|| '--'}}</p>
+      </li>
+    </ul>
 </template>
 
 <script>
@@ -54,18 +54,8 @@ export default {
   },
 }
 </script>
-<style lang="scss" scoped>
-  .c-info-wrap{
-    margin-top: 0px!important;
-  }
-  .c-info-list{
-    padding:0!important;
-  }
-  .road-overview{
-   /* border:1px solid #5e5970;*/
-    padding: 30px 40px;
-    .road-left-font{
-      line-height: 40px!important;
-    }
-  }
+<style scoped lang="scss">
+.c-info-wrap {
+  padding: 0 0 0 40px;
+}
 </style>
