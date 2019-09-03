@@ -35,7 +35,7 @@
 								<!-- <div class="time-style">
                 <span class="t-class">{{time}}</span>
                 </div>-->
-								<tusvn-map :target-id="deviceMapId" ref="tusvnMap3" background="black" minX="325295.155400" minY="3461941.703700" minZ="50" maxX="326681.125700" maxY="3462723.022400" maxZ="80" @CameraChanged="CameraChanged" @mapcomplete="mapcomplete" @showTimeStamp="showTimeStamp"></tusvn-map>
+								<tusvn-map :target-id="deviceMapId" ref="tusvnMap3" background="black" minX="325295.155400" minY="3461941.703700" minZ="50" maxX="326681.125700" maxY="3462723.022400" maxZ="80"  @mapcomplete="mapcomplete" @showTimeStamp="showTimeStamp"></tusvn-map>
 							</div>
 							<div v-else class="side-map-tip side-tip-style">{{mapMessage}}</div>
 						</div>
@@ -186,22 +186,22 @@
 			}
 		},
 		mounted() {
-			setInterval(()=>{
-			    let camera = this.$refs.tusvnMap3.getCamera();
-			    console.log(camera.x,camera.y,camera.z,camera.radius,camera.pitch,camera.yaw)
-			},500)
+			// setInterval(()=>{
+			//     let camera = this.$refs.tusvnMap3.getCamera();
+			//     console.log(camera.x,camera.y,camera.z,camera.radius,camera.pitch,camera.yaw)
+			// },500)
 		},
 		watch: {
 			deviceList: {
 				handler: function(newVal, oldVal) {
 					if(oldVal.length > 0 && newVal.length > 0) { //大于一次的
-						console.log(1111)
+						//console.log(1111)
 						this.compare(newVal, oldVal);
 					} else if(newVal.length <= 0) { //返回空列表
-						console.log(2222)
+						//console.log(2222)
 						this.handleData(newVal);
 					} else { //第一次
-						console.log(33333)
+						//console.log(33333)
 						this.handleData(newVal);
 					}
 				},
@@ -430,9 +430,6 @@
 					latitude
 				]);
 				return targetCoor;
-			},
-			CameraChanged(data){
-				console.log(data)
 			},
 			switchChange(item) {
 				var _this = this;
