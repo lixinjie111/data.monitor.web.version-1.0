@@ -100,7 +100,7 @@
 	} from "@/api/sideDeviceMonitor";
 	import TusvnMap from "@/components/Tusvn3DMap3";
 	import ConvertCoord from "@/assets/js/utils/coordConvert.js";
-	import { getMap } from "@/utils/tusvnMap.js";
+	import { getMap } from "@/utils/tusvnMap3.js";
 	const isProduction = process.env.NODE_ENV === "production";
 	export default {
 		name: "SideDialog",
@@ -112,12 +112,12 @@
 					token: "tusvn",
 					id: ""
 				},
-				carData:null,
-				webSocket1: {},//交通事件车辆
+				carData: null,
+				webSocket1: {}, //交通事件车辆
 				webSocketData1: {},
 				itemData: {},
 				deviceList: [],
-				deviceId:'',
+				deviceId: '',
 				active: "active",
 				unActive: "close-active",
 				openVideoList: [],
@@ -142,8 +142,7 @@
 					sourceOrder: true,
 					flash: {
 						swf: isProduction ?
-							"/monPlatform/static/media/video-js.swf" :
-							"/static/media/video-js.swf"
+							"/monPlatform/static/media/video-js.swf" : "/static/media/video-js.swf"
 					},
 					sources: [{
 						type: "rtmp/mp4",
@@ -169,27 +168,39 @@
 				}
 			};
 		},
-		components: {TusvnMap},
+		components: {
+			TusvnMap
+		},
 		props: ["selectedItem"],
 		created() {
 			console.log(this.selectedItem);
 			this.webSocketData.id = this.selectedItem.id;
 			this.serialNum = this.selectedItem.cameraId; //点击进来的设备编号
-			this.webSocketData1={
+			this.webSocketData1 = {
 				"action": "fusel_event_veh",
-				"region":{"longitude":this.selectedItem.longitude,"latitude":this.selectedItem.latitude,"id":this.selectedItem.id}
+				"region": {
+					"longitude": this.selectedItem.longitude,
+					"latitude": this.selectedItem.latitude,
+					"id": this.selectedItem.id
+				}
 			}
+		},
+		mounted() {
+			setInterval(()=>{
+			    let camera = this.$refs.tusvnMap3.getCamera();
+			    console.log(camera.x,camera.y,camera.z,camera.radius,camera.pitch,camera.yaw)
+			},500)
 		},
 		watch: {
 			deviceList: {
 				handler: function(newVal, oldVal) {
-					if(oldVal.length > 0 && newVal.length > 0) {//大于一次的
+					if(oldVal.length > 0 && newVal.length > 0) { //大于一次的
 						console.log(1111)
 						this.compare(newVal, oldVal);
-					} else if(newVal.length <= 0) {//返回空列表
+					} else if(newVal.length <= 0) { //返回空列表
 						console.log(2222)
 						this.handleData(newVal);
-					} else {//第一次
+					} else { //第一次
 						console.log(33333)
 						this.handleData(newVal);
 					}
@@ -250,8 +261,8 @@
 								}
 								if(item.serialNum == this.selectedItem.cameraId) {
 									//如果事件源数据被要删除，先清空模型;后删除
-									if(this.$refs.tusvnMap3.getModel(this.selectedItem.cameraId)) {
-										this.$refs.tusvnMap3.removeModel(this.selectedItem.cameraId);
+									if(this.$refs.tusvnMap3.getStaticModel(this.selectedItem.cameraId)) {
+										this.$refs.tusvnMap3.removeStaticModel(this.selectedItem.cameraId);
 									}
 								}
 								delete this.deviceObj[i];
@@ -272,10 +283,10 @@
 						if(item.type == "N" && item.cameraRunStatus == 1) {
 							item.value = false;
 							if(item.serialNum == this.selectedItem.cameraId) {
-								console.log("相同"+item)
+								console.log("相同" + item)
 								this.isFirst = false;
 								//设置默认的选中值
-								this.deviceId=item.deviceId;
+								this.deviceId = item.deviceId;
 								this.deviceObj[i].value = true;
 								this.openVideoList.push(item);
 								this.getVideo();
@@ -286,44 +297,45 @@
 						}
 					}
 				}
-				
-				if(this.isOne) {
-					this.isOne = false;
-					//http://120.133.21.14:9090/file/warn/rsi/rsi_model_244.3DS
-					// ./static/map3d/models/Girl walking N090814.3DS
-					
-					//this.$refs.tusvnMap3.addModel(this.selectedItem.cameraId,"http://120.133.21.14:9090/file/warn/rsi/rsi_model_244.3DS",this.position[0],this.position[1],13); //添加模型
-					//this.$refs.tusvnMap3.updateCameraPosition(this.position[0],this.position[1],15,8, -0.2,0.97 + (Math.PI / 180.0) * 180);
-					getMap(this.$refs.tusvnMap3);
-					if(this.selectedItem.cameraId) {
-						if(this.cameraParam) {
-						   this.$refs.tusvnMap3.updateCameraPosition(
-				               this.cameraParam.x,
-				               this.cameraParam.y,
-				               this.cameraParam.z,
-				               this.cameraParam.radius,
-				               this.cameraParam.pitch,
-				               this.cameraParam.yaw
-				             );
-				        }else{
-				        	this.$refs.tusvnMap3.updateCameraPosition(this.position[0],this.position[1],15,8, -0.2,0.97 + (Math.PI / 180.0) * 180);
-				        }
-						//this.$refs.tusvnMap3.changeRcuId(window.config.websocketUrl,"3402000000132000003101");
-					} else{
-						//console.log(888888888)
-						this.$refs.tusvnMap3.updateCameraPosition(this.position[0],this.position[1],15,8, -0.2,0.97 + (Math.PI / 180.0) * 180);
-						//this.$refs.tusvnMap3.changeRcuId(window.config.websocketUrl,this.firstDeviceId);
-					}
-					//this.$refs.tusvnMap3.addModel(this.selectedItem.cameraId,this.itemData.modelIcon,this.position[0],this.position[1],13); //添加模型
-					this.$refs.tusvnMap3.addModel(this.selectedItem.cameraId,"./static/map3d/models/traffic_cone.3ds",this.position[0],this.position[1],13); //添加模型
-				} else {
-					if(this.$refs.tusvnMap3) {
-						this.$refs.tusvnMap3.updateModelPostion(this.selectedItem.cameraId,this.position[0],this.position[1],13,0.97 + (Math.PI / 180.0) * 90);
+				if(this.$refs.tusvnMap3) {
+					this.$refs.tusvnMap3.addPerceptionData(this.carData);
+					if(this.isOne) {
+						this.isOne = false;
+						//http://120.133.21.14:9090/file/warn/rsi/rsi_model_244.3DS
+						// ./static/map3d/models/Girl walking N090814.3DS
+
+						//this.$refs.tusvnMap3.addModel(this.selectedItem.cameraId,"http://120.133.21.14:9090/file/warn/rsi/rsi_model_244.3DS",this.position[0],this.position[1],13); //添加模型
+						//this.$refs.tusvnMap3.updateCameraPosition(this.position[0],this.position[1],15,8, -0.2,0.97 + (Math.PI / 180.0) * 180);
+						getMap(this.$refs.tusvnMap3);
+						if(this.selectedItem.cameraId) {
+							if(this.cameraParam) {
+								//						   this.$refs.tusvnMap3.updateCameraPosition(
+								//				               this.cameraParam.x,
+								//				               this.cameraParam.y,
+								//				               this.cameraParam.z,
+								//				               this.cameraParam.radius,
+								//				               this.cameraParam.pitch,
+								//				               this.cameraParam.yaw
+								//				             );
+								this.$refs.tusvnMap3.updateCameraPosition(this.position[0], this.position[1], 19, 18, -0.2, 0.97 + (Math.PI / 180.0) * 180);
+							} else {
+								this.$refs.tusvnMap3.updateCameraPosition(this.position[0], this.position[1], 19, 18, -0.2, 0.97 + (Math.PI / 180.0) * 180);
+							}
+							//this.$refs.tusvnMap3.changeRcuId(window.config.websocketUrl,"3402000000132000003101");
+						} else {
+							//console.log(888888888)
+							this.$refs.tusvnMap3.updateCameraPosition(this.position[0], this.position[1], 19, 18, -0.2, 0.97 + (Math.PI / 180.0) * 180);
+							//this.$refs.tusvnMap3.changeRcuId(window.config.websocketUrl,this.firstDeviceId);
+						}
+						//this.$refs.tusvnMap3.addModel(this.selectedItem.cameraId,this.itemData.modelIcon,this.position[0],this.position[1],13); //添加模型
+						this.$refs.tusvnMap3.addStaticModel(this.selectedItem.cameraId, "./static/map3d/models/traffic_cone.3ds", this.position[0], this.position[1], 14); //添加模型
+					} else {
+						if(this.$refs.tusvnMap3) {
+							this.$refs.tusvnMap3.updateStaticModelPostion(this.selectedItem.cameraId, this.position[0], this.position[1], 13, 0.97 + (Math.PI / 180.0) * 90);
+						}
 					}
 				}
-//				if(this.$refs.tusvnMap3) {
-//					this.$refs.tusvnMap3.addPerceptionData(this.carData);
-//				}
+
 			},
 			initWebSocket() {
 				if("WebSocket" in window) {
@@ -335,21 +347,21 @@
 				this.webSocket.onerror = this.onerror;
 			},
 			onmessage(mesasge) {
-				console.log(JSON.parse(mesasge.data))
+				//console.log(JSON.parse(mesasge.data))
 				this.itemData = JSON.parse(mesasge.data).result.data;
-				this.position = this.coordinateTransfer("EPSG:4326","+proj=utm +zone=51 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",this.itemData.longitude,this.itemData.latitude);
-				let list=JSON.parse(mesasge.data).result.deviceList;
-				if(list){
+				this.position = this.coordinateTransfer("EPSG:4326", "+proj=utm +zone=51 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", this.itemData.longitude, this.itemData.latitude);
+				let list = JSON.parse(mesasge.data).result.deviceList;
+				if(list) {
 					this.deviceList = JSON.parse(mesasge.data).result.deviceList;
-				}else{
+				} else {
 					this.deviceList = [];
 				}
-				if(this.itemData.status==2){//事件消失取消模型
-					if(this.$refs.tusvnMap3.getModel(this.selectedItem.cameraId)) {
-						this.$refs.tusvnMap3.removeModel(this.selectedItem.cameraId);
+				if(this.itemData.status == 2) { //事件消失取消模型
+					if(this.$refs.tusvnMap3.getStaticModel(this.selectedItem.cameraId)) {
+						this.$refs.tusvnMap3.removeStaticModel(this.selectedItem.cameraId);
 					}
 				}
-				
+
 			},
 			onclose(data) {
 				console.log("结束连接");
@@ -378,22 +390,22 @@
 				this.webSocket1.onerror = this.onerror1;
 			},
 			onmessage1(mesasge) {
-				this.carData=mesasge;
-				
-//				console.log(JSON.parse(mesasge.data))
-//				if(this.$refs.tusvnMap3){
-//					
-//				}
-				
-//				this.itemData = JSON.parse(mesasge.data).result.data;
-//				this.position = this.coordinateTransfer("EPSG:4326","+proj=utm +zone=51 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",this.itemData.longitude,this.itemData.latitude);
-//				this.deviceList = JSON.parse(mesasge.data).result.deviceList;
-//				if(this.itemData.status==2){//事件消失取消模型
-//					if(this.$refs.tusvnMap3) {
-//						this.$refs.tusvnMap3.removeModel(this.selectedItem.cameraId);
-//					}
-//				}
-				
+				this.carData = mesasge;
+
+				//				console.log(JSON.parse(mesasge.data))
+				//				if(this.$refs.tusvnMap3){
+				//					
+				//				}
+
+				//				this.itemData = JSON.parse(mesasge.data).result.data;
+				//				this.position = this.coordinateTransfer("EPSG:4326","+proj=utm +zone=51 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",this.itemData.longitude,this.itemData.latitude);
+				//				this.deviceList = JSON.parse(mesasge.data).result.deviceList;
+				//				if(this.itemData.status==2){//事件消失取消模型
+				//					if(this.$refs.tusvnMap3) {
+				//						this.$refs.tusvnMap3.removeModel(this.selectedItem.cameraId);
+				//					}
+				//				}
+
 			},
 			onclose1(data) {
 				console.log("结束连接");
@@ -427,7 +439,7 @@
 					return;
 				}
 				item.value = !item.value;
-				this.deviceId=item.deviceId;
+				this.deviceId = item.deviceId;
 				if(item.value) {
 					_this.$nextTick(function() {
 						_this.$set(item, "value", true);
@@ -507,11 +519,11 @@
 				}
 			}
 		},
-	    destroyed(){
-	      	//清除定时器
-	      	this.webSocket && this.webSocket.close();
+		destroyed() {
+			//清除定时器
+			this.webSocket && this.webSocket.close();
 			this.webSocket1 && this.webSocket1.close();
-	    }
+		}
 	};
 </script>
 <style lang="scss">
