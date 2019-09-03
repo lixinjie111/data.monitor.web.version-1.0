@@ -10,16 +10,16 @@
             {{message}}
           </div>
         </div>
-        <tusvn-map 
-          class="c-map-video-style" 
-          v-if="sideMap" 
-          :target-id="'mapMonitor'+roadItem.camSerialNum" 
+        <tusvn-map
+          class="c-map-video-style"
+          v-if="sideMap"
+          :target-id="'mapMonitor'+roadItem.camSerialNum"
           :ref="roadItem.camSerialNum"
-          minX=325295.155400   
-          minY=3461941.703700  
+          minX=325295.155400
+          minY=3461941.703700
           minZ=50
-          maxX=326681.125700  
-          maxY=3462723.022400  
+          maxX=326681.125700
+          maxY=3462723.022400
           maxZ=80
           @mapcomplete="onMapComplete">
         </tusvn-map>

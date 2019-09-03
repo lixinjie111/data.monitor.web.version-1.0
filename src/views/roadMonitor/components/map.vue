@@ -2,52 +2,47 @@
 
   <div class="c-view-main" >
     <div :id="id" class="c-map-style"></div>
-    <ul class="c-button-style clearfix">
+    <ul class="c-button-style clearfix trans">
       <li v-for="item in options" :key="item.id" :class="{active:item.isActive}" @click="getMarkers(item)">
         {{item.text}}
       </li>
     </ul>
-    <div class="road-distribute" v-show="distributeShow">
+    <div class="road-distribute trans" v-show="distributeShow">
       <div class="road-title">
-        <span class="road-title-style">车辆分布:显示车辆在每段路上的分布情况</span>
+        <span >{{message.title}}</span>
         <i class="road-title-close" @click="closeDialog"></i>
       </div>
       <div class="road-legend">
         <div class="road-text">说明</div>
         <ul class="road-legend-style clearfix">
-          <li>
-            <span class="text-style style1"></span><span>1-5辆</span>
-          </li>
-          <li>
-            <span class="text-style style2"></span><span>6-10辆</span>
-          </li>
-          <li>
-            <span class="text-style style3"></span><span>11-20辆</span>
-          </li>
-          <li>
-            <span class="text-style style4"></span><span>21辆以上</span>
+          <li v-for="(item,index) in message.legend" :key="index">
+            <span class="text-style" :style="{background:item.color}"></span><span>{{item.msg}}</span>
           </li>
         </ul>
       </div>
     </div>
+    <traffic-dialog v-if="trafficDialog" :selectedItem="trafficeItem" @closeDialog="closeDialog"></traffic-dialog>
   </div>
 </template>
 <script>
   import { rwDis } from '@/api/roadMonitor'
   import ConvertCoord from '@/assets/js/utils/coordConvert.js'
+  import trafficDialog from './components/trafficDialog.vue'
   export default {
     name: "MapContainer",
+    components: {trafficDialog},
     data() {
       return {
         id: "road-map-container",
         map: null,
-        // 获取在驶车辆实时数据（辆）
+        trafficDialog:false,
+        trafficeItem:{},
         webSocket: {},
         webSocketData: {
-          action: "trackAll",
-          token: 'fpx',
-          vehicleId: 'trackAll'
+          action: "event_real_data",
+          token: 'tusvn',
         },
+        // 获取在驶车辆实时数据（辆）
         responseData: {},
         options:[
           {
@@ -64,12 +59,25 @@
             'id':'car',
             'text':'车辆分布',
             'isActive':false
-          }
+          },
+          // {
+          //   'id':'traffic',
+          //   'text':'交通事件',
+          //   'isActive':false
+          // },
+          // {
+          //   'id':'speed',
+          //   'text':'通行速度',
+          //   'isActive':false
+          // }
         ],
         distributeShow:false,
+        message:{},
         disParams:[],
         lightList:[],
         crossList:[],
+        trafficList:[],
+        trafficData:[],
         count:0,
         zoomStyleMapping:{
           11:0,
@@ -83,155 +91,337 @@
           19:0,
           20:0
         },
-        layerList:[],
-        timer:0
+        massNum : "",
+//      layerList:[],
+				carWms: null,
+//      speedList:[],
+				speedWms: null,
+        carTimer:0,
+        speedTimer:0,
+        trafficMarker:{}
       }
     },
+    // created() {
+    //   var arr1=[{id:1,longitude:2,latitude:3},{id:2,longitude:2,latitude:3},{id:3,longitude:3,latitude:3}]
+    //   var arr2=[{id:2,longitude:2,latitude:3},{id:3,longitude:2,latitude:3},{id:4,longitude:2,latitude:3}]
+    //   this.compare(arr2,arr1);//新增和改变的
+    // },
+    watch: {
+        trafficData: {
+            handler: function (newVal, oldVal) {
+              
+              if(oldVal.length>0 && newVal.length>0){
+                this.compare(newVal,oldVal);
+              }else if(newVal.length<=0){
+               // console.log(222222222222)
+              }else{
+               // console.log(33333333333)
+                this.rwDisMap(newVal,"traffic")
+              }
+            },
+            deep: true
+        }
+    },
     methods: {
+      compare(newArr,oldArr){
+        let newData = [];//新增的数据
+        let sameData=[];
+        let sameIdData=[];//更新的数据
+        let arrData=[];
+        for(let i = 0; i < newArr.length; i++){
+            let newId = newArr[i].id;
+            let newlon = newArr[i].longitude;
+            let newlat = newArr[i].latitude;
+            let isExist = false;
+            for(let j = 0; j < oldArr.length; j++){
+                let oldId = oldArr[j].id;
+                let oldlon = oldArr[j].longitude;
+                let oldlat = oldArr[j].latitude;
+                if(newId == oldId){//存在id一样的数据
+                    isExist = true;
+                    arrData.push(oldArr[j]);
+                  if(newlon==oldlon && newlat==oldlat){//存在id一样;位置相同的的数据
+                    sameData.push(oldArr[j]);
+                  }else{//存在id一样位置不同的数据;更新的数据
+                    sameIdData.push(oldArr[j]);
+                  }
+                }
+            }
+            if(!isExist){//新增的数据
+                newData.push(newArr[i]);
+            }
+        }
+        let set=arrData.map(item=>item.id);
+        let delData=oldArr.filter(item=>!set.includes(item.id));//删除的数据
+      
+        this.rwDisMap(newData,"traffic","newData");
+        this.rwDisMap(sameIdData,"traffic","sameIdData");
+        this.rwDisMap(delData,"traffic","delData");
+      },
       getMarkers(item) {
+     
         var disParams=[];
         //首次加载时
         if(item.id==0){
-          /*disParams.push('spat');*/
           this.getRwDis('spat');
         }else{
           item.isActive=!item.isActive;
           //当选中后才进行请求
           if(item.isActive){
-            /*disParams.push(item.id);*/
             //如果是车辆分布，弹出弹出框
             if(item.id=='car'){
-//              clearInterval(this.timer);
+//              clearInterval(this.carTimer);
+                this.message={
+                  title:"车辆分布:显示车辆在每段路上的分布情况",
+                  legend:[{
+                    msg:"1-5辆",
+                    color:'#ffe1be'
+                  },
+                  {
+                    msg:"6-10辆",
+                    color:'#fba947'
+                  },
+                  {
+                    msg:"11-20辆",
+                    color:'#db7a06'
+                  },
+                  {
+                    msg:"21辆以上",
+                    color:'#9d5704'
+                  }
+                 ]
+                };
               this.distributeShow = true;
               //获取车辆分布数据
-              this.getDistributeWms();
-              this.timer = setInterval(()=>{
-                // console.log("调用了---")
-                if(this.layerList.length>0){
-                  this.map.remove(this.layerList);
-                  this.layerList=[];
-                }
+              this.getCarWms();
+              this.carTimer = setInterval(()=>{
                 //获取车辆分布数据
-                this.getDistributeWms();
+                this.getCarWms();
               },5000)
               return;
+            }else if(item.id=='traffic'){
+              this.initWebSocket();
+            }else if(item.id=='speed'){
+//              clearInterval(this.carTimer);
+              this.message={
+                title:"通行速度:显示每条车道的通行速度",
+                legend:[{
+                  msg:"≤ 10 km/h",
+                  color:'#7a0a09'
+                },
+                {
+                  msg:"10-15 km/h",
+                  color:'#db3131'
+                },
+                {
+                  msg:"15-25 km/h",
+                  color:'#db7a06'
+                },
+                {
+                  msg:"25-35 km/h",
+                  color:'#e7cc19'
+                },
+                {
+                  msg:"> 35 km/h",
+                  color:'#5cc93a'
+                }]
+              };
+              this.distributeShow = true;
+              //获取车辆分布数据
+              this.getSpeedWms();
+              this.speedTimer = setInterval(()=>{
+                //获取车辆分布数据
+                this.getSpeedWms();
+              },5000)
+              return;
+            }else{
+              this.getRwDis(item.id);
             }
-            this.getRwDis(item.id);
+            
           }else{
             if(item.id=='car'){
-              clearInterval(this.timer);
+              clearInterval(this.carTimer);
               this.distributeShow = false;
-              this.getWms();
+              this.map.remove(this.carWms);
+            }
+            if(item.id=='speed'){
+              clearInterval(this.speedTimer);
+              this.distributeShow = false;
+              this.map.remove(this.speedWms);
             }
               //取消选中，将设备从地图中消除
               this.removeMarkers(item.id);
             }
           }
       },
+      
       getRwDis(disParam){
         rwDis({
           'disType': disParam,
         }).then(res => {
-          // console.log("长度-----"+res.data.length)
+       
           this.rwDisMap(res.data,disParam);
         });
       },
-      rwDisMap(resultData,disParam){
+      rwDisMap(resultData,disParam,type){    
         var _this = this;
         if(_this.count==0){
           if(resultData.length>0) {
             //转成高德地图的坐标
+            let posotionData = [];
             resultData.forEach((item, index, arr)=>{
+              // console.log(arr)
               resultData[index].position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
                   _this.count ++;
                   if(_this.count == arr.length) {
-                    //绘制线的轨迹
+                    //绘制线的轨迹             
                     resultData.forEach(function (subItem,subIndex) {
                       //红绿灯
-                      if(disParam=='spat'){
-                        /*var marker = new AMap.Marker({
-                          position: subItem.position,
-                          icon: 'static/images/sideDevice/1.png', // 添加 Icon 图标 URL
-                          offset:new AMap.Pixel(-15, -15)
-                        });*/
-                        // console.log('position---'+subItem.position);
-                        let marker = new AMap.ElasticMarker({
-                          position:subItem.position,
-                          zooms:[11,20],
-                          styles:[{
-                            icon:{
-                              img:'static/images/road/light.png',
-                              size:[16,16],//图标的原始大小
-                              ancher:[4,8],//锚点，图标原始大小下锚点所处的位置，相对左上角
-                              imageOffset:[0,0],
-                              //可缺省，当使用精灵图时可用，标示图标在整个图片中左上角的位置
-                              imageSize:[4,4],
-                              //可缺省，当使用精灵图时可用，整张图片的大小
-                              fitZoom:11,//最合适的级别，在此级别下显示为原始大小
-                              scaleFactor:2,//地图放大一级的缩放比例系数
-                              maxScale:3,//最大放大比例 达到此处图片不在变化
-                              minScale:1//最小放大比例
-
-                            }
-                          }],
-                          zoomStyleMapping:_this.zoomStyleMapping
-                        })
-                        /*marker.on('click', function(e) {
-                          console.log("position:"+subItem.position);
-                        })*/
-                        _this.map.add(marker);
-                        _this.lightList.push(marker)
+                      if(disParam=='spat'){          
+                        posotionData[subIndex] = {}
+                        posotionData[subIndex].lnglat = resultData[subIndex].position
+                        posotionData[subIndex].id = index,
+                        posotionData[subIndex].style =  0 
+  
+                        // let marker = new AMap.ElasticMarker({
+                        //   position:subItem.position,
+                        //   zooms:[11,20],
+                        //   styles:[{
+                        //     icon:{
+                        //       img:'static/images/road/light.png',
+                        //       size:[8,8],//图标的原始大小
+                        //       ancher:[4,4],//锚点，图标原始大小下锚点所处的位置，相对左上角
+                        //       imageOffset:[0,0],
+                        //       //可缺省，当使用精灵图时可用，标示图标在整个图片中左上角的位置
+                        //       imageSize:[8,8],
+                        //       //可缺省，当使用精灵图时可用，整张图片的大小
+                        //       fitZoom:15,//最合适的级别，在此级别下显示为原始大小
+                        //       scaleFactor:1.4,//地图放大一级的缩放比例系数
+                        //       maxScale:2,//最大放大比例 达到此处图片不在变化
+                        //       minScale:1//最小放大比例
+                        //     }
+                        //   }],
+                        //   zoomStyleMapping:_this.zoomStyleMapping
+                        // })
+                        // _this.map.add(marker);
+                        // _this.lightList.push(marker)
                       }
                       //路口
                       if(disParam=='cross'){
-                        var marker = new AMap.Marker({
-                          position: subItem.position,
-                          icon: 'static/images/road/cross.png', // 添加 Icon 图标 URL
-                          offset:new AMap.Pixel(-15, -15)
-                        });
-                        _this.map.add(marker);
-                        var item={
-                          crossId:subItem.uid
-                        }
-                        marker.on('click', function(e) {
-                          _this.$parent.$emit("crossEvent",item);
-                        });
-                        _this.crossList.push(marker)
-                      }
-                      //rcu
-                      /*if(disParam=='cross'){
-                        var marker = new AMap.Marker({
-                          position: subItem.position,
-                          icon: 'static/images/sideDevice/2.png', // 添加 Icon 图标 URL
 
-                        });
-                        _this.map.add(marker);
-                        _this.rcuList.push(marker)
-                      }*/
+                        posotionData[subIndex] = {}
+                        posotionData[subIndex].lnglat = resultData[subIndex].position
+                        posotionData[subIndex].id = subItem.uid,
+                        posotionData[subIndex].style =  0 
+
+
+                        // let marker = new AMap.ElasticMarker({
+                        //   position:subItem.position,
+                        //   zooms:[11,20],
+                        //   styles:[{
+                        //     icon:{
+                        //       img:'static/images/road/cross.png',
+                        //       size:[30,30],//图标的原始大小
+                        //       ancher:[15,15],//锚点，图标原始大小下锚点所处的位置，相对左上角
+                        //       imageOffset:[0,0],
+                        //       //可缺省，当使用精灵图时可用，标示图标在整个图片中左上角的位置
+                        //       imageSize:[30,30],
+                        //       //可缺省，当使用精灵图时可用，整张图片的大小
+                        //       fitZoom:15,//最合适的级别，在此级别下显示为原始大小
+                        //       scaleFactor:1.5,//地图放大一级的缩放比例系数
+                        //       maxScale:3,//最大放大比例 达到此处图片不在变化
+                        //       minScale:0.8//最小放大比例
+                        //     }
+                        //   }],
+                        //   zoomStyleMapping:_this.zoomStyleMapping
+                        // })  
+                        // _this.map.add(marker);
+                        // let item={
+                        //   crossId:subItem.uid
+                        // }
+                        // marker.on('click', function(e) {
+                        //   _this.$parent.$emit("crossEvent",item);
+                        // });
+                        // _this.crossList.push(marker)
+                      }
+                      //交通事件
+                      if(disParam =='traffic'){
+                       
+                         if(type=="delData"){
+                            _this.map.remove(_this.trafficMarker[subItem.id]);
+                            for(var i in _this.trafficMarker){
+                              if (i == subItem.id) {
+                                  delete _this.trafficMarker[i];
+                              }
+                            }
+                         }else if(_this.trafficMarker[subItem.id]){//存在需要更新的
+                            _this.trafficMarker[subItem.id].setPosition(subItem.position);
+                         }else{//不存在需要添加的
+                            _this.trafficMarker[subItem.id] = new AMap.ElasticMarker({
+                              position:subItem.position,
+                              zooms:[11,20],
+                              styles:[{
+                                icon:{
+                                  img:subItem.mapIcon,
+                                  size:[44,59],//图标的原始大小
+                                  ancher:[22,59],//锚点，图标原始大小下锚点所处的位置，相对左上角
+                                  imageOffset:[0,0],
+                                  //可缺省，当使用精灵图时可用，标示图标在整个图片中左上角的位置
+                                  imageSize:[44,59],
+                                  //可缺省，当使用精灵图时可用，整张图片的大小
+                                  fitZoom:17,//最合适的级别，在此级别下显示为原始大小
+                                  scaleFactor:1.15,//地图放大一级的缩放比例系数
+                                  maxScale:1.1,//最大放大比例 达到此处图片不在变化
+                                  minScale:0.45//最小放大比例
+                                }
+                              }],
+                              zoomStyleMapping:_this.zoomStyleMapping
+                            })                
+                            _this.map.add(_this.trafficMarker[subItem.id]);
+                            _this.trafficMarker[subItem.id].on('click', function(e) {
+                              _this.trafficDialog=true;
+                              _this.trafficeItem=subItem;
+                            });
+
+                         }
+                        
+                      }
                       //绘制完后，重新设置
-                      if(subIndex==resultData.length-1){
-                       /* _this.map.setFitView();*/
-//                        console.log("zoom===="+_this.map.getZoom())
-                     /*   _this.map.setZoom(_this.map.getZoom()-2);*/
+                      if(subIndex==resultData.length-1){     
                         _this.count=0;
-//                        console.log("zoom1===="+_this.map.getZoom())
                       }
                     })
+                  
                   }
                 /*}
               });*/
             })
+            if(disParam !='traffic'){
+                this.setMassMarker(posotionData,disParam);
+            }
+           
           }
         }
       },
       removeMarkers(type){
-        if(type=='spat'&&this.lightList.length>0){
+     
+        if(type=='spat'&& this['massspat']){     
+          this['massspat'].clear();     
           this.map.remove(this.lightList);
           this.lightList=[];
         }
-        if(type=='cross'&&this.crossList.length>0){
+        if(type=='cross'&& this['masscross']){   
+          this['masscross'].clear();
           this.map.remove(this.crossList);
           this.crossList=[];
+        }
+        if(type=='traffic'&& Object.keys(this.trafficMarker).length>0){
+          this.webSocket&&this.webSocket.close();
+          this.trafficData=[];
+          for(var i in this.trafficMarker){
+            this.map.remove(this.trafficMarker[i])
+          }
+          this.trafficMarker={};
         }
        /* if(type==2&&this.sideList.length>0){
           this.map.remove(this.sideList);
@@ -240,55 +430,80 @@
       },
       closeDialog(){
         this.distributeShow=false;
+        this.trafficDialog=false;
       },
       getWms() {
-        var wms  = new AMap.TileLayer.WMS({
-          url:window.config.dlWmsUrl+'geoserver/shanghai_qcc/wms',
-          blend: false,
-          tileSize: 256,
-          params:{'LAYERS': 'shanghai_qcc:gd_road_centerline',VERSION:'1.1.0'}
-        })
-        wms.setMap(this.map);
+        let _optionWms = Object.assign(
+              {},
+              window.dlWmsDefaultOption,
+              {
+                  params:{'LAYERS': window.dlWmsOption.LAYERS_centerline, 'VERSION': window.dlWmsOption.VERSION}
+              }
+          );
+
+        let _wms  = new AMap.TileLayer.WMS(_optionWms);
+        _wms.setMap(this.map);
       },
-      getDistributeWms() {
-        var wms  = new AMap.TileLayer.WMS({
-          url:window.config.dlWmsUrl+'geoserver/shanghai_qcc/wms',
-          blend: false,
-          tileSize: 256,
-          params:{'LAYERS': 'shanghai_qcc:gd_road_centerline','STYLES':'shanghai_qcc:dl_shcsq_wgs84_road_centerline_car_statistics',VERSION:'1.1.0'}
-        })
-        this.layerList.push(wms);
-        wms.setMap(this.map);
-//        console.log("放大级别---"+this.map.getZoom())
-//        this.$parent.$parent.changeCenterPoint = this.setCenter;
+      getCarWms() {
+      	if(this.carWms) {
+      		this.map.remove(this.carWms);
+      	}
+        let _optionWms = Object.assign(
+              {},
+              window.dlWmsDefaultOption,
+              {
+                  params:{'LAYERS': window.dlWmsOption.LAYERS_centerline,'STYLES': window.dlWmsOption.STYLES, 'VERSION': window.dlWmsOption.VERSION}
+              }
+          );
+        this.carWms  = new AMap.TileLayer.WMS(_optionWms);
+        //this.layerList.push(_wms);
+        this.carWms.setMap(this.map);
+      },
+      getSpeedWms() {
+      	if(this.speedWms) {
+      		this.map.remove(this.speedWms);
+      	}
+        let _optionWms = Object.assign(
+              {},
+              window.dlWmsDefaultOption,
+              {
+                  params:{'LAYERS': window.dlWmsOption.LAYERS_laneavgspeed, 'VERSION': window.dlWmsOption.VERSION}
+              }
+          );
+        this.speedWms = new AMap.TileLayer.WMS(_optionWms);
+        //this.speedList.push(_wms);
+        this.speedWms.setMap(this.map);  
       },
       initWebSocket(){
         let _this=this;
         if ('WebSocket' in window) {
           _this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+          _this.webSocket.onmessage = _this.onmessage;
+          _this.webSocket.onclose = _this.onclose;
+          _this.webSocket.onopen = _this.onopen;
+          _this.webSocket.onerror = _this.onerror;
         }
-        _this.webSocket.onmessage = _this.onmessage;
-        _this.webSocket.onclose = _this.onclose;
-        _this.webSocket.onopen = _this.onopen;
-        _this.webSocket.onerror = _this.onerror;
+
       },
       onmessage(mesasge){
         let _this=this;
-        var json = JSON.parse(mesasge.data);
-        var result = json.result.roadVeh;
-
+        this.trafficData = JSON.parse(mesasge.data).result.data;
+        //this.drawMarker(this.trafficData,"traffic")
+        //console.log(this.trafficData)
+        // if(this.trafficList.length){
+        //   this.map.remove(this.trafficList);
+        //   this.trafficList=[];
+        // }
+        // console.log(this.trafficData.result.data)
+        
       },
       onclose(data){
         console.log("结束连接");
       },
       onopen(data){
         //获取在驶车辆状态
-        var carStatus = {
-          'action':'road_veh_num',
-          'token':'tusvn'
-        }
-        var vehicleStatusMsg = JSON.stringify(carStatus);
-        this.sendMsg(vehicleStatusMsg);
+        var _traffic = JSON.stringify(this.webSocketData);
+        this.sendMsg(_traffic);
       },
       sendMsg(msg) {
         let _this=this;
@@ -299,13 +514,64 @@
         }else{
           return;
         }
+      },
+      setMassMarker(data,disParam){
+        // 创建样式对象
+        let _this = this;
+        let makerUrl;
+        let anchorMass;
+        let sizeMass;
+        let massNum;
+        if(disParam=='spat'){
+          makerUrl = 'static/images/road/light.png'
+          anchorMass =  new AMap.Pixel(6, 6)
+          sizeMass = new AMap.Size(12, 12)
+          massNum = "massspat"
+        }else if(disParam=='cross'){
+          makerUrl = 'static/images/road/cross.png'
+          anchorMass =  new AMap.Pixel(11, 11)
+          sizeMass = new AMap.Size(22, 22)
+          massNum = "masscross"
+        }
+        // else if(disParam =='traffic'){  
+        //   makerUrl = 'static/images/road/light.png'
+        //   anchorMass =  new AMap.Pixel(0, 0)
+        //   sizeMass = new AMap.Size(11, 11)
+        //   massNum = "masstraffic"
+        // }
+        var style = [{
+            url: makerUrl,
+            anchor: anchorMass,
+            size: sizeMass
+        }];
+        this[massNum] = new AMap.MassMarks(data, {
+            opacity: 1,
+            zIndex: 111,
+            zooms:[11,18],
+            cursor: 'pointer',
+            style: style
+        });
+        var marker = new AMap.Marker({content: ' ', map: _this.map});
+        // 将海量点添加至地图实例
+        this[massNum].setMap(_this.map);     
+        if(disParam=='cross'){    
+          this[massNum].on('click', function(e) {
+            let item={
+              crossId:e.data.id
+            } 
+            _this.$parent.$emit("crossEvent",item);
+          });
+        }
+          
       }
+      
     },
     mounted() {
       let _this = this;
-      this.map = new AMap.Map(this.id, this.$parent.$parent.defaultMapOption);
+      this.map = new AMap.Map(this.id, window.defaultMapOption);
       this.map.setZoom(12);
       this.getWms();
+      
       /*let resultData=[{'position':[121.1796317576793,31.2798334778146]},{'position':[121.17986126056147,31.280158303639116]},{'position':[121.1796317576793,31.2798334778146]},{'position':[121.1796317576793,31.2798334778146]}];
       resultData.forEach(function (subItem,subIndex) {
         let marker = new AMap.ElasticMarker({
@@ -341,11 +607,13 @@
     },
     destroyed(){
       //清除定时器
-      clearInterval(this.timer);
+      clearInterval(this.carTimer);
+      clearInterval(this.speedTimer);
     }
   }
 </script>
 <style lang="scss" scoped>
+
   .road-distribute{
     position: absolute;
     top: 146px;
@@ -353,18 +621,20 @@
     z-index:2;
     border:1px solid #5e5970;
     .road-title{
-      padding:15px 20px;
+      padding:13px 20px;
       border-bottom: 1px solid #5e5970;
       position: relative;
+      font-size:14px;
+      line-height: 14px;
       .road-title-close{
+        position: absolute;
+        top: 3px;
+        right: 20px;
         width: 36px;
         height: 36px;
         background: url(../../../assets/images/public/dialog-close.png) no-repeat center center;
         background-size: 16px 16px;
         cursor: pointer;
-        position: absolute;
-        top: 18px;
-        right: 20px;
       }
     }
     .road-legend{
@@ -372,7 +642,7 @@
       width: 400px;
       .road-text{
         display: inline-block;
-        width: 25%;
+        width: 20%;
         vertical-align: top;
       }
       .road-legend-style{
@@ -387,21 +657,14 @@
             height: 10px;
             margin-right: 6px;
           }
-          .style1{
-             background: #ffe1be;
-           }
-          .style2{
-            background: #fba947;
-          }
-          .style3{
-            background: #db7a06;
-          }
-          .style4{
-            background: #9d5704;
-          }
+         
         }
       }
     }
   }
+  .trans{
+    background-color: rgba(94,89,112,.2);
+  }
+ 
 </style>
 

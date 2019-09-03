@@ -17,18 +17,8 @@ export default {
         HeaderBar
     },
     data() {
-      let defaultCenterPoint =  [121.262939,31.245149];
-      let centerPoint =  [121.17265957261286,31.284096076877844];
-      return {
-        // defaultCenterPoint: [116.395577, 39.892257] //北京
-        // defaultCenterPoint: [121.455372,31.249569], //上海
-        defaultCenterPoint: defaultCenterPoint,
-        defaultMapOption: {
-          center: defaultCenterPoint,
-          zoom: 11,
-          mapStyle: "amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8"
-        },
-        changeCenterPoint: centerPoint
+      return { 
+        changeCenterPoint: window.mapOption.centerPoint
       }
     },
     watch: {

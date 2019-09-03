@@ -1,7 +1,7 @@
 <template>
   <div class="c-info-style">
     <template v-if="roadList.length">
-      <div v-for="item in roadList" :key="item.camSerialNum" class="m-info-list" >
+      <div v-for="item in roadList" :key="item.camSerialNum" class="m-info-list"  >
         <right-list-video :roadItem="item"  :visible="visible" :roadList="roadList" @queryDeviceDetail="queryDeviceDetail" ></right-list-video>
         <right-list-map   :roadItem="item" :visible="visible" :roadList="roadList" @queryDeviceDetail="queryDeviceDetail"></right-list-map>
       </div>
@@ -34,11 +34,19 @@
         props:['visible'],
         mounted() {
           this.getRoadList();
+//          setInterval(()=>{
+//            let connectionInfo = navigator.connection;
+//            let date = new Date();
+//            let time = date.toLocaleString();
+////          let time =
+//            console.log("下载速度："+connectionInfo.downlink);
+//          },10)
         },
         methods: {
           getRoadList(param){
             var _this = this;
             getRoadList().then(res=>{
+              debugger
               console.log(res.data)
               _this.roadList = res.data;
             });
@@ -47,7 +55,7 @@
             this.$emit("queryDeviceDetail",item,target);
           },
         }
-     
+
     }
 </script>
 <style lang="scss" scoped>

@@ -152,6 +152,14 @@ export default {
             this.scene.add(model);
             this.models[name]=model;
         },
+        removeModel:function(name){
+            let m = this.getModel(name);
+            if(m!=null)
+            {
+                dl.removeModel(m,this.viewer);
+                delete  this.models[name];
+            }
+        },
         getModel:function(id){
           return this.models[id];
         },
@@ -168,7 +176,7 @@ export default {
         updateCameraPosition:function(x,y,z,radius,pitch,yaw){
             dl.moveTo({
                 position: [x,y, z],
-                radius: 0.001,
+                radius: radius,
                 yaw: yaw,
                 pitch: pitch,
                 viewer:this.viewer
@@ -291,7 +299,7 @@ export default {
                     for(let m = 0;m<this.cacheModelNum;m++)
                     {
                         //车
-                        var geoBox1 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
+                        var geoBox1 = new THREE.BoxBufferGeometry(1.6, 3.8,1.4);
                         var model1 = new THREE.Mesh( geoBox1, this.matStdObjects );
                         model1.position.set( 0, 0, 0 );
                         model1.rotation.set( this.pitch,this.yaw,this.roll );
@@ -337,6 +345,10 @@ export default {
                         person.position.x = 0;
                         person.position.y = 0;
                         person.position.z = 0;
+
+                        var text1 = this.deviceModels[deviceid].texts[m];
+                        text1.setPositon([0,0,0]);
+                        text1.update();
                     }
                 }
 

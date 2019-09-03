@@ -1,17 +1,30 @@
 <template>
-  <div class="road-items">
-    <div class="road-item">
-      <h3 class="c-title road-title">道路级别</h3>
-      <div id="roadLevel" class="road-pie-style">
+  <div class="m-left-bottom">
+    <div class="c-car-list">
+      <h3 class="c-title">道路级别</h3>
+      <div id="roadLevel" class="m-pie-style">
+      </div>
+    </div>
+    <div class="c-car-list">
+      <h3 class="c-title">道路分类</h3>
+      <div id="roadClassify" class="m-pie-style">
 
       </div>
     </div>
-    <div class="road-item">
-      <h3 class="c-title road-title">道路分类</h3>
-      <div id="roadClassify" class="road-pie-style">
+    <div class="c-car-list">
+      <h3 class="c-title">交通事件<span class="c-sub-title">今日总数:{{trafficCount}}</span></h3>
 
-      </div>
+      
+      <ul class="m-traffic-list">
+          <li v-for="(item, index) in trafficData" :key="index" class="m-traffic-item clearfix">
+            <span class="m-traffic-span">{{$dateUtil.formatTime(Number(item.beginTime))}}</span>
+            <span class="m-traffic-span">{{item.eventName}}</span>
+            <span class="m-traffic-span">{{item.roadName}}</span>     
+          </li>
+      </ul>
+        
     </div>
+    
   </div>
 </template>
 <script>
@@ -20,7 +33,14 @@
         data() {
             return {
               levelPie:{},
-              classifyPie:{}
+              classifyPie:{},
+              webSocket: {},
+              webSocketData: {
+                action: "event_top5_data",
+                token: 'tusvn',
+              },
+              trafficData:[],
+              trafficCount:0
             }
         },
         methods: {
@@ -116,9 +136,50 @@
               let option = this.defaultOption(data);
               this.classifyPie.setOption(option);
             });
+          },
+          initWebSocket(){
+            let _this=this;
+            if ('WebSocket' in window) {
+              _this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+            }
+            _this.webSocket.onmessage = _this.onmessage;
+            _this.webSocket.onclose = _this.onclose;
+            _this.webSocket.onopen = _this.onopen;
+            _this.webSocket.onerror = _this.onerror;
+          },
+          onmessage(mesasge){
+            let _this=this;
+            var json = JSON.parse(mesasge.data);
+            this.trafficCount=json.result.eventCount;
+            Array.prototype.push.apply(this.trafficData, json.result.data);
+            if(this.trafficData.length > 5) {
+              this.trafficData.splice(0, this.trafficData.length - 5);
+            }
+            //var result = json.result.roadVeh;
+
+          },
+          onclose(data){
+            console.log("结束连接");
+          },
+          onopen(data){
+            //获取在驶车辆状态
+            var _traffic = JSON.stringify(this.webSocketData);
+            this.sendMsg(_traffic);
+          },
+          sendMsg(msg) {
+            let _this=this;
+            if(window.WebSocket){
+              if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+                _this.webSocket.send(msg); //send()发送消息
+              }
+            }else{
+              return;
+            }
           }
         },
         mounted() {
+        
+         this.initWebSocket();
          this.levelPie =  this.$echarts.init(document.getElementById("roadLevel"));
          this.classifyPie =  this.$echarts.init(document.getElementById("roadClassify"));
          /*let option = this.defaultOption();
@@ -130,22 +191,31 @@
     }
 </script>
 <style lang="scss" scoped>
-  .road-title{
-    margin-top: 0px!important;
-    padding:0px !important;
+@import "@/assets/scss/theme.scss";
+  .m-pie-style{
+    height: 160px;
   }
-  .road-item{
-    /*border:1px solid #5e5970;
-    margin-top: 20px;
-    padding: 20px 20px 50%;*/
-    padding-bottom:50%;
-    position: relative;
-    .road-pie-style{
-      position: absolute;
-      left: 0;
-      top: 60px;
-      right: 0;
-      bottom:0;
+  .m-traffic-list{
+    margin:12px 0;
+    line-height: 36px;
+    height:180px;
+    text-align: center;
+    .m-traffic-item{    
+      .m-traffic-span{
+        @include lineClampOne();
+        margin-right: 10px;
+        float: left;
+        &:nth-of-type(1){
+          width: 176px;
+        }
+        &:nth-of-type(2){
+          width: 100px;
+        }
+        &:nth-of-type(3){
+          width: 60px;
+          margin-right: 0;   
+        }
+      }
     }
   }
 </style>

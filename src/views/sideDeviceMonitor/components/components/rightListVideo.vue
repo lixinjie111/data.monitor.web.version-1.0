@@ -72,13 +72,12 @@
               "protocal": 1,
               "serialNum": this.roadItem.camSerialNum
             }).then(res => {
-              console.log(res.data.rtmp)
                 _this.rtmp = res.data.rtmp;
-                  if(_this.rtmp==''){
-                    _this.option.notSupportedMessage='视频流不存在，请稍候再试！';
-                  }else{
-                    _this.option.sources[0].src=_this.rtmp;
-                  }
+                if(_this.rtmp==''){
+                  _this.option.notSupportedMessage='视频流不存在，请稍候再试！';
+                }else{
+                  _this.option.sources[0].src=_this.rtmp;
+                }
             })
           },
           queryDeviceDetail(item,target) {
@@ -136,7 +135,7 @@
           }
         }
       },
-      
+
     }
 </script>
 <style lang="scss">

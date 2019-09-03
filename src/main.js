@@ -80,7 +80,7 @@ router.beforeEach((to,from,next) => {
     if(ADMINID) {//已登录
         // 回填用户信息
         store.dispatch('setAuthInfo', getAuthInfo());
-        if(to.path === '/login') {
+        if(to.path === '/login'){
             next({path: '/dataMonitor'});
         }else {
             next();

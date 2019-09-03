@@ -648,7 +648,6 @@
               }
 
               var obj = {type: item.eventType,timer: null, flag: true,dist:dist,message:item.warnMsg,icon:item.warnIcon,warnColor:item.warnColor};
-              console.log("dist...."+obj.dist);
               obj.timer=setTimeout(()=>{
                 obj.flag=false;
                 _this.warningList.forEach(item=>{
@@ -827,13 +826,15 @@
       }
     },
     mounted () {
-      var _this =this;
-      this.distanceMap = new AMap.Map("realTraffic", {
-        center: [121.18653381418872,31.274421462567677],
-        mapStyle:'amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8',
-        zoom:18,
-        rotateEnable:'true'
-      });
+      let _option = Object.assign(
+        {},
+        window.defaultMapOption,
+        {
+          center: window.mapOption.singlePoint,
+          zoom: 18
+        }
+      );
+      this.distanceMap = new AMap.Map('realTraffic', _option);
       /*let marker1 = new AMap.Marker({
         position: [121.18653381418872,31.274421462567677],
         icon: 'static/images/car/car-1.png', // 添加 Icon 图标 URL
