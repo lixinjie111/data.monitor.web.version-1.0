@@ -186,10 +186,10 @@
 			}
 		},
 		mounted() {
-			setInterval(()=>{
-			    let camera = this.$refs.tusvnMap3.getCamera();
-			    console.log(camera.x,camera.y,camera.z,camera.radius,camera.pitch,camera.yaw)
-			},500)
+			// setInterval(()=>{
+			//     let camera = this.$refs.tusvnMap3.getCamera();
+			//     console.log(camera.x,camera.y,camera.z,camera.radius,camera.pitch,camera.yaw)
+			// },500)
 		},
 		watch: {
 			deviceList: {
@@ -323,7 +323,7 @@
 						this.$refs.tusvnMap3.addStaticModel(this.selectedItem.cameraId, "./static/map3d/models/traffic_cone.3ds", this.position[0], this.position[1], 13); //添加模型
 					} else {
 						if(this.$refs.tusvnMap3) {
-							this.$refs.tusvnMap3.updateStaticModelPostion(this.selectedItem.cameraId, this.position[0], this.position[1], 14, 0.97 + (Math.PI / 180.0) * 90);
+							this.$refs.tusvnMap3.updateStaticModelPostion(this.selectedItem.cameraId, this.position[0], this.position[1], 13, 0.97 + (Math.PI / 180.0) * 90);
 						}
 					}
 				}
@@ -386,21 +386,6 @@
 			},
 			onmessage1(mesasge) {
 				this.carData = mesasge;
-
-				//				console.log(JSON.parse(mesasge.data))
-				//				if(this.$refs.tusvnMap3){
-				//					
-				//				}
-
-				//				this.itemData = JSON.parse(mesasge.data).result.data;
-				//				this.position = this.coordinateTransfer("EPSG:4326","+proj=utm +zone=51 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",this.itemData.longitude,this.itemData.latitude);
-				//				this.deviceList = JSON.parse(mesasge.data).result.deviceList;
-				//				if(this.itemData.status==2){//事件消失取消模型
-				//					if(this.$refs.tusvnMap3) {
-				//						this.$refs.tusvnMap3.removeModel(this.selectedItem.cameraId);
-				//					}
-				//				}
-
 			},
 			
 			onclose1(data) {
