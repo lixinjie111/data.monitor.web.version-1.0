@@ -188,6 +188,9 @@ export default {
 <style lang="scss">
 @import "@/assets/scss/theme.scss";
 .login-item-box {
+    .el-form-item {
+        margin-right: 0 !important;
+    }
     .el-form-item__label {
         position: relative;
         color: #fff;
@@ -205,6 +208,7 @@ export default {
         }
     }
     .el-input__inner {
+        font-size: 14px;
         background: transparent;        
         border: none;
         height: 48px;
@@ -244,6 +248,11 @@ export default {
     input:-webkit-autofill {
         -webkit-box-shadow: 0 0 0 1000px #041d44 inset;
         -webkit-text-fill-color: #fff;
+    }
+    .el-button{
+        i, span{
+            line-height: 0;
+        }
     }
 }
 </style>
