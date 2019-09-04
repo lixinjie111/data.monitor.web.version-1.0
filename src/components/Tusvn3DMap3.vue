@@ -1063,7 +1063,7 @@ export default {
                             mdl.position.x = dUTM[0];
                             mdl.position.y = dUTM[1];
                             mdl.position.z = this.defualtZ-6;
-                            mdl.rotation.set( this.pitch,this.yaw,(Math.PI/180.0)*(d.heading-50));
+                            mdl.rotation.set( this.pitch,this.yaw,(Math.PI/180.0)*120);
 
                             this.changeModelColor(d,mdl);
                         }
