@@ -204,7 +204,19 @@
         alertInit:true,
         v2xInit:true,
         v2xUuid:[],
-        lastPoint:[]
+        lastPoint:[],
+        zoomStyleMapping:{
+          11:0,
+          12:0,
+          13:0,
+          14:0,
+          15:0,
+          16:0,
+          17:0,
+          18:0,
+          19:0,
+          20:0
+        }
       }
     },
     props:{
@@ -629,7 +641,6 @@
         _this.warningWebsocket.onopen = _this.onWarningOpen;
       },
       onWarningMessage(mesasge){
-
 //        console.log("时间----"+new Date().getTime())
         let _this=this;
         /*if(this.i>4){
@@ -664,6 +675,9 @@
           }
           if(type=='CLOUD'){
             let eventType = json.result.eventType;
+            let longitude;
+            let latitude;
+            let position;
             warningData.forEach(item=>{
               _this.cloudCount++;
               var dist = parseInt(item.dis);
@@ -683,6 +697,32 @@
                 }
               },3000)
               _this.warningList.unshift(obj);
+              longitude = item.longitude;
+              latitude = item.longitude;
+              position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
+              let marker = new AMap.ElasticMarker({
+                position:position,
+                zooms:[10,20],
+                styles:[{
+                  icon:{
+                    img:item.warnMapIcon,
+                    size:[44,60],
+                    ancher:[22,60],
+                    fitZoom:18,//最合适的级别，在此级别下显示为原始大小
+                    scaleFactor:1.3,//地图放大一级的缩放比例系数
+                    maxScale:1.3,//最大放大比例 达到此处图片不在变化
+                    minScale:0.5//最小放大比例
+                  }
+                }],
+                zoomStyleMapping:_this.zoomStyleMapping
+              })
+              /*_this.distanceMap.add(this[geatImgArr[i]]);*/
+              /*let marker = new AMap.Marker({
+                position: position,
+                icon: item.warnMapIcon, // 添加 Icon 图标 URL
+                offset:new AMap.Pixel(-44, -60)
+              });*/
+              _this.distanceMap.add(marker);
             })
           }
          /* if(type=='CLOUD'){
