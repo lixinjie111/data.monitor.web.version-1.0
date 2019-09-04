@@ -478,11 +478,12 @@
         let _this=this;
         if ('WebSocket' in window) {
           _this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+          _this.webSocket.onmessage = _this.onmessage;
+          _this.webSocket.onclose = _this.onclose;
+          _this.webSocket.onopen = _this.onopen;
+          _this.webSocket.onerror = _this.onerror;
         }
-        _this.webSocket.onmessage = _this.onmessage;
-        _this.webSocket.onclose = _this.onclose;
-        _this.webSocket.onopen = _this.onopen;
-        _this.webSocket.onerror = _this.onerror;
+
       },
       onmessage(mesasge){
         let _this=this;

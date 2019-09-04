@@ -418,7 +418,7 @@ export default {
                 viewer:this.viewer
             });
         },
-        updateCameraPosition:function(x,y,z,radius,pitch,yaw){
+        updateCameraPosition1:function(x,y,z,radius,pitch,yaw){
             dl.moveTo({
                 position: [x,y,z],
                 radius: radius,
@@ -1048,7 +1048,7 @@ export default {
                         let mdl = this.deviceModels[deviceid].persons[i];
                         mdl.position.x = dUTM[0];
                         mdl.position.y = dUTM[1];
-                        mdl.position.z = this.defualtZ;
+                        mdl.position.z = this.defualtZ-6;
 
                         // let text = this.deviceModels[deviceid].texts[i];
                         // text.setText(d.vehicleId.substr(0,8));
@@ -1062,7 +1062,7 @@ export default {
                             let mdl = this.deviceModels[deviceid].cars[i];
                             mdl.position.x = dUTM[0];
                             mdl.position.y = dUTM[1];
-                            mdl.position.z = this.defualtZ;
+                            mdl.position.z = this.defualtZ-6;
                             mdl.rotation.set( this.pitch,this.yaw,(Math.PI/180.0)*(d.heading-50));
 
                             this.changeModelColor(d,mdl);
@@ -1077,7 +1077,7 @@ export default {
                             let mixCar = this.mixCars[deviceid].cars[i];
                             mixCar.position.x = dUTM[0];
                             mixCar.position.y = dUTM[1];
-                            mixCar.position.z = this.defualtZ;
+                            mixCar.position.z = this.defualtZ-6;
                             mixCar.rotation.set( this.pitch,this.yaw,(Math.PI/180.0)*d.heading);
                         }
                     }
@@ -1376,7 +1376,7 @@ export default {
             }           
         },
         moveMainCar:function(data){
-            console.log("当前缓存数据量moveMainCar："+this.cacheMainCarTrackData.length);
+            //console.log("当前缓存数据量moveMainCar："+this.cacheMainCarTrackData.length);
             if(data==null)
             {
                 return;
@@ -1618,7 +1618,7 @@ export default {
                 {
                     if(model==undefined||model==null)
                     {
-                        this.addModel(vid,"./static/map3d/map_photo/car.3DS",data2.longitude,data2.latitude,this.defualtZ);
+                        this.addModel(vid,"./static/map3d/map_photo/car.3DS",data2.longitude,data2.latitude,this.defualtZ-6);
                     }else{
                         // debugger;
                         this.models[vid]=model;
@@ -1644,7 +1644,7 @@ export default {
                         this.models[vid].position.x = this.carBusinessData[vid]['utmposition'][0];
                         this.models[vid].position.y = this.carBusinessData[vid]['utmposition'][1];
                     }else{
-                        this.models[vid].position.set(this.carBusinessData[vid]['utmposition'][0],this.carBusinessData[vid]['utmposition'][1], this.defualtZ );
+                        this.models[vid].position.set(this.carBusinessData[vid]['utmposition'][0],this.carBusinessData[vid]['utmposition'][1], this.defualtZ-6 );
                         this.changeModelColor(data2,this.models[vid]);
                     }
                     
@@ -1720,7 +1720,7 @@ export default {
                                 }else{
                                     if(this.models[vid]!=undefined&&this.models[vid]!=null)
                                     {
-                                            this.models[vid].position.set(this.carBusinessData[vid]['lastUtmPosition'].x,this.carBusinessData[vid]['lastUtmPosition'].y, this.defualtZ );
+                                            this.models[vid].position.set(this.carBusinessData[vid]['lastUtmPosition'].x,this.carBusinessData[vid]['lastUtmPosition'].y, this.defualtZ-6 );
                                             // this.changeModelColor(data2,this.models[vid]);
                                             this.models[vid].rotation.set( this.pitch,this.yaw,(-Math.PI / 180) * this.carBusinessData[vid]['lastUtmPosition'].rotation);
                                     }
