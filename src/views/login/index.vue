@@ -222,9 +222,8 @@ export default {
         -webkit-text-fill-color: #333;
     }
     .el-button{
-        line-height: 0;
-        span{
-            vertical-align: top;
+        i, span{
+            line-height: 0;
         }
     }
 }
