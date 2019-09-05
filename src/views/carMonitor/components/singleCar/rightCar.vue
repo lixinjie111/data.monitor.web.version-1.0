@@ -113,6 +113,16 @@
     created() {
       this.screenConfig.scalefactor = this.screenConfig.showHeight/(this.screenConfig.scrHeight*this.screenConfig.meterPerDegree);
     },
+    watch:{
+      isStop(oldValue,newValue){
+        if(this.isStop){
+          this.playerOptions.sources[0].src='';
+          this.carsData =[];
+        }else {
+          this.getDeviceInfo();
+        }
+      }
+    },
     computed:{
       carsDataformate(){
           var that = this;
@@ -127,16 +137,6 @@
           }else{
             return [];
           }
-      }
-    },
-    watch:{
-      isStop(oldValue,newValue){
-        if(this.isStop){
-          this.playerOptions.sources[0].src='';
-          this.carsData =[];
-        }else {
-          this.getDeviceInfo();
-        }
       }
     },
     methods: {
