@@ -47,3 +47,8 @@ export const getCrossById = params => {return axios.post(`${HTTPURL}rw/bs/crossB
  * 根据某一路口获取路口信息以及所在页数
  */
 export const getCrossPageById = params => {return axios.post(`${HTTPURL}rw/bs/allCrossByCrossId`, params).then(res => res.data); };
+
+/**
+ * 根据航向角信息
+ */
+export const getFeaturesByPoint = (params,config) => {return axios.post(`${DLURL}analyze/getFeaturesByPoint.do`, params,config).then(res => res.data); };

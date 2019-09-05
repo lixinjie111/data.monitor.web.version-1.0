@@ -6,8 +6,7 @@ window.config = {
     // socketUrl:'ws://172.17.1.16:9999/ws',  //影子系统
     // dlUrl: 'http://10.0.1.22:8085/', //迪路
     // dlWmsUrl: 'http://10.0.1.22:8080/', //迪路
-    // roadUrl:'http://172.17.1.16:28080/rCUDataApp/', //临时演示地址
-    // monitorWebsocket:'ws://172.17.1.16:29998/ws',
+
 
     //外网
     url: 'http://172.16.1.199:9093/monPlatApp/', //监控平台
@@ -16,8 +15,6 @@ window.config = {
     socketUrl:'ws://172.16.1.198:9999/icv',  //影子系统
     dlUrl: 'http://172.16.1.197:8085/', //迪路
     dlWmsUrl: 'http://172.16.1.197:8080/', //迪路
-    roadUrl:'http://172.16.1.199:28080/rCUDataApp/', //临时演示地址
-    monitorWebsocket:'ws://172.16.1.199:29998/ws',
 
     version: 1.0,       // 版本号
 }
