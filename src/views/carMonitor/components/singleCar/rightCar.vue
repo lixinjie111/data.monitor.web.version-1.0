@@ -113,11 +113,27 @@
     created() {
       this.screenConfig.scalefactor = this.screenConfig.showHeight/(this.screenConfig.scrHeight*this.screenConfig.meterPerDegree);
     },
+    computed:{
+      carsDataformate(){
+          var that = this;
+          if(this.carsData && this.carsData.length > 0) {
+            var carsDataformate = this.carsData.map(function(item,index,self){
+                var formateItem = that.mapPtToScrPt(item);
+                item.Sx = formateItem.Sx;
+                item.Sy = formateItem.Sy;
+                return item;
+            });
+            return carsDataformate;
+          }else{
+            return [];
+          }
+      }
+    },
     watch:{
       isStop(oldValue,newValue){
         if(this.isStop){
           this.playerOptions.sources[0].src='';
-          this.carsDataformate=[];
+          this.carsData =[];
         }else {
           this.getDeviceInfo();
         }
@@ -444,22 +460,7 @@
       this.timer = null;//清除直播报活
 
     },
-    computed:{
-      carsDataformate(){
-          var that = this;
-          if(this.carsData && this.carsData.length > 0) {
-            var carsDataformate = this.carsData.map(function(item,index,self){
-                var formateItem = that.mapPtToScrPt(item);
-                item.Sx = formateItem.Sx;
-                item.Sy = formateItem.Sy;
-                return item;
-            });
-            return carsDataformate;
-          }else{
-            return [];
-          }
-      }
-    },
+    
     destroyed(){
         //销毁Socket
         this.socket.close();
