@@ -395,8 +395,7 @@
               });        
           });
         }
-
-        if(massNum == "masstraffic" && this.masstraffic){    
+        if(massNum == "masstraffic" && this.masstraffic){ 
             // console.log(style);
             this.masstraffic.setStyle(style);
             this.masstraffic.setData(data);
