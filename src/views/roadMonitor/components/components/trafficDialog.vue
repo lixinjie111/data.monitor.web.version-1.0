@@ -98,6 +98,7 @@
 		getDevListByRoadId,
 		getDeviceCountByCity
 	} from "@/api/sideDeviceMonitor";
+	import { getFeaturesByPoint } from '@/api/roadMonitor'
 	import TusvnMap from "@/components/Tusvn3DMap3";
 	import ConvertCoord from "@/assets/js/utils/coordConvert.js";
 	import { getMap } from "@/utils/tusvnMap3.js";
@@ -131,6 +132,7 @@
 				deviceObj: {},
 				isFirst: true,
 				isOne: true,
+				heading:'',//航向角
 				position: [],
 				option: {
 					overNative: true,
@@ -173,7 +175,7 @@
 		},
 		props: ["selectedItem"],
 		created() {
-			//console.log(this.selectedItem);
+			console.log(this.selectedItem);
 			this.webSocketData.id = this.selectedItem.id;
 			this.serialNum = this.selectedItem.cameraId; //点击进来的设备编号
 			this.webSocketData1 = {
@@ -283,7 +285,6 @@
 						if(item.type == "N" && item.cameraRunStatus == 1) {
 							item.value = false;
 							if(item.serialNum == this.selectedItem.cameraId) {
-								console.log("相同" + item)
 								this.isFirst = false;
 								//设置默认的选中值
 								this.deviceId = item.deviceId;
@@ -319,11 +320,33 @@
 						} else {
 							this.updateCameraPosition();
 						}
+						
+				        let formData = new FormData(); //创建form对象
+				        formData.append('featureclass', 'dl_shcsq_wgs84_lb_points');
+				        formData.append('lng', this.selectedItem.longitude);//通过append向form对象添加数据
+				        formData.append('lat', this.selectedItem.latitude);//通过append向form对象添加数据
+				        formData.append('distance', 10);//  附近5米
+				        formData.append('limit', 1);// 查找的附近的道路条数
+				        let config = {
+				          headers: {
+				            'Accept': '*/*',
+				            'Content-Type': 'application/x-www-form-urlencoded'
+				          }
+				        }; 
+						//获取航向角
+						getFeaturesByPoint(formData,config).then(res => {
+					      	if(res.state==1){
+					      		this.heading=res.data[0].heading;
+					      		//console.log(this.heading)
+					      		this.$refs.tusvnMap3.addStaticModel(this.selectedItem.cameraId, this.itemData.modelIcon, this.position[0], this.position[1], 13, 0, 0, (Math.PI / 180.0)*(-this.heading+75)); //添加模型
+					      	}
+					    });
+						//console.log(this.itemData.modelIcon)
 						//this.$refs.tusvnMap3.addModel(this.selectedItem.cameraId,this.itemData.modelIcon,this.position[0],this.position[1],13); //添加模型
-						this.$refs.tusvnMap3.addStaticModel(this.selectedItem.cameraId, "./static/map3d/models/traffic_cone.3ds", this.position[0], this.position[1], 13); //添加模型
+						//this.$refs.tusvnMap3.addStaticModel(this.selectedItem.cameraId, "./static/map3d/models/carEventModel.3ds", this.position[0], this.position[1], 13); //添加模型
 					} else {
-						if(this.$refs.tusvnMap3) {
-							this.$refs.tusvnMap3.updateStaticModelPostion(this.selectedItem.cameraId, this.position[0], this.position[1], 13, 0.97 + (Math.PI / 180.0) * 90);
+						if(this.$refs.tusvnMap3.getStaticModel(this.selectedItem.cameraId)) {
+							this.$refs.tusvnMap3.updateStaticModelPostion(this.selectedItem.cameraId, this.position[0], this.position[1], 13, (Math.PI / 180.0)*(-this.heading+75));
 						}
 					}
 				}
@@ -413,6 +436,7 @@
 				return targetCoor;
 			},
 			switchChange(item) {
+				this.isFirst = false;
 				var _this = this;
 				//如果设备不在线进行提示
 				if(item.cameraRunStatus != 1) {

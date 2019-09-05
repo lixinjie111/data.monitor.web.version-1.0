@@ -6,8 +6,6 @@ window.config = {
        socketUrl:'ws://111.23.140.59:9999/ws',  //影子系统
        dlUrl: 'http://111.23.140.59:8085/', //迪路
        dlWmsUrl: 'http://111.23.140.59:8080/', //迪路
-       roadUrl:'http://111.23.140.59:28080/rCUDataApp/', //临时演示地址
-       monitorWebsocket:'ws://111.23.140.59:29998/ws',
 
     version: 1.0,       // 版本号
 }
