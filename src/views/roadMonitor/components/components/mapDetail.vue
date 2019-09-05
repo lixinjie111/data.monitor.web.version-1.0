@@ -12,7 +12,7 @@
           return {
             cross:{},
             map:{},
-            webSocket:{},
+            webSocket:null,
             mapList:[],
             count:0,
             crossData: {

@@ -107,14 +107,14 @@
 		name: "SideDialog",
 		data() {
 			return {
-				webSocket: {},
+				webSocket: null,
 				webSocketData: {
 					action: "event_detail_data",
 					token: "tusvn",
 					id: ""
 				},
 				carData: null,
-				webSocket1: {}, //交通事件车辆
+				webSocket1: null, //交通事件车辆
 				webSocketData1: {},
 				itemData: {},
 				deviceList: [],

@@ -124,7 +124,7 @@
         isStop: false,
 
         container:{},
-        webSocket:{},
+        webSocket:null,
         reportWebSocket:{},
 
         i:0,
