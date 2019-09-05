@@ -34,7 +34,6 @@ function axiosFilter(vm) {
 
     // response
     axios.interceptors.response.use(function(response) {
-    	//console.log(response);
         let returnStatus = response.data.status || response.data.code || response.data.state;
         // console.log("--------------------------");
         // console.log(response.data);
@@ -66,7 +65,7 @@ function axiosFilter(vm) {
                 //     break;
                 // }
                 default: {
-                    vm.$message.error(response.data.message ||'操作失败'|| response.data );
+                    vm.$message.error(response.data.message || '操作失败' || response.data);
                     // vm.$message.error('操作失败');
                     return Promise.reject(response);
                 }

@@ -117,7 +117,7 @@
       isStop(oldValue,newValue){
         if(this.isStop){
           this.playerOptions.sources[0].src='';
-          this.carsData =[];
+          this.carsData=[];
         }else {
           this.getDeviceInfo();
         }
