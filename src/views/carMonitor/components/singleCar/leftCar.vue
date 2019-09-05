@@ -203,11 +203,11 @@
       }, 2000);
     },
     methods: {
-      initMap() {    
+      initMap() {
         this.distanceMap = new AMap.Map('distanceContainer', window.defaultMapOption);
         // console.log(this.distanceMap.getZoom());
 
-      
+
       },
       getRunTime(nS) {
         nS = nS / 1000;
@@ -304,7 +304,7 @@
         clearInterval(this.countTimer);
         this.countTimer = null;
         this.countTime = 0;
-      
+
         // this.distanceMap.setCenter(window.mapOption.defaultCenterPoint);
         // this.distanceMap.setZoom(this.zoom);
 
@@ -624,7 +624,9 @@
     /*padding-top:16px;
      padding-bottom:16px;*/
     height:160px;
-    line-height: 160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .monitor-left{
@@ -648,6 +650,7 @@
   .statistic-img{
     width: 40px;
     height:auto;
+    display: inline-block;
   }
   .text-font{
     font-family: carFont;

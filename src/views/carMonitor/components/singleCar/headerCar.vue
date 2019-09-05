@@ -408,6 +408,7 @@
   .header-angle img{
     position: relative;
     top: 5px;
+    display: inline-block;
   }
   .header-angle {
     width: 40px;
