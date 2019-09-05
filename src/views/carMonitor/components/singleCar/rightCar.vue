@@ -117,7 +117,7 @@
       isStop(oldValue,newValue){
         if(this.isStop){
           this.playerOptions.sources[0].src='';
-          this.carsDataformate=[];
+//          this.carsDataformate=[];
         }else {
           this.getDeviceInfo();
         }
@@ -479,7 +479,7 @@
     padding-right: 0!important;
   }
   .monitor-video .vjs-error .vjs-error-display .vjs-modal-dialog-content{
-    padding:10px 24px 30px!important;
+    padding:60px 24px 30px!important;
     color: #ccc;
   }
   .monitor-video .vjs-error .vjs-error-display:before{
