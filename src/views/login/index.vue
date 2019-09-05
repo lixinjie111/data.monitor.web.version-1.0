@@ -1,5 +1,5 @@
 <template>
-    <div id="login-warpper">
+    <div id="login-warpper" v-if="visibleFlag">
         <img class="login-logo" src="static/images/login-logo.png">        
         <!-- 登录 -->
         <div class="login-card">
@@ -26,6 +26,7 @@
 
 <script>
 import { mapActions } from 'vuex';
+import { removeAuthInfo } from '@/session/index';
 export default {
     name: 'Login',
     data() {
@@ -44,6 +45,7 @@ export default {
             }
         };
         return {
+            visibleFlag:false,
             checked: true,
             loginForm: {
                 userNo: '',
@@ -61,64 +63,58 @@ export default {
             loading: false
         }
     },
-    mounted() {
-        this.getCookie();
+    created() {
+        let _data = localStorage.getItem("yk-token");
+        if(_data) {
+            let _dataObj = JSON.parse(_data),
+                _delayTime = 1000 * 60 * 60 * 24;
+            if (new Date().getTime() - _dataObj.time > _delayTime) {
+                console.log('信息已过期');
+                this.removeStorage();
+            }else{
+                // 直接调用登录接口
+                let _params = {
+                    token: _dataObj.data,
+                    platform: this.$store.state.admin.platform
+                };
+                this.loginFunc(_params);
+            }
+        }else {
+            this.removeStorage();
+        }
     },
+ 
     methods: {
         ...mapActions(['goLogin']),
         handleLogin() {
             this.$refs.loginForm.validate(valid => {
                 if (valid) {
                     this.loading = true;
-                    if (this.checked == true) {
-                        this.setCookie(this.loginForm.userNo, this.loginForm.password, 7);
-                    }else {
-                        this.clearCookie();
-                    }
-                    this.goLogin(this.loginForm).then(res => {
-                        //this.$message.success(res.message);
-                        this.$router.push({ path: '/dataMonitor' });
-                        this.loading = false;
-                    }).catch(err => {
-                        this.loading = false;
-                    })
+                    this.loginFunc(this.loginForm);     
                 } else {
                     this.loading = false;
                     return false;
                 }
             });
         },
-         //设置cookie
-        setCookie(c_name, c_pwd, exdays) {
-            var exdate = new Date(); //获取时间
-            exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * exdays); //保存的天数
-            //字符串拼接cookie
-            window.document.cookie = "rememberUserName" + "=" + c_name + ";path=/;expires=" + exdate.toGMTString();
-            window.document.cookie = "rememberUserPwd" + "=" + c_pwd + ";path=/;expires=" + exdate.toGMTString();
-        },
-        //读取cookie
-        getCookie: function() {
-            if (document.cookie.length > 0) {
-                var arr = document.cookie.split('; '); //这里显示的格式需要切割一下自己可输出看下
-                for (var i = 0; i < arr.length; i++) {
-                    var arr2 = arr[i].split('='); //再次切割
-                    //判断查找相对应的值
-                    if (arr2[0] == 'rememberUserName') {
-                        this.loginForm.userNo = arr2[1]; //保存到保存数据的地方
-                    } else if (arr2[0] == 'rememberUserPwd') {
-                        this.loginForm.password = arr2[1];
-                    }
+        loginFunc(params) {
+            this.goLogin(params).then(res => {
+                this.$router.push({ path: '/dataMonitor' });
+                this.loading = false;
+
+                localStorage.setItem("yk-token",JSON.stringify({data:JSON.parse(res.data).token,"time":new Date().getTime()}));
+                if(res.status != 200) {
+                    this.removeStorage();
                 }
-            }else {
-                this.$refs.loginForm.resetFields();
-                this.loginForm.userNo = "";
-                this.loginForm.password = "";
-                this.checked = false;
-            }
+            }).catch(err => {
+                this.loading = false;
+                this.removeStorage();
+            })
         },
-        //清除cookie
-        clearCookie: function() {
-            this.setCookie("", "", -1); //修改2值都为空，天数为负1天就好了
+        removeStorage() {
+            removeAuthInfo();
+            localStorage.removeItem("yk-token");
+            this.visibleFlag = true;
         }
     }
 }
