@@ -1,20 +1,19 @@
 window.config = {
-    //望京地址  内网
-    // url: 'http://172.17.1.16:9093/monPlatApp/', //监控平台
-    // operateUrl: 'http://172.17.1.16:9090/operateApp/',	//运营平台
-    // websocketUrl:'ws://172.17.1.16:9982/mon',  //监控
-    // socketUrl:'ws://172.17.1.16:9999/ws',  //影子系统
-    // dlUrl: 'http://10.0.1.22:8085/', //迪路
-    // dlWmsUrl: 'http://10.0.1.22:8080/', //迪路
+    //公司测试 外网地址
+    url: 'http://120.133.21.14:9093/monPlatApp/', //监控平台
+    operateUrl: 'http://120.133.21.14:9090/operateApp/', //运营平台
+    websocketUrl:'ws://120.133.21.14:49982/mon',  //监控
+    socketUrl:'ws://120.133.21.14:49999/ws',  //影子系统
+    dlUrl: 'http://113.208.118.62:8085/', //迪路
+    dlWmsUrl: 'http://113.208.118.62:8080/', //迪路
 
-
-    //外网
-    url: 'http://172.16.1.199:9093/monPlatApp/', //监控平台
-    operateUrl: 'http://172.16.1.197:9090/operateApp/',	//运营平台
-    websocketUrl:'ws://172.16.1.199:9982/mon',  //监控
-    socketUrl:'ws://172.16.1.198:9999/icv',  //影子系统
-    dlUrl: 'http://172.16.1.197:8085/', //迪路
-    dlWmsUrl: 'http://172.16.1.197:8080/', //迪路
+    //上海  内网
+    // url: 'http://172.16.1.199:9093/monPlatApp/', //监控平台
+    // operateUrl: 'http://172.16.1.197:9090/operateApp/', //运营平台
+    // websocketUrl:'ws://172.16.1.199:9982/mon',  //监控
+    // socketUrl:'ws://172.16.1.198:9999/icv',  //影子系统
+    // dlUrl: 'http://172.16.1.197:8085/', //迪路
+    // dlWmsUrl: 'http://172.16.1.197:8080/', //迪路
 
     version: 1.0,       // 版本号
 }
