@@ -10,7 +10,7 @@ export default {
             id: "car-map-container",
             AMap: null,
             // 获取在驶车辆实时数据（辆）
-            webSocket:{},
+            webSocket:null,
             webSocketData: {
                 action: "vehicleOnline",
                 token: 'fpx',

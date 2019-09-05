@@ -63,7 +63,7 @@
         speedData:{},
         /*vehicleId:'B21E-00-017',*/
         vehicleId:this.$route.params.vehicleId,
-        webSocket:{},
+        webSocket:null,
         isStop:false
       }
     },

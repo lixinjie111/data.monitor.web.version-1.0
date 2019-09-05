@@ -76,7 +76,7 @@
               markerList:[],
               pageInitIndex:0,
               totalRoadCount:0,
-              webSocket:{},
+              webSocket:null,
               crossId:"",
               count:0,
               mapList:[]
