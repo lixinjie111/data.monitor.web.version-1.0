@@ -340,7 +340,10 @@
 					      		if(!this.cameraParam){
 					      			this.updateCameraPosition();
 					      		}
-					      		this.$refs.tusvnMap3.addStaticModel(this.selectedItem.cameraId, this.itemData.modelIcon, this.position[0], this.position[1], 13, 0, 0, (Math.PI / 180.0)*(-this.heading+80)); //添加模型
+					      		let _length=this.itemData.modelIcon.split("/").length;
+					      		let _name=this.itemData.modelIcon.split("/")[_length-1];
+					      		let _url="./static/map3d/models/"+_name;
+					      		this.$refs.tusvnMap3.addStaticModel(this.selectedItem.cameraId, _url, this.position[0], this.position[1], 13, 0, 0, (Math.PI / 180.0)*(-this.heading+80)); //添加模型
 					      	}
 					    });
 						//console.log(this.itemData.modelIcon)
