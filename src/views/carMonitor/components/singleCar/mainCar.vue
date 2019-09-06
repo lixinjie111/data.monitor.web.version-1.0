@@ -165,11 +165,11 @@
         marker:{},
         platNoMarker:{},
         sideList:[],
-        hostWebsocket:{},
-        sideWebsocket:{},
-        deviceWebsocket:{},
-        lightWebsocket:{},
-        warningWebsocket:{},
+        hostWebsocket:null,
+        sideWebsocket:null,
+        deviceWebsocket:null,
+        lightWebsocket:null,
+        warningWebsocket:null,
         warningData:{},
         vehicleId: this.$route.params.vehicleId,
         whetherData:{},
@@ -904,11 +904,11 @@
     },
     destroyed(){
       //销毁Socket
-      this.hostWebsocket.close();
-      this.sideWebsocket.close();
-      this.deviceWebsocket.close();
-      this.lightWebsocket.close();
-      this.warningWebsocket.close();
+      this.hostWebsocket&&this.hostWebsocket.close();
+      this.sideWebsocket&&this.sideWebsocket.close();
+      this.deviceWebsocket&&this.deviceWebsocket.close();
+      this.lightWebsocket&&this.lightWebsocket.close();
+      this.warningWebsocket&&this.warningWebsocket.close();
     }
   }
 </script>

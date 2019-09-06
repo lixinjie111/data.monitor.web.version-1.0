@@ -31,8 +31,7 @@
               sideTotalEcharts:{},
               sideRealEcharts:{},
               count:0,
-              webSocket:{},
-              realWebSocket:{},
+              webSocket:null,
               totalData:[],
               rsuData:[],
               rcuData:[],
@@ -294,7 +293,6 @@
           this.sideRealEcharts = this.$echarts.init(document.getElementById("sideRealId"));
           this.getTotalData();
           this.initWebSocket();
-//          this.initRealWebSocket();
         },
       destroyed(){
         //销毁Socket

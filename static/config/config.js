@@ -53,7 +53,7 @@ window.dlWmsOption = {
 }
 window.dlWmsDefaultOption = {
     url:window.config.dlWmsUrl+'geoserver/shanghai_qcc/wms',
-    blend: false,
+    blend: true,
     tileSize: 256,
     params:{}
 }

@@ -34,7 +34,7 @@
             return {
               levelPie:{},
               classifyPie:{},
-              webSocket: {},
+              webSocket: null,
               webSocketData: {
                 action: "event_top5_data",
                 token: 'tusvn',

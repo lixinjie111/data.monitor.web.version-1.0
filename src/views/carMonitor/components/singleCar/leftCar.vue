@@ -119,7 +119,7 @@
         count: 0,
         flag: true,
 
-        webSocket:{},
+        webSocket:null,
 
         webSocketData: {
             'action':'route',
