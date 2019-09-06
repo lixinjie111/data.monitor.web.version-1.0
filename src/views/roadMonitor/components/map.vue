@@ -80,7 +80,8 @@
 				carWms: null,
 				speedWms: null,
         carTimer:0,
-        speedTimer:0
+        speedTimer:0,
+        masstraffic:null
       }
     },
     watch: {
@@ -258,7 +259,7 @@
         }
       },
       removeMarkers(type){
-        console.log(type)
+        //console.log(type)
         if(type=='spat'&& this.massspat){  
           this.massspat.hide();
         }
@@ -271,6 +272,7 @@
           this.webSocket = null;
           this.masstraffic.clear();
           this.map.remove(this.masstraffic);
+          this.masstraffic=null;
          
         }
       },
@@ -396,10 +398,10 @@
           });
         }
         if(massNum == "masstraffic" && this.masstraffic){ 
-            // console.log(style);
+            //console.log(data);
             this.masstraffic.setStyle(style);
             this.masstraffic.setData(data);
-            // this.masstraffic.clear();
+            //this.masstraffic.clear();
             this.masstraffic.on('click', function(e) {
               _this.trafficDialog=true;
               _this.trafficeItem=e.data.subItem;
