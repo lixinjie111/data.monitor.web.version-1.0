@@ -1120,6 +1120,7 @@
     img{
       width:60px;
       height:auto;
+      margin: 0 auto;
     }
   }
   .pre-warning-style{
