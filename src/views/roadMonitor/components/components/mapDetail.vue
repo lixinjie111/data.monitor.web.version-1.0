@@ -130,7 +130,7 @@
           let jsonData = JSON.parse(message.data);
           let result = jsonData.result;
           // 车辆
-           if ("vehDataDTO" in result === true) {
+           if (result.vehDataDTO) {
             _this.crossData.roadSenseCars = result.vehDataDTO;
             if (_this.crossData.roadSenseCars.length > 0) {
               _this.crossData.roadSenseCars = _this.crossData.roadSenseCars.filter(
