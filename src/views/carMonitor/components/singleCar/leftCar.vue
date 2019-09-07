@@ -97,7 +97,7 @@
 
         distanceMap: null, //创建的地图对象
         prevLastPointPath:[],//上次请求的终点，
-        carStartPoint:this.$parent.$parent.defaultCenterPoint,
+        carStartPoint:window.mapOption.defaultCenterPoint,
         routeId: "",
         pointPath:[],//整个行程路径
         markers: {
@@ -119,7 +119,7 @@
         count: 0,
         flag: true,
 
-        webSocket:{},
+        webSocket:null,
 
         webSocketData: {
             'action':'route',
@@ -204,15 +204,10 @@
     },
     methods: {
       initMap() {
-        this.distanceMap = new AMap.Map("distanceContainer", {
-          center: this.carStartPoint,
-          zoom: this.zoom,
-          // zooms: [11, 16],
-          mapStyle:'amap://styles/7b007636f01d8a19e9cc2841a85dc083'
-        });
+        this.distanceMap = new AMap.Map('distanceContainer', window.defaultMapOption);
         // console.log(this.distanceMap.getZoom());
 
-        // console.log(this.$parent.$parent.defaultCenterPoint, this.zoom);
+
       },
       getRunTime(nS) {
         nS = nS / 1000;
@@ -268,7 +263,7 @@
       //重绘形成初始化
       initDistanceMap(){
         this.prevLastPointPath = [];//上次请求的终点，
-        this.carStartPoint = this.$parent.$parent.defaultCenterPoint;
+        this.carStartPoint = window.mapOption.defaultCenterPoint;
         this.routeId = "";
         this.pointPath = [];
         // this.direction = 0;
@@ -309,8 +304,8 @@
         clearInterval(this.countTimer);
         this.countTimer = null;
         this.countTime = 0;
-        // console.log(this.$parent.$parent.defaultCenterPoint, this.zoom);
-        // this.distanceMap.setCenter(this.$parent.$parent.defaultCenterPoint);
+
+        // this.distanceMap.setCenter(window.mapOption.defaultCenterPoint);
         // this.distanceMap.setZoom(this.zoom);
 
         // this.webSocket.send(JSON.stringify(this.webSocketData));
@@ -629,7 +624,9 @@
     /*padding-top:16px;
      padding-bottom:16px;*/
     height:160px;
-    line-height: 160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .monitor-left{
@@ -653,6 +650,7 @@
   .statistic-img{
     width: 40px;
     height:auto;
+    display: inline-block;
   }
   .text-font{
     font-family: carFont;

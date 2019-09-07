@@ -20,8 +20,7 @@ const CarMonitor = resolve => require(['@/views/carMonitor/index'], resolve)
 const SingleCarMonitor = resolve => require(['@/views/carMonitor/singleCarMonitor'], resolve)
 const RoadMonitor = resolve => require(['@/views/roadMonitor/index'], resolve)
 const SideDeviceMonitor = resolve => require(['@/views/sideDeviceMonitor/index'], resolve)
-const MonitorManage = resolve => require(['@/views/monitorManage/index'], resolve)
-const MonitorVideo = resolve => require(['@/views/monitorManage/monitorVideo.vue'], resolve)
+
 
 
 const EchartsTest = resolve => require(['@/views/test/echarts'], resolve)
@@ -51,9 +50,9 @@ export default new Router({
     meta: {
       showHeader: true
     }
-  },{ 
-    path: '/refresh', 
-    name: 'Refresh', 
+  },{
+    path: '/refresh',
+    name: 'Refresh',
     component: Refresh,
     meta: {}
   },{
@@ -156,21 +155,7 @@ export default new Router({
   //   }
   // },{
     path: '/',
-    redirect: '/dataMonitor'
-  },{
-    path: '/monitorManage',
-    name: 'MonitorManage',
-    component: MonitorManage,
-    meta: {
-      showHeader: false
-    }
-  },{
-    path: '/monitorVideo',
-    name: 'MonitorVideo',
-    component: MonitorVideo,
-    meta: {
-      showHeader: false
-    }
+    redirect: '/login'
   }],
   scrollBehavior (to, from, savedPosition) {
     return { x: 0, y: 0 }

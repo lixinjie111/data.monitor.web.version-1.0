@@ -102,7 +102,7 @@
         liveBroken:'live-broken',
         vehicleStatus:{},
         naviStatus:{},
-        webSocket:{},
+        webSocket:null,
 
 
       }
@@ -212,7 +212,7 @@
     },
     destroyed(){
       //销毁Socket
-      this.websocket.close();
+       this.webSocket&&this.webSocket.close();
     }
   }
 </script>
@@ -408,6 +408,7 @@
   .header-angle img{
     position: relative;
     top: 5px;
+    display: inline-block;
   }
   .header-angle {
     width: 40px;

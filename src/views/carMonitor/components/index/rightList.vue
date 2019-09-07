@@ -36,7 +36,7 @@ export default {
 			vehicleIds: 'B21E-00-017,B21E-00-018,B21E-00-019,B21E-00-020',
 			responseData: [],
 			// 获取指定车辆实时信息
-            webSocket:{},
+            webSocket:null,
             webSocketData: {
                 // action: 'vehicleList',
                 action: 'can_real_data',
@@ -214,7 +214,7 @@ export default {
 	},
     destroyed(){
         //销毁Socket
-        this.webSocket.close();
+         this.webSocket&&this.webSocket.close();
     }
 }
 </script>

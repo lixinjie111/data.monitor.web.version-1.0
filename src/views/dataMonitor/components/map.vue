@@ -13,7 +13,7 @@ export default {
         }
     },
     mounted() {
-        this.AMap = new AMap.Map(this.id, this.$parent.$parent.defaultMapOption);
+        this.AMap = new AMap.Map(this.id, window.defaultMapOption);
         // this.AMap.on( 'click',  function (e) {
         //     console.log(e.lnglat.toString());
         // });
@@ -21,13 +21,19 @@ export default {
     },
     methods: {
         getWms() {
-            var wms  = new AMap.TileLayer.WMS({
-                url:window.config.dlWmsUrl+'geoserver/shanghai_qcc/wms',
-                blend: false,
-                tileSize: 256,
-                params:{'LAYERS': 'shanghai_qcc:gd_dlzc',VERSION:'1.1.0'}
-            })
-            wms.setMap(this.AMap);
+            //	调用
+            let _optionWms = Object.assign(
+                {},
+                window.dlWmsDefaultOption,
+                {
+                    params:{'LAYERS': window.dlWmsOption.LAYERS_dlzc, 'VERSION': window.dlWmsOption.VERSION}
+                }
+            );
+
+            let _wms  = new AMap.TileLayer.WMS(_optionWms);
+
+
+            _wms.setMap(this.AMap);
             this.AMap.setZoom(12);
             // this.AMap.setCenter(this.setCenter);
             this.$parent.$parent.changeCenterPoint = this.setCenter;

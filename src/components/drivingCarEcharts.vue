@@ -17,7 +17,7 @@ export default {
 		return {
             id: "driving-car-echarts",
             // 获取在驶车辆实时数据（辆）
-            webSocket:{},
+            webSocket:null,
             webSocketData: {
                 action: "vehicleOLCount",
                 token: 'fpx'
@@ -126,7 +126,7 @@ export default {
 	},
     destroyed(){
         //销毁Socket
-        this.webSocket.close();
+        this.webSocket&&this.webSocket.close();
     }
 }
 </script>

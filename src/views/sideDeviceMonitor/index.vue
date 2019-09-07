@@ -18,7 +18,7 @@
         </div>
       </div>
     </div>
-    <side-dialog :dialogVisible="dialogVisible" :selected-item="selectedItem" @closeDialog="closeDialog" :deviceMapId="'deviceMap1'" :target="target"></side-dialog>
+    <side-dialog  v-if="dialogVisible" :dialogVisible="dialogVisible" :selected-item="selectedItem" @closeDialog="closeDialog" :deviceMapId="'deviceMap1'" :target="target"></side-dialog>
   </div>
 </template>
 <script>
@@ -48,7 +48,6 @@
         this.dialogVisible=true;
         this.selectedItem = item;
         this.target = target;
-        console.log(item);
       }
     },
     mounted() {

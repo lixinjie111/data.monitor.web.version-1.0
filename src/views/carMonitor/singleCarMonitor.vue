@@ -63,7 +63,7 @@
         speedData:{},
         /*vehicleId:'B21E-00-017',*/
         vehicleId:this.$route.params.vehicleId,
-        webSocket:{},
+        webSocket:null,
         isStop:false
       }
     },
@@ -134,7 +134,7 @@
     },
     destroyed(){
       //销毁Socket
-      this.webSocket.close();
+       this.webSocket&&this.webSocket.close();
     }
   }
 </script>

@@ -19,13 +19,9 @@
       return {
         id: "device-map-container",
         map: null,
-        mapOption: {
-          center: this.$parent.defalutCenterPoint,
-          zoom: 11,
-          mapStyle: "amap://styles/7b007636f01d8a19e9cc2841a85dc083"
-        },
+      
         // 获取在驶车辆实时数据（辆）
-        webSocket: {},
+        webSocket: null,
         webSocketData: {
           action: "trackAll",
           token: 'fpx',
@@ -186,7 +182,7 @@
       }
     },
     mounted() {
-      this.map = new AMap.Map(this.id, this.mapOption);
+      this.map = new AMap.Map(this.id, window.defaultMapOption);
       var item = {
         'id':'0'
       };

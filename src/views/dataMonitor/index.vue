@@ -50,8 +50,8 @@ export default {
     }
 }
 </script>
-<style scoped lang="scss">
-.c-car-list {
-    padding: 0 12px;
-}
-</style>
+// <style scoped lang="scss">
+// .c-car-list {
+//     padding: 0 12px;
+// }
+// </style>

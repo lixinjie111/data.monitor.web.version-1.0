@@ -2,7 +2,7 @@
   <div class="c-dialog-wrapper" v-show="dialogVisible">
     <div class="c-dialog-container" >
       <div class="c-dialog-header">
-        <span class="c-dialog-title">车辆数据</span>
+        <span class="c-dialog-title">路口监控</span>
         <i class="c-dialog-close" @click="closeDialog"></i>
       </div>
       <div class=" road-content">
@@ -36,9 +36,9 @@
         data() {
             return {
               mapOption:{
-                center: [121.262939,31.245149],
+                center: window.mapOption.defaultCenterPoint,
                 zoom: 18,
-                mapStyle: "amap://styles/bc5a63d154ee0a5221a1ee7197607a00"
+                mapStyle: window.mapOption.mapStyleEmpty
               },
               options:[
                 {
@@ -76,7 +76,7 @@
               markerList:[],
               pageInitIndex:0,
               totalRoadCount:0,
-              webSocket:{},
+              webSocket:null,
               crossId:"",
               count:0,
               mapList:[]
@@ -139,13 +139,18 @@
             setTimeout(() => {
               _this.roadList.forEach(item=>{
                 item.map=new AMap.Map(item.id, this.mapOption);
-                let wms  = new AMap.TileLayer.WMS({
-                  url:window.config.dlWmsUrl+'geoserver/shanghai_qcc/wms',
-                  blend: false,
-                  tileSize: 256,
-                  params:{'LAYERS': 'shanghai_qcc:dl_shcsq_wgs84_gjlk',VERSION:'1.1.0'}
-                })
-                wms.setMap(item.map);
+                let _optionWms = Object.assign(
+                    {},
+                    window.dlWmsDefaultOption,
+                    {
+                        params:{'LAYERS': window.dlWmsOption.LAYERS_gjlk, 'VERSION': window.dlWmsOption.VERSION}
+                    }
+                );
+
+                let _wms  = new AMap.TileLayer.WMS(_optionWms);
+                _wms.setMap(item.map);
+
+
                 item.map.setCenter(item.position);
                 item.map.setZoom(17);
               })
@@ -228,13 +233,16 @@
             "crossId": this.crossId
           }).then(res=>{
             let result = res.data.data;
-            let wms  = new AMap.TileLayer.WMS({
-              url:window.config.dlWmsUrl+'geoserver/shanghai_qcc/wms',
-              blend: false,
-              tileSize: 256,
-              params:{'LAYERS': 'shanghai_qcc:dl_shcsq_wgs84_gjlk',VERSION:'1.1.0'}
-            })
-            wms.setMap(this.map);
+
+            let _optionWms = Object.assign(
+                {},
+                window.dlWmsDefaultOption,
+                {
+                    params:{'LAYERS': window.dlWmsOption.LAYERS_gjlk, 'VERSION': window.dlWmsOption.VERSION}
+                }
+            );
+            let _wms  = new AMap.TileLayer.WMS(_optionWms);
+            _wms.setMap(this.map);
 //            let position = ConvertCoord.wgs84togcj02(result[0].x,result[0].y);
             let position = new AMap.LngLat(result[0].x,result[0].y);
             this.map.setCenter(position);
@@ -263,7 +271,7 @@
           if(item.isActive){
             this.crossId = item.crossId;
             this.getCrossById();
-            this.webSocket.close();
+            this.webSocket&&this.webSocket.close();
             this.initWebSocket();
           }
         },
@@ -304,13 +312,18 @@
             setTimeout(() => {
               _this.roadList.forEach(item=>{
                 item.map=new AMap.Map(item.id, this.mapOption);
-                let wms  = new AMap.TileLayer.WMS({
-                  url:window.config.dlWmsUrl+'geoserver/shanghai_qcc/wms',
-                  blend: false,
-                  tileSize: 256,
-                  params:{'LAYERS': 'shanghai_qcc:dl_shcsq_wgs84_gjlk',VERSION:'1.1.0'}
-                })
-                wms.setMap(item.map);
+            
+                let _optionWms = Object.assign(
+                    {},
+                    window.dlWmsDefaultOption,
+                    {
+                        params:{'LAYERS': window.dlWmsOption.LAYERS_gjlk, 'VERSION': window.dlWmsOption.VERSION}
+                    }
+                );
+                let _wms  = new AMap.TileLayer.WMS(_optionWms);
+                _wms.setMap(item.map);
+
+
                 item.map.setCenter(item.position);
                 item.map.setZoom(17);
               })

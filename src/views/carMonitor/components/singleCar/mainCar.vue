@@ -184,12 +184,12 @@
         marker:{},
         platNoMarker:{},
         sideList:[],
-        hostWebsocket:{},
-        sideWebsocket:{},
-        deviceWebsocket:{},
-        lightWebsocket:{},
-        warningWebsocket:{},
-        geatWebsocket:{},
+        hostWebsocket:null,
+        sideWebsocket:null,
+        deviceWebsocket:null,
+        lightWebsocket:null,
+        warningWebsocket:null,
+        geatWebsocket:null,
         warningData:{},
         vehicleId: this.$route.params.vehicleId,
         whetherData:{},
@@ -714,7 +714,6 @@
         _this.warningWebsocket.onopen = _this.onWarningOpen;
       },
       onWarningMessage(mesasge){
-
 //        console.log("时间----"+new Date().getTime())
         let _this=this;
         /*if(this.i>4){
@@ -733,7 +732,6 @@
               }
 
               var obj = {type: item.eventType,timer: null, flag: true,dist:dist,message:item.warnMsg,icon:item.warnIcon,warnColor:item.warnColor};
-              console.log("dist...."+obj.dist);
               obj.timer=setTimeout(()=>{
                 obj.flag=false;
                 _this.warningList.forEach(item=>{
@@ -750,6 +748,9 @@
           }
           if(type=='CLOUD'){
             let eventType = json.result.eventType;
+            let longitude;
+            let latitude;
+            let position;
             warningData.forEach(item=>{
               _this.cloudCount++;
               var dist = parseInt(item.dis);
@@ -769,71 +770,28 @@
                 }
               },3000)
               _this.warningList.unshift(obj);
+              longitude = item.longitude;
+              latitude = item.longitude;
+              position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
+              let marker = new AMap.ElasticMarker({
+                position:position,
+                zooms:[10,20],
+                styles:[{
+                  icon:{
+                    img:item.warnMapIcon,
+                    size:[44,60],
+                    ancher:[22,60],
+                    fitZoom:18,//最合适的级别，在此级别下显示为原始大小
+                    scaleFactor:1.3,//地图放大一级的缩放比例系数
+                    maxScale:1.3,//最大放大比例 达到此处图片不在变化
+                    minScale:0.5//最小放大比例
+                  }
+                }],
+                zoomStyleMapping:_this.zoomStyleMapping
+              })
+              _this.distanceMap.add(marker);
             })
           }
-         /* if(type=='CLOUD'){
-            let eventType = json.result.eventType;
-            //如果发过来的数据存在，则进行计数,不存在的如果3s消失
-            if(_this.event.length>0){
-              _this.event.forEach(item=>{
-              
-                let flag=false;
-                warningData.forEach(item1=>{
-                  if(item.uuid==item1.uuid){
-                    flag=true;
-                  }
-                });
-                //如果存在
-                if(flag){
-                  item.count++;
-                  //如果存在更新定时器
-                  clearTimeout(item.timer);
-                  item.timer = setTimeout(()=>{
-                    item.flag = false;//控制隐藏
-
-                  },3000)
-                }
-              })
-            }
-            //新推过来的数据中有新发生的事件，进行保存开始计时
-            let flag = true;
-            warningData.forEach(item=>{
-              let obj = {};
-              if(_this.event.length>0){
-                _this.event.forEach(item1=>{
-                  if(item.uuid==item1.uuid){
-                    flag= false;
-                  }
-                })
-                //如果不存在，将车辆信息存储起来
-                if(flag){
-                  obj.count=1;
-                  obj.timer=setTimeout(()=>{
-                    obj.flag=false;
-
-                  },3000);
-                  obj.flag=true;
-                  obj.type=eventType;
-                  obj.uuid = item.uuid;
-                }
-                _this.event.unshift(obj);
-              }else {
-                obj.count=1;
-                obj.timer=setTimeout(()=>{
-                  obj.flag=false;
-
-                },3000);
-                obj.flag=true;
-                obj.type=eventType;
-                obj.uuid = item.uuid;
-                _this.event.push(obj);
-              }
-            });
-            _this.warningList = [];
-            _this.event.forEach(item=>{
-              _this.warningList.unshift(item);
-            })
-          }*/
         }
 
       },
@@ -1212,13 +1170,15 @@
       }
     },
     mounted () {
-      var _this =this;
-      this.distanceMap = new AMap.Map("realTraffic", {
-        center: [121.18653381418872,31.274421462567677],
-        mapStyle:'amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8',
-        zoom:18,
-        rotateEnable:'true'
-      });
+      let _option = Object.assign(
+        {},
+        window.defaultMapOption,
+        {
+          center: window.mapOption.singlePoint,
+          zoom: 18
+        }
+      );
+      this.distanceMap = new AMap.Map('realTraffic', _option);
       this.initWebSocket();
       this.initSideWebSocket();
       this.initDeviceWebSocket();
@@ -1233,12 +1193,12 @@
     },
     destroyed(){
       //销毁Socket
-      this.hostWebsocket.close();
-      this.sideWebsocket.close();
-      this.deviceWebsocket.close();
-      this.lightWebsocket.close();
-      this.warningWebsocket.close();
-      this.geatWebsocket.close();
+      this.hostWebsocket && this.hostWebsocket.close();
+      this.sideWebsocket && this.sideWebsocket.close();
+      this.deviceWebsocket && this.deviceWebsocket.close();
+      this.lightWebsocket && this.lightWebsocket.close();
+      this.warningWebsocket && this.warningWebsocket.close();
+      this.geatWebsocket && this.geatWebsocket.close();
     }
   }
 </script>

@@ -66,18 +66,16 @@
             scalefactor: 0,//一个像素相当于多少度
         },
         //自车数据
-        currentCar:{
-        },
-        carsData:[
-        ],
+        currentCar:{},
+        carsData:[],
         playerOptions: {
           overNative: true,
-            autoplay: false,
+            autoplay: true,
             controls: true,
             techOrder: ['flash', 'html5'],
             sourceOrder: true,
             flash: {
-              swf: isProduction ? '/dataMonitor/static/media/video-js.swf' : '/static/media/video-js.swf'
+              swf: isProduction ? '/monPlatform/static/media/video-js.swf' : '/static/media/video-js.swf'
             },
           sources: [
             {
@@ -88,7 +86,7 @@
           muted:true,
           width:'270',
           height:'180',
-          bigPlayButton : true,
+          bigPlayButton : false,
           notSupportedMessage: '此视频暂无法播放，请稍候再试!',
           controlBar: {
             timeDivider: false,
@@ -119,10 +117,26 @@
       isStop(oldValue,newValue){
         if(this.isStop){
           this.playerOptions.sources[0].src='';
-          this.carsDataformate=[];
+          this.carsData=[];
         }else {
           this.getDeviceInfo();
         }
+      }
+    },
+    computed:{
+      carsDataformate(){
+          var that = this;
+          if(this.carsData && this.carsData.length > 0) {
+            var carsDataformate = this.carsData.map(function(item,index,self){
+                var formateItem = that.mapPtToScrPt(item);
+                item.Sx = formateItem.Sx;
+                item.Sy = formateItem.Sy;
+                return item;
+            });
+            return carsDataformate;
+          }else{
+            return [];
+          }
       }
     },
     methods: {
@@ -262,9 +276,9 @@
           //获取视频地址并赋值
           this.rtmp = this.streamInfo.rtmp;
           if(this.rtmp&&this.rtmp!=''){
+            this.playerOptions.bigPlayButton=true;
             console.log("rtmp:"+this.rtmp);
             this.playerOptions.sources[0].src = this.rtmp;
-            this.playerOptions.bigPlayButton=true;
             //直播报活调用
             this.repeatFn();//拉取流后，保活
           }else {
@@ -446,22 +460,7 @@
       this.timer = null;//清除直播报活
 
     },
-    computed:{
-      carsDataformate(){
-          var that = this;
-          if(this.carsData && this.carsData.length > 0) {
-            var carsDataformate = this.carsData.map(function(item,index,self){
-                var formateItem = that.mapPtToScrPt(item);
-                item.Sx = formateItem.Sx;
-                item.Sy = formateItem.Sy;
-                return item;
-            });
-            return carsDataformate;
-          }else{
-            return [];
-          }
-      }
-    },
+    
     destroyed(){
         //销毁Socket
         this.socket.close();
@@ -490,8 +489,8 @@
     top:60%;
     display: none;
   }
-  .c-loading{
-
+  .monitor-video .video-js{
+    height: 180px!important;
   }
 </style>
 <style scoped lang="scss">

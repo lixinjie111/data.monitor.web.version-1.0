@@ -31,8 +31,7 @@
               sideTotalEcharts:{},
               sideRealEcharts:{},
               count:0,
-              webSocket:{},
-              realWebSocket:{},
+              webSocket:null,
               totalData:[],
               rsuData:[],
               rcuData:[],
@@ -276,11 +275,11 @@
           },
           sendMsg(msg) {
             let _this=this;
-            console.log("连接状态："+_this.webSocket.readyState);
+            //console.log("连接状态："+_this.webSocket.readyState);
             if(window.WebSocket){
               if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
                 _this.webSocket.send(msg); //send()发送消息
-                console.log("已发送消息:"+ msg);
+                //console.log("已发送消息:"+ msg);
               }
             }else{
               return;
@@ -294,11 +293,10 @@
           this.sideRealEcharts = this.$echarts.init(document.getElementById("sideRealId"));
           this.getTotalData();
           this.initWebSocket();
-//          this.initRealWebSocket();
         },
       destroyed(){
         //销毁Socket
-        this.webSocket.close();
+        this.webSocket&&this.webSocket.close();
       }
     }
 </script>
