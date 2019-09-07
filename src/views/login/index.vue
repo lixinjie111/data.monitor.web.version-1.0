@@ -10,7 +10,7 @@
                         <el-input type="text" v-model.trim="loginForm.userNo" :maxlength="40" placeholder="请输入用户名" auto-complete="new-text"></el-input>
                     </el-form-item>
                     <el-form-item prop="password" label="密码：" class="login-item">
-                        <el-input type="password" v-model.trim="loginForm.password" :maxlength="20" placeholder="请输入密码" auto-complete="new-password"></el-input>
+                        <el-input type="password" v-model.trim="loginForm.password" :maxlength="20" placeholder="请输入密码" auto-complete="new-password" @keyup.enter.native="handleLogin"></el-input>
                     </el-form-item>
                     <el-form-item class="login-item login-remember-item">
                         <el-checkbox v-model="checked">记住密码</el-checkbox>
