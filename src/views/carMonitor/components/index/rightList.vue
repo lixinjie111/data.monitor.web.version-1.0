@@ -1,29 +1,42 @@
 <template>
-  <ul class="right-list-wrap">
-    <li class="c-car-list" v-for="item in responseData" :key="item.vehicleId" @click="showView(item.vehicleId)">
-    	<div class="right-list-head">
-    		<div class="left clearfix">
-	    		<span class="model c-left">L{{item.autoLevel}}</span>
-	    		<span class="plate c-left">{{item.plateNo}}</span>
+  <ul class="c-info-style">
+
+    <template v-if="responseData.lenght">
+	    <li class="c-size-style" v-for="item in responseData" :key="item.vehicleId" @click="showView(item.vehicleId)">
+	    	<div class="right-list-head">
+	    		<div class="left clearfix">
+		    		<span class="model c-left">L{{item.autoLevel}}</span>
+		    		<span class="plate c-left">{{item.plateNo}}</span>
+		    	</div>
+		    	<div class="right clearfix">
+		    		<span class="gears c-left">{{item.transmission}}</span>
+		    		<span class="direction c-left">
+		    			<i class="direction-icon" v-if="item.headingAngle" :style="{transform:'rotate('+ item.headingAngle +'deg)'}"></i>
+		    			<i class="direction-icon" v-else></i>
+		    		</span>
+		    		<span class="turn c-left">
+		    			<i class="turn-icon turn-left c-left" :class="item.turnLight == 'left' ? 'active' : ''"></i>
+		    			<i class="turn-icon turn-right c-right" :class="item.turnLight == 'right' ? 'active' : ''"></i>
+		    		</span>
+		    	</div>
 	    	</div>
-	    	<div class="right clearfix">
-	    		<span class="gears c-left">{{item.transmission}}</span>
-	    		<span class="direction c-left">
-	    			<i class="direction-icon" v-if="item.headingAngle" :style="{transform:'rotate('+ item.headingAngle +'deg)'}"></i>
-	    			<i class="direction-icon" v-else></i>
-	    		</span>
-	    		<span class="turn c-left">
-	    			<i class="turn-icon turn-left c-left" :class="item.turnLight == 'left' ? 'active' : ''"></i>
-	    			<i class="turn-icon turn-right c-right" :class="item.turnLight == 'right' ? 'active' : ''"></i>
-	    		</span>
+	    	<div class="car-middle-info">
+	    		<img :src="item.vehicleLogo" class="car-img" />
+	    		<div class="speed">{{item.speed || 0}}</div>
+	    		<div class="echarts-wrap" :id="item.id"></div>
 	    	</div>
-    	</div>
-    	<div class="car-middle-info">
-    		<img :src="item.vehicleLogo" class="car-img" />
-    		<div class="speed">{{item.speed || 0}}</div>
-    		<div class="echarts-wrap" :id="item.id"></div>
-    	</div>
-    </li>
+	    </li>
+    </template>
+
+    <template v-else>
+        <div class="c-size-style" v-for="item in new Array(4)">
+          <div class="c-size-inner">
+            <div class="c-mask-tip">
+              暂无数据
+            </div>
+          </div>
+        </div>
+    </template>
   </ul>
 </template>
 
@@ -220,109 +233,107 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
-.right-list-wrap {
-	.c-car-list {
-		cursor: pointer;
-		padding: 14px 12px;
-		.right-list-head {
-			@include layoutMode(between);
-			line-height: 26px;
-			.left {
-				.model {
-					display: inline-block;
-					text-align: center;
-					// width: 26px;
-					padding: 0 4px 0 5px;
-					height: 26px;
-					font-size: 14px;
-					letter-spacing: 1px;
-					background-color: #0b5330;
-					border-radius: 3px;
-					margin-right: 11px;
-				}
-				.plate {
-					font-size: 20px;
-				}
-			}
-			.right {
+.c-size-style {
+	cursor: pointer;
+	padding: 14px 12px;
+	.right-list-head {
+		@include layoutMode(between);
+		line-height: 26px;
+		.left {
+			.model {
+				display: inline-block;
 				text-align: center;
-				.gears, .direction, .turn {
-					width: 30px;
+				// width: 26px;
+				padding: 0 4px 0 5px;
+				height: 26px;
+				font-size: 14px;
+				letter-spacing: 1px;
+				background-color: #0b5330;
+				border-radius: 3px;
+				margin-right: 11px;
+			}
+			.plate {
+				font-size: 20px;
+			}
+		}
+		.right {
+			text-align: center;
+			.gears, .direction, .turn {
+				width: 30px;
+				height: 100%;
+			}
+			.gears {
+				font-size: 24px;
+				color: #dc8c00;
+				font-weight: bold;
+			}
+			.direction-icon {
+				display: inline-block;
+				width: 26px;
+				height: 100%;
+				background: url('../../../../assets/images/carMonitor/arrow.png') no-repeat center center;
+				background-size: auto 24px;
+				// transform-origin: center center !important;
+			}
+			.turn {
+				width: 41px;
+				padding-left: 10px;
+				.turn-icon {
+					width: 19px;
 					height: 100%;
-				}
-				.gears {
-					font-size: 24px;
-					color: #dc8c00;
-					font-weight: bold;
-				}
-				.direction-icon {
-					display: inline-block;
-					width: 26px;
-					height: 100%;
-					background: url('../../../../assets/images/carMonitor/arrow.png') no-repeat center center;
-					background-size: auto 24px;
-					// transform-origin: center center !important;
-				}
-				.turn {
-					width: 41px;
-					padding-left: 10px;
-					.turn-icon {
-						width: 19px;
-						height: 100%;
-						background-repeat: no-repeat;
-						background-position: center center;
-						background-size: 100% auto;
-						&.turn-left {
-							background-image: url('../../../../assets/images/carMonitor/arrow-left.png');
-							&.active {
-								background-image: url('../../../../assets/images/carMonitor/arrow-left-active.png');
-							}
+					background-repeat: no-repeat;
+					background-position: center center;
+					background-size: 100% auto;
+					&.turn-left {
+						background-image: url('../../../../assets/images/carMonitor/arrow-left.png');
+						&.active {
+							background-image: url('../../../../assets/images/carMonitor/arrow-left-active.png');
 						}
-						&.turn-right {
-							background-image: url('../../../../assets/images/carMonitor/arrow-right.png');
-							&.active {
-								background-image: url('../../../../assets/images/carMonitor/arrow-right-active.png');
-							}
+					}
+					&.turn-right {
+						background-image: url('../../../../assets/images/carMonitor/arrow-right.png');
+						&.active {
+							background-image: url('../../../../assets/images/carMonitor/arrow-right-active.png');
 						}
 					}
 				}
 			}
 		}
-		.car-middle-info {
-			height: 74px;
-			margin-top: 35px;
-			margin-bottom: 15px;
-			line-height: 26px;
-			@include layoutMode(all);
-			.car-img {
-				width: 140px;
-				height: 100%;
-				object-fit: cover;
+	}
+	.car-middle-info {
+		height: 74px;
+		margin-top: 35px;
+		margin-bottom: 15px;
+		line-height: 26px;
+		@include layoutMode(all);
+		.car-img {
+			width: 140px;
+			height: 100%;
+			object-fit: cover;
+		}
+		.speed {
+			position: relative;
+			@include layoutMode(pack);
+			font-family: carFont;
+			font-size: 36px;
+			letter-spacing: 4px;
+			color: #37ba7b;
+			&:after {
+				content: "km/h";
+				position: absolute;
+				left: 50%;
+				top: 100%;
+				transform: translate(-50%, 0);
+				letter-spacing: 1px;
+				color: #999;
+				font-family: MicrosoftYaHei;
+				font-size: 14px;
+				line-height: 30px;
 			}
-			.speed {
-				position: relative;
-				@include layoutMode(pack);
-				font-family: carFont;
-				font-size: 36px;
-				letter-spacing: 4px;
-				color: #37ba7b;
-				&:after {
-					content: "km/h";
-					position: absolute;
-					left: 50%;
-					top: 100%;
-					transform: translate(-50%, 0);
-					letter-spacing: 1px;
-					color: #999;
-					font-family: MicrosoftYaHei;
-					font-size: 14px;
-					line-height: 30px;
-				}
-			}
-			.echarts-wrap {
-				width: 90px;
-				height: 30px;
-			}
+		}
+		.echarts-wrap {
+			width: 90px;
+			height: 30px;
 		}
 	}
 }
