@@ -165,11 +165,11 @@
         marker:{},
         platNoMarker:{},
         sideList:[],
-        hostWebsocket:{},
-        sideWebsocket:{},
-        deviceWebsocket:{},
-        lightWebsocket:{},
-        warningWebsocket:{},
+        hostWebsocket:null,
+        sideWebsocket:null,
+        deviceWebsocket:null,
+        lightWebsocket:null,
+        warningWebsocket:null,
         warningData:{},
         vehicleId: this.$route.params.vehicleId,
         whetherData:{},
@@ -647,26 +647,32 @@
         let type = json.result.type;
         if(warningData.length>0){
           if(type=='VEHICLE'){
+            let warningId;
             warningData.forEach(item=>{
-              _this.vehicleCount++;
-              var dist = parseInt(item.dis);
-              if(!dist){
-                dist=-1;
-              }
-
-              var obj = {type: item.eventType,timer: null, flag: true,dist:dist,message:item.warnMsg,icon:item.warnIcon,warnColor:item.warnColor};
-              obj.timer=setTimeout(()=>{
-                obj.flag=false;
-                _this.warningList.forEach(item=>{
-                  if(item.flag){
-                    _this.isAllClear=true;
-                  }
-                })
-                if(!_this.isAllClear){
-                  this.warningList=[];
+              warningId = item.warnId;
+              warningId = warningId.substring(0,warningId.lastIndexOf("_"));
+              //如果告警id不存在 右侧弹出
+              if(!_this.warningData[warningId]){
+                _this.vehicleCount++;
+                let dist = parseInt(item.dis);
+                if(!dist){
+                  dist=-1;
                 }
-              },3000)
-              _this.warningList.unshift(obj);
+                let obj = {type: item.eventType,timer: null, flag: true,dist:dist,message:item.warnMsg,icon:item.warnIcon,warnColor:item.warnColor};
+                obj.timer=setTimeout(()=>{
+                  obj.flag=false;
+                  _this.warningList.forEach(item=>{
+                    if(item.flag){
+                      _this.isAllClear=true;
+                    }
+                  })
+                  if(!_this.isAllClear){
+                    this.warningList=[];
+                  }
+                },3000)
+                _this.warningList.unshift(obj);
+                _this.warningData[warningId]=obj;
+              }
             })
           }
           if(type=='CLOUD'){
@@ -827,6 +833,16 @@
           return;
         }
       },
+    hashcode(str) {
+      let hash = 0, i, chr, len;
+      if (str.length === 0) return hash;
+      for (i = 0, len = str.length; i < len; i++) {
+        chr   = str.charCodeAt(i);
+        hash  = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+      }
+      return hash;
+    },
       /**
        * 传入最小最大像素坐标
        * **/
@@ -916,11 +932,11 @@
     },
     destroyed(){
       //销毁Socket
-      this.hostWebsocket.close();
-      this.sideWebsocket.close();
-      this.deviceWebsocket.close();
-      this.lightWebsocket.close();
-      this.warningWebsocket.close();
+      this.hostWebsocket&&this.hostWebsocket.close();
+      this.sideWebsocket&&this.sideWebsocket.close();
+      this.deviceWebsocket&&this.deviceWebsocket.close();
+      this.lightWebsocket&&this.lightWebsocket.close();
+      this.warningWebsocket&&this.warningWebsocket.close();
     }
   }
 </script>
@@ -1132,7 +1148,7 @@
     img{
       width:60px;
       height:auto;
-      display: inline-block;
+      margin: 0 auto;
     }
   }
   .pre-warning-style{

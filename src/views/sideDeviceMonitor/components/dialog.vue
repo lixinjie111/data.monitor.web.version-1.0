@@ -740,11 +740,15 @@ export default {
 
 
 }
+.el-select-dropdown__item.hover, .el-select-dropdown__item:hover {
+    background-color: #dc8c00 !important;
+}
+.el-tree-node__content:hover
  .el-select-dropdown__list {
     padding: 0px !important;
   }
 .el-tree-node__content:hover {
-    background-color: #262626;
+    background-color: transparent;
   }
   .el-tree-node:focus > .el-tree-node__content {
     background-color: #262626;

@@ -11,19 +11,19 @@
 						<div class="c-scroll-wrap">
 							<div class="c-scroll-inner">
 								<div class="side-device-detail clearfix">
-									<span class="side-device-label">事件类型:</span>
+									<span class="side-device-label">事件类型：</span>
 									<span class="device-detail-style">{{itemData.eventName || '--'}}</span>
 								</div>
 								<div class="side-device-detail clearfix">
-									<span class="side-device-label">发生时间:</span>
+									<span class="side-device-label">发生时间：</span>
 									<span class="device-detail-style">{{itemData.beginTime || '--'}}</span>
 								</div>
 								<div class="side-device-detail clearfix">
-									<span class="side-device-label">发生地点:</span>
+									<span class="side-device-label">发生地点：</span>
 									<span class="device-detail-style">{{itemData.longitude || '--'}} , {{itemData.latitude || '--'}}</span>
 								</div>
 								<div class="side-device-detail clearfix">
-									<span class="side-device-label">道路名称:</span>
+									<span class="side-device-label">道路名称：</span>
 									<span class="device-detail-style">{{itemData.roadName || '--'}}</span>
 								</div>
 							</div>
@@ -47,9 +47,9 @@
 								<div class="device-list-style">
 									<div class="table-header-group">
 										<ul class="table-row">
-											<li class="table-cell device-num" style="text-align: center">设备编号</li>
-											<li class="table-cell device-style">联网状态</li>
-											<li class="table-cell device-style">开启监控</li>
+											<li class="table-cell table-title device-num" style="text-align: center">设备编号</li>
+											<li class="table-cell table-title device-style">联网状态</li>
+											<li class="table-cell table-title device-style">开启监控</li>
 										</ul>
 									</div>
 									<div class="table-row-group">
@@ -76,7 +76,7 @@
 								<div class="device-video-style">
 									<div class="side-video-style">
 										<div class="c-mask-title">
-											<div>设备编号：{{deviceId}}</div>
+											<div class="m-mask-title">智能摄像头：{{deviceId}}</div>
 											<img src="@/assets/images/carMonitor/refresh.png" class="c-mask-refresh" @click="refresh" />
 										</div>
 										<video-player class="c-map-video-style" :options="option" ref="videoPlayer"></video-player>
@@ -98,6 +98,7 @@
 		getDevListByRoadId,
 		getDeviceCountByCity
 	} from "@/api/sideDeviceMonitor";
+	import { getFeaturesByPoint } from '@/api/roadMonitor'
 	import TusvnMap from "@/components/Tusvn3DMap3";
 	import ConvertCoord from "@/assets/js/utils/coordConvert.js";
 	import { getMap } from "@/utils/tusvnMap3.js";
@@ -106,14 +107,14 @@
 		name: "SideDialog",
 		data() {
 			return {
-				webSocket: {},
+				webSocket: null,
 				webSocketData: {
 					action: "event_detail_data",
 					token: "tusvn",
 					id: ""
 				},
 				carData: null,
-				webSocket1: {}, //交通事件车辆
+				webSocket1: null, //交通事件车辆
 				webSocketData1: {},
 				itemData: {},
 				deviceList: [],
@@ -131,6 +132,7 @@
 				deviceObj: {},
 				isFirst: true,
 				isOne: true,
+				heading:'',//航向角
 				position: [],
 				option: {
 					overNative: true,
@@ -186,10 +188,10 @@
 			}
 		},
 		mounted() {
-			// setInterval(()=>{
-			//     let camera = this.$refs.tusvnMap3.getCamera();
-			//     console.log(camera.x,camera.y,camera.z,camera.radius,camera.pitch,camera.yaw)
-			// },500)
+//			 setInterval(()=>{
+//			     let camera = this.$refs.tusvnMap3.getCamera();
+//			     console.log(camera.x,camera.y,camera.z,camera.radius,camera.pitch,camera.yaw)
+//			 },500)
 		},
 		watch: {
 			deviceList: {
@@ -283,7 +285,6 @@
 						if(item.type == "N" && item.cameraRunStatus == 1) {
 							item.value = false;
 							if(item.serialNum == this.selectedItem.cameraId) {
-								console.log("相同" + item)
 								this.isFirst = false;
 								//设置默认的选中值
 								this.deviceId = item.deviceId;
@@ -304,33 +305,66 @@
 						getMap(this.$refs.tusvnMap3);
 						if(this.selectedItem.cameraId) {
 							if(this.cameraParam) {
-//							   this.$refs.tusvnMap3.updateCameraPosition(
-//					               this.cameraParam.x,
-//					               this.cameraParam.y,
-//					               this.cameraParam.z,
-//					               this.cameraParam.radius,
-//					               this.cameraParam.pitch,
-//					               this.cameraParam.yaw
-//					             );
-								this.updateCameraPosition();
+							   this.$refs.tusvnMap3.updateCameraPosition1(
+					               this.cameraParam.x,
+					               this.cameraParam.y,
+					               this.cameraParam.z,
+					               this.cameraParam.radius,
+					               this.cameraParam.pitch,
+					               this.cameraParam.yaw
+					             );
+								//this.updateCameraPosition();
 							} else {
 								this.updateCameraPosition();
 							}
 						} else {
 							this.updateCameraPosition();
 						}
+						
+				        let formData = new FormData(); //创建form对象
+				        formData.append('featureclass', 'dl_shcsq_wgs84_lb_points');
+				        formData.append('lng', this.selectedItem.longitude);//通过append向form对象添加数据
+				        formData.append('lat', this.selectedItem.latitude);//通过append向form对象添加数据
+				        formData.append('distance', 10);//  附近5米
+				        formData.append('limit', 1);// 查找的附近的道路条数
+				        let config = {
+				          headers: {
+				            'Accept': '*/*',
+				            'Content-Type': 'application/x-www-form-urlencoded'
+				          }
+				        }; 
+						//获取航向角
+						getFeaturesByPoint(formData,config).then(res => {
+					      	if(res.state==1){
+					      		this.heading=res.data[0].heading;
+					      		if(!this.cameraParam){
+					      			this.updateCameraPosition();
+					      		}
+					      		let _length=this.itemData.modelIcon.split("/").length;
+					      		let _name=this.itemData.modelIcon.split("/")[_length-1];
+					      		let _url="./static/map3d/models/"+_name;
+					      		this.$refs.tusvnMap3.addStaticModel(this.selectedItem.cameraId, _url, this.position[0], this.position[1], 13, 0, 0, (Math.PI / 180.0)*(-this.heading+80)); //添加模型
+					      	}
+					    });
+						//console.log(this.itemData.modelIcon)
 						//this.$refs.tusvnMap3.addModel(this.selectedItem.cameraId,this.itemData.modelIcon,this.position[0],this.position[1],13); //添加模型
-						this.$refs.tusvnMap3.addStaticModel(this.selectedItem.cameraId, "./static/map3d/models/traffic_cone.3ds", this.position[0], this.position[1], 13); //添加模型
+						//this.$refs.tusvnMap3.addStaticModel(this.selectedItem.cameraId, "./static/map3d/models/carEventModel.3ds", this.position[0], this.position[1], 13); //添加模型
 					} else {
-						if(this.$refs.tusvnMap3) {
-							this.$refs.tusvnMap3.updateStaticModelPostion(this.selectedItem.cameraId, this.position[0], this.position[1], 13, 0.97 + (Math.PI / 180.0) * 90);
+						if(this.$refs.tusvnMap3.getStaticModel(this.selectedItem.cameraId)) {
+							this.$refs.tusvnMap3.updateStaticModelPostion(this.selectedItem.cameraId, this.position[0], this.position[1], 13, (Math.PI / 180.0)*(-this.heading+80 ));
 						}
 					}
 				}
 
 			},
 			updateCameraPosition(){
-				this.$refs.tusvnMap3.updateCameraPosition1(this.position[0], this.position[1], 17, 13, -0.2, 0.97 + (Math.PI / 180.0) * 180);
+				if(this.heading){
+					//console.log(this.heading)
+					this.$refs.tusvnMap3.updateCameraPosition1(this.position[0], this.position[1], 17, 13, -0.2, -1.9+(Math.PI / 180.0)*this.heading);
+				}else{
+					this.$refs.tusvnMap3.updateCameraPosition1(this.position[0], this.position[1], 17, 13, -0.2, 0.97 + (Math.PI / 180.0) * 180);
+				}
+				
 			},
 			initWebSocket() {
 				if("WebSocket" in window) {
@@ -413,6 +447,7 @@
 				return targetCoor;
 			},
 			switchChange(item) {
+				this.isFirst = false;
 				var _this = this;
 				//如果设备不在线进行提示
 				if(item.cameraRunStatus != 1) {
@@ -523,18 +558,20 @@
 			z-index: 2;
 			padding: 20px 0 20px 20px;
 			height: auto;
-			width: 280px;
+			width: 315px;
 			line-height: 36px;
+			font-size: 16px;
 			background: linear-gradient( to right, rgba(0, 0, 0, 0.6) 30%, rgba(0, 0, 0, 0));
 			/* 标准的语法 */
 			.side-device-detail {
 				display: block !important;
+				font-size: 16px !important;
 				.side-device-label {
 					float: left;
 				}
 				.device-detail-style {
 					display: block;
-					margin-left: 70px;
+					margin-left: 90px;
 					color: #fff;
 				}
 			}
@@ -556,6 +593,23 @@
 			/* 标准的语法 */
 			.device-list-style {
 				background-color: #000;
+				.table-title{
+					color:#fff;
+				}
+				.monitor-device-text{
+					font-size: 14px;
+				}
+			}
+			.side-device-title{
+				&:first-child{
+					margin-top: 0;
+				}
+			}
+			.m-mask-title{
+				color: #fff;
+				font-size: 15px;
+				line-height: 40px;
+				padding-left: 9px;
 			}
 		}
 	}

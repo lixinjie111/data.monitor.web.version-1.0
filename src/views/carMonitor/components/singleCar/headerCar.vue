@@ -102,7 +102,7 @@
         liveBroken:'live-broken',
         vehicleStatus:{},
         naviStatus:{},
-        webSocket:{},
+        webSocket:null,
 
 
       }
