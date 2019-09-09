@@ -67,7 +67,7 @@ export default {
 .more-btn {
     position: absolute;
     top: 100px;
-    right: 417px;
+    right: 400px;
     z-index: 3;
     width: 65px;
     height: 30px;

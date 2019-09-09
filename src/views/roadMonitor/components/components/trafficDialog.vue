@@ -16,7 +16,7 @@
 								</div>
 								<div class="side-device-detail clearfix">
 									<span class="side-device-label">发生时间：</span>
-									<span class="device-detail-style">{{itemData.beginTime || '--'}}</span>
+									<span class="device-detail-style">{{$dateUtil.formatTime(Number(itemData.beginTime)) || '--'}}</span>
 								</div>
 								<div class="side-device-detail clearfix">
 									<span class="side-device-label">发生地点：</span>
@@ -111,7 +111,7 @@
 				webSocketData: {
 					action: "event_detail_data",
 					token: "tusvn",
-					id: ""
+					taskCode: ""
 				},
 				carData: null,
 				webSocket1: null, //交通事件车辆
@@ -176,14 +176,14 @@
 		props: ["selectedItem"],
 		created() {
 			//console.log(this.selectedItem);
-			this.webSocketData.id = this.selectedItem.id;
+			this.webSocketData.taskCode = this.selectedItem.taskCode;
 			this.serialNum = this.selectedItem.cameraId; //点击进来的设备编号
 			this.webSocketData1 = {
 				"action": "fusel_event_veh",
 				"region": {
 					"longitude": this.selectedItem.longitude,
 					"latitude": this.selectedItem.latitude,
-					"id": this.selectedItem.id
+					"taskCode": this.selectedItem.taskCode
 				}
 			}
 		},
@@ -340,7 +340,10 @@
 					      		if(!this.cameraParam){
 					      			this.updateCameraPosition();
 					      		}
-					      		this.$refs.tusvnMap3.addStaticModel(this.selectedItem.cameraId, this.itemData.modelIcon, this.position[0], this.position[1], 13, 0, 0, (Math.PI / 180.0)*(-this.heading+80)); //添加模型
+					      		let _length=this.itemData.modelIcon.split("/").length;
+					      		let _name=this.itemData.modelIcon.split("/")[_length-1];
+					      		let _url="./static/map3d/models/"+_name;
+					      		this.$refs.tusvnMap3.addStaticModel(this.selectedItem.cameraId, _url, this.position[0], this.position[1], 13, 0, 0, (Math.PI / 180.0)*(-this.heading+80)); //添加模型
 					      	}
 					    });
 						//console.log(this.itemData.modelIcon)
@@ -533,7 +536,6 @@
 			}
 		},
 		destroyed() {
-			//清除定时器
 			this.webSocket && this.webSocket.close();
 			this.webSocket1 && this.webSocket1.close();
 		}
