@@ -460,7 +460,7 @@
       this.timer = null;//清除直播报活
 
     },
-    
+
     destroyed(){
         //销毁Socket
         this.socket.close();
