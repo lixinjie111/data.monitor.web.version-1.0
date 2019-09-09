@@ -183,7 +183,7 @@
 				"region": {
 					"longitude": this.selectedItem.longitude,
 					"latitude": this.selectedItem.latitude,
-					"id": this.selectedItem.taskCode
+					"taskCode": this.selectedItem.taskCode
 				}
 			}
 		},
