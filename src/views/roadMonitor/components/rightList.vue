@@ -1,13 +1,24 @@
 <template>
   <div class="c-info-style">
-      <div class="c-size-style" v-for="item in resultData" :key="item.crossId">
-        <div class="c-size-inner">
-          <div class="c-mask-title" >
-            <p @click="queryCrossDetail(item)">路口：{{item.crossId}}</p>
+      <template v-if="resultData.length">
+        <div class="c-size-style" v-for="item in resultData" :key="item.crossId">
+          <div class="c-size-inner">
+            <div class="c-mask-title" >
+              <p @click="queryCrossDetail(item)">路口：{{item.crossId}}</p>
+            </div>
+            <map-detail :id="'map'+item.crossId" class="c-map-video-style" :reqData="item"></map-detail>
           </div>
-          <map-detail :id="'map'+item.crossId" class="c-map-video-style" :reqData="item"></map-detail>
         </div>
-      </div>
+      </template>
+      <template v-else>
+        <div class="c-size-style" v-for="item in new Array(4)">
+          <div class="c-size-inner">
+            <div class="c-mask-tip">
+              暂无数据
+            </div>
+          </div>
+        </div>
+      </template>
   </div>
 </template>
 <script>
