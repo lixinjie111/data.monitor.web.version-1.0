@@ -111,7 +111,7 @@
 				webSocketData: {
 					action: "event_detail_data",
 					token: "tusvn",
-					id: ""
+					taskCode: ""
 				},
 				carData: null,
 				webSocket1: null, //交通事件车辆
@@ -176,14 +176,14 @@
 		props: ["selectedItem"],
 		created() {
 			//console.log(this.selectedItem);
-			this.webSocketData.id = this.selectedItem.id;
+			this.webSocketData.taskCode = this.selectedItem.taskCode;
 			this.serialNum = this.selectedItem.cameraId; //点击进来的设备编号
 			this.webSocketData1 = {
 				"action": "fusel_event_veh",
 				"region": {
 					"longitude": this.selectedItem.longitude,
 					"latitude": this.selectedItem.latitude,
-					"id": this.selectedItem.id
+					"id": this.selectedItem.taskCode
 				}
 			}
 		},
@@ -536,7 +536,6 @@
 			}
 		},
 		destroyed() {
-			//清除定时器
 			this.webSocket && this.webSocket.close();
 			this.webSocket1 && this.webSocket1.close();
 		}
