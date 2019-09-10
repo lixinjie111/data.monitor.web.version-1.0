@@ -1,17 +1,6 @@
 window.config = {
-    /*url: 'http://10.0.1.57:9093/monPlatApp/',
-    websocketUrl:'ws://10.0.1.57:9982/mon',
-    // socketUrl:'ws://10.0.1.57:9999/ws',
-    socketUrl:'ws://192.168.1.51:9999/ws',*/
-    /*testUrl:'http://10.0.1.57:9092/icvShadowApp/wstester.html',*/
-    /*testUrl:'http://172.17.1.13:9092/icvShadowApp/ws.html',*/
-    /*url: 'http://192.168.1.57:8080/', //监控平台
-    socketUrl:'ws://192.168.1.57:9999/ws',  //监控
-    swaggerUrl:http://172.17.1.13:9093/monPlatApp/swagger-ui.html
 
-    */
-
-    //望京地址  内网
+    //望京 内网
     // url: 'http://172.17.1.16:9093/monPlatApp/', //监控平台
     // operateUrl: 'http://172.17.1.16:9090/operateApp/',	//运营平台
     // websocketUrl:'ws://172.17.1.16:9982/mon',  //监控
@@ -19,24 +8,13 @@ window.config = {
     // dlUrl: 'http://10.0.1.22:8085/', //迪路
     // dlWmsUrl: 'http://10.0.1.22:8080/', //迪路
 
-
-
-    //外网
+    //望京 外网
     url: 'http://120.133.21.14:9093/monPlatApp/', //监控平台
     operateUrl: 'http://120.133.21.14:9090/operateApp/',	//运营平台
     websocketUrl:'ws://120.133.21.14:49982/mon',  //监控
     socketUrl:'ws://120.133.21.14:49999/ws',  //影子系统
     dlUrl: 'http://113.208.118.62:8085/', //迪路
     dlWmsUrl: 'http://113.208.118.62:8080/', //迪路
-
-
-    //长沙
-    // url: 'http://111.23.140.59:9093/monPlatApp/', //监控平台
-    // websocketUrl:'ws://111.23.140.59:9982/mon',  //监控
-    // socketUrl:'ws://111.23.140.59:9999/ws',  //影子系统
-    // dlUrl: 'http://111.23.140.59:8085/', //迪路
-    // dlWmsUrl: 'http://111.23.140.59:8080/', //迪路
-  
 
     version: 1.0,       // 版本号
 }
