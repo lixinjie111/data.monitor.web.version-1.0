@@ -451,7 +451,13 @@
 				var _this = this;
 				//如果设备不在线进行提示
 				if(item.cameraRunStatus != 1) {
-					_this.$message.error("设备不在线");
+					//_this.$message.error("设备不在线");
+					_this.$message({
+						type: 'error',
+						duration: '1500',
+						message: '设备不在线',
+						showClose: true
+					});
 					return;
 				}
 				item.value = !item.value;

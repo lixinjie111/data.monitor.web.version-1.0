@@ -666,7 +666,13 @@ export default {
     },
     refresh() {
       if (this.roadId == "") {
-        this.$message.error("请先选择具体的路侧点");
+        //this.$message.error("请先选择具体的路侧点");
+        this.$message({
+						type: 'error',
+						duration: '1500',
+						message: '请先选择具体的路侧点',
+						showClose: true
+					});
         return;
       }
       if (this.deviceList.length == 0) {
