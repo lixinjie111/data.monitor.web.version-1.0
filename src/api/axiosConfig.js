@@ -65,7 +65,13 @@ function axiosFilter(vm) {
                 //     break;
                 // }
                 default: {
-                    vm.$message.error(response.data.message || '操作失败' || response.data);
+                    vm.$message({
+                        type: 'error',
+                        duration: '1500',
+                        message: response.data.message || '操作失败' || response.data,
+                        showClose: true
+                    });
+                    //vm.$message.error(response.data.message || '操作失败' || response.data);
                     // vm.$message.error('操作失败');
                     return Promise.reject(response);
                 }
@@ -94,7 +100,13 @@ function axiosFilter(vm) {
         // }
         // return response;
     }, function(error) {
-        vm.$message.error('error!');
+       // vm.$message.error('error!');
+        vm.$message({
+            type: 'error',
+            duration: '1500',
+            message: "error!",
+            showClose: true
+        });
         // console.log(error);
         // return Promise.reject(error);
         // vm.$alert('登录已过期，请重新登录', '', {

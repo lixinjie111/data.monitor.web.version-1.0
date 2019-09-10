@@ -7,7 +7,7 @@ window.config = {
     dlUrl: 'http://113.208.118.62:8085/', //迪路
     dlWmsUrl: 'http://113.208.118.62:8080/', //迪路
 
-    //上海  内网-IP
+    //上海正式环境  内网-IP
     // url: 'http://172.16.1.199:9093/monPlatApp/', //监控平台
     // operateUrl: 'http://172.16.1.197:9090/operateApp/', //运营平台
     // websocketUrl:'ws://172.16.1.199:9982/mon',  //监控
@@ -15,7 +15,7 @@ window.config = {
     // dlUrl: 'http://172.16.1.197:8085/', //迪路
     // dlWmsUrl: 'http://172.16.1.197:8080/', //迪路
 
-    //上海  内网-主机名
+    //上海正式环境  内网-主机名
     // url: 'http://app03:9093/monPlatApp/', //监控平台
     // operateUrl: 'http://app01:9090/operateApp/', //运营平台
     // websocketUrl:'ws://app03:9982/mon',  //监控
