@@ -2,7 +2,6 @@
     <div class="c-view-main" :id="id"></div>
 </template>
 <script>
-import { getRoadCenterIds, getRoadCenterPoints } from '@/api/dataMonitor'
 export default {
     name: "MapContainer",
     data () {
