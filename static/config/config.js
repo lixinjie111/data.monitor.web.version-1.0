@@ -16,6 +16,22 @@ window.config = {
     dlUrl: 'http://113.208.118.62:8085/', //迪路
     dlWmsUrl: 'http://113.208.118.62:8080/', //迪路
 
+    //上海正式环境  内网-IP
+    // url: 'http://172.16.1.199:9093/monPlatApp/', //监控平台
+    // operateUrl: 'http://172.16.1.197:9090/operateApp/', //运营平台
+    // websocketUrl:'ws://172.16.1.199:9982/mon',  //监控
+    // socketUrl:'ws://172.16.1.198:9999/icv',  //影子系统
+    // dlUrl: 'http://172.16.1.197:8085/', //迪路
+    // dlWmsUrl: 'http://172.16.1.197:8080/', //迪路
+
+    //上海正式环境  内网-主机名
+    // url: 'http://app03:9093/monPlatApp/', //监控平台
+    // operateUrl: 'http://app01:9090/operateApp/', //运营平台
+    // websocketUrl:'ws://app03:9982/mon',  //监控
+    // socketUrl:'ws://app02:9999/icv',  //影子系统
+    // dlUrl: 'http://app01:8085/', //迪路
+    // dlWmsUrl: 'http://app01:8080/', //迪路
+
     version: 1.0,       // 版本号
 }
 //地图额外配置项添加
@@ -36,19 +52,6 @@ window.defaultMapOption = {
 	mapStyle: "amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8"
 }
 
-// 调用
-// this.distanceMap = new AMap.Map('map-container', window.defaultMapOption);
-// let _option = Object.assign(
-// 	{},
-// 	window.defaultMapOption,
-// 	{
-// 		mapStyle: window.mapOption.mapStyleEmpty
-// 	}
-// );
-// this.distanceMap = new AMap.Map('map-container', _option);
-
-
-
 //路网配置参数
 window.dlWmsOption = {
     'LAYERS_dlzc': 'shanghai_qcc:gd_dlzc',
@@ -64,13 +67,3 @@ window.dlWmsDefaultOption = {
     tileSize: 256,
     params:{}
 }
-//	调用
-// let _optionWms = Object.assign(
-// 	{},
-// 	window.dlWmsDefaultOption,
-// 	{
-// 		params:{'LAYERS': window.dlWmsOption.LAYERS_centerline,'STYLES': window.dlWmsOption.STYLES, 'VERSION': window.dlWmsOption.VERSION}
-// 	}
-// );
-// this.wms = new AMap.TileLayer.WMS(_optionWms);
-// this.distanceMap.add(this.wms);
