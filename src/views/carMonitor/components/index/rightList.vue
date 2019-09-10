@@ -1,7 +1,7 @@
 <template>
   <ul class="c-info-style">
 
-    <template v-if="responseData.lenght">
+    <template v-if="vehicleIds">
 	    <li class="c-size-style" v-for="item in responseData" :key="item.vehicleId" @click="showView(item.vehicleId)">
 	    	<div class="right-list-head">
 	    		<div class="left clearfix">
@@ -46,7 +46,7 @@ export default {
 	name: 'RightList',
 	data () {
 		return {
-			vehicleIds: 'B21E-00-017,B21E-00-018,B21E-00-019,B21E-00-020',
+			vehicleIds: '',
 			responseData: [],
 			// 获取指定车辆实时信息
             webSocket:null,
@@ -54,7 +54,7 @@ export default {
                 // action: 'vehicleList',
                 action: 'can_real_data',
                 token: 'fpx',
-                vehicleIds: 'B21E-00-017,B21E-00-018,B21E-00-019,B21E-00-020'
+                vehicleIds: ''
             }
 		}
 	},
