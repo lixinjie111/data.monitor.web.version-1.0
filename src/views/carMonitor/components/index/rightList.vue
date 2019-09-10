@@ -2,7 +2,7 @@
   <ul class="c-info-style">
 
     <template v-if="vehicleIds">
-	    <li class="c-size-style" v-for="item in responseData" :key="item.vehicleId" @click="showView(item.vehicleId)">
+	    <li class="c-car-list" v-for="item in responseData" :key="item.vehicleId" @click="showView(item.vehicleId)">
 	    	<div class="right-list-head">
 	    		<div class="left clearfix">
 		    		<span class="model c-left">L{{item.autoLevel}}</span>
@@ -29,7 +29,7 @@
     </template>
 
     <template v-else>
-        <div class="c-size-style" v-for="item in new Array(4)">
+        <div class="c-car-list" v-for="item in new Array(4)">
           <div class="c-size-inner">
             <div class="c-mask-tip">
               暂无数据
@@ -233,9 +233,11 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
-.c-size-style {
+.c-car-list {
 	cursor: pointer;
 	padding: 14px 12px;
+	width: 360px;
+	height: 180px;
 	.right-list-head {
 		@include layoutMode(between);
 		line-height: 26px;
