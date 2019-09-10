@@ -360,7 +360,12 @@ export default {
       var _this = this;
       //如果设备不在线进行提示
       if (item.workStatus != 1) {
-        _this.$message.error("设备不在线");
+        _this.$message({
+            type: 'error',
+            duration: '1500',
+            message: '设备不在线',
+            showClose: true
+          });
         return;
       }
       item.value = !item.value;
@@ -666,7 +671,6 @@ export default {
     },
     refresh() {
       if (this.roadId == "") {
-        //this.$message.error("请先选择具体的路侧点");
         this.$message({
 						type: 'error',
 						duration: '1500',

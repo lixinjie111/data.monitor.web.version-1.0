@@ -149,7 +149,6 @@
         }).then(res => {
           var list = res.vehicleCalendarDetail;
           if(list==null&&list.length<=0){
-            //this.$message.error("行车日历结果不存在");
             this.$message({
                 type: 'error',
                 duration: '1500',
