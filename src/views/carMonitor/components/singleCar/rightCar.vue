@@ -485,8 +485,8 @@
     padding-right: 0!important;
   }
   .monitor-video .vjs-error .vjs-error-display .vjs-modal-dialog-content{
-    padding:60px 24px 30px!important;
-    color: #ccc;
+    /*padding:60px 24px 30px!important;
+    color: #ccc;*/
   }
   .monitor-video .vjs-error .vjs-error-display:before{
     font-size: 3em;
