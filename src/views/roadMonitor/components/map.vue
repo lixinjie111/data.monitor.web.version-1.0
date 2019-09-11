@@ -398,7 +398,6 @@
           });
         }
         if(massNum == "masstraffic" && this.masstraffic){ 
-            //console.log(data);
             this.masstraffic.setStyle(style);
             this.masstraffic.setData(data);
             //this.masstraffic.clear();
