@@ -18,6 +18,7 @@
                 </el-form>
                 <div class="remember-password"></div>
                 <el-button class="login-button" type="primary" :loading="loading" @click.native.prevent="handleLogin">登 录</el-button>
+
             </div>
         </div>
         <img class="footer-info" src="static/images/login-bottom-logo.png">
