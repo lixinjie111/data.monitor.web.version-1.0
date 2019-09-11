@@ -2,6 +2,7 @@
 	<div class="header clearfix">
         <router-link tag="a" class="logo-wrap" to="/">
             <img class="logo" src="static/images/logo.png">
+            <em class="name">监控管理中心</em>
         </router-link>
         <ul class="menu-box clearfix">
            <router-link tag="li" v-for="item in navList" :key="item.id" class="menu-list" :to="item.path">{{item.name}}</router-link>
@@ -174,9 +175,16 @@ export default {
         padding: 5px 0;
         cursor: pointer;
         height: 30px;
+        @include layoutMode(align);
         .logo {
             height: 100%;
-            vertical-align: top;
+            margin-right: 10px;
+        }
+        .name {
+            font-size: 24px;
+            line-height: 30px;
+            color: #fff;
+            letter-spacing: 3px;
         }
     }
     .menu-box{
