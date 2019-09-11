@@ -259,6 +259,7 @@ export default {
     .el-button{
         i, span{
             line-height: 0;
+            vertical-align: middle;
         }
     }
 }
