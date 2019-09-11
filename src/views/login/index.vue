@@ -1,27 +1,35 @@
 <template>
-    <div id="login-warpper" v-if="visibleFlag">
-        <img class="login-logo" src="static/images/login-logo.png">        
-        <!-- 登录 -->
-        <div class="login-card">
-            <div class="login-title">智能网联汽车监控管理平台</div>
-            <div class="login-item-box">
-                <el-form :model="loginForm" :rules="loginRules" ref="loginForm" label-position="right" label-width="105px" class="login-form">
-                    <el-form-item prop="userNo" label="用户名：" class="login-item">
-                        <el-input type="text" v-model.trim="loginForm.userNo" :maxlength="40" placeholder="请输入用户名" auto-complete="new-text"></el-input>
-                    </el-form-item>
-                    <el-form-item prop="password" label="密码：" class="login-item">
-                        <el-input type="password" v-model.trim="loginForm.password" :maxlength="20" placeholder="请输入密码" auto-complete="new-password" @keyup.enter.native="handleLogin"></el-input>
-                    </el-form-item>
-                    <el-form-item class="login-item login-remember-item">
-                        <el-checkbox v-model="checked">记住密码</el-checkbox>
-                    </el-form-item>
-                </el-form>
-                <div class="remember-password"></div>
-                <el-button class="login-button" type="primary" :loading="loading" @click.native.prevent="handleLogin">登 录</el-button>
+<div id="login-warpper" v-if="visibleFlag">
+    <img class="login-logo" src="static/images/login-logo.png">
+    <div class="login-container">
+        <img class="login-bg" src="static/images/login-bg.jpg">
+        <div class="login-content">
+            <div class="login-left">
+                <p class="login-left-title">云控，启迪未来</p>
+            </div>
+            <div class="login-card">
+                <div class="login-title">监控管理平台</div>
+                <div class="login-item-box">
+                    <el-form :model="loginForm" :rules="loginRules" ref="loginForm" label-position="right" label-width="105px" class="login-form">
+                        <el-form-item prop="userNo" label="用户名" class="login-item">
+                            <el-input type="text" v-model.trim="loginForm.userNo" :maxlength="40" placeholder="请输入用户名"></el-input>
+                        </el-form-item>
+                        <el-form-item prop="password" label="密码" class="login-item">
+                            <el-input type="password" v-model.trim="loginForm.password" :maxlength="20" placeholder="请输入密码" @keyup.enter.native="handleLogin"></el-input>
+                        </el-form-item>
+                    </el-form>
+                    <el-button class="login-button" type="primary" :loading="loading" @click.native.prevent="handleLogin">登 录</el-button>
+                </div>
             </div>
         </div>
-        <img class="footer-info" src="static/images/login-bottom-logo.png">
     </div>
+    <!-- 登录 -->
+    
+    <div class="login-bottom">
+        <span>建议浏览器：Chrome</span>
+        <span>建议分辨率：1920x1080</span>
+    </div>
+</div>
 </template>
 
 <script>
@@ -46,7 +54,6 @@ export default {
         };
         return {
             visibleFlag:false,
-            checked: true,
             loginForm: {
                 userNo: '',
                 password: '',
@@ -83,20 +90,12 @@ export default {
             this.removeStorage();
         }
     },
- 	mounted() {
-       this.getCookie();
-    },
     methods: {
         ...mapActions(['goLogin']),
         handleLogin() {
             this.$refs.loginForm.validate(valid => {
                 if (valid) {
                     this.loading = true;
-                    if (this.checked == true) {
-                        this.setCookie(this.loginForm.userNo, this.loginForm.password, 7);
-                    }else {
-                        this.clearCookie();
-                    }
                     this.loginFunc(this.loginForm);     
                 } else {
                     this.loading = false;
@@ -122,102 +121,102 @@ export default {
             removeAuthInfo();
             localStorage.removeItem("yk-token");
             this.visibleFlag = true;
-        },
-         //设置cookie
-        setCookie(c_name, c_pwd, exdays) {
-            var exdate = new Date(); //获取时间
-            exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * exdays); //保存的天数
-            //字符串拼接cookie
-            window.document.cookie = "rememberUserName" + "=" + c_name + ";path=/;expires=" + exdate.toGMTString();
-            window.document.cookie = "rememberUserPwd" + "=" + c_pwd + ";path=/;expires=" + exdate.toGMTString();
-        },
-        //读取cookie
-        getCookie: function() {
-            if (document.cookie.length > 0) {
-                var arr = document.cookie.split('; '); //这里显示的格式需要切割一下自己可输出看下      
-                for (var i = 0; i < arr.length; i++) {
-                    var arr2 = arr[i].split('='); //再次切割
-                    //判断查找相对应的值
-                    if (arr2[0] == 'rememberUserName') {
-                        this.loginForm.userNo = arr2[1]; //保存到保存数据的地方
-                    } else if (arr2[0] == 'rememberUserPwd') {
-                        this.loginForm.password = arr2[1];
-                    }
-                }
-            }else {
-                //this.$refs.loginForm.resetFields();
-                this.loginForm.userNo = "";
-                this.loginForm.password = "";
-                this.checked = false;
-            }
-        },
-        //清除cookie
-        clearCookie: function() {
-            this.setCookie("", "", -1); //修改2值都为空，天数为负1天就好了
         }
-        
     }
 }
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/scss/theme.scss";
 #login-warpper {
+    font-family: MicrosoftYaHei;
+    position: relative;
     height: 100%;
-    background-image: url('../../../static/images/login-bg.jpg');
-    background-repeat: no-repeat;
-    background-position: center bottom;
-    background-size: cover;
+    background-color: #f2f2f2;
+    letter-spacing: 2px;
+    line-height: 40px;
     .login-logo {
         position: absolute;
-        top: 30px;
-        left: 50px;
-        width: 289px;
+        left: 49px;
+        top: 36px;
     }
-    .login-card {
+    .login-container {
         position: absolute;
+        left: 0;
+        right: 0;
         top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        padding: 10px 0;
-        .login-title{
-            font-size: 36px;
-            height: 46px;
-            line-height: 46px;
-            color: #fff;  
-            text-align: center;
+        margin-top: -250px;
+        height: 500px;
+        .login-bg {
+            width: 100%;
+            height: 100%;
         }
-        .login-item-box {
-            width: 360px;
-            padding: 40px 0;
-            margin: 0 auto;
-            .login-item {
-                background-color: transparent;
-                border: 1px solid rgba(255, 255, 255, .5);
-                margin-bottom: 20px;
-                &.login-remember-item {
-                    border: none;
-                    text-align: right;
-                }
+    }
+    .login-bottom {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 30px;
+        text-align: center;
+        color: #666;
+        font-size: 14px;
+        span {
+            padding: 0 20px;
+        }
+    }
+    .login-content {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        @include layoutMode(between);
+        .login-left {
+            @include layoutMode();
+            width: 65.5%;
+            height: 100%;
+            .login-left-title {
+                color: #fff;
+                font-size: 57px;
+                letter-spacing: 6px;
+                line-height: 90px;
+                border-bottom: 4px solid #dcdcdc;
             }
         }
-        .login-button {
-            width: 100%;
-            height: 50px;
-            box-sizing: border-box;
-            background-color: #1fb8df;
-            border-radius: 10px;
-            font-size: 18px;
-            color: #fff;
-            border: none;
+        .login-card {
+            position: absolute;
+            top: 50%;
+            right: 11.67%;
+            transform: translate(0, -50%);
+            background-color: rgba(255, 255, 255, .5);
+            width: 440px;
+            line-height: 50px;
         }
     }
-    .footer-info{
-        position: absolute;
-        left: 50%;
-        bottom: 80px;
-        transform: translate(-50%, 0);
-        z-index: 1;
-        height: 122px;
+    .login-title {
+        font-size: 30px;
+        height: 80px;
+        letter-spacing: 3px;
+        background-color: #f2f2f2;
+        color: #000;
+        @include layoutMode();
+    }
+    .login-item-box {
+        padding: 40px 40px 57px;
+        .login-item {
+            background-color: #fff;
+        }
+    }
+    .login-button {
+        width: 100%;
+        height: 50px;
+        box-sizing: border-box;
+        background-color: #3293bd;
+        border-radius: 10px;
+        font-size: 18px;
+        color: #fff;
+        border: none;
+        margin-top: 30px;
     }
 }
 </style>
@@ -229,8 +228,8 @@ export default {
     }
     .el-form-item__label {
         position: relative;
-        color: #fff;
-        height: 48px;
+        color: #999;
+        height: 50px;
         padding: 0;
         @include layoutMode();
         &:after {
@@ -240,50 +239,22 @@ export default {
             top: 0;
             bottom: 0;
             width: 1px;
-            background-color: rgba(255, 255, 255, .5);
+            background-color: #bfbfbf;
         }
     }
     .el-input__inner {
         font-size: 14px;
         background: transparent;        
-        border: none;
-        height: 48px;
+        border: none !important;
+        height: 50px;
         padding: 0 21px;
         @include layoutMode(pack);
-        color: #fff !important;
-        border-radius: 0;
+        color: #333 !important;
         width: 100% !important;
     }
-    .login-remember-item {
-        .el-form-item__content {
-            line-height: 20px;
-        }
-        .el-checkbox {
-            .el-checkbox__label {
-                color: #fff;
-            }
-        }
-        .el-checkbox__inner::after {
-            border-color: #666;
-        }
-        .el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner {
-            background-color: #fff;
-            border-color: #fff;
-        }
-        .el-checkbox__input.is-disabled.is-checked.el-checkbox__inner {
-            background-color: #fff;
-            border-color: #fff;
-        }
-        .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner::after {
-            border-color: #666;
-        }
-        .el-checkbox__input.is-disabled+span.el-checkbox__label {
-            color: #fff;
-        }
-    }
     input:-webkit-autofill {
-        -webkit-box-shadow: 0 0 0 1000px #041d44 inset;
-        -webkit-text-fill-color: #fff;
+        -webkit-box-shadow: 0 0 0px 1000px white inset;
+        -webkit-text-fill-color: #333;
     }
     .el-button{
         i, span{
