@@ -1,7 +1,16 @@
 window.config = {
-    //公司测试 外网地址
+
+    //望京 内网
+    // url: 'http://172.17.1.16:9093/monPlatApp/', //监控平台
+    // operateUrl: 'http://172.17.1.16:9090/operateApp/',   //运营平台
+    // websocketUrl:'ws://172.17.1.16:9982/mon',  //监控
+    // socketUrl:'ws://172.17.1.16:9999/ws',  //影子系统
+    // dlUrl: 'http://10.0.1.22:8085/', //迪路
+    // dlWmsUrl: 'http://10.0.1.22:8080/', //迪路
+
+    //望京 外网
     url: 'http://120.133.21.14:9093/monPlatApp/', //监控平台
-    operateUrl: 'http://120.133.21.14:9090/operateApp/', //运营平台
+    operateUrl: 'http://120.133.21.14:9090/operateApp/',    //运营平台
     websocketUrl:'ws://120.133.21.14:49982/mon',  //监控
     socketUrl:'ws://120.133.21.14:49999/ws',  //影子系统
     dlUrl: 'http://113.208.118.62:8085/', //迪路
@@ -27,20 +36,20 @@ window.config = {
 }
 //地图额外配置项添加
 window.mapOption = {
-	// center: [121.551976, 31.276054],	//上海-高德地图坐标点
-	// center: [113.07876,28.255618],	//长沙-高德地图坐标点
-    mapStyleEmpty: "amap://styles/b7a754e1a4bd3ea61bfe80668b2f98ce", // 纯灰色背景地图 路口
+    // center: [121.551976, 31.276054], //上海-高德地图坐标点
+    // center: [113.07876,28.255618],   //长沙-高德地图坐标点
+    mapStyleEmpty: "amap://styles/bc5a63d154ee0a5221a1ee7197607a00", // 纯灰色背景地图 路口
     defaultCenterPoint :  [121.262939,31.245149],   // 上海默认中心点 --- 高德坐标点
     centerPoint :  [121.17265957261286,31.284096076877844],     // 数据概览 中心点位置(获取地理位置计算天气) --- 高德坐标点
     singlePoint:[121.18653381418872,31.274421462567677],    // 单车监控 大地图中心点 --- 高德坐标点
 };
 
 window.defaultMapOption = {
-	center: window.mapOption.defaultCenterPoint,
-	zoom: 11,		// 默认：比例尺显示100m
-	resizeEnable: true, //是否监控地图容器尺寸变化
-	rotateEnable: true,
-	mapStyle: "amap://styles/78d617ebfc385fd27f9c6b6469ac954f"
+    center: window.mapOption.defaultCenterPoint,
+    zoom: 11,       // 默认：比例尺显示100m
+    resizeEnable: true, //是否监控地图容器尺寸变化
+    rotateEnable: true,
+    mapStyle: "amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8"
 }
 
 //路网配置参数
