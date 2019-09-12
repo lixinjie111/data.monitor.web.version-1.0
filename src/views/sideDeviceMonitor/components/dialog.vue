@@ -71,7 +71,7 @@
               <video-player class="c-map-video-style" :options="option" ref="videoPlayer1"></video-player>
             </div>
             <div v-if="target=='map'" style="width: 100%;height: 100%;">
-              <div style="width: 100%;height: 100%;" v-if="sideMap">
+              <div style="width: 100%;height: 100%;">
                 <div class="time-style">
                   <span class="t-class">{{time}}</span>
                 </div>
@@ -89,7 +89,6 @@
                   @showTimeStamp="showTimeStamp"
                 ></tusvn-map>
               </div>
-              <div v-if="!sideMap" class="side-map-tip side-tip-style">{{mapMessage}}</div>
             </div>
           </div>
           <div class="side-device-list">
@@ -154,7 +153,7 @@
                     <video-player class="c-map-video-style" :options="option" ref="videoPlayer"></video-player>
                   </div>
                   <div v-if="target=='video'" style="width: 100%;height: 100%;">
-                    <div style="width: 100%;height: 100%;" v-if="sideMap">
+                    <div style="width: 100%;height: 100%;">
                       <div class="time-style">
                         <span class="t-class">{{time}}</span>
                       </div>
@@ -172,7 +171,6 @@
                         @showTimeStamp="showTimeStamp"
                       ></tusvn-map>
                     </div>
-                    <div v-if="!sideMap" class="side-map-tip">{{mapMessage}}</div>
                   </div>
                 </div>
               </div>
@@ -229,10 +227,9 @@ export default {
       mapInit: false,
       roadId: "", //存储路的id
       rtmp: "",
-      sideMap: false,
-      mapMessage: "该路口没有数据，请稍候再试！",
       cameraParam: {},
-      deviceMapId:"deviceMap1"
+      deviceMapId:"deviceMap1",
+      selectedDevice:{}
     };
   },
   components: {
@@ -299,7 +296,7 @@ export default {
         var flag = true;
         _this.deviceList.forEach(function(item, index) {
           //第一次默认并且是摄像头而且在线设置其打开状态
-          if (flag && item.deviceType == "N" && item.workStatus == 1) {
+          if (flag && item.deviceType == "N" ) {
             if (_this.selectedItem.camSerialNum == "") {//通过地图点击进来的
               flag = false;
               //设置默认的选中值
@@ -316,6 +313,8 @@ export default {
                 _this.serialNum = item.serialNum;
               }
             }
+            //选中的设备
+            _this.selectedDevice = item;
             _this.cameraParam = JSON.parse(item.cameraParam);
             if (_this.serialNum != "") {
               _this.getVideo();
@@ -342,7 +341,6 @@ export default {
           } else {
             /*_this.$set(item, 'value', false);*/
             item.value = false;
-            _this.sideMap = false;
           }
         });
         if (_this.serialNum == "") {
@@ -352,14 +350,13 @@ export default {
           if (this.$refs.tusvnMap3) {
             this.$refs.tusvnMap3.reset3DMap();
           }
-          _this.sideMap = false;
         }
       });
     },
     switchChange(item) {
       var _this = this;
-      //如果设备不在线进行提示
-      if (item.workStatus != 1) {
+      //不在线 也可以打开
+      /*if (item.workStatus != 1) {
         _this.$message({
             type: 'error',
             duration: '1500',
@@ -367,7 +364,7 @@ export default {
             showClose: true
           });
         return;
-      }
+      }*/
       item.value = !item.value;
       if (item.value) {
         _this.$nextTick(function() {
@@ -393,6 +390,16 @@ export default {
         });
         _this.openVideoList.push(item);
         _this.serialNum = item.serialNum;
+        _this.selectedDevice = item;
+        /*if (item.workStatus != 1) {
+        _this.$message({
+            type: 'error',
+            duration: '1500',
+            message: '设备不在线',
+            showClose: true
+          });
+        return;
+      }*/
         //根据摄像头调取视频
         _this.getVideo();
         //选中后重新请求
@@ -421,8 +428,6 @@ export default {
         if (this.$refs.tusvnMap3) {
           _this.$refs.tusvnMap3.reset3DMap();
         }
-        //地图关闭
-        _this.sideMap = false;
       }
     },
     loadNode(node, resolve) {
@@ -650,21 +655,24 @@ export default {
       }, 1000);
     },
     getVideo() {
+      var options = this.getPlayerOptions();
+      if(this.selectedDevice.workStatus!= 1){
+        options.notSupportedMessage = "";
+        options.notSupportedMessage = "设备不在线";
+        return;
+      }
       getVideoByNum({
         protocal: 1,
         /*"serialNum": "3402000000132000001401"*/
         serialNum: this.serialNum
       }).then(res => {
-        var options = this.getPlayerOptions();
         this.rtmp = res.data.rtmp;
         if (this.rtmp == "") {
           options.notSupportedMessage = "";
           options.notSupportedMessage = "视频流不存在，请稍候重试";
-          this.sideMap = false;
         } else {
           options.notSupportedMessage = "此视频暂无法播放，请稍候再试";
           options.sources[0].src = res.data.rtmp;
-          this.sideMap = true;
         }
         this.option = options;
       });
@@ -695,9 +703,6 @@ export default {
     }
   },
   mounted() {
-    //this.sideMap = false;
-    //this.isFirst = true;
-    //this.mapInit = false; //打开窗口只加载一次地图
     this.selectAddr = this.selectedItem.path.split("|");
     this.provinceCode = this.selectAddr[0];
     this.cityCode = this.selectAddr[1];
