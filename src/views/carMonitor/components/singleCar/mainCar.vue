@@ -650,7 +650,6 @@
             let warningId;
             warningData.forEach(item=>{
               warningId = item.warnId;
-              warningId = warningId.substring(0,warningId.lastIndexOf("_"));
               //如果告警id不存在 右侧弹出
               if(!_this.warningData[warningId]){
                 _this.vehicleCount++;

@@ -3,7 +3,7 @@
       <div class="c-size-inner">
         <video-player class="c-map-video-style" :options="option" @error="playerError"></video-player>
         <div class="c-mask-title" >
-          <div @click="queryDeviceDetail(roadItem,'video')">路侧点：{{roadItem.roadSiderId}}</div>
+          <div @click="queryDeviceDetail(roadItem,'video')">路侧点：{{roadItem.roadSiderName}}</div>
           <img src="@/assets/images/carMonitor/refresh.png" class="c-mask-refresh" v-if="roadItem.online==1" @click="refresh('video')"/>
         </div>
       </div>
