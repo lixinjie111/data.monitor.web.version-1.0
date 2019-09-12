@@ -360,7 +360,12 @@ export default {
       var _this = this;
       //如果设备不在线进行提示
       if (item.workStatus != 1) {
-        _this.$message.error("设备不在线");
+        _this.$message({
+            type: 'error',
+            duration: '1500',
+            message: '设备不在线',
+            showClose: true
+          });
         return;
       }
       item.value = !item.value;
@@ -666,7 +671,12 @@ export default {
     },
     refresh() {
       if (this.roadId == "") {
-        this.$message.error("请先选择具体的路侧点");
+        this.$message({
+						type: 'error',
+						duration: '1500',
+						message: '请先选择具体的路侧点',
+						showClose: true
+					});
         return;
       }
       if (this.deviceList.length == 0) {
@@ -740,11 +750,15 @@ export default {
 
 
 }
+.el-select-dropdown__item.hover, .el-select-dropdown__item:hover {
+    background-color: #dc8c00 !important;
+}
+.el-tree-node__content:hover
  .el-select-dropdown__list {
     padding: 0px !important;
   }
 .el-tree-node__content:hover {
-    background-color: #262626;
+    background-color: transparent;
   }
   .el-tree-node:focus > .el-tree-node__content {
     background-color: #262626;

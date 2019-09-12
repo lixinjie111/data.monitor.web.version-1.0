@@ -14,7 +14,7 @@
 			　　　　<div class="right" v-else></div>
 			　　</div>
     			<span class="c-circle-num" v-if="type == 1">{{item.count}}</span>
-    			<span class="c-circle-num" style="font-size: 16px; letter-spacing: 0px;" v-else>{{item.rate*100}}%</span>
+    			<span class="c-circle-num" style="font-size: 16px; letter-spacing: 0px;" v-else>{{parseInt(item.rate*100)}}%</span>
     		</div>
     		<p class="c-circle-text" :title="item.name">{{item.name}}</p>
     	</li>

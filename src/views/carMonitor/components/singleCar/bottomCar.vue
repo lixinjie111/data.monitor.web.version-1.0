@@ -124,7 +124,7 @@
         isStop: false,
 
         container:{},
-        webSocket:{},
+        webSocket:null,
         reportWebSocket:{},
 
         i:0,
@@ -513,7 +513,7 @@
 
           if(spatData.length>0){
             let downCurve1 = new Curve();
-            downCurve1.drawImgs(_this.spatRandom,'SPAT','down',_this.j,[560, 156],[366, 60],'#59d44f');//信号灯
+            downCurve1.drawImgs("-"+_this.spatRandom,'SPAT','down',_this.j,[552, 150],[356, 55],'#59d44f');//信号灯
             _this.j++;
           }
         }

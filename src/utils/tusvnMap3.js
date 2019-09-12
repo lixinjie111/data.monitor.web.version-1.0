@@ -1,91 +1,10 @@
 export function getMap(map){
-  map.addShape("road_boundary","./static/map3d/dl_shcsq_zc/road_boundary.shp","#ffffff",3,null,null,null,null,21.5)
-  map.addShape("intersection","./static/map3d/dl_shcsq_zc/Intersection.shp","#351906")
-  map.addShape("Crosswalk","./static/map3d/dl_shcsq_zc/Crosswalk.shp","#023c2d")
+  map.addShape("intersection","./static/map3d/dl_shcsq_zc/Intersection.shp","#ff974f")
+  map.addShape("Crosswalk","./static/map3d/dl_shcsq_zc/Crosswalk.shp","#00d49d")
   map.addShape("lane_marking","./static/map3d/dl_shcsq_zc/Lane_marking.shp",dl.styles.lane_marking.color)
   map.addShape("lane_arrow","./static/map3d/dl_shcsq_zc/Direction_arrow.shp","#06c2ff")
-  map.addShape("lane_boundary","./static/map3d/dl_shcsq_zc/Lane_boundary.shp","#fefefe")
+  map.addShape("lane_boundary","./static/map3d/dl_shcsq_zc/Lane_boundary.shp","#6fb07d")
   map.addShape("lane_centerline","./static/map3d/dl_shcsq_zc/Lane_centerline.shp","#153641")
-  // map.addShape("greenbelts","./static/map3d/dl_shcsq_zc/greenbelts.shp","#73b273")
-  // map.addShape("rcu_view","./static/map3d/dl_shcsq_zc/dl_shcsq_utm51_view.shp","rgba(182,255,0)")
-  // debugger
-  let area01 = new dl.Polygon({
-    name:"弱视区01",
-    color:"#ff0000",
-    outline:false,
-    outlineColor:"#ff0000",
-    opacity:0.5,
-    rotate:[0,0,0],
-    vertices:[[326168.532791608,3462492.24786985,19.9],[326151.767751046,3462470.35067401,19.9],[326138.199775331,3462479.39599115,19.9],[326102.836848233,3462499.64194178,19.9],[326115.524310626,3462522.04746048,19.9],[326154.666481843,3462500.72172581,19.9],[326168.532791608,3462492.24786985]]
-  });
-  area01.updateVertices();
-  area01.setOpacity(1);
-
-  let area02 = new dl.Polygon({
-    name:"弱视区02",
-    color:"#ff0000",
-    outline:false,
-    outlineColor:"#ff0000",
-    opacity:0.5,
-    rotate:[0,0,0],
-    vertices:[[326348.445197248,3462137.47069069,19.9],[326373.598831103,3462150.74621967,19.9],[326375.48231671,3462146.28261679,19.9],[326387.899833096,3462126.03666616,19.9],[326413.544703893,3462088.784117,19.9],[326392.488915239,3462073.39719453,19.9],[326365.764260409,3462111.72952772,19.9],[326348.48771587,3462137.37439851,19.9],[326348.445197248,3462137.47069069]]
-  });
-  area02.updateVertices();
-  area02.setOpacity(1);
-
-  let area03 = new dl.Polygon({
-    name:"强视区01",
-    color:"#adaf20",
-    outline:false,
-    outlineColor:"#f2abf2",
-    opacity:0.5,
-    rotate:[0,0,0],
-    vertices:[[326335.2764,3462300.798,19.8],[326338.8912,3462300.075,19.8],[326342.1256,3462300.3238,19.8],[326342.468156596,3462300.32074875,19.8],[326342.805166426,3462300.25927757,19.8],[326343.126740243,3462300.14119026,19.8],[326343.423441758,3462299.969952,19.8],[326343.686564535,3462299.7505876,19.8],[326343.908387477,3462299.48953413,19.8],[326344.082401391,3462299.19445196,19.8],[326344.2035,3462298.874,19.8],[326351.762,3462272.1494,19.8],[326351.827136102,3462271.80810452,19.8],[326351.832228108,3462271.46068634,19.8],[326351.777122372,3462271.11762851,19.8],[326351.663481661,3462270.7892825,19.8],[326351.494734984,3462270.48555585,19.8],[326351.275974125,3462270.21561326,19.8],[326351.0138,3462269.9876,19.8],[326348.2255,3462267.9597,19.8],[326346.5548,3462266.0502,19.8],[326344.7218,3462263.4318,19.8],[326343.387,3462261.5631,19.8],[326341.4358,3462258.6364,19.8],[326340.7697,3462255.9723,19.8],[326340.7697,3462253.5187,19.8],[326340.7614,3462253.3376,19.8],[326340.508,3462250.5493,19.8],[326340.7451,3462247.9401,19.8],[326347.697,3462222.8065,19.8],[326357.9141,3462194.0373,19.8],[326377.2671,3462147.2677,19.8],[326390.1135,3462126.66,19.8],[326415.1917,3462090.2562,19.8],[326415.360144475,3462089.96067839,19.8],[326415.476077222,3462089.64088758,19.8],[326415.536145226,3462089.30607659,19.8],[326415.538611193,3462088.96592885,19.8],[326415.483403804,3462088.63028215,19.8],[326415.372119771,3462088.30884408,19.8],[326415.20797766,3462088.01091132,19.8],[326414.995724804,3462087.74510069,19.8],[326414.7415,3462087.5191,19.8],[326393.4157,3462071.5923,19.8],[326393.145094444,3462071.42208824,19.8],[326392.85082555,3462071.29716736,19.8],[326392.540411952,3462071.22072911,19.8],[326392.221784782,3462071.1947265,19.8],[326391.903085035,3462071.21982391,19.8],[326391.592455558,3462071.29538009,19.8],[326391.297832999,3462071.41946456,19.8],[326391.02674503,3462071.58890695,19.8],[326390.786118007,3462071.79937795,19.8],[326390.5821,3462072.0455,19.8],[326363.8575,3462110.1079,19.8],[326363.8302,3462110.1477,19.8],[326346.5537,3462136.0625,19.8],[326346.4857,3462136.1719,19.8],[326346.3844,3462136.3728,19.8],[326337.2109,3462157.4179,19.8],[326324.5296,3462185.4785,19.8],[326324.4728,3462185.6181,19.8],[326324.3824,3462185.9557,19.8],[326319.0007,3462216.6312,19.8],[326311.7537,3462242.3983,19.8],[326300.1655,3462276.6238,19.8],[326292.3775,3462298.9137,19.8],[326288.9178,3462306.0994,19.8],[326281.3623,3462321.75,19.8],[326266.2726,3462352.1987,19.8],[326265.0349,3462354.4266,19.8],[326245.981,3462377.506,19.8],[326209.6254,3462422.2098,19.8],[326193.3327,3462437.167,19.8],[326160.5049,3462462.1914,19.8],[326137.4155,3462478.3002,19.8],[326119.7126,3462487.9563,19.8],[326101.6409,3462497.3968,19.8],[326101.362615916,3462497.57338929,19.8],[326101.117002066,3462497.79316109,19.8],[326100.910688164,3462498.05018323,19.8],[326100.74924312,3462498.33751807,19.8],[326100.637024728,3462498.64740973,19.8],[326100.577062034,3462498.97149349,19.8],[326100.570973577,3462499.30102154,19.8],[326100.618923698,3462499.62709913,19.8],[326100.719618107,3462499.94092463,19.8],[326100.87033882,3462500.23402713,19.8],[326101.067017518,3462500.49849508,19.8],[326101.304345367,3462500.72718986,19.8],[326101.575916314,3462500.91393843,19.8],[326101.8744,3462501.0537,19.8],[326114.0531,3462523.0988,19.8],[326114.228909825,3462523.3596829,19.8],[326114.443456494,3462523.58976704,19.8],[326114.691430789,3462523.78335871,19.8],[326114.966696288,3462523.93566724,19.8],[326115.262441214,3462524.04292358,19.8],[326115.571347002,3462524.10247354,19.8],[326115.885769406,3462524.11284349,19.8],[326116.197927664,3462524.07377681,19.8],[326116.500097044,3462523.98624024,19.8],[326116.7848,3462523.8524,19.8],[326174.558,3462490.9163,19.8],[326174.7651,3462490.7797,19.8],[326203.1095,3462469.454,19.8],[326203.1926,3462469.3879,19.8],[326203.2346,3462469.3516,19.8],[326224.8303,3462450.1855,19.8],[326224.9926,3462450.0239,19.8],[326273.5829,3462395.7647,19.8],[326273.6251,3462395.7161,19.8],[326273.7348,3462395.5726,19.8],[326291.0114,3462370.7376,19.8],[326291.157403861,3462370.49190021,19.8],[326291.2669,3462370.2279,19.8],[326292.5653,3462366.3327,19.8],[326309.7669,3462333.5419,19.8],[326309.8088,3462333.4573,19.8],[326318.9483,3462313.8342,19.8],[326320.7725,3462310.7073,19.8],[326322.473,3462308.035,19.8],[326326.9143,3462304.3339,19.8],[326329.8568,3462302.8626,19.8],[326335.2764,3462300.798]]
-  });
-  area03.updateVertices();
-  area03.setOpacity(0.6);
-
-  // let area04 = new dl.Polygon({
-  //   name:"强视区02",
-  //   color:"#ff0000",
-  //   outline:false,
-  //   outlineColor:"#ff0000",
-  //   opacity:0.5,
-  //   rotate:[0,0,0],
-  //   vertices:[[326308.053882088,3462332.29714815,13.618],[326283.279238006,3462322.19170122,13.618],[326267.784275133,3462353.30569277,13.618],[326289.870646913,3462365.57589931,13.618],[326308.053882088,3462332.29714815]]
-  // });
-  // area04.updateVertices();
-  // area04.setOpacity(0.3);
-  // debugger
-  map.addGeometry(area03);
-  // map.addGeometry(area01);
-  // map.addGeometry(area02);
- 
-  // map.addGeometry(area04);
-
-
-  //画圆  326279.672803747 3462360.84818288   600m
-  let circle = new dl.Circle({
-    redius:600.0,
-    center:[326279.672803747,3462360.84818288,13.618],
-    color:"#000000",
-    outline:false,
-    outlineColor:"#ff0000",
-    opacity:0.5,
-    rotate:[0,0,0]
-  });
-  // circle.updateVertices();
-  // circle.setRotate([Math.PI/2,0,0]);
-  circle.setOpacity(0.1);
-  map.addGeometry(circle);
-
-  // //添加测试模型
-  // map.addStaticModel('street_lamp_two_opposite_0--2-','./static/map3d/models/3k7yjemk5hj4-Camera/Camera 3D Moldel/Camera.3ds/camera.3ds',326306.01741457346,3462292.4254359356,20.5);
-  // map.addStaticModel('street_lamp_two_opposite_1-33','./static/map3d/models/8i54m1ynwow0-CameraV2/camera.3ds',326327.67026755644,3462291.9483077712,20.5);
-  // map.addStaticModel('street_lamp_two_opposite_2-4','./static/map3d/models/icgvzl8hyw3k-cctv-camera/camera.obj',326334.33667123236,3462268.758218471,20.5);
-  // map.addStaticModel('street_lamp_two_opposite_3-78','./static/map3d/models/model/camera.obj',326317.32345508446,3462265.5895430204,20.5);
-  // map.addStaticModel('street_lamp_two_opposite_3-78','./static/map3d/models/poleWith2Camera1.3ds',326320.4451977463,3462281.583116995,20);
-  map.addStaticModel('street_lamp_two_opposite_3-78','./static/map3d/models/poleWith2Camera3.3ds',326277.821,3462359.693,14,0,0,(Math.PI/180.0)*210);
 
   //添加路灯杆和信息牌
   let data = [[2340,5,326263.1536280000,3462381.9079600000,19.4429998472],
@@ -222,14 +141,16 @@ export function getMap(map){
     [2313,5,325399.5044350000,3462378.4734600000,17.0019995756]]
   data.forEach((arr,index)=>{
     //信息牌
-    if(arr[1]==3){
-      map.addStaticModel('traffic_sign_stop_'+index,'./static/map3d/models/traffic_sign_stop.3ds',arr[2],arr[3],14);
+    if(arr[1]==3||arr[1]==7){
+      map.addStaticModel('traffic_sign_stop_'+index,'./static/map3d/models/traffic_sign_stop.3ds',arr[2],arr[3],12.68);
     }
     //路杆灯
     if(arr[1]==5){
-      map.addStaticModel('street_lamp_two_'+index,'./static/map3d/models/street_lamp_two.3ds',arr[2],arr[3],14);
+      map.addStaticModel('street_lamp_two_'+index,'./static/map3d/models/street_lamp_two.3ds',arr[2],arr[3],12.68);
     }
+    
   })
+  
   //添加路灯
   /*map.addStaticModel('street_lamp_two_0','./static/map3d/models/street_lamp_two.3ds',325605.9620401191,3462422.087016858,12.68);
   map.addStaticModel('street_lamp_two_1','./static/map3d/models/street_lamp_two.3ds',325644.5698510726,3462439.737268414,12.68);
@@ -305,7 +226,7 @@ export function getMap(map){
     [326285.7199200000 ,3462263.4905400000 ,277],
     [326285.6372510000 ,3462264.0168700000 ,278]];
   spatData.forEach((arr,index)=>{
-    map.addStaticModel('traffic_light_'+index,'./static/map3d/models/traffic_light.3ds',arr[0],arr[1],20);
+    map.addStaticModel('traffic_light_'+index,'./static/map3d/models/traffic_light.3ds',arr[0],arr[1],12.68);
   })
  /*
   map.addStaticModel('traffic_light_0','./static/map3d/models/traffic_light.3ds',325921.545860186,3462541.0160225183,12.68);
@@ -322,33 +243,33 @@ export function getMap(map){
 
   //矮路灯
   /*map.addStaticModel("lamppost_01","./static/map3d/models/lamppost_01.3ds",442496.96,4427294.44,16);
-  map.getStaticModel("lamppost_01").setHeading(30);
-  map.getStaticModel("lamppost_01").setUpdate(true);
+  map.getModel("lamppost_01").setHeading(30);
+  map.getModel("lamppost_01").setUpdate(true);
 
 
 
   //大路灯
   map.addStaticModel("street_lamp_two","./static/map3d/models/street_lamp_two.3ds",442501.99,4427272.65,16);
-  map.getStaticModel("street_lamp_two").setHeading(30);
-  map.getStaticModel("street_lamp_two").setUpdate(true);
+  map.getModel("street_lamp_two").setHeading(30);
+  map.getModel("street_lamp_two").setUpdate(true);
 
   //红绿灯
   map.addStaticModel("traffic_light","./static/map3d/models/traffic_light.3ds",442533.95,4427306.77,16);
-  map.getStaticModel("traffic_light").setHeading(30);
-  map.getStaticModel("traffic_light").setUpdate(true);
+  map.getModel("traffic_light").setHeading(30);
+  map.getModel("traffic_light").setUpdate(true);
 
   //标识牌
   map.addStaticModel("traffic_sign_stop","./static/map3d/models/traffic_sign_stop.3ds",442529.62,4427323.70,16);
-  map.getStaticModel("traffic_sign_stop").setHeading(120);
-  map.getStaticModel("traffic_sign_stop").setUpdate(true);
+  map.getModel("traffic_sign_stop").setHeading(120);
+  map.getModel("traffic_sign_stop").setUpdate(true);
 
   //女人
   map.addStaticModel("Girl walking N090814","./static/map3d/models/Girl walking N090814.3DS",442529.62,4427325.70,16);
-  map.getStaticModel("Girl walking N090814").setHeading(120);
-  map.getStaticModel("Girl walking N090814").setUpdate(true);
+  map.getModel("Girl walking N090814").setHeading(120);
+  map.getModel("Girl walking N090814").setUpdate(true);
 
   //男人
   map.addStaticModel("Man N151016.3DS","./static/map3d/models/Man N151016.3DS",442531.62,4427325.70,16);
-  map.getStaticModel("Man N151016.3DS").setHeading(120);
-  map.getStaticModel("Man N151016.3DS").setUpdate(true);*/
+  map.getModel("Man N151016.3DS").setHeading(120);
+  map.getModel("Man N151016.3DS").setUpdate(true);*/
 }

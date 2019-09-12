@@ -7,7 +7,7 @@ const admin = {
 	state: {
 		adminId: '',
 		adminName: '',
-		platform: "30000",
+		platform: "10000",
         operations:[],
         token:''
 	},
@@ -43,6 +43,9 @@ const admin = {
 						setAuthInfo(res.data);
 					}
 					resolve(res);
+					
+				}).catch(error => {
+					reject(error);
 				});
 			}).catch(error => {
 				reject(error);
@@ -54,6 +57,8 @@ const admin = {
 				requestLogout({}).then(res => {
 					removeAuthInfo();
 					resolve(res);
+				}).catch(error => {
+					reject(error);
 				});
 				// resolve();
 			}).catch(error => {

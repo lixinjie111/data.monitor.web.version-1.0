@@ -7,12 +7,13 @@
     <meta name="format-detection" content="telephone=no,email=no,address=no">
     <!-- 加图标 -->
     <link rel="shortcut icon" href="./static/images/favicon.ico" type="image/x-icon">
-    <title>监控管理平台</title>
+    <title>监控管理中心</title>
 
 
-    <script src="./static/config/config.js"></script>
     <script src="https://webapi.amap.com/maps?v=1.4.14&key=8bf04484a44d846096c9ab84730e88b8&plugin=ElasticMarker,AMap.Geocoder,AMap.Geolocation"></script>
-
+    <script> 
+      document.write('<script src="./static/config/config.js?v='+ new Date().getTime() +'"><\/script>');
+    </script>
   </head>
   <body>
 

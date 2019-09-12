@@ -1,5 +1,5 @@
 <template>
-    <div id="login-warpper">
+    <div id="login-warpper" v-if="visibleFlag">
         <img class="login-logo" src="static/images/login-logo.png">        
         <!-- 登录 -->
         <div class="login-card">
@@ -10,7 +10,7 @@
                         <el-input type="text" v-model.trim="loginForm.userNo" :maxlength="40" placeholder="请输入用户名" auto-complete="new-text"></el-input>
                     </el-form-item>
                     <el-form-item prop="password" label="密码：" class="login-item">
-                        <el-input type="password" v-model.trim="loginForm.password" :maxlength="20" placeholder="请输入密码" auto-complete="new-password"></el-input>
+                        <el-input type="password" v-model.trim="loginForm.password" :maxlength="20" placeholder="请输入密码" auto-complete="new-password" @keyup.enter.native="handleLogin"></el-input>
                     </el-form-item>
                     <el-form-item class="login-item login-remember-item">
                         <el-checkbox v-model="checked">记住密码</el-checkbox>
@@ -18,6 +18,7 @@
                 </el-form>
                 <div class="remember-password"></div>
                 <el-button class="login-button" type="primary" :loading="loading" @click.native.prevent="handleLogin">登 录</el-button>
+
             </div>
         </div>
         <img class="footer-info" src="static/images/login-bottom-logo.png">
@@ -26,6 +27,7 @@
 
 <script>
 import { mapActions } from 'vuex';
+import { removeAuthInfo } from '@/session/index';
 export default {
     name: 'Login',
     data() {
@@ -44,6 +46,7 @@ export default {
             }
         };
         return {
+            visibleFlag:false,
             checked: true,
             loginForm: {
                 userNo: '',
@@ -61,8 +64,28 @@ export default {
             loading: false
         }
     },
-    mounted() {
-        this.getCookie();
+    created() {
+        let _data = localStorage.getItem("yk-token");
+        if(_data) {
+            let _dataObj = JSON.parse(_data),
+                _delayTime = 1000 * 60 * 60 * 24;
+            if (new Date().getTime() - _dataObj.time > _delayTime) {
+                console.log('信息已过期');
+                this.removeStorage();
+            }else{
+                // 直接调用登录接口
+                let _params = {
+                    token: _dataObj.data,
+                    platform: this.$store.state.admin.platform
+                };
+                this.loginFunc(_params);
+            }
+        }else {
+            this.removeStorage();
+        }
+    },
+ 	mounted() {
+       this.getCookie();
     },
     methods: {
         ...mapActions(['goLogin']),
@@ -75,18 +98,31 @@ export default {
                     }else {
                         this.clearCookie();
                     }
-                    this.goLogin(this.loginForm).then(res => {
-                        //this.$message.success(res.message);
-                        this.$router.push({ path: '/dataMonitor' });
-                        this.loading = false;
-                    }).catch(err => {
-                        this.loading = false;
-                    })
+                    this.loginFunc(this.loginForm);     
                 } else {
                     this.loading = false;
                     return false;
                 }
             });
+        },
+        loginFunc(params) {
+            this.goLogin(params).then(res => {
+                this.loading = false;
+                if(res.status == 200) {
+                    this.$router.push({ path: '/dataMonitor' });
+                    localStorage.setItem("yk-token",JSON.stringify({data:JSON.parse(res.data).token,"time":new Date().getTime()}));
+                }else {
+                    this.removeStorage();
+                }
+            }).catch(err => {
+                this.loading = false;
+                this.removeStorage();
+            })
+        },
+        removeStorage() {
+            removeAuthInfo();
+            localStorage.removeItem("yk-token");
+            this.visibleFlag = true;
         },
          //设置cookie
         setCookie(c_name, c_pwd, exdays) {
@@ -99,7 +135,7 @@ export default {
         //读取cookie
         getCookie: function() {
             if (document.cookie.length > 0) {
-                var arr = document.cookie.split('; '); //这里显示的格式需要切割一下自己可输出看下
+                var arr = document.cookie.split('; '); //这里显示的格式需要切割一下自己可输出看下      
                 for (var i = 0; i < arr.length; i++) {
                     var arr2 = arr[i].split('='); //再次切割
                     //判断查找相对应的值
@@ -110,7 +146,7 @@ export default {
                     }
                 }
             }else {
-                this.$refs.loginForm.resetFields();
+                //this.$refs.loginForm.resetFields();
                 this.loginForm.userNo = "";
                 this.loginForm.password = "";
                 this.checked = false;
@@ -120,6 +156,7 @@ export default {
         clearCookie: function() {
             this.setCookie("", "", -1); //修改2值都为空，天数为负1天就好了
         }
+        
     }
 }
 </script>
@@ -188,6 +225,9 @@ export default {
 <style lang="scss">
 @import "@/assets/scss/theme.scss";
 .login-item-box {
+    .el-form-item {
+        margin-right: 0 !important;
+    }
     .el-form-item__label {
         position: relative;
         color: #fff;
@@ -205,6 +245,7 @@ export default {
         }
     }
     .el-input__inner {
+        font-size: 14px;
         background: transparent;        
         border: none;
         height: 48px;
@@ -244,6 +285,12 @@ export default {
     input:-webkit-autofill {
         -webkit-box-shadow: 0 0 0 1000px #041d44 inset;
         -webkit-text-fill-color: #fff;
+    }
+    .el-button{
+        i, span{
+            line-height: 0;
+            vertical-align: middle;
+        }
     }
 }
 </style>

@@ -21,7 +21,7 @@
         map: null,
       
         // 获取在驶车辆实时数据（辆）
-        webSocket: {},
+        webSocket: null,
         webSocketData: {
           action: "trackAll",
           token: 'fpx',

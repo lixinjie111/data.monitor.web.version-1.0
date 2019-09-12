@@ -17,7 +17,7 @@ export default {
         HeaderBar
     },
     data() {
-      return { 
+      return {
         changeCenterPoint: window.mapOption.centerPoint
       }
     },
