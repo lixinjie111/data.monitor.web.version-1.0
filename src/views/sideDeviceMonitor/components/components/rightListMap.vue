@@ -23,9 +23,9 @@
           maxZ=80
           @mapcomplete="onMapComplete">
         </tusvn-map>
-        <div class="c-mask-tip" v-else>
+       <!-- <div class="c-mask-tip" v-else>
           {{mapMessage}}
-        </div>
+        </div>-->
       </div>
     </div>
 </template>
@@ -42,9 +42,8 @@
               rtmp:"",
               mapShow:false,
               message:'',
-              sideMap:false,
+              sideMap:true,
               mapMessage:'该路口没有数据，请稍候再试！',
-
             }
         },
         components:{
@@ -61,52 +60,18 @@
               return;
             }
           },
-          getVideoByNum(param){
-            var _this = this;
-            if(this.roadItem.online!=1){
-              this.mapMessage='路侧设备不在线!';
-              return;
-            }
-            if(param){
-              setTimeout(()=>{
-                _this.mapMessage='路侧设备不存在!';
-              },100)
-            }
-            getVideoByNum({"protocal": 1,"serialNum": this.roadItem.camSerialNum}).then(res => {
-                _this.rtmp = res.data.rtmp;
-                if(_this.rtmp!=''){
-                  _this.sideMap=true;
-                }
-            })
-          },
           queryDeviceDetail(item,target) {
             this.$emit("queryDeviceDetail",item,target);
           },
           //后端请求超时的解决办法
           refresh(){
             let _this = this;
-            if(_this.roadList.length==0){
-              _this.getVideoByNum('refresh');
-              return;
-            }
-            if(_this.rtmp==''){
-              _this.mapMessage='';
-              setTimeout(()=>{
-                _this.mapMessage='该路口没有数据，请稍候再试！';
-              },100)
-              _this.sideMap=false;
-            }else{
-              if(_this.sideMap){
-                this.$refs[this.roadItem.camSerialNum].changeRcuId(window.config.websocketUrl,this.roadItem.camSerialNum);
-                this.mapShow=true;
-                this.message='数据正在加载，请稍候...';
-                setTimeout(()=>{
-                  this.mapShow=false;
-                },3000)
-              }else{
-                _this.sideMap=true;
-              }
-            }
+            this.$refs[this.roadItem.camSerialNum].changeRcuId(window.config.websocketUrl,this.roadItem.camSerialNum);
+            this.mapShow=true;
+            this.message='数据正在加载，请稍候...';
+            setTimeout(()=>{
+              this.mapShow=false;
+            },3000)
           }
         },
       watch:{
@@ -116,28 +81,19 @@
           if(!this.visible) {
             //重新连接数据和视频
             if(_this.roadList==0){
+              this.sideMap=false;
               _this.mapMessage='路侧设备不存在!';
               return;
             }
-            if(this.roadItem.online!=1){
-              this.mapMessage='路侧设备不在线!';
-              return;
-            }
-            if(_this.rtmp==''){
-              _this.mapMessage='该路口没有数据，请稍候再试！';
-            }else{
-              _this.sideMap=true;
-            }
+            _this.sideMap=true;
           }else{
-            //打开窗口之前，关闭连接
+            //打开窗口，关闭连接
             _this.sideMap=false;
             _this.mapMessage='连接关闭';
           }
         }
       },
-      mounted() {
-        this.getVideoByNum();
-      },
+      mounted() {},
       destroyed(){
         //销毁Socket
         if(this.$refs[this.roadItem.camSerialNum]){
