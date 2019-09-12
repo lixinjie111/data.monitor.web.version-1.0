@@ -138,9 +138,9 @@
                     </ul>
                   </div>
                 </div>
-                <p class="side-device-title">
+                <!--<p class="side-device-title">
                   <span v-if="target=='map'">路侧视频</span>
-                 <!-- <span v-if="target=='video'">感知结果</span>-->
+                  <span v-if="target=='video'">感知结果</span>
                 </p>
                 <div class="device-video-style">
                   <div v-if="target=='map'" class="side-video-style">
@@ -153,7 +153,7 @@
                     </div>
                     <video-player class="c-map-video-style" :options="option" ref="videoPlayer"></video-player>
                   </div>
-                <!--  <div v-if="target=='video'" style="width: 100%;height: 100%;">
+                  <div v-if="target=='video'" style="width: 100%;height: 100%;">
                     <div style="width: 100%;height: 100%;" v-if="sideMap">
                       <div class="time-style">
                         <span class="t-class">{{time}}</span>
@@ -173,8 +173,8 @@
                       ></tusvn-map>
                     </div>
                     <div v-if="!sideMap" class="side-map-tip">{{mapMessage}}</div>
-                  </div>-->
-                </div>
+                  </div>
+                </div>-->
               </div>
             </div>
           </div>
