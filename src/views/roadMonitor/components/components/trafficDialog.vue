@@ -16,7 +16,7 @@
 								</div>
 								<div class="side-device-detail clearfix">
 									<span class="side-device-label">发生时间：</span>
-									<span class="device-detail-style">{{$dateUtil.formatTime(Number(itemData.beginTime)) || '--'}}</span>
+									<span class="device-detail-style">{{itemData.beginTime?$dateUtil.formatTime(Number(itemData.beginTime)) : '--'}}</span>
 								</div>
 								<div class="side-device-detail clearfix">
 									<span class="side-device-label">发生地点：</span>
