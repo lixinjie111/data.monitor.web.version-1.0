@@ -3,7 +3,7 @@
         <img class="login-logo" src="static/images/login-logo.png">        
         <!-- 登录 -->
         <div class="login-card">
-            <div class="login-title">智能网联汽车监控管理平台</div>
+            <div class="login-title">智能网联汽车监控管理中心</div>
             <div class="login-item-box">
                 <el-form :model="loginForm" :rules="loginRules" ref="loginForm" label-position="right" label-width="105px" class="login-form">
                     <el-form-item prop="userNo" label="用户名：" class="login-item">
