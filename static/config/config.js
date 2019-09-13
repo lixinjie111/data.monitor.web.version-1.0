@@ -33,7 +33,8 @@ window.defaultMapOption = {
 	zoom: 11,		// 默认：比例尺显示100m
 	resizeEnable: true, //是否监控地图容器尺寸变化
 	rotateEnable: true,
-	mapStyle: "amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8"
+	mapStyle: "amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8",
+  // defaultLayer:null
 }
 
 // 调用
