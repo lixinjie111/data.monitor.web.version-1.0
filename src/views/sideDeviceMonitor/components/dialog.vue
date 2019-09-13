@@ -290,6 +290,10 @@ export default {
     },
     getDeviceList() {
       var _this = this;
+      //切换杆的时候清理模型
+      /*if (_this.mapInit) {
+        _this.$refs.tusvnMap3.reset3DMap();
+      }*/
       getDeviceList({
         roadSiderId: this.roadId
       }).then(res => {
@@ -615,6 +619,7 @@ export default {
       getMap(this.$refs.tusvnMap3);
       if (this.serialNum && this.serialNum != "") {
         console.log("this.serialNum--" + this.serialNum);
+        this.mapInit = true;
         this.$refs.tusvnMap3.updateCameraPosition(
           this.cameraParam.x,
           this.cameraParam.y,
@@ -633,6 +638,7 @@ export default {
       let time = setInterval(() => {
         if (this.serialNum && this.serialNum != "") {
           console.log("this.serialNum--" + this.serialNum);
+          this.mapInit = true;
           let cameraParam = JSON.parse(this.selectedItem.cameraParam);
           this.$refs.tusvnMap3.updateCameraPosition(
             this.cameraParam.x,
