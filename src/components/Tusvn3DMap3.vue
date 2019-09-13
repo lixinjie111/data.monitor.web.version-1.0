@@ -966,6 +966,8 @@ export default {
                         model1.rotation.set( this.pitch,this.yaw,this.roll );
                         model1.castShadow = true;
                         model1.receiveShadow = true;
+                        
+                        
 
                         this.scene.add(model1);
                         this.deviceModels[deviceid].cars[m] = model1;
@@ -1048,7 +1050,7 @@ export default {
                         let mdl = this.deviceModels[deviceid].persons[i];
                         mdl.position.x = dUTM[0];
                         mdl.position.y = dUTM[1];
-                        mdl.position.z = this.defualtZ-6;
+                        mdl.position.z = this.defualtZ;
 
                         // let text = this.deviceModels[deviceid].texts[i];
                         // text.setText(d.vehicleId.substr(0,8));
@@ -1062,8 +1064,8 @@ export default {
                             let mdl = this.deviceModels[deviceid].cars[i];
                             mdl.position.x = dUTM[0];
                             mdl.position.y = dUTM[1];
-                            mdl.position.z = this.defualtZ-6;
-                            mdl.rotation.set( this.pitch,this.yaw,(Math.PI/180.0)*120);
+                            mdl.position.z = this.defualtZ;
+                            mdl.rotation.set( this.pitch,this.yaw,-(Math.PI / 180.0) * (d.heading-90));
 
                             this.changeModelColor(d,mdl);
                         }
@@ -1077,8 +1079,8 @@ export default {
                             let mixCar = this.mixCars[deviceid].cars[i];
                             mixCar.position.x = dUTM[0];
                             mixCar.position.y = dUTM[1];
-                            mixCar.position.z = this.defualtZ-6;
-                            mixCar.rotation.set( this.pitch,this.yaw,(Math.PI/180.0)*d.heading);
+                            mixCar.position.z = this.defualtZ;
+                            mixCar.rotation.set( this.pitch,this.yaw,-(Math.PI / 180.0) * (d.heading-90));
                         }
                     }
                 }
@@ -1618,7 +1620,7 @@ export default {
                 {
                     if(model==undefined||model==null)
                     {
-                        this.addModel(vid,"./static/map3d/map_photo/car.3DS",data2.longitude,data2.latitude,this.defualtZ-6);
+                        this.addModel(vid,"./static/map3d/map_photo/car.3DS",data2.longitude,data2.latitude,this.defualtZ);
                     }else{
                         // debugger;
                         this.models[vid]=model;
@@ -1644,7 +1646,7 @@ export default {
                         this.models[vid].position.x = this.carBusinessData[vid]['utmposition'][0];
                         this.models[vid].position.y = this.carBusinessData[vid]['utmposition'][1];
                     }else{
-                        this.models[vid].position.set(this.carBusinessData[vid]['utmposition'][0],this.carBusinessData[vid]['utmposition'][1], this.defualtZ-6 );
+                        this.models[vid].position.set(this.carBusinessData[vid]['utmposition'][0],this.carBusinessData[vid]['utmposition'][1], this.defualtZ );
                         this.changeModelColor(data2,this.models[vid]);
                     }
                     
@@ -1720,7 +1722,7 @@ export default {
                                 }else{
                                     if(this.models[vid]!=undefined&&this.models[vid]!=null)
                                     {
-                                            this.models[vid].position.set(this.carBusinessData[vid]['lastUtmPosition'].x,this.carBusinessData[vid]['lastUtmPosition'].y, this.defualtZ-6 );
+                                            this.models[vid].position.set(this.carBusinessData[vid]['lastUtmPosition'].x,this.carBusinessData[vid]['lastUtmPosition'].y, this.defualtZ );
                                             // this.changeModelColor(data2,this.models[vid]);
                                             this.models[vid].rotation.set( this.pitch,this.yaw,(-Math.PI / 180) * this.carBusinessData[vid]['lastUtmPosition'].rotation);
                                     }
