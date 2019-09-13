@@ -499,7 +499,7 @@ export default {
                     if(i<this.deviceModels[deviceid].cars.length)
                     {
                         let mdl = this.deviceModels[deviceid].cars[i];
-                        
+
                         mdl.position.x = dUTM[0];
                         mdl.position.y = dUTM[1];
                         mdl.position.z = this.defualtZ+4;

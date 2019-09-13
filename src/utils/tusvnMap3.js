@@ -1,10 +1,10 @@
 export function getMap(map){
-  map.addShape("intersection","./static/map3d/dl_shcsq_zc/Intersection.shp","#ff974f")
-  map.addShape("Crosswalk","./static/map3d/dl_shcsq_zc/Crosswalk.shp","#00d49d")
-  map.addShape("lane_marking","./static/map3d/dl_shcsq_zc/Lane_marking.shp",dl.styles.lane_marking.color)
-  map.addShape("lane_arrow","./static/map3d/dl_shcsq_zc/Direction_arrow.shp","#06c2ff")
-  map.addShape("lane_boundary","./static/map3d/dl_shcsq_zc/Lane_boundary.shp","#6fb07d")
-  map.addShape("lane_centerline","./static/map3d/dl_shcsq_zc/Lane_centerline.shp","#153641")
+map.addShape("intersection","./static/map3d/dl_shcsq_zc/Intersection.shp","#ff974f")
+map.addShape("Crosswalk","./static/map3d/dl_shcsq_zc/Crosswalk.shp","#00d49d")
+map.addShape("lane_marking","./static/map3d/dl_shcsq_zc/Lane_marking.shp",dl.styles.lane_marking.color)
+map.addShape("lane_arrow","./static/map3d/dl_shcsq_zc/Direction_arrow.shp","#06c2ff")
+map.addShape("lane_boundary","./static/map3d/dl_shcsq_zc/Lane_boundary.shp","#6fb07d" ,0,null,null,null,null,0)
+map.addShape("lane_centerline","./static/map3d/dl_shcsq_zc/Lane_centerline.shp","#153641")
 
   //添加路灯杆和信息牌
   let data = [[2340,5,326263.1536280000,3462381.9079600000,19.4429998472],
@@ -142,11 +142,11 @@ export function getMap(map){
   data.forEach((arr,index)=>{
     //信息牌
     if(arr[1]==3||arr[1]==7){
-      map.addStaticModel('traffic_sign_stop_'+index,'./static/map3d/models/traffic_sign_stop.3ds',arr[2],arr[3],12.68);
+        map.addStaticModel('traffic_sign_stop_'+index,'./static/map3d/models/traffic_sign_stop.3ds',arr[2],arr[3],20);
     }
     //路杆灯
     if(arr[1]==5){
-      map.addStaticModel('street_lamp_two_'+index,'./static/map3d/models/street_lamp_two.3ds',arr[2],arr[3],12.68);
+        map.addStaticModel('street_lamp_two_'+index,'./static/map3d/models/street_lamp_two.3ds',arr[2],arr[3],20);
     }
     
   })
@@ -226,7 +226,7 @@ export function getMap(map){
     [326285.7199200000 ,3462263.4905400000 ,277],
     [326285.6372510000 ,3462264.0168700000 ,278]];
   spatData.forEach((arr,index)=>{
-    map.addStaticModel('traffic_light_'+index,'./static/map3d/models/traffic_light.3ds',arr[0],arr[1],12.68);
+    map.addStaticModel('traffic_light_'+index,'./static/map3d/models/traffic_light.3ds',arr[0],arr[1],20);
   })
  /*
   map.addStaticModel('traffic_light_0','./static/map3d/models/traffic_light.3ds',325921.545860186,3462541.0160225183,12.68);
