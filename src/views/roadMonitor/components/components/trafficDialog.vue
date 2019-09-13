@@ -343,7 +343,7 @@
 					      		let _length=this.itemData.modelIcon.split("/").length;
 					      		let _name=this.itemData.modelIcon.split("/")[_length-1];
 					      		let _url="./static/map3d/models/"+_name;
-					      		this.$refs.tusvnMap3.addStaticModel(this.selectedItem.cameraId, _url, this.position[0], this.position[1], 20, 0, 0, (Math.PI / 180.0)*(-this.heading+80)); //添加模型
+					      		this.$refs.tusvnMap3.addStaticModel(this.selectedItem.cameraId, _url, this.position[0], this.position[1], 20, 0, 0, (Math.PI / 180.0)*(this.heading+180)); //添加模型
 					      	}
 					    });
 						//console.log(this.itemData.modelIcon)
@@ -351,7 +351,7 @@
 						//this.$refs.tusvnMap3.addStaticModel(this.selectedItem.cameraId, "./static/map3d/models/carEventModel.3ds", this.position[0], this.position[1], 13); //添加模型
 					} else {
 						if(this.$refs.tusvnMap3.getStaticModel(this.selectedItem.cameraId)) {
-							this.$refs.tusvnMap3.updateStaticModelPostion(this.selectedItem.cameraId, this.position[0], this.position[1], 20, (Math.PI / 180.0)*(-this.heading+80 ));
+							this.$refs.tusvnMap3.updateStaticModelPostion(this.selectedItem.cameraId, this.position[0], this.position[1], 20, (Math.PI / 180.0)*(this.heading+180 ));
 						}
 					}
 				}
