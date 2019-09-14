@@ -90,6 +90,9 @@
             //打开窗口，关闭连接
             _this.sideMap=false;
             _this.mapMessage='连接关闭';
+            if(this.$refs[this.roadItem.camSerialNum]){
+              this.$refs[this.roadItem.camSerialNum].reset3DMap();
+            }
           }
         }
       },
