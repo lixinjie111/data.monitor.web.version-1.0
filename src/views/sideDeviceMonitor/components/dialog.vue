@@ -319,7 +319,9 @@ export default {
             }
             //选中的设备
             _this.selectedDevice = item;
-            _this.cameraParam = JSON.parse(item.cameraParam);
+            if(item.cameraParam){
+              _this.cameraParam = JSON.parse(item.cameraParam);
+            }
             if (_this.serialNum != "") {
               _this.getVideo();
               //切换路侧点时，重新切换3D地图
@@ -492,6 +494,7 @@ export default {
     },
     handleNodeClick(node, resolve) {
       //当切换树的时候，设备列表，感知结果进行切换
+      this.openVideoList=[];
       this.serialNum = "";
       this.selectedItem.camSerialNum = "";
       this.roadId = node.code;
@@ -617,7 +620,6 @@ export default {
       //this.mapInit = true;
       getMap(this.$refs.tusvnMap3);
       if (this.serialNum && this.serialNum != "") {
-        console.log("this.serialNum--" + this.serialNum);
         this.mapInit = true;
         this.$refs.tusvnMap3.updateCameraPosition(
           this.cameraParam.x,
@@ -636,7 +638,6 @@ export default {
       let count = 0;
       let time = setInterval(() => {
         if (this.serialNum && this.serialNum != "") {
-          console.log("this.serialNum--" + this.serialNum);
           this.mapInit = true;
           let cameraParam = JSON.parse(this.selectedItem.cameraParam);
           this.$refs.tusvnMap3.updateCameraPosition(
@@ -662,11 +663,11 @@ export default {
     },
     getVideo() {
       var options = this.getPlayerOptions();
-      if(this.selectedDevice.workStatus!= 1){
-        options.notSupportedMessage = "";
-        options.notSupportedMessage = "设备不在线";
-        return;
-      }
+//    if(this.selectedDevice.workStatus!= 1){
+//      options.notSupportedMessage = "";
+//      options.notSupportedMessage = "设备不在线";
+//      return;
+//    }
       getVideoByNum({
         protocal: 1,
         /*"serialNum": "3402000000132000001401"*/
