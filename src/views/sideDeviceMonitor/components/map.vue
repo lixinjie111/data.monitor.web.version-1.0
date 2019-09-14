@@ -185,8 +185,6 @@
     },
     mounted() {
       this.map = new AMap.Map(this.id, window.defaultMapOption);
-      console.log("地图样式："+this.map.getMapStyle());
-      this.map.setMapStyle("amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8");
       var item = {
         'id':'0'
       };
