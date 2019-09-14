@@ -60,7 +60,7 @@
         </div>
         <div class="side-device-right">
           <div class="side-dialog-map">
-            <div v-if="target=='video'" class="video-style-height">
+            <div class="video-style-height">
               <div class="road-mask-style">
                 <img
                   src="@/assets/images/carMonitor/refresh.png"
@@ -305,9 +305,12 @@ export default {
             if (_this.selectedItem.camSerialNum == "") {//通过地图点击进来的
               flag = false;
               //设置默认的选中值
-              item.value = true;
-              _this.openVideoList.push(item);
-              _this.serialNum = item.serialNum;
+              //if(item.workStatus==1){
+              	 item.value = true;
+              	_this.openVideoList.push(item);
+              	_this.serialNum = item.serialNum;
+              	 console.log(item.serialNum+"------------");
+              //}
             } else {//通过右侧列表点击进来的
               item.value = false;
               if (item.serialNum == _this.selectedItem.camSerialNum) {
@@ -318,30 +321,31 @@ export default {
                 _this.serialNum = item.serialNum;
               }
             }
+           
             //选中的设备
             _this.selectedDevice = item;
-            _this.cameraParam = JSON.parse(item.cameraParam);
+            //_this.cameraParam = JSON.parse(item.cameraParam);
             if (_this.serialNum != "") {
               _this.getVideo();
               //切换路侧点时，重新切换3D地图
               //第一次地图加载后调整位置即可
               //                    console.log("地图初始化---"+_this.mapInit)
-              if (_this.mapInit) {
-                _this.$refs.tusvnMap3.reset3DMap();
-                //                      let cameraParam = JSON.parse(item.cameraParam);
-                _this.$refs.tusvnMap3.updateCameraPosition(
-                  _this.cameraParam.x,
-                  _this.cameraParam.y,
-                  _this.cameraParam.z,
-                  _this.cameraParam.radius,
-                  _this.cameraParam.pitch,
-                  _this.cameraParam.yaw
-                );
-                _this.$refs.tusvnMap3.changeRcuId(
-                  window.config.websocketUrl,
-                  item.serialNum
-                );
-              }
+//            if (_this.mapInit) {
+//              _this.$refs.tusvnMap3.reset3DMap();
+//              //                      let cameraParam = JSON.parse(item.cameraParam);
+//              _this.$refs.tusvnMap3.updateCameraPosition(
+//                _this.cameraParam.x,
+//                _this.cameraParam.y,
+//                _this.cameraParam.z,
+//                _this.cameraParam.radius,
+//                _this.cameraParam.pitch,
+//                _this.cameraParam.yaw
+//              );
+//              _this.$refs.tusvnMap3.changeRcuId(
+//                window.config.websocketUrl,
+//                item.serialNum
+//              );
+//            }
             }
           } else {
             /*_this.$set(item, 'value', false);*/
@@ -352,9 +356,9 @@ export default {
           var options = _this.getPlayerOptions();
           options.sources[0].src = "";
           _this.option = options;
-          if (this.$refs.tusvnMap3) {
-            this.$refs.tusvnMap3.reset3DMap();
-          }
+//        if (this.$refs.tusvnMap3) {
+//          this.$refs.tusvnMap3.reset3DMap();
+//        }
         }
       });
     },
@@ -408,22 +412,22 @@ export default {
         //根据摄像头调取视频
         _this.getVideo();
         //选中后重新请求
-         if (this.$refs.tusvnMap3) {
-          this.$refs.tusvnMap3.reset3DMap();
-          _this.cameraParam = JSON.parse(item.cameraParam);
-          this.$refs.tusvnMap3.updateCameraPosition(
-            _this.cameraParam.x,
-            _this.cameraParam.y,
-            _this.cameraParam.z,
-            _this.cameraParam.radius,
-            _this.cameraParam.pitch,
-            _this.cameraParam.yaw
-          );
-          this.$refs.tusvnMap3.changeRcuId(
-            window.config.websocketUrl,
-            item.serialNum
-          );
-        }
+//       if (this.$refs.tusvnMap3) {
+//        this.$refs.tusvnMap3.reset3DMap();
+//        _this.cameraParam = JSON.parse(item.cameraParam);
+//        this.$refs.tusvnMap3.updateCameraPosition(
+//          _this.cameraParam.x,
+//          _this.cameraParam.y,
+//          _this.cameraParam.z,
+//          _this.cameraParam.radius,
+//          _this.cameraParam.pitch,
+//          _this.cameraParam.yaw
+//        );
+//        this.$refs.tusvnMap3.changeRcuId(
+//          window.config.websocketUrl,
+//          item.serialNum
+//        );
+//      }
        // _this.$refs.tusvnMap3.reset3DMap();
 
       } else {
@@ -493,6 +497,7 @@ export default {
     },
     handleNodeClick(node, resolve) {
       //当切换树的时候，设备列表，感知结果进行切换
+      this.openVideoList=[];
       this.serialNum = "";
       this.selectedItem.camSerialNum = "";
       this.roadId = node.code;
@@ -606,68 +611,68 @@ export default {
        if(this.$refs.videoPlayer){
         this.$refs.videoPlayer.dispose();
       }
-      if (this.$refs.tusvnMap3) {
-        this.$refs.tusvnMap3.reset3DMap();
-      }
+//    if (this.$refs.tusvnMap3) {
+//      this.$refs.tusvnMap3.reset3DMap();
+//    }
       this.$emit("closeDialog");
     },
-    showTimeStamp(time) {
-      this.time = time;
-    },
-    mapcomplete: function() {
-      //this.mapInit = true;
-      getMap(this.$refs.tusvnMap3);
-      if (this.serialNum && this.serialNum != "") {
-        console.log("this.serialNum--" + this.serialNum);
-        this.mapInit = true;
-        this.$refs.tusvnMap3.updateCameraPosition(
-          this.cameraParam.x,
-          this.cameraParam.y,
-          this.cameraParam.z,
-          this.cameraParam.radius,
-          this.cameraParam.pitch,
-          this.cameraParam.yaw
-        );
-        this.$refs.tusvnMap3.changeRcuId(
-          window.config.websocketUrl,
-          this.serialNum
-        );
-        return;
-      }
-      let count = 0;
-      let time = setInterval(() => {
-        if (this.serialNum && this.serialNum != "") {
-          console.log("this.serialNum--" + this.serialNum);
-          this.mapInit = true;
-          let cameraParam = JSON.parse(this.selectedItem.cameraParam);
-          this.$refs.tusvnMap3.updateCameraPosition(
-            this.cameraParam.x,
-            this.cameraParam.y,
-            this.cameraParam.z,
-            this.cameraParam.radius,
-            this.cameraParam.pitch,
-            this.cameraParam.yaw
-          );
-          this.$refs.tusvnMap3.changeRcuId(
-            window.config.websocketUrl,
-            this.serialNum
-          );
-          clearInterval(time);
-        }
-        //超过5s仍然没有响应 则停止渲染
-        if (count == 5) {
-          clearInterval(time);
-        }
-        count++;
-      }, 1000);
-    },
+//  showTimeStamp(time) {
+//    this.time = time;
+//  },
+//  mapcomplete: function() {
+//    //this.mapInit = true;
+//    getMap(this.$refs.tusvnMap3);
+//    if (this.serialNum && this.serialNum != "") {
+//      console.log("this.serialNum--" + this.serialNum);
+//      this.mapInit = true;
+//      this.$refs.tusvnMap3.updateCameraPosition(
+//        this.cameraParam.x,
+//        this.cameraParam.y,
+//        this.cameraParam.z,
+//        this.cameraParam.radius,
+//        this.cameraParam.pitch,
+//        this.cameraParam.yaw
+//      );
+//      this.$refs.tusvnMap3.changeRcuId(
+//        window.config.websocketUrl,
+//        this.serialNum
+//      );
+//      return;
+//    }
+//    let count = 0;
+//    let time = setInterval(() => {
+//      if (this.serialNum && this.serialNum != "") {
+//        console.log("this.serialNum--" + this.serialNum);
+//        this.mapInit = true;
+//        let cameraParam = JSON.parse(this.selectedItem.cameraParam);
+//        this.$refs.tusvnMap3.updateCameraPosition(
+//          this.cameraParam.x,
+//          this.cameraParam.y,
+//          this.cameraParam.z,
+//          this.cameraParam.radius,
+//          this.cameraParam.pitch,
+//          this.cameraParam.yaw
+//        );
+//        this.$refs.tusvnMap3.changeRcuId(
+//          window.config.websocketUrl,
+//          this.serialNum
+//        );
+//        clearInterval(time);
+//      }
+//      //超过5s仍然没有响应 则停止渲染
+//      if (count == 5) {
+//        clearInterval(time);
+//      }
+//      count++;
+//    }, 1000);
+//  },
     getVideo() {
       var options = this.getPlayerOptions();
-      if(this.selectedDevice.workStatus!= 1){
-        options.notSupportedMessage = "";
-        options.notSupportedMessage = "设备不在线";
-        return;
-      }
+//    if(this.selectedDevice.workStatus!= 1){
+//      options.notSupportedMessage = "";
+//      options.notSupportedMessage = "设备不在线";
+//      return;
+//    }
       getVideoByNum({
         protocal: 1,
         /*"serialNum": "3402000000132000001401"*/
