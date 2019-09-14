@@ -105,7 +105,7 @@
                     </ul>
                   </div>
                   <div class="table-row-group">
-                    <ul class="table-row" v-for="(item,index) in deviceList" :key="item.deviceId">
+                    <ul class="table-row" v-for="(item,index) in deviceList" :key="item.deviceId" v-if="item.deviceType=='N'">
                       <li class="table-cell device-num">
                         <img
                           src="@/assets/images/monitorManage/monitor-3.png"
