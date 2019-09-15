@@ -29,6 +29,16 @@
           return this.reqData;
         }
       },
+      watch:{
+        "crossData.finalFourPosition"(newVal, oldVal) {
+            // console.log("finalFourPosition");
+            if(this.webSocket) {
+              this.onopen();
+            }else {
+              this.initWebSocket();
+            }
+        }
+      },
       mounted() {  
         let _option = Object.assign(
           {},
@@ -41,6 +51,7 @@
         );
         this.map = new AMap.Map(this.id, _option);
         this.getTypeCross();
+        this.map.on('moveend', this.getFourPosition);
       },
       methods: {
         getTypeCross(){
@@ -113,7 +124,7 @@
           //   rectangle.setMap(this.aMap);
           //   this.aMap.setFitView([rectangle]);
           this.crossData.finalFourPosition = finalFourPosition;  
-          this.initWebSocket();
+          // this.initWebSocket();
         },
         initWebSocket(){
           let _this=this;
@@ -178,11 +189,10 @@
 
             } else {
               // 返回的数据为空
-              let obj = Object.values(_this.prevData);
-              for (let key in obj) {
-                obj[key].marker.stopMove();
-                _this.map.remove(obj[key].marker);
-                delete obj[key];
+              for (let id in _this.prevData) {
+                _this.prevData[id].marker.stopMove();
+                _this.map.remove(_this.prevData[id].marker);
+                delete _this.prevData[id];
               }
             }
           }

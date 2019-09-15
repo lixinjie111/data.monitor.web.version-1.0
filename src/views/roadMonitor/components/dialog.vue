@@ -107,11 +107,10 @@
         "finalFourPosition"(newVal, oldVal) {
             // console.log("finalFourPosition");
             if(this.webSocket) {
-              this.webSocket.close();
-            }
-            setTimeout(() => {
+              this.onopen();
+            }else {
               this.initWebSocket();
-            }, 0);
+            }
         }
       },
       mounted() {
@@ -453,7 +452,7 @@
             _filterResult = _filterResult.filter(
               x => x.targetType === 2 || x.targetType === 5
             );
-            console.log(result.length, _filterResult.length);
+            // console.log(result.length, _filterResult.length);
             let _filterData = {};
             _filterResult.forEach((item, index) => {
               _filterData[item.vehicleId] = {
@@ -464,18 +463,17 @@
                 vehicleId: item.vehicleId,
                 marker: null,
               };
-              console.log(item.vehicleId, item.longitude, item.latitude);
             });
 
             for (let id in _this.prevData) {
               if(_filterData[id]) {   //表示有该点，做move
-                console.log(id, _this.prevData[id].heading, 'move');
+                // console.log(id, _this.prevData[id].heading, 'move');
                 _filterData[id].marker = _this.prevData[id].marker;
                 let _currentCar = _filterData[id];
                 _filterData[id].marker.setAngle(_currentCar.heading);
                 _filterData[id].marker.moveTo([_currentCar.longitude, _currentCar.latitude], _currentCar.speed);
               } else {   //表示没有该点，做remove
-                console.log(id, 'delete');
+                // console.log(id, 'delete');
                 _this.prevData[id].marker.stopMove();
                 _this.map.remove(_this.prevData[id].marker);
                 delete _this.prevData[id];
@@ -483,7 +481,7 @@
             }
             for (let id in _filterData) {
               if(!_this.prevData[id]) {   //表示新增该点，做add
-                console.log(id, 'add');
+                // console.log(id, 'add');
                   _filterData[id].marker = new AMap.Marker({
                     position: [_filterData[id].longitude, _filterData[id].latitude],
                     map: _this.map,
@@ -503,15 +501,13 @@
           }
         },
         clearCars() {
-          let obj = Object.values(this.prevData);
-          for (let key in obj) {
-            obj[key].marker.stopMove();
-            this.map.remove(obj[key].marker);
-            delete obj[key];
+          for (let id in this.prevData) {
+            this.prevData[id].marker.stopMove();
+            this.map.remove(this.prevData[id].marker);
+            delete this.prevData[id];
           }
         },
         onclose(data){
-          this.webSocket.close();
           this.webSocket = null;
           this.clearCars();
           console.log("结束连接");
