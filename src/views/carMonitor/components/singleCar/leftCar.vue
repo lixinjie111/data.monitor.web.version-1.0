@@ -136,6 +136,16 @@
         countTime: 0
       }
     },
+    props:{
+      singleVehicle:{
+        type:Object,
+        default() {
+          return {
+
+          };
+        }
+      }
+    },
     computed: {
       filterData() {
           let _filterData = {};
@@ -195,7 +205,7 @@
       this.getRouteDataByVehId();
       // this.initWebSocket();
 
-      this.getBaseData();
+//      this.getBaseData();
       this.getDrivingStatistics();
 
       setTimeout(() => {
@@ -251,15 +261,7 @@
           // this.drivingStatistics.avgSpeed = this.drivingStatistics.avgSpeed.toFixed(1);
         });
       },
-      getBaseData(){
-        var _this = this;
-        this.drivingStatistics = {};
-        getVehicleBaseData({
-          'vehicleId': this.vehicleId,
-        }).then(res => {
-          this.singleVehicle = res.vehicleBaseDetail[0];
-        });
-      },
+
       //重绘形成初始化
       initDistanceMap(){
         this.prevLastPointPath = [];//上次请求的终点，

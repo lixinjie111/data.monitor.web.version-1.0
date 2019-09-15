@@ -54,40 +54,39 @@
     <ul class="monitor-header signal-detail">
       <li>
         <div class="signal-item1 signal-style">
-          <span class="signal-icon1" :class="[vehicleStatus.gpsStatus==1 ? liveUsed : vehicleStatus.gpsStatus==2?liveBroken:vehicleStatus.gpsStatus==0?liveUnused:liveUsed]"></span>
+          <span class="signal-icon1" :class="[vehicleStatus.gpsStatus==1 ? liveUsed : vehicleStatus.gpsStatus==2?liveBroken:liveUnused]"></span>
           <span>GPS</span>
         </div>
         <div class="signal-item1">
-          <span class="signal-icon1" :class="[vehicleStatus.cameraStatus==1 ? liveUsed : vehicleStatus.cameraStatus==2?liveBroken:vehicleStatus.cameraStatus==0?liveUnused:liveUsed]"></span>
+          <span class="signal-icon1" :class="[vehicleStatus.cameraStatus==1 ? liveUsed : vehicleStatus.cameraStatus==2?liveBroken:liveUnused]"></span>
           <span>Camera</span>
         </div>
         <div class="signal-item1 signal-style">
-          <span class="signal-icon1" :class="[vehicleStatus.canStatus==1 ? liveUsed : vehicleStatus.canStatus==2?liveBroken:vehicleStatus.canStatus==0?liveUnused:liveUsed]"></span>
+          <span class="signal-icon1" :class="[vehicleStatus.canStatus==1 ? liveUsed : vehicleStatus.canStatus==2?liveBroken:liveUnused]"></span>
           <span>V2X</span>
         </div>
         <div class="signal-item1">
-          <span class="signal-icon1" :class="[vehicleStatus.radarStatus==1 ? liveUsed : vehicleStatus.radarStatus==2?liveBroken:vehicleStatus.radarStatus==0?liveUnused:liveUsed]"></span>
+          <span class="signal-icon1" :class="[vehicleStatus.radarStatus==1 ? liveUsed : vehicleStatus.radarStatus==2?liveBroken:liveUnused]"></span>
           <span>Radar</span>
         </div>
       </li>
       <li>
         <div class="signal-item2">
-          <span class="signal-icon2" :class="[naviStatus.naviControlStatus==1 ? liveUsed : naviStatus.naviControlStatus==2?liveBroken:naviStatus.naviControlStatus==0?liveUnused:liveUsed]"></span>
+          <span class="signal-icon2" :class="[naviStatus.naviControlStatus==1 ? liveUsed : naviStatus.naviControlStatus==2?liveBroken:liveUnused]"></span>
           <span>Navi Control</span>
         </div>
         <div class="signal-item2">
-          <span class="signal-icon2" :class="[naviStatus.naviPlanningStatus==1 ? liveUsed : naviStatus.naviPlanningStatus==2?liveBroken:naviStatus.naviPlanningStatus==0?liveUnused:liveUsed]"></span>
+          <span class="signal-icon2" :class="[naviStatus.naviPlanningStatus==1 ? liveUsed : naviStatus.naviPlanningStatus==2?liveBroken:liveUnused]"></span>
           <span>Navi Planning</span>
         </div>
         <div class="signal-item2">
-          <span class="signal-icon2" :class="[naviStatus.naviPerceptionStatus==1 ? liveUsed : naviStatus.naviPerceptionStatus==2?liveBroken:naviStatus.naviPerceptionStatus==0?liveUnused:liveUsed]"></span>
+          <span class="signal-icon2" :class="[naviStatus.naviPerceptionStatus==1 ? liveUsed : naviStatus.naviPerceptionStatus==2?liveBroken:liveUnused]"></span>
           <span>Navi Perception</span>
         </div>
         <div class="signal-item2">
-          <span class="signal-icon2" :class="[naviStatus.naviPredictionStatus==1 ? liveUsed : naviStatus.naviPredictionStatus==2?liveBroken:naviStatus.naviPredictionStatus==0?liveUnused:liveUsed]"></span>
+          <span class="signal-icon2" :class="[naviStatus.naviPredictionStatus==1 ? liveUsed : naviStatus.naviPredictionStatus==2?liveBroken:liveUnused]"></span>
           <span>Navi Prediction</span>
         </div>
-
       </li>
     </ul>
   </div>
@@ -100,11 +99,9 @@
         liveUsed:'live-used',
         liveUnused:'live-unused',
         liveBroken:'live-broken',
-        vehicleStatus:{},
-        naviStatus:{},
         webSocket:null,
-
-
+        vehicleStatus:{},
+        naviStatus:{}
       }
     },
     props:{
@@ -115,6 +112,18 @@
 
           };
         }
+      },
+      singleVehicle:{
+        type:Object,
+        default() {
+          return {
+
+          };
+        }
+      },
+      isStop:{
+        type:Boolean,
+        default:false
       }
     },
     computed:{
@@ -139,6 +148,22 @@
         console.log("time---------"+time)
         return time;
       }*/
+    },
+    watch:{
+      isStop(newVal,oldVal){
+        if(newVal){
+          this.vehicleStatus.gpsStatus=3;
+          this.vehicleStatus.cameraStatus=3;
+          this.vehicleStatus.canStatus=3;
+          this.vehicleStatus.radarStatus=3;
+
+          this.naviStatus.naviControlStatus=3;
+          this.naviStatus.naviPlanningStatus=3;
+          this.naviStatus.naviPerceptionStatus=3;
+          this.naviStatus.naviPredictionStatus=3;
+          this.webSocket&&this.webSocket.close()
+        }
+      }
     },
     methods: {
       initWebSocket(){
@@ -209,6 +234,28 @@
     },
     mounted () {
       this.initWebSocket();
+      let level = this.singleVehicle.autoLevel;
+      if(level<3){
+        this.vehicleStatus.gpsStatus=3;
+        this.vehicleStatus.cameraStatus=3;
+        this.vehicleStatus.canStatus=3;
+        this.vehicleStatus.radarStatus=3;
+
+        this.naviStatus.naviControlStatus=3;
+        this.naviStatus.naviPlanningStatus=3;
+        this.naviStatus.naviPerceptionStatus=3;
+        this.naviStatus.naviPredictionStatus=3;
+      }else{
+        this.vehicleStatus.gpsStatus=1;
+        this.vehicleStatus.cameraStatus=1;
+        this.vehicleStatus.canStatus=1;
+        this.vehicleStatus.radarStatus=1;
+
+        this.naviStatus.naviControlStatus=1;
+        this.naviStatus.naviPlanningStatus=1;
+        this.naviStatus.naviPerceptionStatus=1;
+        this.naviStatus.naviPredictionStatus=1;
+      }
     },
     destroyed(){
       //销毁Socket
