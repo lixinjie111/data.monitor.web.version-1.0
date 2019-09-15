@@ -6,7 +6,7 @@
         <i class="c-dialog-close" @click="closeDialog"></i>
       </div>
       <div class=" road-content">
-        <div class="c-scroll-wrap left-width" id="divScroll">
+        <div class="c-scroll-wrap left-width" id="divScroll" ref="divScroll">
           <div class="c-scroll-inner">
               <ul class="road-content-left">
                 <li v-for="item in roadList" @click="getCrossInfo(item)" :class="{active:item.isActive}">
@@ -79,7 +79,8 @@
               webSocket:null,
               crossId:"",
               count:0,
-              mapList:[]
+              mapList:[],
+              wms:null
             }
         },
       props:{
@@ -219,6 +220,7 @@
             }
           }
           item.isActive=!item.isActive;
+          this.$refs.divScroll.scrollTop = 0;
           this.pageIndex=0;
           this.roadList=[];
           this.index=0;
@@ -233,25 +235,38 @@
             "crossId": this.crossId
           }).then(res=>{
             let result = res.data.data;
-
-            let _optionWms = Object.assign(
+            if(result&&result.length==0){
+              this.$message({
+                type: 'error',
+                duration: '1500',
+                message: '该路口没有数据！',
+                showClose: true
+              });
+//              if(this.wms){
+//                this.wms.hide();
+//              }
+              return;
+            }
+//            if(this.wms) {
+//              this.wms.show()
+//            }else {
+              let _optionWms = Object.assign(
                 {},
                 window.dlWmsDefaultOption,
                 {
-                    params:{'LAYERS': window.dlWmsOption.LAYERS_gjlk, 'VERSION': window.dlWmsOption.VERSION}
+                  params:{'LAYERS': window.dlWmsOption.LAYERS_gjlk, 'VERSION': window.dlWmsOption.VERSION}
                 }
-            );
-            let _wms  = new AMap.TileLayer.WMS(_optionWms);
-            let params = {'LAYERS': window.dlWmsOption.LAYERS_gjlk, 'VERSION': window.dlWmsOption.VERSION};
-            _wms.setParams(params);
-            _wms.setMap(this.map);
+              );
+              this.wms = new AMap.TileLayer.WMS(_optionWms);
+              this.wms.setMap(this.map);
+//            }
 //            let position = ConvertCoord.wgs84togcj02(result[0].x,result[0].y);
-            let position = new AMap.LngLat(result[0].x,result[0].y);
+            let position = new AMap.LngLat(result[0].centerX,result[0].centerY);
             this.map.setCenter(position);
             let p;
             result.forEach(item=>{
 //              p =  ConvertCoord.wgs84togcj02(item.x,item.y);
-              p=new AMap.LngLat(item.x,item.y);
+              p=new AMap.LngLat(item.centerX,item.centerY);
               //画灯的位置
               let marker = new AMap.Marker({
                 position: p,
@@ -276,6 +291,7 @@
             this.webSocket&&this.webSocket.close();
             this.initWebSocket();
           }
+//          this.wms.show();
         },
         getCrossPageById(){
           let _this = this;
