@@ -246,7 +246,7 @@
             _wms.setParams(params);
             _wms.setMap(this.map);
 //            let position = ConvertCoord.wgs84togcj02(result[0].x,result[0].y);
-            let position = new AMap.LngLat(result[0].x,result[0].y);
+            let position = new AMap.LngLat(result[0].centerX,result[0].centerY);
             this.map.setCenter(position);
             let p;
             result.forEach(item=>{
