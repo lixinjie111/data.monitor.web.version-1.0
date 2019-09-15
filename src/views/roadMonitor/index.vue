@@ -16,7 +16,7 @@
         </div>
       </div>
     </div>
-    <road-dialog :dialogVisible="dialogVisible" :selected-item="selectedItem" @closeDialog="closeDialog" :deviceMapId="'deviceMap1'"></road-dialog>
+    <road-dialog v-if="dialogVisible" :selected-item="selectedItem" @closeDialog="closeDialog" :deviceMapId="'deviceMap1'"></road-dialog>
   </div>
 </template>
 <script>
