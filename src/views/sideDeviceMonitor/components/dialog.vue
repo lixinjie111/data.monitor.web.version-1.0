@@ -773,7 +773,7 @@ export default {
     background-color: transparent;
   }
   .el-tree-node:focus > .el-tree-node__content {
-    background-color: #262626;
+    background-color: #262626 !important;
   }
   .el-select-dropdown{
     background-color: #262626 !important;
