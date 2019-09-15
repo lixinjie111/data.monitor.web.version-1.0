@@ -251,7 +251,7 @@
             let p;
             result.forEach(item=>{
 //              p =  ConvertCoord.wgs84togcj02(item.x,item.y);
-              p=new AMap.LngLat(item.x,item.y);
+              p=new AMap.LngLat(item.centerX,item.centerY);
               //画灯的位置
               let marker = new AMap.Marker({
                 position: p,
