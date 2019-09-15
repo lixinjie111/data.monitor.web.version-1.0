@@ -242,6 +242,8 @@
                 }
             );
             let _wms  = new AMap.TileLayer.WMS(_optionWms);
+            let params = {'LAYERS': window.dlWmsOption.LAYERS_gjlk, 'VERSION': window.dlWmsOption.VERSION};
+            _wms.setParams(params);
             _wms.setMap(this.map);
 //            let position = ConvertCoord.wgs84togcj02(result[0].x,result[0].y);
             let position = new AMap.LngLat(result[0].x,result[0].y);
@@ -312,7 +314,7 @@
             setTimeout(() => {
               _this.roadList.forEach(item=>{
                 item.map=new AMap.Map(item.id, this.mapOption);
-            
+
                 let _optionWms = Object.assign(
                     {},
                     window.dlWmsDefaultOption,
