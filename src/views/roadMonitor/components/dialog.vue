@@ -1,5 +1,5 @@
 <template>
-  <div class="c-dialog-wrapper" v-show="dialogVisible">
+  <div class="c-dialog-wrapper">
     <div class="c-dialog-container" >
       <div class="c-dialog-header">
         <span class="c-dialog-title">路口监控</span>
@@ -79,8 +79,10 @@
               webSocket:null,
               crossId:"",
               count:0,
-              mapList:[],
-              wms:null
+              // mapList:[],
+              wms:null,
+              finalFourPosition: [],
+              prevData: {}
             }
         },
       props:{
@@ -101,8 +103,92 @@
           default:""
         }
       },
+      watch:{
+        "finalFourPosition"(newVal, oldVal) {
+            // console.log("finalFourPosition");
+            if(this.webSocket) {
+              this.webSocket.close();
+            }
+            this.initWebSocket();
+        }
+      },
+      mounted() {
+        this.getCrossPageById();
+        this.crossId = this.selectedItem.crossId;
+        this.getCrossById();
+
+        this.map = new AMap.Map('mapContainer', this.mapOption);
+        this.map.on('moveend', this.getFourPosition);
+        let divScroll = document.getElementById("divScroll");
+        if (this && !this._isDestroyed) {
+          divScroll.addEventListener("scroll",this.scrollHandler,true);
+        }
+      },
       methods: {
+        // 获取四周的经纬度
+        getFourPosition() {
+          let finalFourPosition = [];
+          let bounds;
+          let northEast = [];
+          let southWest = [];
+          let northWest = [];
+          let southEast = [];
+          let southwest;
+          let northeast;
+          let x = 0.0005;
+          let y = 0.0003;
+          bounds = this.map.getBounds();
+          // 西南
+          southWest.push(bounds.southwest.lng - x);
+          southWest.push(bounds.southwest.lat - y);
+          finalFourPosition.push(southWest);
+          // 西北
+          northWest.push(bounds.southwest.lng - x);
+          northWest.push(bounds.northeast.lat + y);
+          finalFourPosition.push(northWest);
+          // 东北
+          northEast.push(bounds.northeast.lng + x);
+          northEast.push(bounds.northeast.lat + y);
+          finalFourPosition.push(northEast);
+          // 东南
+          southEast.push(bounds.northeast.lng + x);
+          southEast.push(bounds.southwest.lat - y);
+          finalFourPosition.push(southEast);
+          southwest = [bounds.southwest.lng, bounds.southwest.lat];
+          northeast = [bounds.northeast.lng, bounds.northeast.lat];
+            // let mapBounds = new AMap.Bounds(southWest, northEast);
+            // let rectangle = new AMap.Rectangle({
+            //   bounds: mapBounds,
+            //   strokeColor: "red",
+            //   strokeWeight: 6,
+            //   strokeOpacity: 0.5,
+            //   strokeDasharray: [30, 10],
+            //   // strokeStyle还支持 solid
+            //   strokeStyle: "dashed",
+            //   fillColor: "green",
+            //   fillOpacity: 0.5,
+            //   cursor: "pointer",
+            //   zIndex: 50
+            // });
+            // rectangle.setMap(this.map);
+          this.finalFourPosition = finalFourPosition;  
+          // this.initWebSocket();
+        },
         closeDialog(){
+          this.webSocket && this.webSocket.close();
+          this.webSocket = null;
+
+          // 清空车辆
+          let obj = Object.values(this.prevData);
+          for (let key in obj) {
+            obj[key].marker.stopMove();
+            this.map.remove(obj[key].marker);
+            delete obj[key];
+          }
+
+          var divScroll = document.getElementById("divScroll");
+          divScroll.removeEventListener("scroll",this.scrollHandler,true);
+
           this.$emit("closeDialog");
         },
         getAllCross(param){
@@ -227,10 +313,6 @@
           this.getAllCross();
         },
         getCrossById(){
-          if(this.markerList.length>0){
-            this.map.remove(this.markerList);
-            this.markerList=[];
-          }
           getCrossById({
             "crossId": this.crossId
           }).then(res=>{
@@ -247,22 +329,37 @@
 //              }
               return;
             }
+            // 清空车辆
+            let obj = Object.values(this.prevData);
+            for (let key in obj) {
+              obj[key].marker.stopMove();
+              this.map.remove(obj[key].marker);
+              delete obj[key];
+            }
+
+            // this.webSocket&&this.webSocket.close();
+            // this.initWebSocket();
 //            if(this.wms) {
 //              this.wms.show()
 //            }else {
-              let _optionWms = Object.assign(
-                {},
-                window.dlWmsDefaultOption,
-                {
-                  params:{'LAYERS': window.dlWmsOption.LAYERS_gjlk, 'VERSION': window.dlWmsOption.VERSION}
-                }
-              );
-              this.wms = new AMap.TileLayer.WMS(_optionWms);
-              this.wms.setMap(this.map);
+              if(!this.wms){
+                let _optionWms = Object.assign(
+                  {},
+                  window.dlWmsDefaultOption,
+                  {
+                    params:{'LAYERS': window.dlWmsOption.LAYERS_gjlk, 'VERSION': window.dlWmsOption.VERSION}
+                  }
+                );
+                this.wms = new AMap.TileLayer.WMS(_optionWms);
+                this.wms.setMap(this.map);
+              }
+              if(result[0]) {
+                let position = new AMap.LngLat(result[0].centerX,result[0].centerY);
+                this.map.setCenter(position);
+              }
+            
 //            }
 //            let position = ConvertCoord.wgs84togcj02(result[0].x,result[0].y);
-            let position = new AMap.LngLat(result[0].centerX,result[0].centerY);
-            this.map.setCenter(position);
             let p;
             result.forEach(item=>{
 //              p =  ConvertCoord.wgs84togcj02(item.x,item.y);
@@ -288,8 +385,6 @@
           if(item.isActive){
             this.crossId = item.crossId;
             this.getCrossById();
-            this.webSocket&&this.webSocket.close();
-            this.initWebSocket();
           }
 //          this.wms.show();
         },
@@ -361,43 +456,71 @@
         onmessage(mesasge){
           let _this=this;
           let json = JSON.parse(mesasge.data);
-          let result = json.result.vehData;
-          let position;
-          if(_this.count==0) {
-            //在接受请求前清除地图上的点
-            _this.map.remove(_this.mapList);
-            _this.mapList = [];
-            result.forEach(item => {
-              /*  position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);*/
-              position = new AMap.LngLat(item.longitude,item.latitude);
-              _this.count++;
-              let marker = new AMap.Marker({
-                position: position,
-                icon: 'static/images/road/car.png', // 添加 Icon 图标 URL
-                angle: item.heading,
-                offset:new AMap.Pixel(-8, -16)
-              });
-              _this.map.add(marker);
-              _this.mapList.push(marker);
+          let result = json.result.vehDataDTO;
+          // 车辆
+          if (result.length > 0) {
+            let _filterData = {};
+            result.forEach((item, index) => {
+              _filterData[item.vehicleId] = {
+                longitude: item.longitude,
+                latitude: item.latitude,
+                heading: item.heading,
+                speed: item.speed,
+                marker: null,
+              };
             });
-            if (this.count == result.length) {
-              _this.count = 0;
+
+            for (let id in _this.prevData) {
+              if(_filterData[id]) {   //表示有该点，做move
+                _filterData[id].marker = _this.prevData[id].marker;
+                let _currentCar = _filterData[id];
+                _filterData[id].marker.setAngle(_currentCar.heading);
+                _filterData[id].marker.moveTo([_currentCar.longitude, _currentCar.latitude], _currentCar.speed);
+              } else {   //表示没有该点，做remove
+                _this.prevData[id].marker.stopMove();
+                _this.map.remove(_this.prevData[id].marker);
+                delete _this.prevData[id];
+              }
+            }
+            for (let id in _filterData) {
+              if(!_this.prevData[id]) {   //表示新增该点，做add
+                  _filterData[id].marker = new AMap.Marker({
+                    position: [_filterData[id].longitude, _filterData[id].latitude],
+                    map: _this.map,
+                    icon: "static/images/road/car.png",
+                    angle: _filterData[id].heading,
+                    devId: _filterData[id].devId,
+                    zIndex: 1
+                  });
+              }
+            }
+          
+            _this.prevData = _filterData;
+
+          } else {
+            // 返回的数据为空
+            let obj = Object.values(_this.prevData);
+            for (let key in obj) {
+              obj[key].marker.stopMove();
+              _this.map.remove(obj[key].marker);
+              delete obj[key];
             }
           }
-
         },
         onclose(data){
           console.log("结束连接");
         },
         onopen(data){
           //获取在驶车辆状态
-          var carStatus = {
-            'action':'cross_real_data',
-            'token':'tusvn',
-            'crossId':this.crossId
-          }
-          var vehicleStatusMsg = JSON.stringify(carStatus);
-          this.sendMsg(vehicleStatusMsg);
+          let _params = {
+            action: "road_real_data",
+            data: {
+              polygon: this.finalFourPosition,
+              fuselType: 1
+            }
+          };
+          var _paramsMsg = JSON.stringify(_params);
+          this.sendMsg(_paramsMsg);
         },
         sendMsg(msg) {
           let _this=this;
@@ -409,40 +532,6 @@
             return;
           }
         }
-      },
-
-      watch:{
-        dialogVisible(){
-          if(this.dialogVisible){
-            this.roadList=[];
-            this.index=0;
-            this.pageIndex=0;
-            this.options.forEach(item=>{
-              if(item.id==0){
-                item.isActive=true;
-              }else{
-                item.isActive=false;
-              }
-            })
-            this.type=null;
-            this.getCrossPageById();
-            this.crossId = this.selectedItem.crossId;
-            this.getCrossById();
-            this.initWebSocket();
-          }
-        }
-      },
-      mounted() {
-        this.map=new AMap.Map('mapContainer', this.mapOption);
-        let divScroll = document.getElementById("divScroll");
-        if (this && !this._isDestroyed) {
-          divScroll.addEventListener("scroll",this.scrollHandler,true);
-        }
-      },
-      destroy:function () {
-        var _self = this;
-        var divScroll = document.getElementById("divScroll");
-        divScroll.removeEventListener("scroll",_self.scrollHandler,true);
       }
     }
 </script>
