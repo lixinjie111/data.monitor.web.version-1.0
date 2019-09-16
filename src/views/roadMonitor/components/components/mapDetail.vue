@@ -77,7 +77,7 @@
               this.getFourPosition();
         },
         // 获取四周的经纬度
-        getFourPosition(mapOption) {
+        getFourPosition() {
           let finalFourPosition = [];
           let bounds;
           let northEast = [];
