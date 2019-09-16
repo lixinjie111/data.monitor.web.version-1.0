@@ -1137,7 +1137,7 @@
 
   .pre-warning-img{
     background: #ae3717;
-    width: 28px;
+    width: 100px;
   }
   .pre-warning-info{
     display: table-cell;

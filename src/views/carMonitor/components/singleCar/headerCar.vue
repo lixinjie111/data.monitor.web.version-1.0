@@ -163,6 +163,38 @@
           this.naviStatus.naviPredictionStatus=3;
           this.webSocket&&this.webSocket.close()
         }
+      },
+      lastTime(oldValue,newValue){
+        if(oldValue>=30000){
+          this.realData.transmission='P';
+          this.pedalLeftWidth=0;
+          this.stopLeftWidth=0;
+        }
+      }
+    },
+    mounted () {
+      this.initWebSocket();
+      let level = this.singleVehicle.autoLevel;
+      if(level<3){
+        this.vehicleStatus.gpsStatus=3;
+        this.vehicleStatus.cameraStatus=3;
+        this.vehicleStatus.canStatus=3;
+        this.vehicleStatus.radarStatus=3;
+
+        this.naviStatus.naviControlStatus=3;
+        this.naviStatus.naviPlanningStatus=3;
+        this.naviStatus.naviPerceptionStatus=3;
+        this.naviStatus.naviPredictionStatus=3;
+      }else{
+        this.vehicleStatus.gpsStatus=1;
+        this.vehicleStatus.cameraStatus=1;
+        this.vehicleStatus.canStatus=1;
+        this.vehicleStatus.radarStatus=1;
+
+        this.naviStatus.naviControlStatus=1;
+        this.naviStatus.naviPlanningStatus=1;
+        this.naviStatus.naviPerceptionStatus=1;
+        this.naviStatus.naviPredictionStatus=1;
       }
     },
     methods: {
@@ -221,40 +253,6 @@
         }else{
           return;
         }
-      }
-    },
-    watch:{
-      lastTime(oldValue,newValue){
-        if(oldValue>=30000){
-          this.realData.transmission='P';
-          this.pedalLeftWidth=0;
-          this.stopLeftWidth=0;
-        }
-      }
-    },
-    mounted () {
-      this.initWebSocket();
-      let level = this.singleVehicle.autoLevel;
-      if(level<3){
-        this.vehicleStatus.gpsStatus=3;
-        this.vehicleStatus.cameraStatus=3;
-        this.vehicleStatus.canStatus=3;
-        this.vehicleStatus.radarStatus=3;
-
-        this.naviStatus.naviControlStatus=3;
-        this.naviStatus.naviPlanningStatus=3;
-        this.naviStatus.naviPerceptionStatus=3;
-        this.naviStatus.naviPredictionStatus=3;
-      }else{
-        this.vehicleStatus.gpsStatus=1;
-        this.vehicleStatus.cameraStatus=1;
-        this.vehicleStatus.canStatus=1;
-        this.vehicleStatus.radarStatus=1;
-
-        this.naviStatus.naviControlStatus=1;
-        this.naviStatus.naviPlanningStatus=1;
-        this.naviStatus.naviPerceptionStatus=1;
-        this.naviStatus.naviPredictionStatus=1;
       }
     },
     destroyed(){

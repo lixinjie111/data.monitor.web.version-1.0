@@ -93,7 +93,6 @@
        /* path:[],*/
         vehicleId: this.$route.params.vehicleId,//车编号
         drivingStatistics:{},
-        singleVehicle:{},
 
         distanceMap: null, //创建的地图对象
         prevLastPointPath:[],//上次请求的终点，
