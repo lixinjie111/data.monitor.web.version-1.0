@@ -6,25 +6,29 @@
         <i class="c-dialog-close" @click="closeDialog"></i>
       </div>
       <div class=" road-content">
-        <div class="c-scroll-wrap left-width" id="divScroll" ref="divScroll">
-          <div class="c-scroll-inner">
-              <ul class="road-content-left">
-                <li v-for="item in roadList" @click="getCrossInfo(item)" :class="{active:item.isActive}">
-                  <div class="road-map-style" :id="item.id"></div>
-                  <p>{{item.crossId}}</p>
-                </li>
-
-              </ul>
+        <div class="roadIframe" v-if="selectedItem.source==1">
+          <iframe id="mainIframe" name="mainIframe" src="http://www.baidu.com" frameborder="0" scrolling="auto" ></iframe>
+        </div>
+        <div v-else>
+          <div class="c-scroll-wrap left-width" id="divScroll" ref="divScroll">
+            <div class="c-scroll-inner">
+                <ul class="road-content-left">
+                  <li v-for="item in roadList" @click="getCrossInfo(item)" :key="item.id" :class="{active:item.isActive}">
+                    <div class="road-map-style" :id="item.id"></div>
+                    <p>{{item.crossId}}</p>
+                  </li>
+                </ul>
+            </div>
           </div>
-        </div>
-        <div class="road-content-right">
-          <ul class="road-button-style clearfix">
-            <li v-for="item in options" :key="item.id" :class="{active:item.isActive}" @click="getAllRoadsByType(item)">
-              {{item.text}}
-            </li>
-          </ul>
-          <div class="c-map-style" id="mapContainer"></div>
-        </div>
+          <div class="road-content-right">
+            <ul class="road-button-style clearfix">
+              <li v-for="item in options" :key="item.id" :class="{active:item.isActive}" @click="getAllRoadsByType(item)">
+                {{item.text}}
+              </li>
+            </ul>
+            <div class="c-map-style" id="mapContainer"></div>
+          </div>
+        </div>  
     </div>
   </div>
   </div>
