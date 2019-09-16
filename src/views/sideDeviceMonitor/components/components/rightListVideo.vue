@@ -4,7 +4,7 @@
         <video-player class="c-map-video-style" :options="option" @error="playerError"></video-player>
         <div class="c-mask-title" >
           <div @click="queryDeviceDetail(roadItem,'video')">路侧点：{{roadItem.roadSiderName}}</div>
-          <img src="@/assets/images/carMonitor/refresh.png" class="c-mask-refresh" v-if="roadItem.online==1" @click="refresh('video')"/>
+          <img src="@/assets/images/carMonitor/refresh.png" class="c-mask-refresh" v-if="roadItem.online==1" @click="refresh"/>
         </div>
       </div>
     </div>
@@ -58,16 +58,18 @@
           this.getVideoByNum();
         },
         methods: {
-          getVideoByNum(param){
+          getVideoByNum(){
             var _this = this;
 //          if(this.roadItem.online!=1){
 //            this.option.notSupportedMessage='路侧设备不在线!';
 //            return;
 //          }
-            if(param){
-              _this.option.notSupportedMessage='';
-              _this.option.notSupportedMessage='路侧设备不存在!';
+          setTimeout(()=>{
+            if(_this.rtmp=='') {
+              _this.option.notSupportedMessage = '视频流不存在，请稍候再试！';
             }
+          },1000)
+
             getVideoByNum({
               "protocal": 1,
               "serialNum": this.roadItem.camSerialNum
@@ -94,10 +96,10 @@
             }
           },
           //后端请求超时的解决办法
-          refresh(param){
+          refresh(){
             let _this = this;
             if(_this.roadList.length==0){
-              _this.getVideoByNum('refresh');
+              _this.getVideoByNum();
               return;
             }
             if(_this.rtmp==''){
