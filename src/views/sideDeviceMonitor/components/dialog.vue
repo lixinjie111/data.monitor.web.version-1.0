@@ -190,8 +190,8 @@ import {
   getDevListByRoadId,
   getDeviceCountByCity
 } from "@/api/sideDeviceMonitor";
-import TusvnMap from "@/components/Tusvn3DMap3";
-import { getMap } from "@/utils/tusvnMap1.js";
+import TusvnMap from "@/utils/Tusvn3DMap3";
+import { getMap } from "@/utils/tusvnMap3.js";
 const isProduction = process.env.NODE_ENV === "production";
 export default {
   name: "SideDialog",

@@ -136,7 +136,7 @@ import {
   getDeviceCountByCity
 } from "@/api/sideDeviceMonitor";
 import { getFeaturesByPoint } from "@/api/roadMonitor";
-import TusvnMap from "@/components/Tusvn3DMap4";
+import TusvnMap from "@/utils/Tusvn3DMap4";
 import ConvertCoord from "@/assets/js/utils/coordConvert.js";
 const isProduction = process.env.NODE_ENV === "production";
 export default {

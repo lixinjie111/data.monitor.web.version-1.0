@@ -31,10 +31,10 @@
 </template>
 <script>
   import {getVideoByNum} from '@/api/sideDeviceMonitor'
-  import {getMap} from '@/utils/tusvnMap1.js';
+  import {getMap} from '@/utils/tusvnMap3.js';
   const isProduction = process.env.NODE_ENV === 'production'
 
-  import TusvnMap from '@/components/Tusvn3DMap3'
+  import TusvnMap from '@/utils/Tusvn3DMap3'
     export default {
         data() {
             return {

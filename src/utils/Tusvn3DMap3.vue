@@ -11,7 +11,6 @@ import _ from 'lodash';
 
 
 export default {
-    name:"Tusvn3DMap2",
     props:["targetId","background","navMode","minX","minY","minZ","maxX","maxY","maxZ","z","waitingtime"],
     data(){
         return {
