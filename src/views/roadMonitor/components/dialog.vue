@@ -6,9 +6,7 @@
         <i class="c-dialog-close" @click="closeDialog"></i>
       </div>
       <div class=" road-content">
-        <div class="roadIframe" v-if="selectedItem.source==1">
-          <iframe id="mainIframe" name="mainIframe" src="http://www.baidu.com" frameborder="0" scrolling="auto" ></iframe>
-        </div>
+        <iframe v-if="selectedItem.source==1" class="c-scroll-inner"  src="http://www.baidu.com"  style="width: 100%;height:100%"></iframe>
         <div v-else>
           <div class="c-scroll-wrap left-width" id="divScroll" ref="divScroll">
             <div class="c-scroll-inner">
@@ -181,11 +179,12 @@
         },
         closeDialog(){
           this.webSocket && this.webSocket.close();
-
+           this.$emit("closeDialog");
+           if(this.selectedItem.source==1){
+             return;
+           }
           var divScroll = document.getElementById("divScroll");
           divScroll.removeEventListener("scroll",this.scrollHandler,true);
-
-          this.$emit("closeDialog");
         },
         getAllCross(param){
           let _this = this;
