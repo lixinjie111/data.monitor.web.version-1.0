@@ -385,7 +385,7 @@
             if(item.source==1){//迪路
                makerUrl = './static/images/road/cross.png';
             }else if(item.source==2){//百度
-               makerUrl = './static/images/road/light.png';
+               makerUrl = './static/images/road/cross.png';
             }else if(item.source==3){ //地平线数据  source 3
                makerUrl = './static/images/road/cross.png';
             }else{
