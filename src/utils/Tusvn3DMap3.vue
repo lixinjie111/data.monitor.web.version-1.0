@@ -8,7 +8,7 @@
 
 import _ from 'lodash';
 
-
+import * as myBox from "@/utils/myBox.js";
 
 export default {
     props:["targetId","background","navMode","minX","minY","minZ","maxX","maxY","maxZ","z","waitingtime"],
@@ -24,7 +24,7 @@ export default {
             ,scene:null
             ,viewVector1:{x:this.minX,y:this.minY,z:this.minZ}
             ,viewVector2:{x:this.maxX,y:this.maxY,z:this.maxZ}
-
+            ,carColor: 0x80f77a
 
             ,shps:{}
             ,models:{}
@@ -503,8 +503,10 @@ export default {
                 {
                     // 0019D1AA0424  0019EAFA0104  0019EAFA0102  0018EAFA0332
                     //车
-                    var geoBox1 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
-                    var model1 = new THREE.Mesh( geoBox1, this.matStdObjects );
+                    // var geoBox1 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
+                    // var model1 = new THREE.Mesh( geoBox1, this.matStdObjects );
+                    var model1 = myBox.addMyBox(1.7, 4.6, 1.4, this.carColor);
+
                     model1.position.set( 0, 0, 0 );
                     model1.rotation.set( this.pitch,this.yaw,this.roll );
                     model1.castShadow = true;
@@ -565,8 +567,9 @@ export default {
                     for(let m = 0;m<this.cacheModelNum;m++)
                     {
                         //车
-                        var geoBox1 = new THREE.BoxBufferGeometry(3.8,1.6,  1.4);
-                        var model1 = new THREE.Mesh( geoBox1, this.matStdObjects );
+                        // var geoBox1 = new THREE.BoxBufferGeometry(3.8,1.6,  1.4);
+                        // var model1 = new THREE.Mesh( geoBox1, this.matStdObjects );
+                        var model1 = myBox.addMyBox(3.8,1.6,  1.4, this.carColor);
                         model1.position.set( 0, 0, 0 );
                         model1.rotation.set( this.pitch,this.yaw,this.roll );
                         model1.castShadow = true;
@@ -674,8 +677,10 @@ export default {
                     for(let m = 0;m<this.cacheModelNum;m++)
                     {
                         //车
-                        var geoBox1 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
-                        var model1 = new THREE.Mesh( geoBox1, this.matStdObjects );
+                        // var geoBox1 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
+                        // var model1 = new THREE.Mesh( geoBox1, this.matStdObjects );
+                        var model1 = myBox.addMyBox(1.7, 4.6, 1.4, this.carColor);
+
                         model1.position.set( 0, 0, 0 );
                         model1.rotation.set( this.pitch,this.yaw,this.roll );
                         model1.castShadow = true;
@@ -683,6 +688,7 @@ export default {
 
                         this.scene.add(model1);
                         this.deviceModels[deviceid].cars[m] = model1;
+                        
 
                         var pBox1 = new THREE.BoxBufferGeometry(0.4, 0.4, 1.7);
                         var pmodel1 = new THREE.Mesh( pBox1, this.person );
@@ -981,8 +987,11 @@ export default {
                     for(let m = 0;m<this.cacheModelNum;m++)
                     {
                         //车
-                        var geoBox1 = new THREE.BoxBufferGeometry(3.8,1.6, 1.4);
-                        var model1 = new THREE.Mesh( geoBox1, this.matStdObjects );
+                        // var geoBox1 = new THREE.BoxBufferGeometry(3.8,1.6, 1.4);
+                        // var model1 = new THREE.Mesh( geoBox1, this.matStdObjects );
+
+                        var model1 = myBox.addMyBox(3.8,1.6, 1.4, this.carColor);
+
                         model1.position.set( 0, 0, 0 );
                         model1.rotation.set( this.pitch,this.yaw,this.roll );
                         model1.castShadow = true;
@@ -1006,8 +1015,9 @@ export default {
                         this.scene.add(pmodel1);
 
                         //融合车辆
-                        var geoBox_out = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
-                        var model_out = new THREE.Mesh( geoBox_out, this.matStdObjects );
+                        // var geoBox_out = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
+                        // var model_out = new THREE.Mesh( geoBox_out, this.matStdObjects );
+                        var model_out = myBox.addMyBox(1.7, 4.6, 1.4, this.carColor);
 
                         var geoBox_in = new THREE.BoxBufferGeometry(0.85, 2.3, 0.7);
                         var model_in = new THREE.Mesh( geoBox_in, this.matStdObjects_in );
@@ -1302,8 +1312,10 @@ export default {
                     for(let m=0;m<this.pCacheModelNum;m++)
                     {
                         let mesh1 = new THREE.MeshStandardMaterial( { color: 0xab6604, roughness: 1, metalness: 0, opacity: 0.7, transparent: true } );
-                        var geoBox1 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
-                        var model1 = new THREE.Mesh( geoBox1, mesh1);
+                        // var geoBox1 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
+                        // var model1 = new THREE.Mesh( geoBox1, mesh1);
+                        var model1 = myBox.addMyBox(1.7, 4.6, 1.4, this.carColor);
+                        
                         model1.position.set(0,0, this.defualtZ );
                         model1.rotation.set( this.pitch,this.yaw,this.roll );
                         model1.castShadow = true;
