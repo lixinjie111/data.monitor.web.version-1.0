@@ -228,10 +228,12 @@
                         });
                       }
                       //路口
-                      if(disParam=='cross'){        
+                      if(disParam=='cross'){
                         posotionData.push({
                           lnglat: subItem.position,
-                          id: subItem.uid
+                          id: subItem.uid,
+                          style: subIndex,
+                          source: subItem.source
                         });
                       }
                       //交通事件
@@ -375,17 +377,27 @@
               size: sizeMass
           });
         }else if(disParam=='cross'){
-          makerUrl = './static/images/road/cross.png';
+          //makerUrl = './static/images/road/cross.png';
           anchorMass =  new AMap.Pixel(11, 11);
           sizeMass = new AMap.Size(22, 22);
           massNum = "masscross";
-          style.push({
-              url: makerUrl,
-              anchor: anchorMass,
-              size: sizeMass
+          data.map(item => {
+            if(item.source==1){//迪路
+               makerUrl = './static/images/road/cross.png';
+            }else if(item.source==2){//百度
+               makerUrl = './static/images/road/light.png';
+            }else if(item.source==3){ //地平线数据  source 3
+               makerUrl = './static/images/road/cross.png';
+            }else{
+               makerUrl = './static/images/road/cross.png';
+            }
+            style.push({
+                url: makerUrl,
+                anchor: anchorMass,
+                size: sizeMass
+            });        
           });
-        }
-        else if(disParam =='traffic'){ 
+        }else if(disParam =='traffic'){ 
           anchorMass =  new AMap.Pixel(12,34);
           sizeMass = new AMap.Size(24,34);
           massNum = "masstraffic";
@@ -420,7 +432,8 @@
               if(disParam=='cross'){    
                 this[massNum].on('click', function(e) {
                   let item={
-                    crossId:e.data.id
+                    crossId:e.data.id,
+                    source:e.data.source
                   } 
                   _this.$parent.$emit("crossEvent",item);
                 });
