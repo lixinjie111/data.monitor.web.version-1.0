@@ -190,8 +190,8 @@ import {
   getDevListByRoadId,
   getDeviceCountByCity
 } from "@/api/sideDeviceMonitor";
-import TusvnMap from "@/components/Tusvn3DMap2";
-import { getMap } from "@/utils/tusvnMap.js";
+import TusvnMap from "@/components/Tusvn3DMap3";
+import { getMap } from "@/utils/tusvnMap1.js";
 const isProduction = process.env.NODE_ENV === "production";
 export default {
   name: "SideDialog",
@@ -603,11 +603,13 @@ export default {
     },
     closeDialog() {
       var options = this.getPlayerOptions();
-      options.sources[0].src = "";
-      this.option = options;
-       if(this.$refs.videoPlayer){
+      if(options.sources[0].src){
         this.$refs.videoPlayer.dispose();
       }
+      
+      options.sources[0].src = "";
+      this.option = options;
+     
       if (this.$refs.tusvnMap3) {
         this.$refs.tusvnMap3.reset3DMap();
       }
