@@ -96,7 +96,9 @@
           }
         }
       },
-      mounted() {},
+      mounted() {
+        console.log(this.roadItem)
+      },
       destroyed(){
         //销毁Socket
         if(this.$refs[this.roadItem.camSerialNum]){
