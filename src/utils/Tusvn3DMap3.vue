@@ -754,7 +754,9 @@ export default {
                         mdl.position.z = this.defualtZ+1;
 
                         let text = this.deviceModels[deviceid].texts[i];
-                        text.setText(d.target.uuid.substr(0,8));
+                        let h = d.heading.toFixed(1);
+                        let s = d.speed.toFixed(1);
+                        text.setText("[" + h + ", " + s + "]");
                         text.setPositon([dUTM[0],dUTM[1],this.defualtZ+2]);
                     }
                 }else{
@@ -766,7 +768,9 @@ export default {
                         mdl.position.z = this.defualtZ+1;
 
                         let text = this.deviceModels[deviceid].texts[i];
-                        text.setText(d.target.uuid.substr(0,8));
+                        let h = d.heading.toFixed(1);
+                        let s = d.speed.toFixed(1);
+                        text.setText("[" + h + ", " + s + "]");
                         text.setPositon([dUTM[0],dUTM[1],this.defualtZ+3]);
                     }
                 }
