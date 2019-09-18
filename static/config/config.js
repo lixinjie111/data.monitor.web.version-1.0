@@ -6,6 +6,7 @@ window.config = {
     websocketUrl:'ws://218.76.44.22:9982/mon',  //监控
     socketUrl:'ws://218.76.44.22:9999/ws',  //影子系统
     dlUrl: 'http://218.76.44.22:8085/', //迪路
+    dlWmsUrl: 'http://218.76.44.22:48080/', //迪路
 
     version: 1.0,       // 版本号
 }
