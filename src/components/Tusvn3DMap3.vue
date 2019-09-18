@@ -262,6 +262,28 @@ export default {
             let bbox = new THREE.Box3(new THREE.Vector3(x1,y1,z1), new THREE.Vector3(x2,y2,z2));
             dl.initView(bbox,this.viewer);
         },
+          addStaticModel_traffic_light: function(name, url, x, y, z, pitch, yaw, roll) {
+                let model = new dl.Model({
+                    url: url
+                    // ,scale:scale==null?[1,1,1]:scale
+                    // scale:[5,5,5]
+                });
+                model.position.x = x;
+                model.position.y = y;
+                model.position.z = z;
+                // if(color!=null)
+                // {
+                //     model.setColor(color);
+                // }
+                // model.setColor("#ffffff");
+                let pitch1 = pitch == null ? 0 : pitch;
+                let yaw1 = yaw == null ? 0 : yaw;
+                let roll1 = roll == null ? 30 : roll;
+                model.rotation.set(pitch1, yaw1, roll1);
+
+                dl.scene.add(model);
+                this.staticmodels[name] = model;
+            },
         /**
          * name:矢量数据的名字 可选
          * url:矢量数据的url路径 必须
@@ -724,11 +746,11 @@ export default {
                         let mdl = this.deviceModels[deviceid].persons[i];
                         mdl.position.x = dUTM[0];
                         mdl.position.y = dUTM[1];
-                        mdl.position.z = this.defualtZ+4;
+                        mdl.position.z = this.defualtZ+1;
 
                         let text = this.deviceModels[deviceid].texts[i];
                         text.setText(d.target.uuid.substr(0,8));
-                        text.setPositon([dUTM[0],dUTM[1],this.defualtZ+5]);
+                        text.setPositon([dUTM[0],dUTM[1],this.defualtZ+2]);
                     }
                 }else{
                     if(i<this.deviceModels[deviceid].cars.length)
@@ -736,11 +758,11 @@ export default {
                         let mdl = this.deviceModels[deviceid].cars[i];
                         mdl.position.x = dUTM[0];
                         mdl.position.y = dUTM[1];
-                        mdl.position.z = this.defualtZ+4;
+                        mdl.position.z = this.defualtZ+1;
 
                         let text = this.deviceModels[deviceid].texts[i];
                         text.setText(d.target.uuid.substr(0,8));
-                        text.setPositon([dUTM[0],dUTM[1],this.defualtZ+6]);
+                        text.setPositon([dUTM[0],dUTM[1],this.defualtZ+3]);
                     }
                 }
             }

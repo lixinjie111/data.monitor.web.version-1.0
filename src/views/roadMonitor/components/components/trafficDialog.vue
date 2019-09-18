@@ -101,7 +101,7 @@
 	import { getFeaturesByPoint } from '@/api/roadMonitor'
 	import TusvnMap from "@/components/Tusvn3DMap3";
 	import ConvertCoord from "@/assets/js/utils/coordConvert.js";
-	import { getMap } from "@/utils/tusvnMap3.js";
+	import { getMap } from "@/utils/tusvnMap1.js";
 	const isProduction = process.env.NODE_ENV === "production";
 	export default {
 		name: "SideDialog",
