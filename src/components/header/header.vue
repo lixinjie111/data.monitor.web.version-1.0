@@ -3,6 +3,7 @@
         <router-link tag="a" class="logo-wrap" to="/">
             <img class="logo" src="static/images/logo.png">
             <em class="name">监控管理中心</em>
+            <img src="static/images/logo-title.png" class="logo-title"/>
         </router-link>
         <ul class="menu-box clearfix">
            <router-link tag="li" v-for="item in navList" :key="item.id" class="menu-list" :to="item.path">{{item.name}}</router-link>
@@ -188,6 +189,10 @@ export default {
             line-height: 30px;
             color: #fff;
             letter-spacing: 3px;
+            margin-right: 10px;
+        }
+        .logo-title {
+            height: 22px;
         }
     }
     .menu-box{
