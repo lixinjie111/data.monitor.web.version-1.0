@@ -19,7 +19,7 @@ window.config = {
 }
 //地图额外配置项添加
 window.mapOption = {
-    mapStyleEmpty: "amap://styles/bc5a63d154ee0a5221a1ee7197607a00", // 纯灰色背景地图 路口
+    mapStyleEmpty: "amap://styles/3e9326410a47bb37df6cd0c4f74ea976", // 纯灰色背景地图 路口
     defaultCenterPoint :  [112.857703,28.20041],   // 长沙默认中心点 --- 高德坐标点
     centerPoint :  [112.857703,28.20041],     // 数据概览 中心点位置(获取地理位置计算天气) --- 高德坐标点
     singlePoint:[112.857703,28.20041],    // 单车监控 大地图中心点 --- 高德坐标点
@@ -30,7 +30,7 @@ window.defaultMapOption = {
 	zoom: 11,		// 默认：比例尺显示100m
 	resizeEnable: true, //是否监控地图容器尺寸变化
 	rotateEnable: true,
-	mapStyle: "amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8"
+	mapStyle: "amap://styles/7a893466c58601035af135907c163385"
 }
 
 //路网配置参数
