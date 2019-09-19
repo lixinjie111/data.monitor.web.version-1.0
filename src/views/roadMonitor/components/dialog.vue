@@ -6,27 +6,24 @@
         <i class="c-dialog-close" @click="closeDialog"></i>
       </div>
       <div class=" road-content">
-        <iframe v-if="selectedItem.source==1" class="c-scroll-inner"  src="http://www.baidu.com"  style="width: 100%;height:100%"></iframe>
-        <div v-else>
-          <div class="c-scroll-wrap left-width" id="divScroll" ref="divScroll">
-            <div class="c-scroll-inner">
-                <ul class="road-content-left">
-                  <li v-for="item in roadList" @click="getCrossInfo(item)" :key="item.id" :class="{active:item.isActive}">
-                    <div class="road-map-style" :id="item.id"></div>
-                    <p>{{item.crossId}}</p>
-                  </li>
-                </ul>
-            </div>
+        <div class="c-scroll-wrap left-width" id="divScroll" ref="divScroll">
+          <div class="c-scroll-inner">
+              <ul class="road-content-left">
+                <li v-for="item in roadList" @click="getCrossInfo(item)" :key="item.id" :class="{active:item.isActive}">
+                  <div class="road-map-style" :id="item.id"></div>
+                  <p>{{item.crossId}}</p>
+                </li>
+              </ul>
           </div>
-          <div class="road-content-right">
-            <ul class="road-button-style clearfix">
-              <li v-for="item in options" :key="item.id" :class="{active:item.isActive}" @click="getAllRoadsByType(item)">
-                {{item.text}}
-              </li>
-            </ul>
-            <div class="c-map-style" id="mapContainer"></div>
-          </div>
-        </div>  
+        </div>
+        <div class="road-content-right">
+          <ul class="road-button-style clearfix">
+            <li v-for="item in options" :key="item.id" :class="{active:item.isActive}" @click="getAllRoadsByType(item)">
+              {{item.text}}
+            </li>
+          </ul>
+          <div class="c-map-style" id="mapContainer"></div>
+        </div>
     </div>
   </div>
   </div>
@@ -179,12 +176,9 @@
         },
         closeDialog(){
           this.webSocket && this.webSocket.close();
-           this.$emit("closeDialog");
-           if(this.selectedItem.source==1){
-             return;
-           }
           var divScroll = document.getElementById("divScroll");
           divScroll.removeEventListener("scroll",this.scrollHandler,true);
+          this.$emit("closeDialog");
         },
         getAllCross(param){
           let _this = this;
