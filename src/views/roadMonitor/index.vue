@@ -41,11 +41,7 @@ export default {
     components: {MapContainer,LeftTop,leftBottom,rightList,roadDialog,iframeDialog},
     methods: {
       queryCrossDetail(item){
-        if(item.source==3){
-          this.iframeDialog=true;
-        }else{
-          this.dialogVisible=true;
-        }
+        this.dialogVisible=true;
         this.selectedItem = item;
       },
       closeDialog(){
@@ -55,9 +51,11 @@ export default {
     },
     mounted () {
       this.$on("crossEvent",(item) =>{
-        if(item.source==3){
+        if(item.source==3){//地平线点击跳iframe
           this.iframeDialog=true;
-        }else{
+        }else if(item.source==2){//百度不能点
+
+        }else{//自己的
           this.dialogVisible=true;
         }
         this.selectedItem=item;

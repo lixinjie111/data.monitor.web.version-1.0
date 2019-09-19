@@ -384,7 +384,7 @@
           data.map(item => {
             if(item.source==1){//迪路
                makerUrl = './static/images/road/cross.png';
-            }else if(item.source==2){//百度
+            }else if(item.source==2){//百度不可点
                makerUrl = './static/images/road/cross.png';
             }else if(item.source==3){ //地平线数据  source 3
                makerUrl = './static/images/road/cross.png';
