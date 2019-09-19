@@ -112,6 +112,9 @@ export default {
             }, 1000);
         },
         getAddress(lnglat) {
+            if(!lnglat){
+                return;
+            }
             let _this = this,
                 geocoder = new AMap.Geocoder();
             geocoder.getAddress(lnglat, function(status, result) {
@@ -122,7 +125,7 @@ export default {
                     _this.requestData.disCode = _data.adcode;
                     _this.getTopWeather();
                 }else{
-                    console.log('根据经纬度查询地址失败')
+                    console.log(status)
                 }
             });
         },
