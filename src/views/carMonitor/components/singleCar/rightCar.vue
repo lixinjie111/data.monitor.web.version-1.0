@@ -117,10 +117,26 @@
       isStop(oldValue,newValue){
         if(this.isStop){
           this.playerOptions.sources[0].src='';
-          this.carsDataformate=[];
+          this.carsData=[];
         }else {
           this.getDeviceInfo();
         }
+      }
+    },
+    computed:{
+      carsDataformate(){
+          var that = this;
+          if(this.carsData && this.carsData.length > 0) {
+            var carsDataformate = this.carsData.map(function(item,index,self){
+                var formateItem = that.mapPtToScrPt(item);
+                item.Sx = formateItem.Sx;
+                item.Sy = formateItem.Sy;
+                return item;
+            });
+            return carsDataformate;
+          }else{
+            return [];
+          }
       }
     },
     methods: {
@@ -133,7 +149,12 @@
         }).then(res => {
           var list = res.vehicleCalendarDetail;
           if(list==null&&list.length<=0){
-            this.$message.error("行车日历结果不存在");
+            this.$message({
+                type: 'error',
+                duration: '1500',
+                message: '行车日历结果不存在',
+                showClose: true
+            });
             return;
           }
           var xDate;
@@ -444,22 +465,7 @@
       this.timer = null;//清除直播报活
 
     },
-    computed:{
-      carsDataformate(){
-          var that = this;
-          if(this.carsData && this.carsData.length > 0) {
-            var carsDataformate = this.carsData.map(function(item,index,self){
-                var formateItem = that.mapPtToScrPt(item);
-                item.Sx = formateItem.Sx;
-                item.Sy = formateItem.Sy;
-                return item;
-            });
-            return carsDataformate;
-          }else{
-            return [];
-          }
-      }
-    },
+
     destroyed(){
         //销毁Socket
         this.socket.close();
@@ -479,8 +485,8 @@
     padding-right: 0!important;
   }
   .monitor-video .vjs-error .vjs-error-display .vjs-modal-dialog-content{
-    padding:60px 24px 30px!important;
-    color: #ccc;
+    /*padding:60px 24px 30px!important;
+    color: #ccc;*/
   }
   .monitor-video .vjs-error .vjs-error-display:before{
     font-size: 3em;

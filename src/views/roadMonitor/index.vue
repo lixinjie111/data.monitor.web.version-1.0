@@ -16,7 +16,8 @@
         </div>
       </div>
     </div>
-    <road-dialog :dialogVisible="dialogVisible" :selected-item="selectedItem" @closeDialog="closeDialog" :deviceMapId="'deviceMap1'"></road-dialog>
+    <road-dialog v-if="dialogVisible" :selected-item="selectedItem" @closeDialog="closeDialog" :deviceMapId="'deviceMap1'"></road-dialog>
+    <iframe-dialog v-if="iframeDialog" :selectedItem="selectedItem"  @closeDialog="closeDialog"></iframe-dialog>
   </div>
 </template>
 <script>
@@ -25,17 +26,19 @@
   import leftBottom from './components/leftBottom.vue'
   import rightList from './components/rightList.vue'
   import roadDialog from './components/dialog.vue'
+  import iframeDialog from './components/iframeDialog.vue'
 export default {
   	name: "RoadMonitor",
     data () {
 		  return {
         dialogVisible:false,
+        iframeDialog:false,
         selectedItem:{},
         mapDialogVisible:false,
         mapSelectedItem:{}
       }
     },
-    components: {MapContainer,LeftTop,leftBottom,rightList,roadDialog},
+    components: {MapContainer,LeftTop,leftBottom,rightList,roadDialog,iframeDialog},
     methods: {
       queryCrossDetail(item){
         this.dialogVisible=true;
@@ -43,11 +46,18 @@ export default {
       },
       closeDialog(){
         this.dialogVisible = false;
+        this.iframeDialog=false;
       }
     },
     mounted () {
       this.$on("crossEvent",(item) =>{
-        this.dialogVisible=true;
+        if(item.source==3){//地平线点击跳iframe
+          this.iframeDialog=true;
+        }else if(item.source==2){//百度不能点
+
+        }else{//自己的
+          this.dialogVisible=true;
+        }
         this.selectedItem=item;
       })
     }

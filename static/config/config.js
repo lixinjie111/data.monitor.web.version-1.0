@@ -1,22 +1,28 @@
 window.config = {
-    //长沙
-       url: 'http://111.23.140.59:9093/monPlatApp/', //监控平台
-       operateUrl: 'http://111.23.140.59:9090/operateApp/',	//运营平台
-       websocketUrl:'ws://111.23.140.59:9982/mon',  //监控
-       socketUrl:'ws://111.23.140.59:9999/ws',  //影子系统
-       dlUrl: 'http://111.23.140.59:8085/', //迪路
-       dlWmsUrl: 'http://111.23.140.59:8080/', //迪路
+    //长沙 测试地址
+    // url: 'http://111.23.140.59:9093/monPlatApp/', //监控平台
+    // operateUrl: 'http://111.23.140.59:9090/operateApp/', //运营平台
+    // websocketUrl:'ws://111.23.140.59:9982/mon',  //监控
+    // socketUrl:'ws://111.23.140.59:9999/ws',  //影子系统
+    // dlUrl: 'http://218.76.44.22:8085/', //迪路
+    // dlWmsUrl: 'http://218.76.44.22:48080/', //迪路
+
+    //长沙 正式地址
+    url: 'http://218.76.44.22:9093/monPlatApp/', //监控平台
+    operateUrl: 'http://218.76.44.22:9090/operateApp/',	//运营平台
+    websocketUrl:'ws://218.76.44.22:9982/mon',  //监控
+    socketUrl:'ws://218.76.44.22:9999/ws',  //影子系统
+    dlUrl: 'http://218.76.44.22:8085/', //迪路
+    dlWmsUrl: 'http://218.76.44.22:48080/', //迪路
 
     version: 1.0,       // 版本号
 }
 //地图额外配置项添加
 window.mapOption = {
-	// center: [121.551976, 31.276054],	//上海-高德地图坐标点
-	// center: [113.07876,28.255618],	//长沙-高德地图坐标点
-    mapStyleEmpty: "amap://styles/bc5a63d154ee0a5221a1ee7197607a00", // 纯灰色背景地图 路口
-    defaultCenterPoint :  [121.262939,31.245149],   // 上海默认中心点 --- 高德坐标点
-    centerPoint :  [121.17265957261286,31.284096076877844],     // 数据概览 中心点位置(获取地理位置计算天气) --- 高德坐标点
-    singlePoint:[121.18653381418872,31.274421462567677],    // 单车监控 大地图中心点 --- 高德坐标点
+    mapStyleEmpty: "amap://styles/3e9326410a47bb37df6cd0c4f74ea976", // 纯灰色背景地图 路口
+    defaultCenterPoint :  [112.857703,28.20041],   // 长沙默认中心点 --- 高德坐标点
+    centerPoint :  [112.857703,28.20041],     // 数据概览 中心点位置(获取地理位置计算天气) --- 高德坐标点
+    singlePoint:[112.857703,28.20041],    // 单车监控 大地图中心点 --- 高德坐标点
 };
 
 window.defaultMapOption = {
@@ -26,19 +32,6 @@ window.defaultMapOption = {
 	rotateEnable: true,
 	mapStyle: "amap://styles/7a893466c58601035af135907c163385"
 }
-
-// 调用
-// this.distanceMap = new AMap.Map('map-container', window.defaultMapOption);
-// let _option = Object.assign(
-// 	{},
-// 	window.defaultMapOption,
-// 	{
-// 		mapStyle: window.mapOption.mapStyleEmpty
-// 	}
-// );
-// this.distanceMap = new AMap.Map('map-container', _option);
-
-
 
 //路网配置参数
 window.dlWmsOption = {
@@ -51,17 +44,7 @@ window.dlWmsOption = {
 }
 window.dlWmsDefaultOption = {
     url:window.config.dlWmsUrl+'geoserver/shanghai_qcc/wms',
-    blend: false,
+    blend: true,
     tileSize: 256,
     params:{}
 }
-//	调用
-// let _optionWms = Object.assign(
-// 	{},
-// 	window.dlWmsDefaultOption,
-// 	{
-// 		params:{'LAYERS': window.dlWmsOption.LAYERS_centerline,'STYLES': window.dlWmsOption.STYLES, 'VERSION': window.dlWmsOption.VERSION}
-// 	}
-// );
-// this.wms = new AMap.TileLayer.WMS(_optionWms);
-// this.distanceMap.add(this.wms);

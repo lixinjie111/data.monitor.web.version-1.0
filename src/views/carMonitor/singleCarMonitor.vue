@@ -1,11 +1,11 @@
 <template>
 <div class="car-view-wrapper clearfix">
     <div class="single-left">
-        <left-car></left-car>
+        <left-car :singleVehicle="singleVehicle"></left-car>
     </div>
     <div class="single-main">
         <div class="single-header">
-            <header-car :real-data="realData" ></header-car>
+            <header-car :real-data="realData" :singleVehicle="singleVehicle" :isStop="isStop"></header-car>
         </div>
         <div class="single-content ">
             <div class="single-content-left">
@@ -41,6 +41,7 @@
   import RightCar from './components/singleCar/rightCar.vue'
   import MainCar from './components/singleCar/mainCar.vue'
   import BottomCar from './components/singleCar/bottomCar.vue'
+  import {getVehicleBaseData} from '@/api/carMonitor'
   export default {
     name: "SingleCarMonitor",
     components: {LeftCar,HeaderCar,RightCar,MainCar,BottomCar},
@@ -63,8 +64,9 @@
         speedData:{},
         /*vehicleId:'B21E-00-017',*/
         vehicleId:this.$route.params.vehicleId,
-        webSocket:{},
-        isStop:false
+        webSocket:null,
+        isStop:false,
+        singleVehicle:{}
       }
     },
     methods: {
@@ -124,10 +126,19 @@
       },
       onerror(event){
         console.error("WebSocket error observed:", event);
-      }
+      },
+      getBaseData(){
+        var _this = this;
+        getVehicleBaseData({
+          'vehicleId': this.vehicleId,
+        }).then(res => {
+          this.singleVehicle = res.vehicleBaseDetail[0];
+        });
+      },
     },
     mounted () {
       this.initWebSocket();
+      this.getBaseData();
       // setTimeout(() => {
       //   this.isStop = true;
       // }, 5000);

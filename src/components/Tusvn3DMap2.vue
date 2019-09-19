@@ -70,7 +70,7 @@ export default {
 
             ,sourceProject:"EPSG:4326"
             // ,destinatePorject:"+proj=utm +zone=50 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"//北京
-            ,destinatePorject:"+proj=utm +zone=51 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"//上海
+            ,destinatePorject:"+proj=utm +zone=49 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"//上海
         }
     },
     watch:{
@@ -499,7 +499,7 @@ export default {
                     if(i<this.deviceModels[deviceid].cars.length)
                     {
                         let mdl = this.deviceModels[deviceid].cars[i];
-                        
+
                         mdl.position.x = dUTM[0];
                         mdl.position.y = dUTM[1];
                         mdl.position.z = this.defualtZ+4;
