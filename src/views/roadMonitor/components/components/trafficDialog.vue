@@ -378,7 +378,7 @@
 			onmessage(mesasge) {
 				//console.log(JSON.parse(mesasge.data))
 				this.itemData = JSON.parse(mesasge.data).result.data;
-				this.position = this.coordinateTransfer("EPSG:4326", "+proj=utm +zone=51 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", this.itemData.longitude, this.itemData.latitude);
+				this.position = this.coordinateTransfer("EPSG:4326", "+proj=utm +zone=49 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", this.itemData.longitude, this.itemData.latitude);
 				let list = JSON.parse(mesasge.data).result.deviceList;
 				if(list) {
 					this.deviceList = JSON.parse(mesasge.data).result.deviceList;
