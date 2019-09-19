@@ -13,7 +13,7 @@
         <tusvn-map
           class="c-map-video-style"
           v-if="sideMap"
-          :target-id="'mapMonitor'+roadItem.camSerialNum"
+          :targetId="'mapMonitor'+roadItem.camSerialNum"
           :ref="roadItem.camSerialNum"
           minX=325295.155400
           minY=3461941.703700
@@ -31,10 +31,10 @@
 </template>
 <script>
   import {getVideoByNum} from '@/api/sideDeviceMonitor'
-  import {getMap} from '@/utils/tusvnMap.js';
+  import {getMap} from '@/utils/tusvnMap3.js';
   const isProduction = process.env.NODE_ENV === 'production'
 
-  import TusvnMap from '@/components/Tusvn3DMap2'
+  import TusvnMap from '@/utils/Tusvn3DMap3'
     export default {
         data() {
             return {
@@ -52,9 +52,10 @@
         props:['visible','roadItem','roadList'],
         methods: {
           onMapComplete:function(){
-            getMap(this.$refs[this.roadItem.camSerialNum]);
+     
             if(this.roadItem.camSerialNum&&this.roadItem.camSerialNum!=''){
-              let cameraParam = JSON.parse(this.roadItem.cameraParam);
+              let cameraParam = JSON.parse(this.roadItem.cameraParam);  
+              getMap(this.$refs[this.roadItem.camSerialNum]);
               this.$refs[this.roadItem.camSerialNum].updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
               this.$refs[this.roadItem.camSerialNum].changeRcuId(window.config.websocketUrl,this.roadItem.camSerialNum);
               return;
@@ -96,7 +97,9 @@
           }
         }
       },
-      mounted() {},
+      mounted() {
+        console.log(this.roadItem)
+      },
       destroyed(){
         //销毁Socket
         if(this.$refs[this.roadItem.camSerialNum]){
