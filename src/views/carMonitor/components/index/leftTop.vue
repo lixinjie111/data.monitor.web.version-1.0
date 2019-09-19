@@ -33,7 +33,7 @@ export default {
             let _filterData = {};
             for(let attr in this.responseData) {
                 if(attr == 'totalMileage') {
-                    console.log(this.responseData[attr], parseInt(this.responseData[attr]/1000));
+                    //console.log(this.responseData[attr], parseInt(this.responseData[attr]/1000));
                     _filterData[attr] = parseInt(this.responseData[attr]/1000).toLocaleString() || '--';
                 }else {
                     _filterData[attr] = parseFloat(this.responseData[attr]).toLocaleString() || '--';

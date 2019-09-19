@@ -98,7 +98,7 @@
         }
       },
       mounted() {
-        console.log(this.roadItem)
+        //console.log(this.roadItem)
       },
       destroyed(){
         //销毁Socket
