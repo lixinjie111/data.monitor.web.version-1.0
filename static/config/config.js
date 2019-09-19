@@ -20,9 +20,9 @@ window.config = {
 //地图额外配置项添加
 window.mapOption = {
     mapStyleEmpty: "amap://styles/bc5a63d154ee0a5221a1ee7197607a00", // 纯灰色背景地图 路口
-    defaultCenterPoint :  [113.07876,28.255618],   // 长沙默认中心点 --- 高德坐标点
-    centerPoint :  [113.07876,28.255618],     // 数据概览 中心点位置(获取地理位置计算天气) --- 高德坐标点
-    singlePoint:[113.07876,28.255618],    // 单车监控 大地图中心点 --- 高德坐标点
+    defaultCenterPoint :  [112.857703,28.20041],   // 长沙默认中心点 --- 高德坐标点
+    centerPoint :  [112.857703,28.20041],     // 数据概览 中心点位置(获取地理位置计算天气) --- 高德坐标点
+    singlePoint:[112.857703,28.20041],    // 单车监控 大地图中心点 --- 高德坐标点
 };
 
 window.defaultMapOption = {
