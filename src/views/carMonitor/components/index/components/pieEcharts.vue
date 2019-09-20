@@ -111,6 +111,7 @@ export default {
 				 		right: "10%"
 				 	},
 				    legend: {
+						type: 'scroll',
 		                itemWidth: 5,
 		                itemHeight: 15,
 				        orient: 'vertical',

@@ -51,7 +51,6 @@ window.mapOption = {
     centerPoint :  [121.17265957261286,31.284096076877844],     // 数据概览 中心点位置(获取地理位置计算天气) --- 高德坐标点
     singlePoint:[121.18653381418872,31.274421462567677],    // 单车监控 大地图中心点 --- 高德坐标点
 };
-
 window.defaultMapOption = {
     center: window.mapOption.defaultCenterPoint,
     zoom: 11,       // 默认：比例尺显示100m
@@ -59,7 +58,6 @@ window.defaultMapOption = {
     rotateEnable: true,
     mapStyle: "amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8"
 }
-
 //路网配置参数
 window.dlWmsOption = {
     'LAYERS_dlzc': 'shanghai_qcc:gd_dlzc',
@@ -75,3 +73,13 @@ window.dlWmsDefaultOption = {
     tileSize: 256,
     params:{}
 }
+// 3D地图范围默认参数配置
+window.mapParam={
+    minX:325295.155400,
+    minY:3461941.703700,
+    minZ:50,
+    maxX:326681.125700,
+    maxY:3462723.022400,
+    maxZ:80,
+    background:"black"
+};

@@ -59,7 +59,8 @@
         socket:'',
         screenConfig:{
             scrWidth: 270, //屏幕宽 px
-            scrHeight: 180, //屏幕高 px
+            scrHeight: 180, //屏幕高 
+            
             // showHeight: 1800000, //显示高 m
             showHeight: 300, //显示高 m
             meterPerDegree: 108000, //1度=108000 m 固定值

@@ -13,14 +13,15 @@
         <tusvn-map
           class="c-map-video-style"
           v-if="sideMap"
-          :target-id="'mapMonitor'+roadItem.camSerialNum"
+          :targetId="'mapMonitor'+roadItem.camSerialNum"
           :ref="roadItem.camSerialNum"
-          minX=325295.155400
-          minY=3461941.703700
-          minZ=50
-          maxX=326681.125700
-          maxY=3462723.022400
-          maxZ=80
+          :background="mapParam.background"
+          :minX="mapParam.minX"
+          :minY="mapParam.minY"
+          :minZ="mapParam.minZ"
+          :maxX="mapParam.maxX"
+          :maxY="mapParam.maxY"
+          :maxZ="mapParam.maxZ"
           @mapcomplete="onMapComplete">
         </tusvn-map>
        <!-- <div class="c-mask-tip" v-else>
@@ -34,10 +35,11 @@
   import {getMap} from '@/utils/tusvnMap.js';
   const isProduction = process.env.NODE_ENV === 'production'
 
-  import TusvnMap from '@/components/Tusvn3DMap2'
+  import TusvnMap from '@/utils/Tusvn3DMap3'
     export default {
         data() {
             return {
+              mapParam:window.mapParam,
               isFullScreen:false,
               rtmp:"",
               mapShow:false,
@@ -52,9 +54,10 @@
         props:['visible','roadItem','roadList'],
         methods: {
           onMapComplete:function(){
-            getMap(this.$refs[this.roadItem.camSerialNum]);
+     
             if(this.roadItem.camSerialNum&&this.roadItem.camSerialNum!=''){
-              let cameraParam = JSON.parse(this.roadItem.cameraParam);
+              let cameraParam = JSON.parse(this.roadItem.cameraParam);  
+              getMap(this.$refs[this.roadItem.camSerialNum]);
               this.$refs[this.roadItem.camSerialNum].updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
               this.$refs[this.roadItem.camSerialNum].changeRcuId(window.config.websocketUrl,this.roadItem.camSerialNum);
               return;
@@ -96,7 +99,9 @@
           }
         }
       },
-      mounted() {},
+      mounted() {
+        //console.log(this.roadItem)
+      },
       destroyed(){
         //销毁Socket
         if(this.$refs[this.roadItem.camSerialNum]){
