@@ -43,12 +43,12 @@
                   :target-id="deviceMapId"
                   ref="tusvnMap3"
                   background="black"
-                  minX=325295.155400
-                  minY=3461941.703700
+                  minX=679622
+                  minY=3108707
                   minZ=50
-                  maxX=326681.125700
-				  maxY=3462723.022400  
-				  smaxZ=80
+                  maxX=704758
+        				  maxY=3135874  
+        				  maxZ=80
                   @mapcomplete="mapcomplete"
                   @showTimeStamp="showTimeStamp"
 				  :waitingtime='50'
