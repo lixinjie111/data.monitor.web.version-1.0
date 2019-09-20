@@ -27,17 +27,6 @@ window.mapOption = {
     centerPoint :  [121.17265957261286,31.284096076877844],     // 数据概览 中心点位置(获取地理位置计算天气) --- 高德坐标点
     singlePoint:[121.18653381418872,31.274421462567677],    // 单车监控 大地图中心点 --- 高德坐标点
 };
-// 3D地图范围默认参数配置
-window.mapParam={
-    minX:325295.155400,
-    minY:3461941.703700,
-    minZ:50,
-    maxX:326681.125700,
-    maxY:3462723.022400,
-    maxZ:80,
-    background:"black"
-};
-
 window.defaultMapOption = {
 	center: window.mapOption.defaultCenterPoint,
 	zoom: 11,		// 默认：比例尺显示100m
@@ -56,8 +45,6 @@ window.defaultMapOption = {
 // 	}
 // );
 // this.distanceMap = new AMap.Map('map-container', _option);
-
-
 
 //路网配置参数
 window.dlWmsOption = {
@@ -84,3 +71,14 @@ window.dlWmsDefaultOption = {
 // );
 // this.wms = new AMap.TileLayer.WMS(_optionWms);
 // this.distanceMap.add(this.wms);
+
+// 3D地图范围默认参数配置
+window.mapParam={
+    minX:325295.155400,
+    minY:3461941.703700,
+    minZ:50,
+    maxX:326681.125700,
+    maxY:3462723.022400,
+    maxZ:80,
+    background:"black"
+};
