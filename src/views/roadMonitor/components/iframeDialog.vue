@@ -6,7 +6,8 @@
 				<i class="c-dialog-close" @click="closeDialog"></i>
 			</div>
 			<div class="c-dialog-content m-side-dialog-content">
-				<iframe  frameborder="no"  src="http://csdpx.huali-cloud.com/home/"  style="width: 100%;height:100%"></iframe>
+				<!-- <iframe  frameborder="no"  src="http://csdpx.huali-cloud.com/home/"  style="width: 100%;height:100%"></iframe> -->
+				<iframe  frameborder="no"  src="http://10.3.2.99"  style="width: 100%;height:100%"></iframe>
 			</div>
 		</div>
 	</div>
