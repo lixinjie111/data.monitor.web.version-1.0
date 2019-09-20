@@ -42,13 +42,13 @@
                 <tusvn-map
                   :target-id="deviceMapId"
                   ref="tusvnMap3"
-                  background="black"
-                  minX=325295.155400
-                  minY=3461941.703700
-                  minZ=50
-                  maxX=326681.125700
-				  maxY=3462723.022400  
-				  smaxZ=80
+                  :background="mapParam.background"
+                  :minX="mapParam.minX"
+                  :minY="mapParam.minY"
+                  :minZ="mapParam.minZ"
+                  :maxX="mapParam.maxX"
+                  :maxY="mapParam.maxY"
+                  :maxZ="mapParam.maxZ"
                   @mapcomplete="mapcomplete"
                   @showTimeStamp="showTimeStamp"
 				  :waitingtime='50'
@@ -143,6 +143,7 @@ export default {
   name: "SideDialog",
   data() {
     return {
+      mapParam:window.mapParam,
       webSocket: null,
       webSocketData: {
         action: "event_detail_data",

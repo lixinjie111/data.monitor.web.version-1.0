@@ -12,7 +12,7 @@
     import _ from "lodash";
 
     import * as myBox from "@/utils/myBox.js";
-    import { getMap } from "@/utils/tusvnMap4.js";
+    import { getMap } from "@/utils/tusvnMap.js";
 
     export default {
         props: [

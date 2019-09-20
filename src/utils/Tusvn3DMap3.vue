@@ -1223,7 +1223,7 @@ export default {
             if(window.WebSocket){
                 if(this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
                     this.hostWebsocket.send(msg); //send()发送消息
-                    console.log("已发送消息:"+ msg);
+                    //console.log("已发送消息:"+ msg);
                 }
             }
         },
