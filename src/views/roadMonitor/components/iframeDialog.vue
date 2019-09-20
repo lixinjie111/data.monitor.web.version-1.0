@@ -2,7 +2,7 @@
 	<div class="c-dialog-wrapper">
 		<div class="c-dialog-container">
 			<div class="c-dialog-header">
-				<span class="c-dialog-title">路口监控</span>
+				<span class="c-dialog-title"></span>
 				<i class="c-dialog-close" @click="closeDialog"></i>
 			</div>
 			<div class="c-dialog-content m-side-dialog-content">
