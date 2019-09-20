@@ -1,5 +1,4 @@
 <template>
-<div>
   <div class="c-dialog-wrapper">
     <div class="c-dialog-container">
       <div class="c-dialog-header">
@@ -78,13 +77,13 @@
                 <tusvn-map
                   :target-id="deviceMapId"
                   ref="tusvnMap3"
-                  background="black"
-                  minX=679622
-                  minY=3108707
-                  minZ=50
-                  maxX=704758
-                  maxY=3135874  
-                  maxZ=80
+                  :background="mapParam.background"
+                  :minX="mapParam.minX"
+                  :minY="mapParam.minY"
+                  :minZ="mapParam.minZ"
+                  :maxX="mapParam.maxX"
+                  :maxY="mapParam.maxY"
+                  :maxZ="mapParam.maxZ"
                   @mapcomplete="mapcomplete"
                   @showTimeStamp="showTimeStamp"
                 ></tusvn-map>
@@ -160,13 +159,13 @@
                       <tusvn-map
                         :target-id="deviceMapId"
                         ref="tusvnMap3"
-                        background="black"
-                        minX="325295.155400"
-                        minY="3461941.703700"
-                        minZ="50"
-                        maxX="326681.125700"
-                        maxY="3462723.022400"
-                        maxZ="80"
+                        :background="mapParam.background"
+                        :minX="mapParam.minX"
+                        :minY="mapParam.minY"
+                        :minZ="mapParam.minZ"
+                        :maxX="mapParam.maxX"
+                        :maxY="mapParam.maxY"
+                        :maxZ="mapParam.maxZ"
                         @mapcomplete="mapcomplete"
                         @showTimeStamp="showTimeStamp"
                       ></tusvn-map>
@@ -180,7 +179,6 @@
       </div>
     </div>
   </div>
-  </div>
 </template>
 <script>
 import {
@@ -191,12 +189,13 @@ import {
   getDeviceCountByCity
 } from "@/api/sideDeviceMonitor";
 import TusvnMap from "@/utils/Tusvn3DMap3";
-import { getMap } from "@/utils/tusvnMap3.js";
+import { getMap } from "@/utils/tusvnMap.js";
 const isProduction = process.env.NODE_ENV === "production";
 export default {
   name: "SideDialog",
   data() {
     return {
+      mapParam:window.mapParam,
       option: {},
       provinceOptions: [],
       provinceValue: "",
@@ -411,6 +410,7 @@ export default {
         //选中后重新请求
          if (this.$refs.tusvnMap3) {
           this.$refs.tusvnMap3.reset3DMap();
+          console.log(item.cameraParam);
           _this.cameraParam = JSON.parse(item.cameraParam);
           this.$refs.tusvnMap3.updateCameraPosition(
             _this.cameraParam.x,

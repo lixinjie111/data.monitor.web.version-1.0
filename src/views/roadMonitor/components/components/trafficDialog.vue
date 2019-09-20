@@ -1,123 +1,121 @@
 <template>
-  <div>
-    <div class="c-dialog-wrapper">
-      <div class="c-dialog-container">
-        <div class="c-dialog-header">
-          <span class="c-dialog-title">交通事件</span>
-          <i class="c-dialog-close" @click="closeDialog"></i>
+  <div class="c-dialog-wrapper">
+    <div class="c-dialog-container">
+      <div class="c-dialog-header">
+        <span class="c-dialog-title">交通事件</span>
+        <i class="c-dialog-close" @click="closeDialog"></i>
+      </div>
+      <div class="c-dialog-content m-side-dialog-content">
+        <div class="side-device-left">
+          <div class="c-scroll-wrap">
+            <div class="c-scroll-inner">
+              <div class="side-device-detail clearfix">
+                <span class="side-device-label">事件类型：</span>
+                <span class="device-detail-style">{{itemData.eventName || '--'}}</span>
+              </div>
+              <div class="side-device-detail clearfix">
+                <span class="side-device-label">发生时间：</span>
+                <span
+                  class="device-detail-style"
+                >{{itemData.beginTime?$dateUtil.formatTime(Number(itemData.beginTime)) : '--'}}</span>
+              </div>
+              <div class="side-device-detail clearfix">
+                <span class="side-device-label">发生地点：</span>
+                <span
+                  class="device-detail-style"
+                >{{itemData.longitude || '--'}} , {{itemData.latitude || '--'}}</span>
+              </div>
+              <div class="side-device-detail clearfix">
+                <span class="side-device-label">道路名称：</span>
+                <span class="device-detail-style">{{itemData.roadName || '--'}}</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="c-dialog-content m-side-dialog-content">
-          <div class="side-device-left">
-            <div class="c-scroll-wrap">
-              <div class="c-scroll-inner">
-                <div class="side-device-detail clearfix">
-                  <span class="side-device-label">事件类型：</span>
-                  <span class="device-detail-style">{{itemData.eventName || '--'}}</span>
-                </div>
-                <div class="side-device-detail clearfix">
-                  <span class="side-device-label">发生时间：</span>
-                  <span
-                    class="device-detail-style"
-                  >{{itemData.beginTime?$dateUtil.formatTime(Number(itemData.beginTime)) : '--'}}</span>
-                </div>
-                <div class="side-device-detail clearfix">
-                  <span class="side-device-label">发生地点：</span>
-                  <span
-                    class="device-detail-style"
-                  >{{itemData.longitude || '--'}} , {{itemData.latitude || '--'}}</span>
-                </div>
-                <div class="side-device-detail clearfix">
-                  <span class="side-device-label">道路名称：</span>
-                  <span class="device-detail-style">{{itemData.roadName || '--'}}</span>
-                </div>
-              </div>
+        <div class="side-dialog-map">
+          <div style="width: 100%;height: 100%;">
+            <div style="width: 100%;height: 100%;" v-if="sideMap">
+              <!-- <div class="time-style">
+              <span class="t-class">{{time}}</span>
+              </div>-->
+              <tusvn-map
+                :target-id="deviceMapId"
+                ref="tusvnMap3"
+                :background="mapParam.background"
+                :minX="mapParam.minX"
+                :minY="mapParam.minY"
+                :minZ="mapParam.minZ"
+                :maxX="mapParam.maxX"
+                :maxY="mapParam.maxY"
+                :maxZ="mapParam.maxZ"
+                @mapcomplete="mapcomplete"
+                @showTimeStamp="showTimeStamp"
+      				  :waitingtime='50'
+              ></tusvn-map>
             </div>
+            <div v-else class="side-map-tip side-tip-style">{{mapMessage}}</div>
           </div>
-          <div class="side-dialog-map">
-            <div style="width: 100%;height: 100%;">
-              <div style="width: 100%;height: 100%;" v-if="sideMap">
-                <!-- <div class="time-style">
-                <span class="t-class">{{time}}</span>
-                </div>-->
-                <tusvn-map
-                  :target-id="deviceMapId"
-                  ref="tusvnMap3"
-                  background="black"
-                  minX=679622
-                  minY=3108707
-                  minZ=50
-                  maxX=704758
-        				  maxY=3135874  
-        				  maxZ=80
-                  @mapcomplete="mapcomplete"
-                  @showTimeStamp="showTimeStamp"
-				  :waitingtime='50'
-                ></tusvn-map>
-              </div>
-              <div v-else class="side-map-tip side-tip-style">{{mapMessage}}</div>
-            </div>
-          </div>
-          <div class="side-device-list">
-            <div class="c-scroll-wrap">
-              <div class="c-scroll-inner">
-                <p class="side-device-title">设备列表</p>
-                <div class="device-list-style">
-                  <div class="table-header-group">
-                    <ul class="table-row">
-                      <li class="table-cell table-title device-num" style="text-align: center">设备编号</li>
-                      <li class="table-cell table-title device-style">联网状态</li>
-                      <li class="table-cell table-title device-style">开启监控</li>
-                    </ul>
-                  </div>
-                  <div class="table-row-group">
-                    <ul class="table-row" v-for="item in deviceObj" :key="item.deviceId">
-                      <li class="table-cell device-num">
-                        <img
-                          src="@/assets/images/monitorManage/monitor-3.png"
-                          class="monitor-device-img-1"
-                          v-if="item.type=='N'"
-                        />
-                        <img
-                          src="@/assets/images/monitorManage/monitor-4.png"
-                          class="monitor-device-img-2"
-                          v-else
-                        />
-                        <span class="monitor-device-text">{{item.deviceId}}</span>
-                      </li>
-                      <li class="table-cell">
-                        <span
-                          class="monitor-device-symbol"
-                          :class="[item.cameraRunStatus==1?'online':'offline']"
-                        ></span>
-                      </li>
-                      <li class="table-cell">
-                        <div
-                          class="c-switch-style"
-                          :class="[item.value?active:unActive]"
-                          @click="switchChange(item)"
-                          v-show="item.type=='N'"
-                        >
-                          <i></i>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
+        </div>
+        <div class="side-device-list">
+          <div class="c-scroll-wrap">
+            <div class="c-scroll-inner">
+              <p class="side-device-title">设备列表</p>
+              <div class="device-list-style">
+                <div class="table-header-group">
+                  <ul class="table-row">
+                    <li class="table-cell table-title device-num" style="text-align: center">设备编号</li>
+                    <li class="table-cell table-title device-style">联网状态</li>
+                    <li class="table-cell table-title device-style">开启监控</li>
+                  </ul>
                 </div>
-                <p class="side-device-title">
-                  <span>监控视频</span>
-                </p>
-                <div class="device-video-style">
-                  <div class="side-video-style">
-                    <div class="c-mask-title">
-                      <div class="m-mask-title">智能摄像头：{{deviceId}}</div>
+                <div class="table-row-group">
+                  <ul class="table-row" v-for="item in deviceObj" :key="item.deviceId">
+                    <li class="table-cell device-num">
                       <img
-                        src="@/assets/images/carMonitor/refresh.png"
-                        class="c-mask-refresh"
-                        @click="refresh"
+                        src="@/assets/images/monitorManage/monitor-3.png"
+                        class="monitor-device-img-1"
+                        v-if="item.type=='N'"
                       />
-                    </div>
-                    <video-player class="c-map-video-style" :options="option" ref="videoPlayer"></video-player>
+                      <img
+                        src="@/assets/images/monitorManage/monitor-4.png"
+                        class="monitor-device-img-2"
+                        v-else
+                      />
+                      <span class="monitor-device-text">{{item.deviceId}}</span>
+                    </li>
+                    <li class="table-cell">
+                      <span
+                        class="monitor-device-symbol"
+                        :class="[item.cameraRunStatus==1?'online':'offline']"
+                      ></span>
+                    </li>
+                    <li class="table-cell">
+                      <div
+                        class="c-switch-style"
+                        :class="[item.value?active:unActive]"
+                        @click="switchChange(item)"
+                        v-show="item.type=='N'"
+                      >
+                        <i></i>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <p class="side-device-title">
+                <span>监控视频</span>
+              </p>
+              <div class="device-video-style">
+                <div class="side-video-style">
+                  <div class="c-mask-title">
+                    <div class="m-mask-title">智能摄像头：{{deviceId}}</div>
+                    <img
+                      src="@/assets/images/carMonitor/refresh.png"
+                      class="c-mask-refresh"
+                      @click="refresh"
+                    />
                   </div>
+                  <video-player class="c-map-video-style" :options="option" ref="videoPlayer"></video-player>
                 </div>
               </div>
             </div>
@@ -143,6 +141,7 @@ export default {
   name: "SideDialog",
   data() {
     return {
+      mapParam:window.mapParam,
       webSocket: null,
       webSocketData: {
         action: "event_detail_data",
