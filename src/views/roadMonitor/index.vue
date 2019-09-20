@@ -51,13 +51,18 @@ export default {
     },
     mounted () {
       this.$on("crossEvent",(item) =>{
-        if(item.source==3){//地平线点击跳iframe
+        if(item.source==2) {
           this.iframeDialog=true;
-        }else if(item.source==2){//百度不能点
-
-        }else{//自己的
+        }else {
           this.dialogVisible=true;
         }
+        // if(item.source==3){//地平线点击跳iframe
+        //   this.iframeDialog=true;
+        // }else if(item.source==2){//百度不能点
+
+        // }else{//自己的
+        //   this.dialogVisible=true;
+        // }
         this.selectedItem=item;
       })
     }
