@@ -2,15 +2,18 @@
     <ul class="c-car-list c-info-wrap clearfix">
       <li class="c-info-list">
         <p class="c-info-title">总里程(公里)</p>
-        <p class="c-info-text">{{responseData.distance|| '--'}}</p>
+        <p class="c-info-text">40.0</p>
+        <!-- <p class="c-info-text">{{responseData.distance|| '--'}}</p> -->
       </li>
       <li class="c-info-list">
         <p class="c-info-title">路口数</p>
-        <p class="c-info-text">{{responseData.crossing|| '--'}}</p>
+        <p class="c-info-text">6</p>
+        <!-- <p class="c-info-text">{{responseData.crossing|| '--'}}</p> -->
       </li>
       <li class="c-info-list">
         <p class="c-info-title">红绿灯数</p>
-        <p class="c-info-text">{{responseData.trafficLight|| '--'}}</p>
+        <p class="c-info-text">16</p>
+        <!-- <p class="c-info-text">{{responseData.trafficLight|| '--'}}</p> -->
       </li>
       <li class="c-info-list">
         <p class="c-info-title">路侧点数</p>
