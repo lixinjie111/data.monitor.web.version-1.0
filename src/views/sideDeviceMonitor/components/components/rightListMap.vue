@@ -57,7 +57,6 @@
      
             if(this.roadItem.camSerialNum&&this.roadItem.camSerialNum!=''){
               let cameraParam = JSON.parse(this.roadItem.cameraParam);  
-              console.log(cameraParam);
               getMap(this.$refs[this.roadItem.camSerialNum]);
               this.$refs[this.roadItem.camSerialNum].updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
               this.$refs[this.roadItem.camSerialNum].changeRcuId(window.config.websocketUrl,this.roadItem.camSerialNum);
