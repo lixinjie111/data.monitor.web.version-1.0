@@ -623,6 +623,7 @@ export default {
       getMap(this.$refs.tusvnMap3);
       if (this.serialNum && this.serialNum != "") {
         this.mapInit = true;
+        console.log(this.cameraParam);
         this.$refs.tusvnMap3.updateCameraPosition(
           this.cameraParam.x,
           this.cameraParam.y,
