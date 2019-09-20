@@ -410,7 +410,7 @@ export default {
         //选中后重新请求
          if (this.$refs.tusvnMap3) {
           this.$refs.tusvnMap3.reset3DMap();
-          console.log(item.cameraParam);
+          if(!item.cameraParam) return;
           _this.cameraParam = JSON.parse(item.cameraParam);
           this.$refs.tusvnMap3.updateCameraPosition(
             _this.cameraParam.x,
