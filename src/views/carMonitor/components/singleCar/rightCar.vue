@@ -59,7 +59,8 @@
         socket:'',
         screenConfig:{
             scrWidth: 270, //屏幕宽 px
-            scrHeight: 180, //屏幕高 px
+            scrHeight: 180, //屏幕高 
+            
             // showHeight: 1800000, //显示高 m
             showHeight: 300, //显示高 m
             meterPerDegree: 108000, //1度=108000 m 固定值
@@ -149,7 +150,12 @@
         }).then(res => {
           var list = res.vehicleCalendarDetail;
           if(list==null&&list.length<=0){
-            this.$message.error("行车日历结果不存在");
+            this.$message({
+                type: 'error',
+                duration: '1500',
+                message: '行车日历结果不存在',
+                showClose: true
+            });
             return;
           }
           var xDate;
@@ -460,7 +466,7 @@
       this.timer = null;//清除直播报活
 
     },
-    
+
     destroyed(){
         //销毁Socket
         this.socket.close();
@@ -480,8 +486,8 @@
     padding-right: 0!important;
   }
   .monitor-video .vjs-error .vjs-error-display .vjs-modal-dialog-content{
-    padding:60px 24px 30px!important;
-    color: #ccc;
+    /*padding:60px 24px 30px!important;
+    color: #ccc;*/
   }
   .monitor-video .vjs-error .vjs-error-display:before{
     font-size: 3em;

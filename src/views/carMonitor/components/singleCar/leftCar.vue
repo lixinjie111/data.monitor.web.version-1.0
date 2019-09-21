@@ -93,7 +93,6 @@
        /* path:[],*/
         vehicleId: this.$route.params.vehicleId,//车编号
         drivingStatistics:{},
-        singleVehicle:{},
 
         distanceMap: null, //创建的地图对象
         prevLastPointPath:[],//上次请求的终点，
@@ -134,6 +133,16 @@
         countTimer: null,
         countTimeLimit: 1000*60*5,
         countTime: 0
+      }
+    },
+    props:{
+      singleVehicle:{
+        type:Object,
+        default() {
+          return {
+
+          };
+        }
       }
     },
     computed: {
@@ -195,7 +204,7 @@
       this.getRouteDataByVehId();
       // this.initWebSocket();
 
-      this.getBaseData();
+//      this.getBaseData();
       this.getDrivingStatistics();
 
       setTimeout(() => {
@@ -251,15 +260,7 @@
           // this.drivingStatistics.avgSpeed = this.drivingStatistics.avgSpeed.toFixed(1);
         });
       },
-      getBaseData(){
-        var _this = this;
-        this.drivingStatistics = {};
-        getVehicleBaseData({
-          'vehicleId': this.vehicleId,
-        }).then(res => {
-          this.singleVehicle = res.vehicleBaseDetail[0];
-        });
-      },
+
       //重绘形成初始化
       initDistanceMap(){
         this.prevLastPointPath = [];//上次请求的终点，

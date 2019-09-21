@@ -714,51 +714,62 @@
         _this.warningWebsocket.onopen = _this.onWarningOpen;
       },
       onWarningMessage(mesasge){
-//        console.log("时间----"+new Date().getTime())
         let _this=this;
-        /*if(this.i>4){
-          return;
-        }*/
         let json = JSON.parse(mesasge.data);
         let warningData = json.result.data;
         let type = json.result.type;
         if(warningData.length>0){
           if(type=='VEHICLE'){
+            let warningId;
             warningData.forEach(item=>{
-              _this.vehicleCount++;
-              var dist = parseInt(item.dis);
-              if(!dist){
-                dist=-1;
-              }
-
-              var obj = {type: item.eventType,timer: null, flag: true,dist:dist,message:item.warnMsg,icon:item.warnIcon,warnColor:item.warnColor};
-              obj.timer=setTimeout(()=>{
-                obj.flag=false;
-                _this.warningList.forEach(item=>{
-                  if(item.flag){
-                    _this.isAllClear=true;
-                  }
-                })
-                if(!_this.isAllClear){
-                  this.warningList=[];
+              warningId = item.warnId;
+              //如果告警id不存在 右侧弹出
+              if(!_this.warningData[warningId]){
+                _this.vehicleCount++;
+                let dist = parseInt(item.dis);
+                if(!dist){
+                  dist=-1;
                 }
-              },3000)
-              _this.warningList.unshift(obj);
+                let obj = {type: item.eventType,timer: null, flag: true,dist:dist,message:item.warnMsg,icon:item.warnIcon,warnColor:item.warnColor};
+                obj.timer=setTimeout(()=>{
+                  obj.flag=false;
+                  _this.warningList.forEach(item=>{
+                    if(item.flag){
+                      _this.isAllClear=true;
+                    }
+                  })
+                  if(!_this.isAllClear){
+                    this.warningList=[];
+                  }
+                },3000)
+                _this.warningList.unshift(obj);
+                _this.warningData[warningId]=obj;
+              }
             })
           }
           if(type=='CLOUD'){
+            let warningId;
             let eventType = json.result.eventType;
             let longitude;
             let latitude;
             let position;
             warningData.forEach(item=>{
-              _this.cloudCount++;
-            if(!_this.warningData[warningId]){
-              var dist = parseInt(item.dis);
+              warningId = item.warnId;
+              warningId = warningId.substring(0,warningId.lastIndexOf("_"));
+              let msg = item.warnMsg+" "+item.dis+"米";
+              let warningObj={
+                longitude:item.longitude,
+                latitude:item.latitude
+              }
+              let warningHash = _this.hashcode(JSON.stringify(warningObj));
+              let position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
+              //如果告警id不存在 右侧弹出
+ 	      if(!_this.warningData[warningId]){ 
+                let dist = parseInt(item.dis);
               if(!dist){
                 dist=-1;
               }
-              var obj = {type:eventType,timer:null,flag:true,dist:dist,message:item.warnMsg,icon:item.warnIcon,warnColor:item.warnColor};
+                let obj = {type:eventType,timer:null,flag:true,dist:dist,message:item.warnMsg,icon:item.warnIcon,warnColor:item.warnColor};
               obj.timer=setTimeout(()=>{
                 obj.flag=false;
                 _this.warningList.forEach(item=>{
@@ -771,6 +782,7 @@
                 }
               },3000)
               _this.warningList.unshift(obj);
+	            _this.cloudCount++;
               longitude = item.longitude;
               latitude = item.longitude;
               position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
@@ -791,7 +803,8 @@
                 zoomStyleMapping:_this.zoomStyleMapping
               })
               _this.distanceMap.add(marker);
-                 let eventObj = {
+                //同时
+                let eventObj = {
                   marker:marker,
                   hash:warningHash
                 }
@@ -831,6 +844,16 @@
         }else{
           return;
         }
+      },
+      hashcode(str) {
+	      let hash = 0, i, chr, len;
+	      if (str.length === 0) return hash;
+	      for (i = 0, len = str.length; i < len; i++) {
+	        chr   = str.charCodeAt(i);
+	        hash  = ((hash << 5) - hash) + chr;
+	        hash |= 0; // Convert to 32bit integer
+	      }
+      	      return hash;
       },
       initGeatWebSocket(){
         let _this=this;

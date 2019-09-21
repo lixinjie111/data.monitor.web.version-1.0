@@ -2,6 +2,7 @@
 	<div class="header clearfix">
         <router-link tag="a" class="logo-wrap" to="/">
             <img class="logo" src="static/images/logo.png">
+            <em class="name">监控管理中心</em>
         </router-link>
         <ul class="menu-box clearfix">
            <router-link tag="li" v-for="item in navList" :key="item.id" class="menu-list" :to="item.path">{{item.name}}</router-link>
@@ -111,6 +112,9 @@ export default {
             }, 1000);
         },
         getAddress(lnglat) {
+            if(!lnglat){
+                return;
+            }
             let _this = this,
                 geocoder = new AMap.Geocoder();
             geocoder.getAddress(lnglat, function(status, result) {
@@ -121,7 +125,7 @@ export default {
                     _this.requestData.disCode = _data.adcode;
                     _this.getTopWeather();
                 }else{
-                    console.log('根据经纬度查询地址失败')
+                    console.log(status)
                 }
             });
         },
@@ -174,9 +178,16 @@ export default {
         padding: 5px 0;
         cursor: pointer;
         height: 30px;
+        @include layoutMode(align);
         .logo {
             height: 100%;
-            vertical-align: top;
+            margin-right: 10px;
+        }
+        .name {
+            font-size: 24px;
+            line-height: 30px;
+            color: #fff;
+            letter-spacing: 3px;
         }
     }
     .menu-box{
