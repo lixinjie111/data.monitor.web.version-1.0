@@ -19,7 +19,7 @@
       return {
         id: "device-map-container",
         map: null,
-      
+
         // 获取在驶车辆实时数据（辆）
         webSocket: null,
         webSocketData: {
@@ -95,7 +95,8 @@
                   deviceId:item.deviceId,
                   path:item.path,
                   longitude:item.longitude,
-                  latitude:item.latitude
+                  latitude:item.latitude,
+                  title:item.devName
                 }
                 resultData.push(option);
               }
@@ -125,7 +126,8 @@
                         var marker = new AMap.Marker({
                           position: subItem.position,
                           icon: 'static/images/sideDevice/3.png', // 添加 Icon 图标 URL
-                          offset:new AMap.Pixel(-15, -15)
+                          offset:new AMap.Pixel(-15, -15),
+                          title:subItem.title
                         });
                         _this.map.add(marker);
                         var item={
