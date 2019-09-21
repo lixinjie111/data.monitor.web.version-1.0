@@ -65,11 +65,11 @@
            'text':'交通事件',
            'isActive':false
          },
-         {
-           'id':'speed',
-           'text':'通行速度',
-           'isActive':false
-         }
+         // {
+         //   'id':'speed',
+         //   'text':'通行速度',
+         //   'isActive':false
+         // }
         ],
         distributeShow:false,
         message:{},

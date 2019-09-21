@@ -321,7 +321,6 @@
 //              }
               return;
             }
-
             // 清空车辆
             this.clearCars();
 
@@ -348,7 +347,6 @@
             
 //            }
 //            let position = ConvertCoord.wgs84togcj02(result[0].x,result[0].y);
-            
             let p;
             result.forEach(item=>{
 //              p =  ConvertCoord.wgs84togcj02(item.x,item.y);
