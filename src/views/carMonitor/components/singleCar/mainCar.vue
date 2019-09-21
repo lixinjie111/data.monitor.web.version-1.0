@@ -753,6 +753,7 @@
             let position;
             warningData.forEach(item=>{
               _this.cloudCount++;
+            if(!_this.warningData[warningId]){
               var dist = parseInt(item.dis);
               if(!dist){
                 dist=-1;
@@ -790,6 +791,19 @@
                 zoomStyleMapping:_this.zoomStyleMapping
               })
               _this.distanceMap.add(marker);
+                 let eventObj = {
+                  marker:marker,
+                  hash:warningHash
+                }
+                _this.warningData[warningId]=eventObj;
+              }else{
+                //判断是否需要更新
+                let eventObj = _this.warningData[warningId];
+                if(eventObj.hash!=warningHash){
+                  //进行更新
+                  eventObj.marker.setPosition(position);
+                }
+              }
             })
           }
         }
