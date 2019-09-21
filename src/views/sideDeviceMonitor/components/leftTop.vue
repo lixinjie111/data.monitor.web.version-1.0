@@ -12,14 +12,14 @@
     	<p class="c-info-title">红绿灯</p>
     	<p class="c-info-text">{{responseData.lightCount|| '--'}}</p>
     </li>
-    <li class="c-info-list">
+    <!-- <li class="c-info-list">
     	<p class="c-info-title">路侧雷达</p>
     	<p class="c-info-text">{{responseData.radarCount|| '--'}}</p>
-    </li>
-    <li class="c-info-list">
+    </li> -->
+    <!-- <li class="c-info-list">
       <p class="c-info-title">RCU</p>
       <p class="c-info-text">{{responseData.rcuCount|| '--'}}</p>
-    </li>
+    </li> -->
     <li class="c-info-list">
       <p class="c-info-title">摄像头</p>
       <p class="c-info-text">{{responseData.videoCount|| '--'}}</p>
