@@ -98,7 +98,7 @@ export default {
                     }else {
                         this.clearCookie();
                     }
-                    this.loginFunc(this.loginForm);     
+                    this.loginFunc(this.loginForm); 
                 } else {
                     this.loading = false;
                     return false;
@@ -149,7 +149,7 @@ export default {
                 //this.$refs.loginForm.resetFields();
                 this.loginForm.userNo = "";
                 this.loginForm.password = "";
-                this.checked = false;
+                this.checked = true;
             }
         },
         //清除cookie
