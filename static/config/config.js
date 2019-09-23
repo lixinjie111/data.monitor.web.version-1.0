@@ -91,3 +91,13 @@ window.defaultMapParam = {
     pitch:-0.6747685185185206,
     yaw:-0.7853942219746017
 }
+
+window.circleParam = {
+    redius: 17000,
+    center: [695984,3122050,13.618],
+    color: "#000",
+    outline: false,
+    outlineColor: "#ff0000",
+    opacity: 0.1,
+    rotate: [0, 0, 0]
+};
