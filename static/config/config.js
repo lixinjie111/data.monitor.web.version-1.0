@@ -1,20 +1,12 @@
 window.config = {
 
-    //望京 内网
-    url: 'http://172.17.1.16:9093/monPlatApp/', //监控平台
-    operateUrl: 'http://172.17.1.16:9090/operateApp/',	//运营平台
-    websocketUrl:'ws://172.17.1.16:9982/mon',  //监控
-    socketUrl:'ws://172.17.1.16:9999/ws',  //影子系统
-    dlUrl: 'http://10.0.1.22:8085/', //迪路
-    dlWmsUrl: 'http://10.0.1.22:8080/', //迪路
-
-    //望京 外网
-    // url: 'http://120.133.21.14:9093/monPlatApp/', //监控平台
-    // operateUrl: 'http://120.133.21.14:9090/operateApp/',	//运营平台
-    // websocketUrl:'ws://120.133.21.14:49982/mon',  //监控
-    // socketUrl:'ws://120.133.21.14:49999/ws',  //影子系统
-    // dlUrl: 'http://113.208.118.62:8085/', //迪路
-    // dlWmsUrl: 'http://113.208.118.62:8080/', //迪路 
+    //雄安 外网地址
+    url: 'http://144.7.122.89:9093/monPlatApp/', //监控平台
+    operateUrl: 'http://144.7.122.89:9090/operateApp/',	//运营平台
+    websocketUrl:'ws://144.7.122.19:9982/mon',  //监控
+    socketUrl:'ws://144.7.122.84:9999/ws',  //影子系统
+    dlUrl: 'http://144.7.122.19:8085/', //迪路
+    dlWmsUrl: 'http://144.7.122.19:8080/', //迪路 
 
     version: 1.0,       // 版本号
 }
