@@ -55,7 +55,7 @@
         methods: {
           onMapComplete:function(){
      
-            if(this.roadItem.camSerialNum&&this.roadItem.camSerialNum!=''){
+            if(this.roadItem.camSerialNum&&this.roadItem.camSerialNum!='' && this.roadItem.cameraParam){
               let cameraParam = JSON.parse(this.roadItem.cameraParam);  
               getMap(this.$refs[this.roadItem.camSerialNum]);
               this.$refs[this.roadItem.camSerialNum].updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);
