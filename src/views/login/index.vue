@@ -65,25 +65,24 @@ export default {
         }
     },
     created() {
-        this.visibleFlag = true;
-        // let _data = localStorage.getItem("yk-token");
-        // if(_data) {
-        //     let _dataObj = JSON.parse(_data),
-        //         _delayTime = 1000 * 60 * 60 * 24;
-        //     if (new Date().getTime() - _dataObj.time > _delayTime) {
-        //         console.log('信息已过期');
-        //         this.removeStorage();
-        //     }else{
-        //         // 直接调用登录接口
-        //         let _params = {
-        //             token: _dataObj.data,
-        //             platform: this.$store.state.admin.platform
-        //         };
-        //         this.loginFunc(_params);
-        //     }
-        // }else {
-        //     this.removeStorage();
-        // }
+        let _data = localStorage.getItem("yk-token");
+        if(_data) {
+            let _dataObj = JSON.parse(_data),
+                _delayTime = 1000 * 60 * 60 * 24;
+            if (new Date().getTime() - _dataObj.time > _delayTime) {
+                console.log('信息已过期');
+                this.removeStorage();
+            }else{
+                // 直接调用登录接口
+                let _params = {
+                    token: _dataObj.data,
+                    platform: this.$store.state.admin.platform
+                };
+                this.loginFunc(_params);
+            }
+        }else {
+            this.removeStorage();
+        }
     },
  	mounted() {
        this.getCookie();
@@ -93,22 +92,13 @@ export default {
         handleLogin() {
             this.$refs.loginForm.validate(valid => {
                 if (valid) {
-                    if(this.loginForm.userNo == 'qcctest1') {
-                        this.loading = true;
-                        if (this.checked == true) {
-                            this.setCookie(this.loginForm.userNo, this.loginForm.password, 7);
-                        }else {
-                            this.clearCookie();
-                        }
-                        this.loginFunc(this.loginForm); 
+                    this.loading = true;
+                    if (this.checked == true) {
+                        this.setCookie(this.loginForm.userNo, this.loginForm.password, 7);
                     }else {
-                        this.$message({
-                            type: 'error',
-                            duration: '1500',
-                            message: '该用户没有权限，请重试！',
-                            showClose: true
-                        });
-                    }    
+                        this.clearCookie();
+                    }
+                    this.loginFunc(this.loginForm); 
                 } else {
                     this.loading = false;
                     return false;
