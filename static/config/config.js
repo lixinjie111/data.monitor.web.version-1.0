@@ -48,11 +48,11 @@ window.dlWmsDefaultOption = {
 }
 // 3D地图范围默认参数配置
 window.mapParam={
-    minX: 694986.6877441636,
-    minY: 3134299.1691652327,
+    minX: 679567,
+    minY: 3107616,
     minZ: 17657.736291098932,
-    maxX: 695986.6877441636,
-    maxY: 3135874.0,
+    maxX: 708733,
+    maxY: 3136008,
     maxZ: 17757.736291098932,
     background: "black"
 };
