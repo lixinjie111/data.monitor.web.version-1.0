@@ -131,10 +131,10 @@ export default {
             });
         },
         getTopWeather() {
-            // getTopWeather(this.requestData).then(res => {
-            //     this.weather = res.data;
-            // });
-            this.weather.wendu = 23;
+            getTopWeather(this.requestData).then(res => {
+                this.weather = res.data;
+            });
+            // this.weather.wendu = 23;
         },
         closeDialogWarning() {
             this.DialogWarningFlag = false;

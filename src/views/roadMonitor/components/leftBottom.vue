@@ -1,6 +1,6 @@
 <template>
   <div class="m-left-bottom">
-    <!-- <div class="c-car-list">
+    <div class="c-car-list">
       <h3 class="c-title">道路级别</h3>
       <div id="roadLevel" class="m-pie-style">
       </div>
@@ -10,7 +10,7 @@
       <div id="roadClassify" class="m-pie-style">
 
       </div>
-    </div> -->
+    </div>
     <div class="c-car-list">
       <h3 class="c-title">交通事件<span class="c-sub-title">今日总数:{{trafficCount}}</span></h3>
 
@@ -180,10 +180,10 @@
         mounted() {
         
          this.initWebSocket();
-         // this.levelPie =  this.$echarts.init(document.getElementById("roadLevel"));
-         // this.classifyPie =  this.$echarts.init(document.getElementById("roadClassify"));
-         // this.getRoadLevel();
-         // this.getRoadCategory();
+         this.levelPie =  this.$echarts.init(document.getElementById("roadLevel"));
+         this.classifyPie =  this.$echarts.init(document.getElementById("roadClassify"));
+         this.getRoadLevel();
+         this.getRoadCategory();
 
          
          /*let option = this.defaultOption();
