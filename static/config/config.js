@@ -64,3 +64,33 @@ window.dlWmsDefaultOption = {
     tileSize: 256,
     params:{}
 }
+//	调用
+// let _optionWms = Object.assign(
+// 	{},
+// 	window.dlWmsDefaultOption,
+// 	{
+// 		params:{'LAYERS': window.dlWmsOption.LAYERS_centerline,'STYLES': window.dlWmsOption.STYLES, 'VERSION': window.dlWmsOption.VERSION}
+// 	}
+// );
+// this.wms = new AMap.TileLayer.WMS(_optionWms);
+// this.distanceMap.add(this.wms);
+
+// 3D地图范围默认参数配置
+window.mapParam={
+    minX:325295.155400,
+    minY:3461941.703700,
+    minZ:50,
+    maxX:326681.125700,
+    maxY:3462723.022400,
+    maxZ:80,
+    background:"black"
+};
+
+window.defaultMapParam = {
+    x:442456.0905737311,
+    y:4427223.965503679,
+    z:60.22107514430958,
+    radius:31.40011218302981,
+    pitch:-0.6747685185185206,
+    yaw:-0.7853942219746017
+}
