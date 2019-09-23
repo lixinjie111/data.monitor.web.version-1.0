@@ -24,7 +24,7 @@ export function getMap(map){
     let circle = new dl.Circle(window.circleParam);
     // circle.updateVertices();
     // circle.setRotate([Math.PI/2,0,0]);
-    circle.setOpacity(0.1);
+    // circle.setOpacity(0.1);
     map.addGeometry(circle);
     //添加路灯杆和信息牌
     let data = [[2340,5,326263.1536280000,3462381.9079600000,19.4429998472],
