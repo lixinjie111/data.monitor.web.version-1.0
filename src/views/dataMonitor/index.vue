@@ -35,12 +35,13 @@ import CircleProgress from '@/components/circleProgress.vue'
 import DrivingCarEcharts from '@/components/drivingCarEcharts.vue'
 import PlatformDataEcharts from './components/platformDataEcharts.vue'
 import { getRoadLevelStat, getDevStatusStat } from "@/api/dataMonitor"
+import { roadLevel } from '@/api/roadMonitor'
 export default {
     name: "DataMonitor",
     components: { LeftItem, MapContainer, CircleProgress, DrivingCarEcharts, PlatformDataEcharts },
     data () {
         return {
-            getRoadLevelStat: getRoadLevelStat,
+            getRoadLevelStat: roadLevel,
             getDevStatusStat: getDevStatusStat
         }
     },

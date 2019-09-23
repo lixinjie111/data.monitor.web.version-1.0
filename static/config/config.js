@@ -83,3 +83,22 @@ window.mapParam={
     maxZ:80,
     background:"black"
 };
+
+window.defaultMapParam = {
+    x:442456.0905737311,
+    y:4427223.965503679,
+    z:60.22107514430958,
+    radius:31.40011218302981,
+    pitch:-0.6747685185185206,
+    yaw:-0.7853942219746017
+}
+
+window.circleParam = {
+    redius:600.0,
+    center:[325535.061,3462402.816,13.618],
+    color:"#ffffff",
+    outline:false,
+    outlineColor:"#ff0000",
+    opacity:0.5,
+    rotate:[0,0,0]
+};

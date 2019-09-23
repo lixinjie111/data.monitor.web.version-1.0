@@ -21,18 +21,10 @@ export function getMap(map){
     map.addShape("Crosswalk","./static/map3d/dl_shcsq_zc/Crosswalk.shp","#f3f3f3")
 
     //画圆  326279.672803747 3462360.84818288   600m
-    let circle = new dl.Circle({
-        redius:600.0,
-        center:[325535.061,3462402.816,13.618],
-        color:"#ffffff",
-        outline:false,
-        outlineColor:"#ff0000",
-        opacity:0.5,
-        rotate:[0,0,0]
-    });
+    let circle = new dl.Circle(window.circleParam);
     // circle.updateVertices();
     // circle.setRotate([Math.PI/2,0,0]);
-    circle.setOpacity(0.1);
+    // circle.setOpacity(0.1);
     map.addGeometry(circle);
     //添加路灯杆和信息牌
     let data = [[2340,5,326263.1536280000,3462381.9079600000,19.4429998472],

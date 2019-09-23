@@ -188,7 +188,6 @@
         vehicleList:[],
         event:[],
         count: 0,
-        lightCount:0,
         hostCount:0,
         startTime:'',
         lightData:{
@@ -205,6 +204,8 @@
         v2xInit:true,
         v2xUuid:[],
         lastPoint:[],
+        lightPrevData: [],
+        devicePrevData: [],
         zoomStyleMapping:{
           11:0,
           12:0,
@@ -470,48 +471,96 @@
         _this.deviceWebsocket.onopen = _this.onDeviceOpen;
       },
       onDeviceMessage(mesasge){
-        var _this=this;
-        var json = JSON.parse(mesasge.data);
-        var deviceData = json.result.data;
-        if(_this.deviceCount==0){
-          if(deviceData.length>0){
-            var resultData=[];
-            deviceData.forEach(item=>{
-            let option={
-              position:new AMap.LngLat(item.ptLon, item.ptLat),
-              longitude:item.ptLon,
-              latitude:item.ptLat
-            }
-            resultData.push(option);
-          });
-            resultData.forEach(function (item,index,arr) {
-              /*AMap.convertFrom(item.position, 'gps', function (status, result) {
-                if (result.info === 'ok') {
+          var _this=this;
+          var json = JSON.parse(mesasge.data);
+          var deviceData = json.result.data;
+          if (deviceData.length > 0) {
+                let _filterData = {};
+                deviceData.forEach((item, index) => {
+                    _filterData[item.rsPtId] = {
+                        position:ConvertCoord.wgs84togcj02(item.ptLon, item.ptLat),
+                        marker: null,
+                        icon:'static/images/car/car-3.png',
+                        offset:[-15, -25]
+                    };
+                 
+                });
+                for (let id in _this.devicePrevData) {
+                    if(_filterData[id]) {   //表示有该点，做setPosition
+                        _filterData[id].marker = _this.devicePrevData[id].marker;
+                        let _currentCar = _filterData[id];
+                        _filterData[id].marker.setAngle(_currentCar.heading);
+                        _filterData[id].marker.setPosition(_currentCar.position);
+                    } 
+                }
+                for (let id in _filterData) {       
+                    if(!_this.devicePrevData[id]) {   //表示新增该点，做add
+                        _this.addMarker(_filterData[id]);
+                    }       
+                }
+                if(_this.setFitViewFlag) {
+                    setTimeout(_ => {
+                        _this.distanceMap.setFitView();
+                        _this.setFitViewFlag = false;
+                    }, 500);  
+                }
+                _this.devicePrevData = _filterData;
+          } else {
+                // 返回的数据为空
+                for (let id in _this.devicePrevData) {
+                    _this.distanceMap.remove(_this.devicePrevData[id].marker);
+                    delete _this.devicePrevData[id];
+                }
+          } 
 
-                  item.position = result.locations[0];*/
-                  item.position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
-//                  console.log("position-------"+ item.position)
-                  _this.deviceCount++;
-                  if(_this.deviceCount==arr.length){
-                    resultData.forEach((subItem,subIndex,subArr)=>{
-                      var marker = new AMap.Marker({
-                        position: subItem.position,
-                        icon: 'static/images/car/car-3.png', // 添加 Icon 图标 URL
-                        offset:new AMap.Pixel(-15, -25)
 
-                      });
-                      _this.distanceMap.add(marker);
-                      if(subIndex==resultData.length-1){
-                        _this.deviceCount=0;
-                      }
-                    })
-                  }
-                /*}
-              })*/
-            })
 
-          }
-        }
+
+
+
+
+
+
+
+
+
+
+        // var _this=this;
+        // var json = JSON.parse(mesasge.data);
+        // var deviceData = json.result.data;
+        // if(_this.deviceCount==0){
+        //   if(deviceData.length>0){
+        //     var resultData=[];
+        //     deviceData.forEach(item=>{
+        //     let option={
+        //       position:new AMap.LngLat(item.ptLon, item.ptLat),
+        //       longitude:item.ptLon,
+        //       latitude:item.ptLat
+        //     }
+        //     resultData.push(option);
+        //   });
+        //     resultData.forEach(function (item,index,arr) {
+             
+        //           item.position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
+        //           _this.deviceCount++;
+        //           if(_this.deviceCount==arr.length){
+        //             resultData.forEach((subItem,subIndex,subArr)=>{
+        //               var marker = new AMap.Marker({
+        //                 position: subItem.position,
+        //                 icon: 'static/images/car/car-3.png', // 添加 Icon 图标 URL
+        //                 offset:new AMap.Pixel(-15, -25)
+
+        //               });
+        //               _this.distanceMap.add(marker);
+        //               if(subIndex==resultData.length-1){
+        //                 _this.deviceCount=0;
+        //               }
+        //             })
+        //           }
+        //     })
+
+        //   }
+        // }
 
       },
       onDeviceClose(data){
@@ -549,65 +598,66 @@
         var _this=this;
         var json = JSON.parse(mesasge.data);
         var lightData = json.result.data;
-        var resultData=[];
-        lightData.forEach(item=>{
-          let option={
-            position:new AMap.LngLat(item.longitude, item.latitude),
-            leftTime:item.leftTime,
-            light:item.light,
-            direction:item.direction,
-            longitude:item.longitude,
-            latitude:item.latitude
-          }
-          resultData.push(option);
-        });
-        if(_this.lightCount==0){
-          resultData.forEach(function (item,index,arr) {
-            /*AMap.convertFrom(item.position, 'gps', function (status, result) {
-              if (result.info === 'ok') {
-                item.position = result.locations[0];
-                console.log("红绿灯转换成position---"+result.locations[0])*/
-                item.position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
-                _this.lightCount++;
-                if(_this.lightCount==arr.length){
-                  resultData.forEach((subItem,subIndex,subArr)=>{
-                    var marker = new AMap.Marker({
-                      position: subItem.position,
-                      icon: 'static/images/car/car-4.png', // 添加 Icon 图标 URL
-                    });
-                    _this.distanceMap.add(marker);
-                    if(subIndex==subArr.length-1){
-                      _this.lightCount=0;
-                    }
-                  })
-                }
-              /*}
-            })*/
-            let direction = item.direction+"";
-//          console.log("direction----"+item.direction)
-            let key = 'key_'+direction;
-            if(_this.lightData[key].flag){
-              /*_this.$set(_this.lightData[direction],'spareTime',item.leftTime);*/
-              _this.lightData[key].spareTime = item.leftTime;
-              _this.lightData[key].lightColor = item.light;
-              _this.lightData[key].flag=true;
-              _this.lightData[key].time = null;
-              //延长时间
-              _this.lightData[key].time=setTimeout(item=>{
-                _this.lightData[key].flag=false;
-              },3000)
-//            console.log("light-----"+_this.lightData[direction].lightColor);
-
-            }/*else{
-              _this.lightData[direction]={spareTime:item.leftTime,time:null,lightColor:item.light,flag:true};
-              _this.lightData[direction].time=setTimeout(item=>{
-                _this.lightData[direction].flag=false;
-              },3000)
-//              console.log("========"+_this.lightData[direction])
-            }*/
-          })
+        if (lightData.length > 0) {
+              let _filterData = {};
+              lightData.forEach((item, index) => {
+                  _filterData[item.spatId] = {
+                      position:ConvertCoord.wgs84togcj02(item.longitude, item.latitude),
+                      leftTime:item.leftTime,
+                      light:item.light,
+                      direction:item.direction,
+                      longitude:item.longitude,
+                      latitude:item.latitude,
+                      marker: null,
+                      icon:'static/images/car/car-4.png',
+                  };
+                 
+                  let direction = item.direction+"";
+                  let key = 'key_'+direction;
+                  if( _this.lightData[key].time){
+                      clearTimeout(_this.lightData[key].time)
+                  }
+        
+                  _this.lightData[key].spareTime = item.leftTime;
+                  _this.lightData[key].lightColor = item.light;
+                  if(_this.lightData[key].spareTime && _this.lightData[key].lightColor){
+                     _this.lightData[key].flag=true;
+                  }
+                 
+                  //延长时间
+                  _this.lightData[key].time=setTimeout(item=>{
+                    _this.lightData[key].flag=false;
+                  },3000)
+                  // }
+              });
+              for (let id in _this.lightPrevData) {
+                  if(_filterData[id]) {   //表示有该点，做setPosition
+                      _filterData[id].marker = _this.lightPrevData[id].marker;
+                      let _currentCar = _filterData[id];
+                      _filterData[id].marker.setAngle(_currentCar.heading);
+                      _filterData[id].marker.setPosition(_currentCar.position);
+                  } 
+              }
+              for (let id in _filterData) {       
+                  if(!_this.lightPrevData[id]) {   //表示新增该点，做add
+                      _this.addMarker(_filterData[id]);
+                  }       
+              }
+              if(_this.setFitViewFlag) {
+                  setTimeout(_ => {
+                      _this.distanceMap.setFitView();
+                      _this.setFitViewFlag = false;
+                  }, 500);  
+              }
+              _this.lightPrevData = _filterData;
+        } else {
+              // 返回的数据为空
+              for (let id in _this.lightPrevData) {
+                  _this.distanceMap.remove(_this.lightPrevData[id].marker);
+                  delete _this.lightPrevData[id];
+              }
         }
-
+       
       },
       onLightClose(data){
         console.log("结束连接");
@@ -890,7 +940,16 @@
       getVehicleEvent(){
         this.vehicleDialog=true;
         this.getAlarmInformation();
-      }
+      },
+      addMarker(obj) {
+          obj.marker = new AMap.Marker({
+              map: this.distanceMap,
+              position: obj.position,
+              icon: obj.icon,
+              zIndex: 50,
+              offset:obj.offset ? new AMap.Pixel(obj.offset[0],obj.offset[1]) : new AMap.Pixel(0,0)
+          });
+      },
     },
     mounted () {
       let _option = Object.assign(
