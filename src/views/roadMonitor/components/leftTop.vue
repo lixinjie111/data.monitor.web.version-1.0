@@ -2,22 +2,19 @@
     <ul class="c-car-list c-info-wrap clearfix">
       <li class="c-info-list">
         <p class="c-info-title">总里程(公里)</p>
-        <p class="c-info-text">40.0</p>
-        <!-- <p class="c-info-text">{{responseData.distance|| '--'}}</p> -->
+        <p class="c-info-text">{{filterData.distance|| '--'}}</p>
       </li>
       <li class="c-info-list">
         <p class="c-info-title">路口数</p>
-        <p class="c-info-text">6</p>
-        <!-- <p class="c-info-text">{{responseData.crossing|| '--'}}</p> -->
+        <p class="c-info-text">{{filterData.crossing|| '--'}}</p>
       </li>
       <li class="c-info-list">
         <p class="c-info-title">红绿灯数</p>
-        <p class="c-info-text">16</p>
-        <!-- <p class="c-info-text">{{responseData.trafficLight|| '--'}}</p> -->
+        <p class="c-info-text">{{filterData.trafficLight|| '--'}}</p>
       </li>
       <li class="c-info-list">
         <p class="c-info-title">路侧点数</p>
-        <p class="c-info-text">{{responseData.roadSide|| '--'}}</p>
+        <p class="c-info-text">{{filterData.roadSide|| '--'}}</p>
       </li>
     </ul>
 </template>
@@ -30,7 +27,16 @@ export default {
 		return {
 			responseData: {}
 		}
-	},
+  },
+  computed: {
+      filterData() {
+          let _filterData = {};
+          for(let attr in this.responseData) {
+              _filterData[attr] = parseFloat(this.responseData[attr]).toLocaleString() || '--';
+          }
+          return _filterData;
+      }
+  },
 	methods: {
     getTotalData() {
       totalData().then(res => {
