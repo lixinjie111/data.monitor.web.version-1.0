@@ -12,16 +12,10 @@ export function getMap(map){
     
 
     //画圆  326279.672803747 3462360.84818288   600m
-    let circle = new dl.Circle({
-          redius: 17000,
-          center: [692384,3122050,13.618],
-          color: "#000",
-          outline: false,
-          outlineColor: "#ff0000",
-          opacity: 1,
-          rotate: [0, 0, 0]
-    }); 
-    circle.setOpacity(0.1);
+    let circle = new dl.Circle(window.circleParam);
+    // circle.updateVertices();
+    // circle.setRotate([Math.PI/2,0,0]);
+    // circle.setOpacity(0.1);
     map.addGeometry(circle);
 
 }
