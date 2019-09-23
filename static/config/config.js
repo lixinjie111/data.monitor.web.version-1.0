@@ -93,11 +93,11 @@ window.defaultMapParam = {
 }
 
 window.circleParam = {
-    redius: 17000,
-    center: [695984,3122050,13.618],
-    color: "#000",
-    outline: false,
-    outlineColor: "#ff0000",
-    opacity: 0.1,
-    rotate: [0, 0, 0]
+    redius:600.0,
+    center:[325535.061,3462402.816,13.618],
+    color:"#ffffff",
+    outline:false,
+    outlineColor:"#ff0000",
+    opacity:0.5,
+    rotate:[0,0,0]
 };
