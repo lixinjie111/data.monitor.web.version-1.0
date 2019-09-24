@@ -41,7 +41,7 @@ export default {
     components: { LeftItem, MapContainer, CircleProgress, DrivingCarEcharts, PlatformDataEcharts },
     data () {
         return {
-            getRoadLevelStat: getRoadLevelStat,
+            getRoadLevelStat: roadLevel,
             getDevStatusStat: getDevStatusStat
         }
     },
