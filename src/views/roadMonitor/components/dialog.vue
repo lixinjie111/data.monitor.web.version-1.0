@@ -305,6 +305,15 @@
           getCrossById({
             "crossId": this.crossId
           }).then(res=>{
+            if(res.data.state!=1){
+              this.$message({
+                type: 'error',
+                duration: '1500',
+                message: res.data.message,
+                showClose: true
+              });
+              return;
+            }
             let result = res.data.data;
             if(result&&result.length==0){
               this.$message({
@@ -512,7 +521,7 @@
         onopen(data){
           //获取在驶车辆状态
           let _params = {
-            action: "road_real_data",
+            action: "road_real_data_reg",
             data: {
               polygon: this.finalFourPosition,
               fuselType: 1
