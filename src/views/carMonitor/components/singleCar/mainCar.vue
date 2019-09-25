@@ -10,7 +10,7 @@
         <span class="detail2">N</span>
       </div>
       <div class="detail1">
-        <span>{{realData.speed?realData.speed.toFixed(1):'--'}}</span>
+        <span>{{filterData.speed || '--'}}</span>
         <span class="detail2">km/h</span>
       </div>
       <div class="detail1">
@@ -250,6 +250,15 @@
         }else{
           return this.$dateUtil.formatTime(this.realData.gpsTime).split(" ")[1];
         }
+      },
+      filterData() {
+          let _filterData = {};
+          for(let attr in this.realData) {
+            if(attr=='speed'){
+              _filterData[attr] = parseFloat(this.realData[attr]).toFixed(1).toLocaleString() || '--';
+            }
+          }
+          return _filterData;
       }
     },
     filters: {

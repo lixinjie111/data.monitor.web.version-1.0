@@ -458,7 +458,7 @@
             gnss_LONG: json.data.lon,
             gnss_LAT: json.data.lat,
             gnss_HEAD: json.data.head
-          }];
+          }]; 
         }
         // let _pointer = [json.data.lon, json.data.lat];
         // console.log("行程概览 route *********************************************");
