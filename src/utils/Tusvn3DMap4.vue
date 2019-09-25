@@ -1799,7 +1799,7 @@
                 if (carModel == null) {
                     this.addModel(
                         vid,
-                        "./static/map3d/map_photo/car.3DS",
+                        "./static/map3d/models/car/car.3DS",
                         position[0],
                         position[1],
                         this.defualtZ
@@ -1844,7 +1844,7 @@
                 if (carModel == null) {
                     this.addModel(
                         vid,
-                        "./static/map3d/map_photo/car.3DS",
+                        "./static/map3d/models/car/car.3DS",
                         position[0],
                         position[1],
                         this.defualtZ
