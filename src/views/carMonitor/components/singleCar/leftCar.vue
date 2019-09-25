@@ -214,6 +214,9 @@
     methods: {
       initMap() {
         this.distanceMap = new AMap.Map('distanceContainer', window.defaultMapOption);
+        setTimeout(()=>{
+            this.distanceMap.setMapStyle(window.defaultMapOption.mapStyle);
+        },0);
         // console.log(this.distanceMap.getZoom());
 
 
@@ -456,7 +459,7 @@
             gnss_LONG: json.data.lon,
             gnss_LAT: json.data.lat,
             gnss_HEAD: json.data.head
-          }];
+          }]; 
         }
         // let _pointer = [json.data.lon, json.data.lat];
         // console.log("行程概览 route *********************************************");

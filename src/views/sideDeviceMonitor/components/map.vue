@@ -185,6 +185,9 @@
     },
     mounted() {
       this.map = new AMap.Map(this.id, window.defaultMapOption);
+      setTimeout(()=>{
+          this.map.setMapStyle(window.defaultMapOption.mapStyle);
+      },0);
       var item = {
         'id':'0'
       };
