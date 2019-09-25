@@ -111,6 +111,7 @@ export default {
             ,destinatePorject:"+proj=utm +zone=51 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"//上海
             ,timeA:0
             ,timeB:0
+            ,messageTime:''
         }
     },
     watch:{
@@ -145,7 +146,7 @@ export default {
                 // debugger
                 this.viewer.addEventListener("camera_changed", this.onCameraChanged)
 
-                this.viewer.controls.addEventListener("drop",this.onDrop)
+                //this.viewer.controls.addEventListener("drop",this.onDrop)
 
                 // console.log("=======地理范围=======");
                 // console.log(extent);
@@ -665,6 +666,7 @@ export default {
                 return;
             }
             let rsuDatas = JSON.parse(data.data);
+            this.messageTime=rsuDatas.time;
             var deviceid = null;
             if(rsuDatas.result.length>0)
             {
@@ -929,6 +931,13 @@ export default {
                     person.position.x = 0;
                     person.position.y = 0;
                     person.position.z = 0;
+                }
+                 for(let p=0;p<this.deviceModels[deviceid].texts.length;p++)
+                {
+                    let text = this.deviceModels[deviceid].texts[p];
+                    text.position.x = 0;
+                    text.position.y = 0;
+                    text.position.z = 0;
                 }
             }
         },
@@ -2024,6 +2033,13 @@ export default {
         setTimeout(() => {
             this.initMap();
         }, 1000);
+        setInterval(() => {
+           if(this.messageTime){
+               if(new Date().getTime() - this.messageTime > 2000){
+                   this.resetModels();
+               }
+           }
+        }, 3000);
     },
     destroyed(){
         if ('WebSocket' in window) {
