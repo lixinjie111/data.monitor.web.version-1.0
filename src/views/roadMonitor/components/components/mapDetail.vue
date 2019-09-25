@@ -50,6 +50,9 @@
           }
         );
         this.map = new AMap.Map(this.id, _option);
+        setTimeout(()=>{
+              this.map.setMapStyle(window.mapOption.mapStyleEmpty);
+        },0);
         this.getTypeCross();
         this.map.on('moveend', this.getFourPosition);
       },

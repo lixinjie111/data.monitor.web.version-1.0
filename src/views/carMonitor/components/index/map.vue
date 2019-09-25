@@ -25,6 +25,9 @@ export default {
     },
     mounted() {
         this.AMap = new AMap.Map(this.id, window.defaultMapOption);
+        setTimeout(()=>{
+            this.AMap.setMapStyle(window.defaultMapOption.mapStyle);
+        },0);
         this.initWebSocket();
     },
     methods: {
