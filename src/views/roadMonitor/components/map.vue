@@ -95,6 +95,9 @@
     mounted() {
       let _this = this;
       this.map = new AMap.Map(this.id, window.defaultMapOption);
+      setTimeout(()=>{
+          this.map.setMapStyle(window.defaultMapOption.mapStyle);
+      },0);
       this.map.setZoom(12);
       this.getWms();
       
