@@ -932,6 +932,13 @@ export default {
                     person.position.y = 0;
                     person.position.z = 0;
                 }
+                 for(let p=0;p<this.deviceModels[deviceid].texts.length;p++)
+                {
+                    let text = this.deviceModels[deviceid].texts[p];
+                    text.position.x = 0;
+                    text.position.y = 0;
+                    text.position.z = 0;
+                }
             }
         },
         processPlatformCars:function(){
@@ -971,40 +978,6 @@ export default {
                     }
                 }
             }
-        },
-        removeModels:function(){
-            for(var deviceid in this.deviceModels)
-            {
-                for(let p=0;p<this.deviceModels[deviceid].cars.length;p++)
-                {
-                    let car = this.deviceModels[deviceid].cars[p];
-                    if(car!=null)
-                    {
-                        dl.removeModel(car,this.viewer);
-                        delete  this.deviceModels[deviceid].cars[p];
-                    }
-                }
-                for(let p=0;p<this.deviceModels[deviceid].persons.length;p++)
-                {
-                    let person = this.deviceModels[deviceid].persons[p];
-                    console.log(person)
-                    if(person!=null && person!=undefined)
-                    {
-                        dl.removeModel(person,this.viewer);
-                        delete  this.deviceModels[deviceid].persons[p];
-                    }
-                }
-                for(let p=0;p<this.deviceModels[deviceid].texts.length;p++)
-                {
-                    let text = this.deviceModels[deviceid].texts[p];
-                   if(text!=null)
-                    {
-                        dl.removeModel(text,this.viewer);
-                        delete  this.deviceModels[deviceid].texts[p];
-                    }
-                }
-            }
-            this.deviceModels ={};
         },
         processPerceptionMesage:function(){
             let data = null;
@@ -2063,7 +2036,7 @@ export default {
         setInterval(() => {
            if(this.messageTime){
                if(new Date().getTime() - this.messageTime > 4000){
-                   this.removeModels();
+                   this.resetModels();
                }
            }
         }, 5000);
