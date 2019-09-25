@@ -2035,11 +2035,11 @@ export default {
         }, 1000);
         setInterval(() => {
            if(this.messageTime){
-               if(new Date().getTime() - this.messageTime > 4000){
+               if(new Date().getTime() - this.messageTime > 2000){
                    this.resetModels();
                }
            }
-        }, 5000);
+        }, 3000);
     },
     destroyed(){
         if ('WebSocket' in window) {
