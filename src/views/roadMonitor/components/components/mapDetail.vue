@@ -208,7 +208,7 @@
           //   'crossId':this.cross.crossId
           // }
           let _params = {
-            action: "road_real_data",
+            action: "road_real_data_reg",
             data: {
               polygon: this.crossData.finalFourPosition,
               fuselType: 1
