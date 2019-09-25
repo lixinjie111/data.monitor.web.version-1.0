@@ -164,7 +164,7 @@
         distanceMap:{},
         marker:{},
         platNoMarker:{},
-        sideList:[],
+      
         hostWebsocket:null,
         sideWebsocket:null,
         deviceWebsocket:null,
@@ -206,6 +206,7 @@
         lastPoint:[],
         lightPrevData: [],
         devicePrevData: [],
+        sidePrevData:[],
         zoomStyleMapping:{
           11:0,
           12:0,
@@ -261,10 +262,6 @@
     watch:{
       isStop(newVal,oldVal){
         if(newVal){
-          //旁车处理,本车保留最后位置
-          if(this.sideList.length>0){
-            this.distanceMap.remove(this.sideList);
-          }
           this.sideWebsocket.close();
         }else{
           console.log("第一次是否走此方法")
@@ -307,8 +304,6 @@
         var type = json.action;
           var platNo;
           var source="";
-          // let _nowtime = new Date().getTime();
-          // console.log(_nowtime, json.time, data.gpsTime, json.time-_nowtime, data.gpsTime-_nowtime);
           if(_this.isInit){
             platNo=data.plateNo;
             data.source.forEach(item=>{
@@ -394,50 +389,51 @@
         _this.sideWebsocket.onerror = _this.onSideError;
       },
       onSideMessage(mesasge){
+
         var _this=this;
         var json = JSON.parse(mesasge.data);
-        if(this.count == 0) {
-          this.count++;
-          //新建点
-          var sideVehicleData = json.result.data;
-          var resultData=[];
-          sideVehicleData.forEach(item=>{
-            let option={
-              vehicleId:item.vehicleId,
-              position:new AMap.LngLat(item.longitude, item.latitude),
-              heading:item.heading,
-              speed:item.speed,
-              longitude:item.longitude,
-              latitude: item.latitude
-
-            }
-            resultData.push(option);
-          });
-         if(_this.sideList.length>0){
-           _this.distanceMap.remove(_this.sideList);
-           _this.sideList=[];
-         }
-          resultData.forEach(function (item,index,arr) {
-              resultData[index].position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
-              _this.count++;
-              if(_this.count == arr.length+1){
-                resultData.forEach((subItem, subIndex, subArr)=>{
-                  let marker = new AMap.Marker({
-                    position: subItem.position,
-                    icon: 'static/images/car/car-7.png', // 添加 Icon 图标 URL
-                    angle: subItem.heading
-                  });
-                  _this.sideList.push(marker);
-                  _this.distanceMap.add(marker);
-                  if(subIndex == subArr.length - 1) {
-                    setTimeout(() => {
-                      _this.count = 0;
-                    }, 0);
-                  }
-                })
+        var deviceData = json.result.data;
+        if (deviceData.length > 0) {
+              let _filterData = {};
+              deviceData.forEach((item, index) => {
+                  _filterData[item.vehicleId] = {
+                      vehicleId:item.vehicleId,
+                      position:ConvertCoord.wgs84togcj02(item.longitude, item.latitude),
+                      heading:item.heading,
+                      speed:item.speed,
+                      longitude:item.longitude,
+                      latitude: item.latitude,
+                      icon:'static/images/car/car-7.png',
+                  };
+                
+              });
+              for (let id in _this.sidePrevData) {
+                  if(_filterData[id]) {   //表示有该点，做setPosition
+                      _filterData[id].marker = _this.sidePrevData[id].marker;
+                      let _currentCar = _filterData[id];
+                      _filterData[id].marker.setAngle(_currentCar.heading);
+                      _filterData[id].marker.setPosition(_currentCar.position);
+                  } 
               }
-          });
-        }
+              for (let id in _filterData) {       
+                  if(!_this.sidePrevData[id]) {   //表示新增该点，做add
+                      _this.addMarker(_filterData[id]);
+                  }       
+              }
+              if(_this.setFitViewFlag) {
+                  setTimeout(_ => {
+                      _this.distanceMap.setFitView();
+                      _this.setFitViewFlag = false;
+                  }, 500);  
+              }
+              _this.sidePrevData = _filterData;
+        } else {
+              // 返回的数据为空
+              for (let id in _this.sidePrevData) {
+                  _this.distanceMap.remove(_this.sidePrevData[id].marker);
+                  delete _this.sidePrevData[id];
+              }
+        }   
       },
       onSideClose(data){
         console.log("结束连接");
@@ -512,55 +508,6 @@
                     delete _this.devicePrevData[id];
                 }
           } 
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // var _this=this;
-        // var json = JSON.parse(mesasge.data);
-        // var deviceData = json.result.data;
-        // if(_this.deviceCount==0){
-        //   if(deviceData.length>0){
-        //     var resultData=[];
-        //     deviceData.forEach(item=>{
-        //     let option={
-        //       position:new AMap.LngLat(item.ptLon, item.ptLat),
-        //       longitude:item.ptLon,
-        //       latitude:item.ptLat
-        //     }
-        //     resultData.push(option);
-        //   });
-        //     resultData.forEach(function (item,index,arr) {
-             
-        //           item.position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
-        //           _this.deviceCount++;
-        //           if(_this.deviceCount==arr.length){
-        //             resultData.forEach((subItem,subIndex,subArr)=>{
-        //               var marker = new AMap.Marker({
-        //                 position: subItem.position,
-        //                 icon: 'static/images/car/car-3.png', // 添加 Icon 图标 URL
-        //                 offset:new AMap.Pixel(-15, -25)
-
-        //               });
-        //               _this.distanceMap.add(marker);
-        //               if(subIndex==resultData.length-1){
-        //                 _this.deviceCount=0;
-        //               }
-        //             })
-        //           }
-        //     })
-
-        //   }
-        // }
 
       },
       onDeviceClose(data){
