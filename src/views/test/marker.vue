@@ -22,6 +22,9 @@
             }
           );
           this.distanceMap = new AMap.Map('realTraffic', _option);
+          setTimeout(()=>{
+            this.distanceMap.setMapStyle(window.mapOption.mapStyleEmpty);
+          },0);
           this.marker = new AMap.Marker({
             position: new AMap.LngLat(116.482362,39.997718),
             icon: 'static/images/car/car-6.png', // 添加 Icon 图标 URL

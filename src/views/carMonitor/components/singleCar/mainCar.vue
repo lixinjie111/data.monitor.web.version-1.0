@@ -917,6 +917,9 @@
         }
       );
       this.distanceMap = new AMap.Map('realTraffic', _option);
+      setTimeout(()=>{
+            this.distanceMap.setMapStyle(window.mapOption.mapStyleEmpty);
+      },0);
       /*let marker1 = new AMap.Marker({
         position: [121.18653381418872,31.274421462567677],
         icon: 'static/images/car/car-1.png', // 添加 Icon 图标 URL
