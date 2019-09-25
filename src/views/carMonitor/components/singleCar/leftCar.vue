@@ -151,6 +151,8 @@
           for(let attr in this.drivingStatistics) {
             if(attr=='tripNums'){
               _filterData[attr] = parseFloat(this.drivingStatistics[attr]).toLocaleString() || '--';
+            }else if(attr=='cumulatedMiles' || attr=='avgSpeed'){
+              _filterData[attr] = parseFloat(this.drivingStatistics[attr]/1000).toFixed(1).toLocaleString() || '--';
             }else{
               _filterData[attr] = parseFloat(this.drivingStatistics[attr]).toFixed(1).toLocaleString() || '--';
             }
