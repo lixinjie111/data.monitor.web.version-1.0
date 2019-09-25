@@ -111,6 +111,7 @@ export default {
             ,destinatePorject:"+proj=utm +zone=49 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"//上海
             ,timeA:0
             ,timeB:0
+            ,messageTime:''
         }
     },
     watch:{
@@ -665,6 +666,7 @@ export default {
                 return;
             }
             let rsuDatas = JSON.parse(data.data);
+            this.messageTime=rsuDatas.time;
             var deviceid = null;
             if(rsuDatas.result.length>0)
             {
@@ -969,6 +971,40 @@ export default {
                     }
                 }
             }
+        },
+        removeModels:function(){
+            for(var deviceid in this.deviceModels)
+            {
+                for(let p=0;p<this.deviceModels[deviceid].cars.length;p++)
+                {
+                    let car = this.deviceModels[deviceid].cars[p];
+                    if(car!=null)
+                    {
+                        dl.removeModel(car,this.viewer);
+                        delete  this.deviceModels[deviceid].cars[p];
+                    }
+                }
+                for(let p=0;p<this.deviceModels[deviceid].persons.length;p++)
+                {
+                    let person = this.deviceModels[deviceid].persons[p];
+                    console.log(person)
+                    if(person!=null && person!=undefined)
+                    {
+                        dl.removeModel(person,this.viewer);
+                        delete  this.deviceModels[deviceid].persons[p];
+                    }
+                }
+                for(let p=0;p<this.deviceModels[deviceid].texts.length;p++)
+                {
+                    let text = this.deviceModels[deviceid].texts[p];
+                   if(text!=null)
+                    {
+                        dl.removeModel(text,this.viewer);
+                        delete  this.deviceModels[deviceid].texts[p];
+                    }
+                }
+            }
+            this.deviceModels ={};
         },
         processPerceptionMesage:function(){
             let data = null;
@@ -2024,6 +2060,13 @@ export default {
         setTimeout(() => {
             this.initMap();
         }, 1000);
+        setInterval(() => {
+           if(this.messageTime){
+               if(new Date().getTime() - this.messageTime > 4000){
+                   this.removeModels();
+               }
+           }
+        }, 5000);
     },
     destroyed(){
         if ('WebSocket' in window) {
