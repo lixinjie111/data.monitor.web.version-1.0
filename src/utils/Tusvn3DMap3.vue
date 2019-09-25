@@ -146,7 +146,7 @@ export default {
                 // debugger
                 this.viewer.addEventListener("camera_changed", this.onCameraChanged)
 
-                this.viewer.controls.addEventListener("drop",this.onDrop)
+                //this.viewer.controls.addEventListener("drop",this.onDrop)
 
                 // console.log("=======地理范围=======");
                 // console.log(extent);
