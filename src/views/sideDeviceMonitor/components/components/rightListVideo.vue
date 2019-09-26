@@ -121,10 +121,10 @@
               _this.option.notSupportedMessage='路侧设备不存在!';
               return;
             }
-            if(this.roadItem.online!=1){
-              this.option.notSupportedMessage='路侧设备不在线!';
-              return;
-            }
+            // if(this.roadItem.online!=1){
+            //   this.option.notSupportedMessage='路侧设备不在线!';
+            //   return;
+            // }
             if(_this.rtmp==''){
               _this.option.notSupportedMessage='视频流不存在，请稍候重试';
             }else{
