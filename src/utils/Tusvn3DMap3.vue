@@ -168,7 +168,10 @@ export default {
             }
             setTimeout(() => {
 //                console.log("1处理感知车辆缓存队列中的数据"+this.cachePerceptionQueue.length);
-                this.processPerceptionData();
+                let id4=setInterval(() => {
+                     this.processPerceptionData();
+                },0);
+                this.intervalIds.push(id4);
             }, this.waitingProcessPerceptionTime);
 
             // let id1 = setInterval(() => {
@@ -815,7 +818,7 @@ export default {
 
         processPerceptionData(){
             // let timeA = new Date().getTime();
-            setInterval(() => {
+           // setInterval(() => {
                 this.timeA = new Date().getTime();
 //                console.log(this.timeA-this.timeB);
 //                console.log("2处理感知车辆缓存队列中的数据:"+this.cachePerceptionQueue.length);
@@ -922,7 +925,7 @@ export default {
                     }
                 }
                 // this.processPerceptionData();
-            },0);//this.processPerceptionInterval
+            //},0);//this.processPerceptionInterval
         },
         resetModels:function(){
             this.lastPerceptionMessage=null;
