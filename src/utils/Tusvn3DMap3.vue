@@ -112,6 +112,7 @@ export default {
             ,timeA:0
             ,timeB:0
             ,messageTime:''
+            ,messageTimer: null
         }
     },
     watch:{
@@ -659,6 +660,7 @@ export default {
             this.count = 0;
         },
         onMessage:function(data){
+
             this.models={};
             this.count++;
             if((this.count%this.interval)!=0)
@@ -667,6 +669,14 @@ export default {
             }
             let rsuDatas = JSON.parse(data.data);
             this.messageTime=rsuDatas.time;
+
+            if(this.messageTimer) {
+                clearTimeout(this.messageTimer);
+            }
+            this.messageTimer = setTimeout(() => {
+                this.resetModels();
+            }, 1000);
+
             var deviceid = null;
             if(rsuDatas.result.length>0)
             {
@@ -2033,13 +2043,6 @@ export default {
         setTimeout(() => {
             this.initMap();
         }, 1000);
-        setInterval(() => {
-           if(this.messageTime){
-               if(new Date().getTime() - this.messageTime > 2000){
-                   this.resetModels();
-               }
-           }
-        }, 3000);
     },
     destroyed(){
         if ('WebSocket' in window) {
