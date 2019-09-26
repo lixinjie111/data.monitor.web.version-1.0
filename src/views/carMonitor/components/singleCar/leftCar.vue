@@ -216,6 +216,9 @@
     methods: {
       initMap() {
         this.distanceMap = new AMap.Map('distanceContainer', window.defaultMapOption);
+        setTimeout(()=>{
+            this.distanceMap.setMapStyle(window.defaultMapOption.mapStyle);
+        },0);
         // console.log(this.distanceMap.getZoom());
 
 

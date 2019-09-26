@@ -111,6 +111,8 @@ export default {
             ,destinatePorject:"+proj=utm +zone=49 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"//上海
             ,timeA:0
             ,timeB:0
+            ,messageTime:''
+            ,messageTimer: null
         }
     },
     watch:{
@@ -145,7 +147,7 @@ export default {
                 // debugger
                 this.viewer.addEventListener("camera_changed", this.onCameraChanged)
 
-                this.viewer.controls.addEventListener("drop",this.onDrop)
+                //this.viewer.controls.addEventListener("drop",this.onDrop)
 
                 // console.log("=======地理范围=======");
                 // console.log(extent);
@@ -166,7 +168,10 @@ export default {
             }
             setTimeout(() => {
 //                console.log("1处理感知车辆缓存队列中的数据"+this.cachePerceptionQueue.length);
-                this.processPerceptionData();
+                let id4=setInterval(() => {
+                     this.processPerceptionData();
+                },0);
+                this.intervalIds.push(id4);
             }, this.waitingProcessPerceptionTime);
 
             // let id1 = setInterval(() => {
@@ -658,6 +663,7 @@ export default {
             this.count = 0;
         },
         onMessage:function(data){
+
             this.models={};
             this.count++;
             if((this.count%this.interval)!=0)
@@ -665,6 +671,15 @@ export default {
                 return;
             }
             let rsuDatas = JSON.parse(data.data);
+            this.messageTime=rsuDatas.time;
+
+            if(this.messageTimer) {
+                clearTimeout(this.messageTimer);
+            }
+            this.messageTimer = setTimeout(() => {
+                this.resetModels();
+            }, 1000);
+
             var deviceid = null;
             if(rsuDatas.result.length>0)
             {
@@ -808,7 +823,7 @@ export default {
 
         processPerceptionData(){
             // let timeA = new Date().getTime();
-            setInterval(() => {
+           // setInterval(() => {
                 this.timeA = new Date().getTime();
 //                console.log(this.timeA-this.timeB);
 //                console.log("2处理感知车辆缓存队列中的数据:"+this.cachePerceptionQueue.length);
@@ -915,7 +930,7 @@ export default {
                     }
                 }
                 // this.processPerceptionData();
-            },0);//this.processPerceptionInterval
+            //},0);//this.processPerceptionInterval
         },
         resetModels:function(){
             this.lastPerceptionMessage=null;
@@ -934,6 +949,13 @@ export default {
                     person.position.x = 0;
                     person.position.y = 0;
                     person.position.z = 0;
+                } 
+                for(let p=0;p<this.deviceModels[deviceid].texts.length;p++)
+                {
+                    let text = this.deviceModels[deviceid].texts[p];
+                    text.position.x = 0;
+                    text.position.y = 0;
+                    text.position.z = 0;
                 }
             }
         },
@@ -1226,10 +1248,10 @@ export default {
         },
         sendMsg:function(msg){
             if(window.WebSocket){
-                //if(this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+                if(this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
                     this.hostWebsocket.send(msg); //send()发送消息
                     //console.log("已发送消息:"+ msg);
-                //}
+                }
             }
         },
         onError:function(e){
