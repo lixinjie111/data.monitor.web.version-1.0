@@ -1232,7 +1232,7 @@
       );
       this.distanceMap = new AMap.Map('realTraffic', _option);
       setTimeout(()=>{
-            this.distanceMap.setMapStyle(window.mapOption.mapStyleEmpty);
+            this.distanceMap.setMapStyle(window.defaultMapOption.mapStyle);
       },0);
       this.initWebSocket();
       this.initSideWebSocket();
