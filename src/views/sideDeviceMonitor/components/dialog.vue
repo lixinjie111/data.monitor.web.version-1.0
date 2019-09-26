@@ -642,15 +642,26 @@ export default {
       let time = setInterval(() => {
         if (this.serialNum && this.serialNum != "") {
           this.mapInit = true;
-          let cameraParam = JSON.parse(this.selectedItem.cameraParam);
-          this.$refs.tusvnMap3.updateCameraPosition(
-            this.cameraParam.x,
-            this.cameraParam.y,
-            this.cameraParam.z,
-            this.cameraParam.radius,
-            this.cameraParam.pitch,
-            this.cameraParam.yaw
-          );
+          if(this.selectedItem.cameraParam){
+            let cameraParam = JSON.parse(this.selectedItem.cameraParam);
+            this.$refs.tusvnMap3.updateCameraPosition(
+              this.cameraParam.x,
+              this.cameraParam.y,
+              this.cameraParam.z,
+              this.cameraParam.radius,
+              this.cameraParam.pitch,
+              this.cameraParam.yaw
+            );
+          }else{
+            this.$refs.tusvnMap3.updateCameraPosition(
+              window.defaultMapParam.x,
+              window.defaultMapParam.y,
+              window.defaultMapParam.z,
+              window.defaultMapParam.radius,
+              window.defaultMapParam.pitch,
+              window.defaultMapParam.yaw
+            );
+          }
           this.$refs.tusvnMap3.changeRcuId(
             window.config.websocketUrl,
             this.serialNum
