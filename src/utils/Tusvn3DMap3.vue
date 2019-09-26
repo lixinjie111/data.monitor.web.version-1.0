@@ -752,12 +752,14 @@ export default {
                         mdl.position.x = dUTM[0];
                         mdl.position.y = dUTM[1];
                         mdl.position.z = this.defualtZ+1;
+                        mdl.rotation.set(0,0,-(Math.PI / 180.0) * (d.heading-180));
 
                         let text = this.deviceModels[deviceid].texts[i];
                         let h = d.heading.toFixed(1);
                         let s = d.speed.toFixed(1);
                         text.setText("[" + h + ", " + s + "]");
                         text.setPositon([dUTM[0],dUTM[1],this.defualtZ+2]);
+                        text.rotation.set(0,0,-(Math.PI / 180.0) * (d.heading-180));
                     }
                 }else{
                     if(i<this.deviceModels[deviceid].cars.length)
@@ -766,12 +768,15 @@ export default {
                         mdl.position.x = dUTM[0];
                         mdl.position.y = dUTM[1];
                         mdl.position.z = this.defualtZ+1;
+                        mdl.rotation.set(0,0,-(Math.PI / 180.0) * (d.heading-180));
 
                         let text = this.deviceModels[deviceid].texts[i];
                         let h = d.heading.toFixed(1);
                         let s = d.speed.toFixed(1);
                         text.setText("[" + h + ", " + s + "]");
                         text.setPositon([dUTM[0],dUTM[1],this.defualtZ+3]);
+                        text.rotation.set(0,0,-(Math.PI / 180.0) * (d.heading-180));
+                          
                     }
                 }
             }
@@ -2006,6 +2011,21 @@ export default {
             const borwserHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
             this.pageHeight = borwserHeight - 64;
             // console.log('pageHeight : ' + this.pageHeight)
+        },
+        /**
+         * 导航角度转换为3D角度
+         */
+        getHeading:function(heading)
+        {
+            if(heading>180)
+            {
+                return  heading=-(Math.PI / 180.0) * (heading-180);
+            }
+            else
+            {
+                return   heading=-(Math.PI / 180.0) * heading;
+            }
+
         },
         resize:function(size)
         {
