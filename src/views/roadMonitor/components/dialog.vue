@@ -119,6 +119,9 @@
         this.getCrossById();
 
         this.map = new AMap.Map('mapContainer', this.mapOption);
+        setTimeout(()=>{
+            this.map.setMapStyle(window.mapOption.mapStyleEmpty);
+        },0);
         this.map.on('moveend', this.getFourPosition);
         let divScroll = document.getElementById("divScroll");
         if (this && !this._isDestroyed) {
@@ -218,6 +221,9 @@
             setTimeout(() => {
               _this.roadList.forEach(item=>{
                 item.map=new AMap.Map(item.id, this.mapOption);
+                setTimeout(()=>{
+                      item.map.setMapStyle(window.mapOption.mapStyleEmpty);
+                },0);
                 let _optionWms = Object.assign(
                     {},
                     window.dlWmsDefaultOption,
@@ -421,7 +427,9 @@
             setTimeout(() => {
               _this.roadList.forEach(item=>{
                 item.map=new AMap.Map(item.id, this.mapOption);
-
+                setTimeout(()=>{
+                      item.map.setMapStyle(window.mapOption.mapStyleEmpty);
+                },0);
                 let _optionWms = Object.assign(
                     {},
                     window.dlWmsDefaultOption,
