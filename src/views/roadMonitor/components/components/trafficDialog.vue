@@ -399,7 +399,9 @@ export default {
           //获取航向角
           getFeaturesByPoint(formData, config).then(res => {
             if (res.state == 1) {
-              this.heading = res.data[0].heading;
+              if(res.data.length>1){
+                 this.heading = res.data[0].heading;
+              }
               if (!this.cameraParam) {
                 this.updateCameraPosition();
               }
