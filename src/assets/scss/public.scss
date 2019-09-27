@@ -145,7 +145,7 @@ img {
   &.c-view-left {
     left: 0;
     padding-left: 50px;
-    padding-right: 68px;
+    // padding-right: 68px;
     // background-image: url("../images/public/mask-left.png");
     background: linear-gradient(to right, rgba(0, 0 ,0 , .6) 30%, rgba(0, 0 ,0 , 0)); /* 标准的语法 */
     .c-scroll-wrap {
@@ -156,7 +156,7 @@ img {
   &.c-view-right {
     right: 0;
     padding-right: 22px;
-    padding-left: 96px;
+    // padding-left: 96px;
     // background-image: url("../images/public/mask-right.png");
     // background-size: 150% auto;
     // background-position: right top;
