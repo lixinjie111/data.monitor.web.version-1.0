@@ -307,7 +307,7 @@
           this.index=0;
           this.getAllCross();
         },
-        getCrossById(){
+        getCrossById(item){
           getCrossById({
             "crossId": this.crossId
           }).then(res=>{
@@ -354,14 +354,19 @@
                 this.wms.setMap(this.map);
               }
               
-
-              if(result.length) {
-                let position = new AMap.LngLat(result[0].centerX,result[0].centerY);
-                this.map.setCenter(position);
-              }else{
-                let position = new AMap.LngLat(this.selectedItem.baseData.x,this.selectedItem.baseData.y);
+              if(item){
+                let position = new AMap.LngLat(item.position.lng,item.position.lat);
                 this.map.setCenter(position);  
+              }else{
+                if(result.length) {
+                  let position = new AMap.LngLat(result[0].centerX,result[0].centerY);
+                  this.map.setCenter(position);
+                }else{
+                  let position = new AMap.LngLat(this.selectedItem.baseData.x,this.selectedItem.baseData.y);
+                  this.map.setCenter(position);  
+                }
               }
+              
             
 //            }
 //            let position = ConvertCoord.wgs84togcj02(result[0].x,result[0].y);
@@ -390,7 +395,7 @@
           item.isActive=!item.isActive;
           if(item.isActive){
             this.crossId = item.crossId;
-            this.getCrossById();
+            this.getCrossById(item);
           }
 //          this.wms.show();
         },
