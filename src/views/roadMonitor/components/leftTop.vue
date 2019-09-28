@@ -41,7 +41,7 @@ export default {
     getTotalData() {
       totalData().then(res => {
         this.responseData = res.data;
-        this.responseData.distance = (this.responseData.distance/1000).toFixed(1);
+        // this.responseData.distance = (this.responseData.distance/1000).toFixed(1);
       });
     },
     toThousands(num) {
