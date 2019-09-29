@@ -546,7 +546,6 @@ export default {
       });
     },
     getTree(code) {
-      console.log(code);
       var _this = this;
       _this.cityCode = code;
       _this.getRegion();
