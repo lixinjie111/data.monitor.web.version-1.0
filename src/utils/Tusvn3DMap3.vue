@@ -796,6 +796,142 @@ export default {
                 }
             }
         },
+        onMessage2:function(data){
+
+            this.models={};
+            this.count++;
+            if((this.count%this.interval)!=0)
+            {
+                return;
+            }
+            let rsuDatas = JSON.parse(data.data);
+            this.messageTime=rsuDatas.time;
+
+            if(this.messageTimer) {
+                clearTimeout(this.messageTimer);
+            }
+            this.messageTimer = setTimeout(() => {
+                this.resetModels();
+            }, 1000);
+
+            var devId = null;
+            if(rsuDatas.result.vehDataDTO.length>0)
+            {
+                var time = this.timetrans(rsuDatas.result.vehDataDTO[0].gpsTime);
+                this.$emit('showTimeStamp',time);
+                devId = rsuDatas.result.vehDataDTO[0].devId;
+                if(this.deviceModels[devId]==null)
+                {
+                    this.deviceModels[devId]={cars:[],persons:[],texts:[]};
+                    for(let m = 0;m<this.cacheModelNum;m++)
+                    {
+                        //车
+                        // var geoBox1 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
+                        // var model1 = new THREE.Mesh( geoBox1, this.matStdObjects );
+                        var model1 = myBox.addMyBox(1.7, 4.6, 1.4, this.carColor);
+
+                        model1.position.set( 0, 0, 0 );
+                        model1.rotation.set( this.pitch,this.yaw,this.roll );
+                        model1.castShadow = true;
+                        model1.receiveShadow = true;
+
+                        this.scene.add(model1);
+                        this.deviceModels[devId].cars[m] = model1;
+                        
+
+                        var pBox1 = new THREE.BoxBufferGeometry(0.4, 0.4, 1.7);
+                        var pmodel1 = new THREE.Mesh( pBox1, this.person );
+                        pmodel1.position.set( 0, 0, 0 );
+                        pmodel1.rotation.set( 0, 0, 0 );
+                        pmodel1.castShadow = true;
+                        pmodel1.receiveShadow = true;
+
+                        this.deviceModels[devId].persons[m]= pmodel1;
+                        this.scene.add(pmodel1);
+
+
+                        var text1 = new dl.Text({
+                            text:"",
+                            fontsize:this.fontSize,
+                            borderThickness:0,
+                            textColor:{r: 0, g: 0, b: 0, a: 1.0}
+                        });
+
+                        this.deviceModels[devId].texts[m]=text1;
+                        this.scene.add(text1);
+                        text1.setPositon([0,0,0]);
+                        text1.fontface=this.fontface;
+                        text1.update();
+                    }
+                }else{
+                    for(let p=0;p<this.deviceModels[devId].cars.length;p++)
+                    {
+                        let car = this.deviceModels[devId].cars[p];
+                        car.position.x = 0;
+                        car.position.y = 0;
+                        car.position.z = 0;
+                    }
+
+                    for(let p=0;p<this.deviceModels[devId].persons.length;p++)
+                    {
+                        let person = this.deviceModels[devId].persons[p];
+                        person.position.x = 0;
+                        person.position.y = 0;
+                        person.position.z = 0;
+                    }
+
+                    for(let p=0;p<this.deviceModels[devId].texts.length;p++){
+                        var text1 = this.deviceModels[devId].texts[p];
+                        text1.setPositon([0,0,0]);
+                        text1.update();
+                    }
+                }
+
+            }
+            for(let i = 0;i<rsuDatas.result.vehDataDTO.length;i++)
+            {
+                let d = rsuDatas.result.vehDataDTO[i];
+
+                console.log(d)
+                let dUTM = proj4(this.sourceProject,this.destinatePorject,[d.longitude,d.latitude]);
+
+                if(d.targetType==0||d.targetType==1||d.targetType==3)
+                {
+                    if(i<this.deviceModels[devId].persons.length)
+                    {
+                        let mdl = this.deviceModels[devId].persons[i];
+                        mdl.position.x = dUTM[0];
+                        mdl.position.y = dUTM[1];
+                        mdl.position.z = this.defualtZ+1;
+                        mdl.rotation.set(0,0,-(Math.PI / 180.0) * (d.heading-180));
+
+                        let text = this.deviceModels[devId].texts[i];
+                        let h = d.heading.toFixed(1);
+                        let s = d.speed.toFixed(1);
+                        text.setText("[" + h + ", " + s + "]");
+                        text.setPositon([dUTM[0],dUTM[1],this.defualtZ+2]);
+                        text.rotation.set(0,0,-(Math.PI / 180.0) * (d.heading-180));
+                    }
+                }else{
+                    if(i<this.deviceModels[devId].cars.length)
+                    {
+                        let mdl = this.deviceModels[devId].cars[i];
+                        mdl.position.x = dUTM[0];
+                        mdl.position.y = dUTM[1];
+                        mdl.position.z = this.defualtZ+1;
+                        mdl.rotation.set(0,0,-(Math.PI / 180.0) * (d.heading-180));
+
+                        let text = this.deviceModels[devId].texts[i];
+                        let h = d.heading.toFixed(1);
+                        let s = d.speed.toFixed(1);
+                        text.setText("[" + h + ", " + s + "]");
+                        text.setPositon([dUTM[0],dUTM[1],this.defualtZ+3]);
+                        text.rotation.set(0,0,-(Math.PI / 180.0) * (d.heading-180));
+                          
+                    }
+                }
+            }
+        },
         onPerceptionMessage:function(data){
 //            console.log("=======================onPerceptionMessage===================");
 //            console.log(new Date().getTime());
@@ -1217,6 +1353,7 @@ export default {
         {
             this.websocketUrl = url;
             // this.rcuId = rcuid;
+  
             this.perceptionParams = params;
             this.deviceModels = {};
              if ('WebSocket' in window) {
@@ -1229,7 +1366,7 @@ export default {
                     }
                     this.hostWebsocket=null;
                     this.hostWebsocket = new WebSocket(this.websocketUrl);
-                    this.hostWebsocket.onmessage = this.onPerceptionMessage;
+                    this.hostWebsocket.onmessage = this.onMessage2;
                     this.hostWebsocket.onclose = this.onClose;
                     this.hostWebsocket.onopen = this.onOpen2;
                     this.hostWebsocket.onerror = this.onError;
@@ -1243,7 +1380,8 @@ export default {
             this.sendMsg(hostVehicle);
         },
         onOpen2:function(){
-            var params = this.perceptionParams;
+            var params = {"action": "road_real_data_per","data": { "polygon":this.perceptionParams}}
+            params = JSON.stringify(params);
             this.sendMsg(params);
         },
         sendMsg:function(msg){
