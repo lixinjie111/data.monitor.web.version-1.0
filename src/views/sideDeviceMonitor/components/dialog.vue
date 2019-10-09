@@ -230,7 +230,8 @@ export default {
       rtmp: "",
       cameraParam: {},
       deviceMapId:"deviceMap1",
-      selectedDevice:{}
+      selectedDevice:{},
+      currentExtent:[],
     };
   },
   components: {
@@ -299,9 +300,17 @@ export default {
       }).then(res => {
         _this.deviceList = res.data;
         var flag = true;
+        let deviceNList = []
+        _this.deviceList.forEach(function(item, index) {
+          if(item.deviceType == "N" ) {
+            deviceNList.push(item)
+          }
+        })
+        _this.deviceList = deviceNList;
         _this.deviceList.forEach(function(item, index) {
           //第一次默认并且是摄像头而且在线设置其打开状态
           if (flag && item.deviceType == "N" ) {
+            _this.currentExtent = _this.getExtend(item.lon,item.lat,0.0002)
             if (_this.selectedItem.camSerialNum == "") {//通过地图点击进来的
               flag = false;
               //设置默认的选中值
@@ -339,9 +348,10 @@ export default {
                   _this.cameraParam.pitch,
                   _this.cameraParam.yaw
                 );
-                _this.$refs.tusvnMap3.changeRcuId(
+                _this.$refs.tusvnMap3.changeRcuId2(
                   window.config.websocketUrl,
-                  item.serialNum
+                  _this.getExtend(item.lon,item.lat,0.0002)
+                  // item.serialNum
                 );
               }
             }
@@ -358,6 +368,12 @@ export default {
             this.$refs.tusvnMap3.reset3DMap();
           }
         }
+
+
+        //  this.$refs.tusvnMap3.changeRcuId2(
+        //   window.config.websocketUrl,
+        //   this.currentExtent
+        // );
       });
     },
     switchChange(item) {
@@ -421,9 +437,10 @@ export default {
             _this.cameraParam.pitch,
             _this.cameraParam.yaw
           );
-          this.$refs.tusvnMap3.changeRcuId(
+          this.$refs.tusvnMap3.changeRcuId2(
             window.config.websocketUrl,
-            item.serialNum
+            _this.getExtend(item.lon,item.lat,0.0002)
+            // item.serialNum
           );
         }
        // _this.$refs.tusvnMap3.reset3DMap();
@@ -546,7 +563,6 @@ export default {
       });
     },
     getTree(code) {
-      console.log(code);
       var _this = this;
       _this.cityCode = code;
       _this.getRegion();
@@ -632,9 +648,11 @@ export default {
           this.cameraParam.pitch,
           this.cameraParam.yaw
         );
-        this.$refs.tusvnMap3.changeRcuId(
+        this.$refs.tusvnMap3.changeRcuId2(
           window.config.websocketUrl,
-          this.serialNum
+          //this.getExtend(item.lon,item.lat,0.0002)
+          this.currentExtent
+          // this.serialNum
         );
         return;
       }
@@ -662,9 +680,12 @@ export default {
               window.defaultMapParam.yaw
             );
           }
-          this.$refs.tusvnMap3.changeRcuId(
+          // this.getExtend(121.1750307,31.2826193,0.0002)
+          
+          this.$refs.tusvnMap3.changeRcuId2(
             window.config.websocketUrl,
-            this.serialNum
+              this.currentExtent
+            // this.serialNum
           );
           clearInterval(time);
         }
@@ -721,6 +742,17 @@ export default {
         options.sources[0].src = this.rtmp;
         this.option = options;
       }
+    },
+    getExtend(x,y,r){
+        let x0=x+r;
+        let y0=y+r;
+        let x1=x-r;
+        let y1=y-r;
+        this.currentExtent.push([x1, y0]);
+        this.currentExtent.push([x0, y0]);
+        this.currentExtent.push([x0, y1]);
+        this.currentExtent.push([x1, y1]);
+        return this.currentExtent;
     }
   },
   mounted() {

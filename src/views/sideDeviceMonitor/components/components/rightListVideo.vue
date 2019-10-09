@@ -69,7 +69,9 @@
               _this.option.notSupportedMessage = '视频流不存在，请稍候再试！';
             }
           },1000)
-
+          if(!this.roadItem.camSerialNum){
+            return;
+          }
             getVideoByNum({
               "protocal": 1,
               "serialNum": this.roadItem.camSerialNum
