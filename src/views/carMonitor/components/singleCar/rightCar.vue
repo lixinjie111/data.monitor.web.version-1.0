@@ -10,10 +10,18 @@
           <!--<video src="movie.ogg" controls="controls" autoplay width="270" height="200">
             您的浏览器不支持 video 标签。
           </video>-->
-          <div class="single-mask-style" >
+          <!-- <div class="single-mask-style" >
             <img src="@/assets/images/carMonitor/refresh.png" class="single-mask-img" @click="refresh"/>
-          </div>
-          <video-player class="vjs-custom-skin" :options="playerOptions" @error="playerError"></video-player>
+          </div> -->
+          <live-player
+                  :isStretch="true"
+                  :requestVideoUrl="rtmp"
+                  :params="forwardParam"
+                  type="rtmp"
+                  :autoplay="false"
+                  ref="player"
+          >
+          </live-player>
           <div class="stop-style" v-show="isStop">
             <img src="@/assets/images/car/stop.png"/>
             <p>无数据提示</p>
@@ -46,6 +54,7 @@
 </template>
 <script>
   import { getVehicleCalendarData, getLiveDeviceInfo, startStream, sendStreamHeart } from '@/api/carMonitor'
+  import LivePlayer from '@/components/livePlayer/template';
   const isProduction = process.env.NODE_ENV === 'production'
   export default {
     data () {
@@ -69,42 +78,12 @@
         //自车数据
         currentCar:{},
         carsData:[],
-        playerOptions: {
-          overNative: true,
-            autoplay: true,
-            controls: true,
-            techOrder: ['flash', 'html5'],
-            sourceOrder: true,
-            flash: {
-              swf: isProduction ? '/monPlatform/static/media/video-js.swf' : '/static/media/video-js.swf'
-            },
-          sources: [
-            {
-              type: 'rtmp/mp4',
-              src: ''
-            }
-          ],
-          muted:true,
-          width:'270',
-          height:'180',
-          bigPlayButton : false,
-          notSupportedMessage: '此视频暂无法播放，请稍候再试!',
-          controlBar: {
-            timeDivider: false,
-            durationDisplay: false,
-            remainingTimeDisplay: false,
-            currentTimeDisplay:false,
-            fullscreenToggle: true, //全屏按钮
-            captionsButton : false,
-            chaptersButton: false,
-            subtitlesButton:false,
-            liveDisplay:false,
-            playbackRateMenuButton:false
-          }
-        },
-        rtmp:''
+        rtmp:'',
+        forwardParam:{},
+        flvUrl:'',
       }
     },
+    components: { LivePlayer },
     props:{
       isStop:{
         type:Boolean,
@@ -112,12 +91,13 @@
       }
     },
     created() {
+      // this.rtmp = 'rtmp://218.76.44.22:10085/hls/EasyGBS3402000005132000001534020000051320000015?sign=MVoQPApWg';
       this.screenConfig.scalefactor = this.screenConfig.showHeight/(this.screenConfig.scrHeight*this.screenConfig.meterPerDegree);
     },
     watch:{
       isStop(oldValue,newValue){
         if(this.isStop){
-          this.playerOptions.sources[0].src='';
+          this.$refs['player'].initVideo();
           this.carsData=[];
         }else {
           this.getDeviceInfo();
@@ -260,15 +240,12 @@
               if(item.toward==0){
                 this.liveDeviceInfo=item;
                 if(this.liveDeviceInfo.serialNum==''){
-                  this.playerOptions.sources[0].src='';
-                  this.playerOptions.bigPlayButton=false;
+                  this.$refs['player'].initVideo();
                 }else{
                   this.getStream();
                 }
               }
             })
-          }else{
-            this.playerOptions.bigPlayButton=false;
           }
         });
       },
@@ -278,18 +255,13 @@
           'camId':this.liveDeviceInfo.serialNum,
           'protocal':this.liveDeviceInfo.protocol
         }).then(res => {
+          this.$refs['player'].initVideo();
           this.streamInfo = res.streamInfoRes;
           //获取视频地址并赋值
           this.rtmp = this.streamInfo.rtmp;
           if(this.rtmp&&this.rtmp!=''){
-            this.playerOptions.bigPlayButton=true;
-            console.log("rtmp:"+this.rtmp);
-            this.playerOptions.sources[0].src = this.rtmp;
             //直播报活调用
             this.repeatFn();//拉取流后，保活
-          }else {
-            this.playerOptions.notSupportedMessage='视频流不存在，请稍候再试！';
-            this.playerOptions.bigPlayButton=false;
           }
         });
       },
@@ -407,35 +379,6 @@
             t:t
         }
       },
-      refresh(){
-        if(!this.liveDeviceInfo&&this.liveDeviceInfo.serialNum==''){
-          this.getDeviceInfo();
-          return;
-        }else{
-          if(this.rtmp==''){
-            this.playerOptions.notSupportedMessage='视频流不存在，请稍候再试！';
-           /* this.playerOptions.bigPlayButton=false;*/
-            if(this.liveDeviceInfo&&this.liveDeviceInfo.serialNum!=''){
-              this.getStream();
-              return;
-            }
-          }else{
-            this.playerOptions.sources[0].src='';
-            this.playerOptions.sources[0].src = this.rtmp;
-            this.playerOptions.bigPlayButton=true;
-          }
-        }
-      },
-      playerError(e) {
-        console.log("singleCar----playerError");
-        if(this.playerOptions.sources[0].src != '') {
-          let _videoUrl = this.playerOptions.sources[0].src;
-          this.playerOptions.sources[0].src = '';
-          setTimeout(() => {
-            this.playerOptions.sources[0].src = _videoUrl;
-          }, 2000);
-        }
-      }
       /**
        * movePt 平移坐标
        * @param {*} moveX x平移量 单位px

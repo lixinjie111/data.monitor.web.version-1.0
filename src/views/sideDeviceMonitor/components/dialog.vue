@@ -68,7 +68,16 @@
                   @click="refresh"
                 />
               </div>
-              <video-player class="c-map-video-style" :options="option" ref="videoPlayer1"></video-player>
+              <live-player
+                      :isStretch="true"
+                      :requestVideoUrl="flvUrl"
+                      :params="forwardParam"
+                      type="flvUrl"
+                      :autoplay="false"
+                      ref="player"
+              >
+              </live-player>
+              <!-- <video-player class="c-map-video-style" :options="option" ref="videoPlayer1"></video-player> -->
             </div>
             <div v-if="target=='map'" style="width: 100%;height: 100%;">
               <div style="width: 100%;height: 100%;">
@@ -150,7 +159,16 @@
                         @click="refresh"
                       />
                     </div>
-                    <video-player class="c-map-video-style" :options="option" ref="videoPlayer"></video-player>
+                    <live-player
+                            :isStretch="true"
+                            :requestVideoUrl="flvUrl"
+                            :params="forwardParam"
+                            type="flvUrl"
+                            :autoplay="false"
+                            ref="player"
+                    >
+                    </live-player>
+                    <!-- <video-player class="c-map-video-style" :options="option" ref="videoPlayer"></video-player> -->
                   </div>
                   <div v-if="target=='video'" style="width: 100%;height: 100%;">
                     <div style="width: 100%;height: 100%;">
@@ -192,13 +210,13 @@ import {
 } from "@/api/sideDeviceMonitor";
 import TusvnMap from "@/utils/Tusvn3DMap3";
 import { getMap } from "@/utils/tusvnMap.js";
+import LivePlayer from '@/components/livePlayer/template'
 const isProduction = process.env.NODE_ENV === "production";
 export default {
   name: "SideDialog",
   data() {
     return {
       mapParam:window.mapParam,
-      option: {},
       provinceOptions: [],
       provinceValue: "",
       cityOptions: [],
@@ -230,11 +248,15 @@ export default {
       rtmp: "",
       cameraParam: {},
       deviceMapId:"deviceMap1",
-      selectedDevice:{}
+      selectedDevice:{},
+      currentExtent:[],
+      forwardParam:{},
+      flvUrl:'',
     };
   },
   components: {
-    TusvnMap
+    TusvnMap,
+    LivePlayer
   },
   props: {
     selectedItem: {
@@ -249,45 +271,7 @@ export default {
     }
   },
   methods: {
-    getPlayerOptions() {
-      var option = {
-        overNative: true,
-        autoplay: true,
-        controls: true,
-        fluid: true,
-        techOrder: ["flash", "html5"],
-        sourceOrder: true,
-        flash: {
-          swf: isProduction
-            ? "/monPlatform/static/media/video-js.swf"
-            : "/static/media/video-js.swf"
-        },
-        sources: [
-          {
-            type: "rtmp/mp4",
-            src: ""
-          }
-        ],
-        muted: true,
-        width: "100%",
-        height: "100%",
-        bigPlayButton: false,
-        notSupportedMessage: "此视频暂无法播放，请稍候再试",
-        controlBar: {
-          timeDivider: false,
-          durationDisplay: false,
-          remainingTimeDisplay: false,
-          currentTimeDisplay: false,
-          fullscreenToggle: true, //全屏按钮
-          captionsButton: false,
-          chaptersButton: false,
-          subtitlesButton: false,
-          liveDisplay: false,
-          playbackRateMenuButton: false
-        }
-      };
-      return option;
-    },
+
     getDeviceList() {
       var _this = this;
       //切换杆的时候清理模型
@@ -299,9 +283,17 @@ export default {
       }).then(res => {
         _this.deviceList = res.data;
         var flag = true;
+        let deviceNList = []
+        _this.deviceList.forEach(function(item, index) {
+          if(item.deviceType == "N" ) {
+            deviceNList.push(item)
+          }
+        })
+        _this.deviceList = deviceNList;
         _this.deviceList.forEach(function(item, index) {
           //第一次默认并且是摄像头而且在线设置其打开状态
           if (flag && item.deviceType == "N" ) {
+            _this.currentExtent = _this.getExtend(item.lon,item.lat,0.0002)
             if (_this.selectedItem.camSerialNum == "") {//通过地图点击进来的
               flag = false;
               //设置默认的选中值
@@ -339,9 +331,10 @@ export default {
                   _this.cameraParam.pitch,
                   _this.cameraParam.yaw
                 );
-                _this.$refs.tusvnMap3.changeRcuId(
+                _this.$refs.tusvnMap3.changeRcuId2(
                   window.config.websocketUrl,
-                  item.serialNum
+                  _this.getExtend(item.lon,item.lat,0.0002)
+                  // item.serialNum
                 );
               }
             }
@@ -351,13 +344,16 @@ export default {
           }
         });
         if (_this.serialNum == "") {
-          var options = _this.getPlayerOptions();
-          options.sources[0].src = "";
-          _this.option = options;
           if (this.$refs.tusvnMap3) {
             this.$refs.tusvnMap3.reset3DMap();
           }
         }
+
+
+        //  this.$refs.tusvnMap3.changeRcuId2(
+        //   window.config.websocketUrl,
+        //   this.currentExtent
+        // );
       });
     },
     switchChange(item) {
@@ -421,17 +417,15 @@ export default {
             _this.cameraParam.pitch,
             _this.cameraParam.yaw
           );
-          this.$refs.tusvnMap3.changeRcuId(
+          this.$refs.tusvnMap3.changeRcuId2(
             window.config.websocketUrl,
-            item.serialNum
+            _this.getExtend(item.lon,item.lat,0.0002)
+            // item.serialNum
           );
         }
        // _this.$refs.tusvnMap3.reset3DMap();
 
       } else {
-        var options = _this.getPlayerOptions();
-        options.sources[0].src = "";
-        _this.option = options;
         if (this.$refs.tusvnMap3) {
           _this.$refs.tusvnMap3.reset3DMap();
         }
@@ -546,7 +540,6 @@ export default {
       });
     },
     getTree(code) {
-      console.log(code);
       var _this = this;
       _this.cityCode = code;
       _this.getRegion();
@@ -602,15 +595,7 @@ export default {
         this.roadDevicePoint = res.data;
       });
     },
-    closeDialog() {
-      var options = this.getPlayerOptions();
-      if(options.sources[0].src){
-        this.$refs.videoPlayer.dispose();
-      }
-      
-      options.sources[0].src = "";
-      this.option = options;
-     
+    closeDialog() { 
       if (this.$refs.tusvnMap3) {
         this.$refs.tusvnMap3.reset3DMap();
       }
@@ -632,9 +617,11 @@ export default {
           this.cameraParam.pitch,
           this.cameraParam.yaw
         );
-        this.$refs.tusvnMap3.changeRcuId(
+        this.$refs.tusvnMap3.changeRcuId2(
           window.config.websocketUrl,
-          this.serialNum
+          //this.getExtend(item.lon,item.lat,0.0002)
+          this.currentExtent
+          // this.serialNum
         );
         return;
       }
@@ -662,9 +649,12 @@ export default {
               window.defaultMapParam.yaw
             );
           }
-          this.$refs.tusvnMap3.changeRcuId(
+          // this.getExtend(121.1750307,31.2826193,0.0002)
+          
+          this.$refs.tusvnMap3.changeRcuId2(
             window.config.websocketUrl,
-            this.serialNum
+              this.currentExtent
+            // this.serialNum
           );
           clearInterval(time);
         }
@@ -676,26 +666,13 @@ export default {
       }, 1000);
     },
     getVideo() {
-      var options = this.getPlayerOptions();
-//    if(this.selectedDevice.workStatus!= 1){
-//      options.notSupportedMessage = "";
-//      options.notSupportedMessage = "设备不在线";
-//      return;
-//    }
       getVideoByNum({
         protocal: 1,
         /*"serialNum": "3402000000132000001401"*/
         serialNum: this.serialNum
       }).then(res => {
-        this.rtmp = res.data.rtmp;
-        if (this.rtmp == "") {
-          options.notSupportedMessage = "";
-          options.notSupportedMessage = "视频流不存在，请稍候重试";
-        } else {
-          options.notSupportedMessage = "此视频暂无法播放，请稍候再试";
-          options.sources[0].src = res.data.rtmp;
-        }
-        this.option = options;
+        this.$refs["player"].initVideo();
+        this.flvUrl = res.data.flvUrl;
       });
     },
     refresh() {
@@ -712,15 +689,25 @@ export default {
         this.getDeviceList();
         return;
       }
-      if (this.rtmp == "") {
+      if (this.flvUrl == "") {
         this.getVideo();
         return;
       } else {
-        var options = this.getPlayerOptions();
-        options.sources[0].src = "";
-        options.sources[0].src = this.rtmp;
-        this.option = options;
+        let tmpFlvUrl = this.flvUrl;
+        this.$refs['player'].initVideo();
+        this.flvUrl = tmpFlvUrl;
       }
+    },
+    getExtend(x,y,r){
+        let x0=x+r;
+        let y0=y+r;
+        let x1=x-r;
+        let y1=y-r;
+        this.currentExtent.push([x1, y0]);
+        this.currentExtent.push([x0, y0]);
+        this.currentExtent.push([x0, y1]);
+        this.currentExtent.push([x1, y1]);
+        return this.currentExtent;
     }
   },
   mounted() {
