@@ -12,13 +12,13 @@ window.config = {
 //地图额外配置项添加
 window.mapOption = {
     mapStyleEmpty: "amap://styles/bc5a63d154ee0a5221a1ee7197607a00", // 纯灰色背景地图 路口
-    defaultCenterPoint :  [115.912987, 39.049487],   // 雄安默认中心点 --- 高德坐标点
-    centerPoint :  [115.912987, 39.049487],     // 数据概览 中心点位置(获取地理位置计算天气) --- 高德坐标点
-    singlePoint:[115.912987, 39.049487],    // 单车监控 大地图中心点 --- 高德坐标点
+    defaultCenterPoint :  [115.867084, 39.052478],   // 雄安默认中心点 --- 高德坐标点
+    centerPoint :  [115.867084, 39.052478],     // 数据概览 中心点位置(获取地理位置计算天气) --- 高德坐标点
+    singlePoint:[115.867084, 39.052478],    // 单车监控 大地图中心点 --- 高德坐标点
 };
 window.defaultMapOption = {
 	center: window.mapOption.defaultCenterPoint,
-	zoom: 11,		// 默认：比例尺显示100m
+	zoom: 15,		// 默认：比例尺显示100m
 	resizeEnable: true, //是否监控地图容器尺寸变化
 	rotateEnable: true,
 	mapStyle: "amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8"
