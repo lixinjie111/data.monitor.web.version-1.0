@@ -1,5 +1,5 @@
 <template>
-  <div class="c-info-style" ref="aaa">
+  <div class="c-info-style">
     <template v-if="roadList.length">
       <div v-for="(item,index) in roadList" :key="item.camSerialNum" class="m-info-list">
         <right-list-video :index="index" :roadItem="item"  :visible="visible" :roadList="roadList" @queryDeviceDetail="queryDeviceDetail" ></right-list-video>
