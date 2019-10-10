@@ -1,9 +1,9 @@
 <template>
   <div class="c-info-style">
     <template v-if="roadList.length">
-      <div v-for="item in roadList" :key="item.camSerialNum" class="m-info-list"  >
-        <right-list-video :roadItem="item"  :visible="visible" :roadList="roadList" @queryDeviceDetail="queryDeviceDetail" ></right-list-video>
-       <!-- <right-list-map   :roadItem="item" :visible="visible" :roadList="roadList" @queryDeviceDetail="queryDeviceDetail"></right-list-map>-->
+      <div v-for="(item,index) in roadList" :key="item.camSerialNum" class="m-info-list">
+        <right-list-video :index="index" :roadItem="item"  :visible="visible" :roadList="roadList" @queryDeviceDetail="queryDeviceDetail" ></right-list-video>
+        <right-list-map   :roadItem="item" :visible="visible"  @queryDeviceDetail="queryDeviceDetail"></right-list-map>
       </div>
     </template>
     <template v-else>
@@ -50,6 +50,9 @@
             });
           },
           queryDeviceDetail(item,target) {
+            this.$children.map((item,index)=>{
+              item.$children[0].setVideoOptionPause();
+            })
             this.$emit("queryDeviceDetail",item,target);
           },
         }

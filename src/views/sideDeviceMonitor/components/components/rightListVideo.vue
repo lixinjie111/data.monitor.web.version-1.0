@@ -1,114 +1,86 @@
 <template>
     <div class="c-size-style">
       <div class="c-size-inner">
-        <video-player class="c-map-video-style" :options="option" @error="playerError"></video-player>
-        <div class="c-mask-title" >
-          <div @click="queryDeviceDetail(roadItem,'video')">路侧点：{{roadItem.roadSiderName}}</div>
-          <img src="@/assets/images/carMonitor/refresh.png" class="c-mask-refresh" v-if="roadItem.online==1" @click="refresh"/>
-        </div>
+        <live-player
+                :isStretch="true"
+                :requestVideoUrl="requestVideoUrl"
+                :params="forwardParam"
+                type="flvUrl"
+                :autoplay="false"
+        >
+        <a class="title" href="javascript:;" @click="queryDeviceDetail(roadItem,'video')">路侧点：{{roadItem.roadSiderName}}</a>
+        </live-player>
+      
       </div>
     </div>
 </template>
 <script>
   import {getVideoByNum} from '@/api/sideDeviceMonitor'
+  import LivePlayer from '@/components/livePlayer/template'
   const isProduction = process.env.NODE_ENV === 'production'
     export default {
         data() {
             return {
-              option:{
-                overNative: true,
-                autoplay: true,
-                controls: true,
-                preload: 'auto',
-                fluid: true,
-                techOrder: ['flash', 'html5'],
-                sourceOrder: true,
-                flash: {
-                  swf: isProduction ? '/monPlatform/static/media/video-js.swf' : '/static/media/video-js.swf'
-                },
-                sources: [
-                  {
-                    type: 'rtmp/mp4',
-                    src: ''
-                  }
-                ],
-                muted:true,
-                width:'100%',
-                height:'100%',
-                notSupportedMessage: '此视频暂无法播放，请稍候再试',
-                /*errorDisplay : false,*/
-                controlBar: {
-                  timeDivider: false,
-                  durationDisplay: false,
-                  remainingTimeDisplay: false,
-                  currentTimeDisplay:false,
-                  fullscreenToggle: true, //全屏按钮
-                  captionsButton : false,
-                  chaptersButton: false,
-                  subtitlesButton:false,
-                  liveDisplay:false,
-                  playbackRateMenuButton:false
-                }
-              },
-              rtmp:"",
+              forwardParam:{},
+              flvUrl:'',
+              requestVideoUrl:getVideoByNum,  
             }
         },
-        props:['visible','roadItem','roadList'],
+        components: {LivePlayer},
+        props:['index','visible','roadItem','roadList'],
         mounted() {
-          this.getVideoByNum();
+          // this.getVideoByNum();
+          this.forwardParam ={
+              "protocal": 1,
+              "serialNum": this.roadItem.camSerialNum
+          }
         },
         methods: {
           getVideoByNum(){
             var _this = this;
-//          if(this.roadItem.online!=1){
-//            this.option.notSupportedMessage='路侧设备不在线!';
-//            return;
-//          }
-          setTimeout(()=>{
-            if(_this.rtmp=='') {
-              _this.option.notSupportedMessage = '视频流不存在，请稍候再试！';
-            }
-          },1000)
-
+          if(!this.roadItem.camSerialNum){
+            return;
+          }
             getVideoByNum({
               "protocal": 1,
               "serialNum": this.roadItem.camSerialNum
             }).then(res => {
-                _this.rtmp = res.data.rtmp;
-                if(_this.rtmp==''){
-                  _this.option.notSupportedMessage='视频流不存在，请稍候再试！';
-                }else{
-                  _this.option.sources[0].src=_this.rtmp;
-                }
+                _this.flvUrl = res.data.flvUrl;
+               
             })
           },
           queryDeviceDetail(item,target) {
+
             this.$emit("queryDeviceDetail",item,target);
           },
-          //视频报错的方法
-          playerError(e) {
-            if(this.option.sources[0].src != '') {
-              let _videoUrl = this.option.sources[0].src;
-              this.option.sources[0].src = '';
-              setTimeout(() => {
-                this.option.sources[0].src = _videoUrl;
-              }, 2000);
-            }
+       
+       
+
+          videoLoadCompleted(param){
+              this.repeatFn(param);
           },
-          //后端请求超时的解决办法
-          refresh(){
-            let _this = this;
-            if(_this.roadList.length==0){
-              _this.getVideoByNum();
-              return;
-            }
-            if(_this.rtmp==''){
-              _this.getVideoByNum();
-            }else{
-              _this.option.sources[0].src='';
-              _this.option.sources[0].src=_this.rtmp;
-            }
-          }
+
+          repeatFn(item){//每5秒直播报活一次
+              let _this = this;
+              _this.keepStream(item);
+              if(_this.timeObj[item.camId]){
+                  clearTimeout(_this.timeObj[item.camId]);
+              }
+              let time = setTimeout(function(){
+                  _this.repeatFn(item);
+              },5000)
+              _this.timeObj[item.camId] = time;
+          },
+
+          keepStream(item){
+                sendStreamHeart({
+                    'vehicleId': this.vehicleId,
+                    'camId':item.serialNum,
+                    'protocal':item.protocol
+                }).then(res => {
+                });
+            },
+       
         },
       watch:{
         visible(){
@@ -117,23 +89,9 @@
           if(!this.visible) {
             //重新连接数据和视频
             if(_this.roadList==0){
-              _this.option.notSupportedMessage='';
-              _this.option.notSupportedMessage='路侧设备不存在!';
+              
               return;
             }
-            // if(this.roadItem.online!=1){
-            //   this.option.notSupportedMessage='路侧设备不在线!';
-            //   return;
-            // }
-            if(_this.rtmp==''){
-              _this.option.notSupportedMessage='视频流不存在，请稍候重试';
-            }else{
-              _this.option.sources[0].src=_this.rtmp;
-            }
-          }else{
-            //打开窗口之前，关闭连接
-            _this.option.notSupportedMessage='连接关闭';
-            _this.option.sources[0].src='';
           }
         }
       },

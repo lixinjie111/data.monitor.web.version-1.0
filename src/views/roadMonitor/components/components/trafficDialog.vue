@@ -108,15 +108,16 @@
                 </p>
                 <div class="device-video-style">
                   <div class="side-video-style">
-                    <div class="c-mask-title">
-                      <div class="m-mask-title">智能摄像头：{{deviceId}}</div>
-                      <img
-                        src="@/assets/images/carMonitor/refresh.png"
-                        class="c-mask-refresh"
-                        @click="refresh"
-                      />
-                    </div>
-                    <video-player class="c-map-video-style" :options="option" ref="videoPlayer"></video-player>
+                    <live-player
+                            :isStretch="true"
+                            :requestVideoUrl="flvUrl"
+                            :params="forwardParam"
+                            type="flvUrl"
+                            :autoplay="false"
+                            ref="player"
+                    >
+                    <span class="title">智能摄像头：{{deviceId}}</span>
+                    </live-player>
                   </div>
                 </div>
               </div>
@@ -138,6 +139,7 @@ import {
 import { getFeaturesByPoint } from "@/api/roadMonitor";
 import TusvnMap from "@/utils/Tusvn3DMap4";
 import ConvertCoord from "@/assets/js/utils/coordConvert.js";
+import LivePlayer from '@/components/livePlayer/template';
 const isProduction = process.env.NODE_ENV === "production";
 export default {
   name: "SideDialog",
@@ -166,7 +168,6 @@ export default {
       openVideoList: [],
       time: "",
       serialNum: "",
-      rtmp: "",
       sideMap: true,
       mapMessage: "该路口没有数据，请稍候再试！",
       cameraParam: null,
@@ -176,51 +177,15 @@ export default {
       isOne: true,
       heading: "", //航向角
       position: [],
-      option: {
-        overNative: true,
-        autoplay: true,
-        controls: true,
-        preload: "auto",
-        fluid: true,
-        techOrder: ["flash", "html5"],
-        sourceOrder: true,
-        flash: {
-          swf: isProduction
-            ? "/monPlatform/static/media/video-js.swf"
-            : "/static/media/video-js.swf"
-        },
-        sources: [
-          {
-            type: "rtmp/mp4",
-            src: ""
-          }
-        ],
-        muted: true,
-        width: "100%",
-        height: "100%",
-        notSupportedMessage: "此视频暂无法播放，请稍候再试",
-        /*errorDisplay : false,*/
-        controlBar: {
-          timeDivider: false,
-          durationDisplay: false,
-          remainingTimeDisplay: false,
-          currentTimeDisplay: false,
-          fullscreenToggle: true, //全屏按钮
-          captionsButton: false,
-          chaptersButton: false,
-          subtitlesButton: false,
-          liveDisplay: false,
-          playbackRateMenuButton: false
-        }
-      }
+      flvUrl:"",
+      forwardParam:{},
     };
   },
   components: {
-    TusvnMap
+    TusvnMap,LivePlayer
   },
   props: ["selectedItem"],
   created() {
-    //console.log(this.selectedItem);
     this.webSocketData.taskCode = this.selectedItem.taskCode;
     this.serialNum = this.selectedItem.cameraId; //点击进来的设备编号
     this.getExtend(
@@ -238,25 +203,18 @@ export default {
     // }
   },
   mounted() {
-    			//  setInterval(()=>{
-    			//      let camera = this.$refs.tusvnMap3.getCamera();
-    			//      console.log(camera.x,camera.y,camera.z,camera.radius,camera.pitch,camera.yaw)
-    			//  },2000)
   },
   watch: {
     deviceList: {
       handler: function(newVal, oldVal) {
         if (oldVal.length > 0 && newVal.length > 0) {
           //大于一次的
-          //console.log(1111)
           this.compare(newVal, oldVal);
         } else if (newVal.length <= 0) {
           //返回空列表
-          //console.log(2222)
           this.handleData(newVal);
         } else {
           //第一次
-          //console.log(33333)
           this.handleData(newVal);
         }
       },
@@ -296,11 +254,6 @@ export default {
       }
       let set = arrData.map(item => item.deviceId);
       let delData = oldArr.filter(item => !set.includes(item.deviceId)); //删除的数据
-      //console.log("新增的数据"+newData);//新增的数据
-      // console.log(arrData);//相同和需要更新的数据
-      // console.log(sameData);//相同的数据
-      //console.log("需要更新的数据"+sameIdData);//需要更新的数据
-      //console.log("删除的数据"+delData);//需要删除的数据
       this.handleData(newData, "traffic", "newData");
       this.handleData(sameIdData, "traffic", "sameIdData");
       this.handleData(delData, "traffic", "delData");
@@ -312,7 +265,7 @@ export default {
             if (i == item.deviceId) {
               if (item.value) {
                 //如果切换的按钮是正在播放状态，先清除视频源，后删除
-                this.option.sources[0].src = "";
+                this.$refs['player'].initVideo();
               }
               if (item.serialNum == this.selectedItem.cameraId) {
                 //如果事件源数据被要删除，先清空模型;后删除
@@ -337,7 +290,6 @@ export default {
           this.deviceObj[item.deviceId] = item;
         }
       });
-      //console.log(this.deviceObj)
       for (var i in this.deviceObj) {
         let item = this.deviceObj[i];
         if (this.isFirst) {
@@ -399,7 +351,9 @@ export default {
           //获取航向角
           getFeaturesByPoint(formData, config).then(res => {
             if (res.state == 1) {
-              this.heading = res.data[0].heading;
+              if(res.data.length>1){
+                 this.heading = res.data[0].heading;
+              }
               if (!this.cameraParam) {
                 this.updateCameraPosition();
               }
@@ -419,7 +373,6 @@ export default {
               ); //添加模型
             }
           });
-          //console.log(this.itemData.modelIcon)
           //this.$refs.tusvnMap3.addModel(this.selectedItem.cameraId,this.itemData.modelIcon,this.position[0],this.position[1],13); //添加模型
           //this.$refs.tusvnMap3.addStaticModel(this.selectedItem.cameraId, "./static/map3d/models/carEventModel.3ds", this.position[0], this.position[1], 13); //添加模型
         } else {
@@ -445,7 +398,6 @@ export default {
     },
     updateCameraPosition() {
       if (this.heading) {
-        //console.log(this.heading)
         this.$refs.tusvnMap3.updateCameraPosition1(
           this.position[0],
           this.position[1],
@@ -687,16 +639,10 @@ export default {
         //根据摄像头调取视频
         _this.getVideo();
       } else {
-        _this.option.sources[0].src = "";
+        _this.$refs['player'].initVideo();
       }
     },
     closeDialog() {
-      // var options = this.getPlayerOptions();
-      // options.sources[0].src = "";
-      // this.option = options;
-      //  if(this.$refs.videoPlayer){
-      //   this.$refs.videoPlayer.dispose();
-      // }
       if (this.$refs.tusvnMap3) {
         this.$refs.tusvnMap3.reset3DMap();
       }
@@ -715,29 +661,14 @@ export default {
         protocal: 1,
         serialNum: this.serialNum
       }).then(res => {
+        this.$refs['player'].initVideo();
         if (res.status == 200) {
-          this.rtmp = res.data.rtmp;
-          if (this.rtmp == "") {
-            this.option.notSupportedMessage = "视频流不存在，请稍候重试";
-          } else {
-            this.option.notSupportedMessage = "此视频暂无法播放，请稍候再试";
-            this.option.sources[0].src = res.data.rtmp;
-          }
+          this.flvUrl = res.data.flvUrl;
         } else {
-          this.option.notSupportedMessage = "此视频暂无法播放，请稍候再试";
-          this.option.sources[0].src = "";
+          this.$refs['player'].initVideo();
         }
       });
     },
-    refresh() {
-      if (this.rtmp == "") {
-        this.getVideo();
-        return;
-      } else {
-        this.option.sources[0].src = "";
-        this.option.sources[0].src = this.rtmp;
-      }
-    }
   },
   destroyed() {
     this.webSocket && this.webSocket.close();
