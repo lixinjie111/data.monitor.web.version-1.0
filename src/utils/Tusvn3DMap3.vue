@@ -892,7 +892,6 @@ export default {
             {
                 let d = rsuDatas.result.vehDataDTO[i];
 
-                console.log(d)
                 let dUTM = proj4(this.sourceProject,this.destinatePorject,[d.longitude,d.latitude]);
 
                 if(d.targetType==0||d.targetType==1||d.targetType==3)
