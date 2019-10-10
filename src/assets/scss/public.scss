@@ -365,20 +365,26 @@ img {
   top: 5px;
   right: 5px;
   bottom: 5px;
+  &:hover{
+    .c-mask-refresh {
+      opacity: 1;
+    }
+  }
 }
 .c-mask-title {
-  position: absolute;
+ position: absolute;
   top: 0;
-  right: 0;
   left: 0;
-  padding: 0 5px;
-  cursor: pointer;
-  z-index:3;
+  right: 0;
+  z-index: 3;
+  font-size: 14px;
   height: 40px;
+  color: #fff;
   @include layoutMode(all);
+  background: linear-gradient(to bottom, rgba(0, 0 ,0 , .6) 30%, rgba(0, 0 ,0 , 0)); /* 标准的语法 */
+  padding: 0 10px;
   .c-mask-refresh {
-    width: 14px;
-    height: 14px;
+    opacity: 0;
   }
 }
 .c-map-video-style{
@@ -400,7 +406,7 @@ img {
   z-index:2;
   .c-mask-text{
     padding:0 4px;
-    background:#d6922b;
+    // background:#d6922b;
   }
 }
 

@@ -61,13 +61,6 @@
         <div class="side-device-right">
           <div class="side-dialog-map">
             <div v-if="target=='video'" class="video-style-height">
-              <div class="road-mask-style">
-                <img
-                  src="@/assets/images/carMonitor/refresh.png"
-                  class="road-mask-img"
-                  @click="refresh"
-                />
-              </div>
               <live-player
                       :isStretch="true"
                       :requestVideoUrl="flvUrl"
@@ -76,6 +69,7 @@
                       :autoplay="false"
                       ref="player"
               >
+               <span></span>
               </live-player>
               <!-- <video-player class="c-map-video-style" :options="option" ref="videoPlayer1"></video-player> -->
             </div>
@@ -152,13 +146,6 @@
                 </p>
                 <div class="device-video-style">
                   <div v-if="target=='map'" class="side-video-style">
-                    <div class="road-mask-style">
-                      <img
-                        src="@/assets/images/carMonitor/refresh.png"
-                        class="road-mask-img"
-                        @click="refresh"
-                      />
-                    </div>
                     <live-player
                             :isStretch="true"
                             :requestVideoUrl="flvUrl"
@@ -167,6 +154,7 @@
                             :autoplay="false"
                             ref="player"
                     >
+                    <span></span>
                     </live-player>
                     <!-- <video-player class="c-map-video-style" :options="option" ref="videoPlayer"></video-player> -->
                   </div>
@@ -278,6 +266,8 @@ export default {
       /*if (_this.mapInit) {
         _this.$refs.tusvnMap3.reset3DMap();
       }*/
+      this.flvUrl = "";
+      this.$refs["player"].initVideo();
       getDeviceList({
         roadSiderId: this.roadId
       }).then(res => {
@@ -666,6 +656,7 @@ export default {
       }, 1000);
     },
     getVideo() {
+      this.flvUrl = "";
       getVideoByNum({
         protocal: 1,
         /*"serialNum": "3402000000132000001401"*/
@@ -674,29 +665,6 @@ export default {
         this.$refs["player"].initVideo();
         this.flvUrl = res.data.flvUrl;
       });
-    },
-    refresh() {
-      if (this.roadId == "") {
-        this.$message({
-						type: 'error',
-						duration: '1500',
-						message: '请先选择具体的路侧点',
-						showClose: true
-					});
-        return;
-      }
-      if (this.deviceList.length == 0) {
-        this.getDeviceList();
-        return;
-      }
-      if (this.flvUrl == "") {
-        this.getVideo();
-        return;
-      } else {
-        let tmpFlvUrl = this.flvUrl;
-        this.$refs['player'].initVideo();
-        this.flvUrl = tmpFlvUrl;
-      }
     },
     getExtend(x,y,r){
         let x0=x+r;
