@@ -51,7 +51,9 @@
           },
           queryDeviceDetail(item,target) {
             this.$children.map((item,index)=>{
-              item.$children[0].setVideoOptionPause();
+               if(item.$children[0].initVideo){
+                 item.$children[0].initVideo();
+               } 
             })
             this.$emit("queryDeviceDetail",item,target);
           },
