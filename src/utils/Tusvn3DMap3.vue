@@ -1092,13 +1092,6 @@ export default {
                     text.position.y = 0;
                     text.position.z = 0;
                 }
-                 for(let p=0;p<this.deviceModels[deviceid].texts.length;p++)
-                {
-                    let text = this.deviceModels[deviceid].texts[p];
-                    text.position.x = 0;
-                    text.position.y = 0;
-                    text.position.z = 0;
-                }
             }
         },
         processPlatformCars:function(){
