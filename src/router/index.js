@@ -3,7 +3,7 @@ import Router from 'vue-router'
 
 /* 默认路由，不要删除 */
 const Login = resolve => require(['@/views/login/index'], resolve)
-const Home = resolve => require(['@/views/home/index'], resolve)
+// const Home = resolve => require(['@/views/home/index'], resolve)
 const Err404 = resolve => require(['@/views/error/404'], resolve)
 //重新加载当前路由
 const Refresh = resolve => require(['@/views/refresh'], resolve)
@@ -23,14 +23,13 @@ const SideDeviceMonitor = resolve => require(['@/views/sideDeviceMonitor/index']
 
 
 
-const EchartsTest = resolve => require(['@/views/test/echarts'], resolve)
-const MapTest = resolve => require(['@/views/test/map'], resolve)
-const videoTest = resolve => require(['@/views/test/video'], resolve)
-const MarkerTest = resolve => require(['@/views/test/marker'], resolve)
-const TreeTest = resolve => require(['@/views/test/tree'], resolve)
-const SelectTest = resolve => require(['@/views/test/select'], resolve)
-const TableTest = resolve => require(['@/views/test/table'], resolve)
-const RenderTest = resolve => require(['@/views/test/render'], resolve)
+// const EchartsTest = resolve => require(['@/views/test/echarts'], resolve)
+// const MapTest = resolve => require(['@/views/test/map'], resolve)
+// const MarkerTest = resolve => require(['@/views/test/marker'], resolve)
+// const TreeTest = resolve => require(['@/views/test/tree'], resolve)
+// const SelectTest = resolve => require(['@/views/test/select'], resolve)
+// const TableTest = resolve => require(['@/views/test/table'], resolve)
+// const RenderTest = resolve => require(['@/views/test/render'], resolve)
 
 
 Vue.use(Router)
@@ -90,63 +89,59 @@ export default new Router({
     meta: {
       showHeader: true
     }
-  },{
-    path: '/test/echarts',
-    name: 'EchartsTest',
-    component: EchartsTest,
-    meta: {
-      showHeader: true
-    }
-  },{
-    path: '/test/map',
-    name: 'MapTest',
-    component: MapTest,
-    meta: {
-      showHeader: true
-    }
-  },{
-    path: '/videoTest',
-    name: 'VideoTest',
-    component: videoTest,
-    meta: {
-      showHeader: false
-    }
-  },{
-    path: '/markerTest',
-    name: 'MarkerTest',
-    component: MarkerTest,
-    meta: {
-      showHeader: false
-    }
-  },{
-    path: '/treeTest',
-    name: 'TreeTest',
-    component: TreeTest,
-    meta: {
-      showHeader: false
-    }
-  },{
-    path: '/selectTest',
-    name: 'SelectTest',
-    component: SelectTest,
-    meta: {
-      showHeader: false
-    }
-  },{
-    path: '/tableTest',
-    name: 'TableTest',
-    component: TableTest,
-    meta: {
-      showHeader: false
-    }
-  },{
-    path: '/renderTest',
-    name: 'RenderTest',
-    component: RenderTest,
-    meta: {
-      showHeader: false
-    }
-  },{
+  },
+  // {
+  //   path: '/test/echarts',
+  //   name: 'EchartsTest',
+  //   component: EchartsTest,
+  //   meta: {
+  //     showHeader: true
+  //   }
+  // },
+  // {
+  //   path: '/test/map',
+  //   name: 'MapTest',
+  //   component: MapTest,
+  //   meta: {
+  //     showHeader: true
+  //   }
+  // },{
+  //   path: '/markerTest',
+  //   name: 'MarkerTest',
+  //   component: MarkerTest,
+  //   meta: {
+  //     showHeader: false
+  //   }
+  // },{
+  //   path: '/treeTest',
+  //   name: 'TreeTest',
+  //   component: TreeTest,
+  //   meta: {
+  //     showHeader: false
+  //   }
+  // },{
+  //   path: '/selectTest',
+  //   name: 'SelectTest',
+  //   component: SelectTest,
+  //   meta: {
+  //     showHeader: false
+  //   }
+  // },{
+  //   path: '/tableTest',
+  //   name: 'TableTest',
+  //   component: TableTest,
+  //   meta: {
+  //     showHeader: false
+  //   }
+  // },{
+  //   path: '/renderTest',
+  //   name: 'RenderTest',
+  //   component: RenderTest,
+  //   meta: {
+  //     showHeader: false
+  //   }
+  // },
+  {
   //   path: '/',
   //   name: 'Home',
   //   component: Home,

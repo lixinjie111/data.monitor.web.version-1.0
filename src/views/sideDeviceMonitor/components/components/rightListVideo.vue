@@ -98,6 +98,3 @@
 
     }
 </script>
-<style lang="scss">
-  @import '@/assets/scss/video-reset.scss';
-</style>
