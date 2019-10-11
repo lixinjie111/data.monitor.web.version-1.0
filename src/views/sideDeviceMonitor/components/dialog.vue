@@ -71,7 +71,6 @@
               >
                <span></span>
               </live-player>
-              <!-- <video-player class="c-map-video-style" :options="option" ref="videoPlayer1"></video-player> -->
             </div>
             <div v-if="target=='map'" style="width: 100%;height: 100%;">
               <div style="width: 100%;height: 100%;">
@@ -156,7 +155,6 @@
                     >
                     <span></span>
                     </live-player>
-                    <!-- <video-player class="c-map-video-style" :options="option" ref="videoPlayer"></video-player> -->
                   </div>
                   <div v-if="target=='video'" style="width: 100%;height: 100%;">
                     <div style="width: 100%;height: 100%;">
@@ -693,7 +691,6 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/scss/dialog.scss";
-@import '@/assets/scss/video-reset.scss';
 
 </style>
 

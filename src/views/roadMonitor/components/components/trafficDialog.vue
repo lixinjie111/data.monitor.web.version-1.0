@@ -678,9 +678,6 @@ export default {
   }
 };
 </script>
-<style lang="scss">
-@import "@/assets/scss/video-reset.scss";
-</style>
 <style lang="scss" scoped>
 @import "@/assets/scss/dialog.scss";
 .m-side-dialog-content {

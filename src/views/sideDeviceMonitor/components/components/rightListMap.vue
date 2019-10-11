@@ -2,7 +2,7 @@
     <div class="c-size-style">
       <div class="c-size-inner" :id="roadItem.camSerialNum">
         <div class="c-mask-title">
-          <div @click="queryDeviceDetail(roadItem,'map')">路侧点：{{roadItem.roadSiderName}}</div>
+          <a href="javascript:;"  class="title" @click="queryDeviceDetail(roadItem,'map')">路侧点：{{roadItem.roadSiderName}}</a>
           <!-- <img src="@/assets/images/carMonitor/refresh.png" class="c-mask-refresh" v-if="roadItem.online==1" @click="refresh('map')"/> -->
           <i class="c-mask-refresh el-icon-refresh" @click="refresh('map')"></i>
         </div>
