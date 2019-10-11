@@ -263,6 +263,7 @@ export default {
             if (i == item.deviceId) {
               if (item.value) {
                 //如果切换的按钮是正在播放状态，先清除视频源，后删除
+                this.flvUrl = "";
                 this.$refs['player'].initVideo();
               }
               if (item.serialNum == this.selectedItem.cameraId) {
@@ -636,6 +637,7 @@ export default {
         //根据摄像头调取视频
         _this.getVideo();
       } else {
+        _this.flvUrl = "";
         _this.$refs['player'].initVideo();
       }
     },
@@ -654,6 +656,7 @@ export default {
       this.initPerceptionWebSocket();
     },
     getVideo() {
+      this.flvUrl = "";
       getVideoByNum({
         protocal: 1,
         serialNum: this.serialNum
@@ -661,8 +664,6 @@ export default {
         this.$refs['player'].initVideo();
         if (res.status == 200) {
           this.flvUrl = res.data.flvUrl;
-        } else {
-          this.$refs['player'].initVideo();
         }
       });
     },
@@ -674,9 +675,6 @@ export default {
   }
 };
 </script>
-<style lang="scss">
-@import "@/assets/scss/video-reset.scss";
-</style>
 <style lang="scss" scoped>
 @import "@/assets/scss/dialog.scss";
 .m-side-dialog-content {
