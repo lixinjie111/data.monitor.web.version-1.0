@@ -4,34 +4,25 @@
       <div class="c-scroll-inner">
         <p class="monitor-title c-title">车端视频</p>
         <div class="monitor-video right-title">
-          <!--<div class="c-loading-overview">
-            <div class="c-loading"></div>
-          </div>-->
-          <!--<video src="movie.ogg" controls="controls" autoplay width="270" height="200">
-            您的浏览器不支持 video 标签。
-          </video>-->
-          <!-- <div class="single-mask-style" >
-            <img src="@/assets/images/carMonitor/refresh.png" class="single-mask-img" @click="refresh"/>
-          </div> -->
           <live-player
                   :isStretch="true"
-                  :requestVideoUrl="rtmp"
-                  :params="forwardParam"
+                  :requestVideoUrl="startStream"
+                  :params="streamParam"
                   type="rtmp"
                   :autoplay="false"
                   ref="player"
+                  @videoLoadCompleted="videoLoadCompleted"
           >
+          <span></span>
           </live-player>
           <div class="stop-style" v-show="isStop">
             <img src="@/assets/images/car/stop.png"/>
             <p>无数据提示</p>
           </div>
-          <!--<div id="cmsplayer" style="width:100%;height:100%"></div>-->
         </div>
         <p class="monitor-title c-title">车端感知</p>
         <div class="monitor-perception right-title">
           <div class="car-container" :style="{transform:'rotate(-'+currentCar.heading+'deg)'}">
-            <!-- <img src="@/assets/images/car/car-11.png" class="host-vehicle" :style="{left:screenConfig.scrWidth/2-10+'px',top:screenConfig.scrHeight*3/4-13+'px'}"/> -->
             <img src="@/assets/images/car/car-11.png" class="host-vehicle" :style="{transform:'rotate('+currentCar.heading+'deg)'}"/>
             <div class="otherCarsContainer">
               <div class="item" v-for="(carItem,index) in carsDataformate" :style="{left:carItem.Sx+'px',top:carItem.Sy+'px',transform:'rotate('+carItem.heading+'deg)'}">
@@ -79,8 +70,8 @@
         currentCar:{},
         carsData:[],
         rtmp:'',
-        forwardParam:{},
-        flvUrl:'',
+        startStream: startStream,
+        streamParam: {}
       }
     },
     components: { LivePlayer },
@@ -240,46 +231,49 @@
               if(item.toward==0){
                 this.liveDeviceInfo=item;
                 if(this.liveDeviceInfo.serialNum==''){
+                  this.rtmp = "";
                   this.$refs['player'].initVideo();
                 }else{
-                  this.getStream();
+                  this.streamParam = {
+                    vehicleId: this.vehicleId,
+                    camId: this.liveDeviceInfo.serialNum,
+                    protocal: this.liveDeviceInfo.protocol
+                  }
                 }
               }
             })
           }
         });
       },
-      getStream(){
-        startStream({
-          'vehicleId': this.vehicleId,
-          'camId':this.liveDeviceInfo.serialNum,
-          'protocal':this.liveDeviceInfo.protocol
-        }).then(res => {
-          this.$refs['player'].initVideo();
-          this.streamInfo = res.streamInfoRes;
-          //获取视频地址并赋值
-          this.rtmp = this.streamInfo.rtmp;
-          if(this.rtmp&&this.rtmp!=''){
-            //直播报活调用
-            this.repeatFn();//拉取流后，保活
-          }
-        });
+      videoLoadCompleted() {
+        this.repeatFn();//拉取流后，保活
       },
+      // getStream(){
+      //   startStream({
+      //     'vehicleId': this.vehicleId,
+      //     'camId':this.liveDeviceInfo.serialNum,
+      //     'protocal':this.liveDeviceInfo.protocol
+      //   }).then(res => {
+      //     this.$refs['player'].initVideo();
+      //     this.streamInfo = res.streamInfoRes;
+      //     //获取视频地址并赋值
+      //     this.rtmp = this.streamInfo.rtmp;
+      //     if(this.rtmp&&this.rtmp!=''){
+      //       //直播报活调用
+      //       this.repeatFn();//拉取流后，保活
+      //     }
+      //   });
+      // },
       keepStream(){
-        sendStreamHeart({
-          'vehicleId': this.vehicleId,
-          'camId':this.liveDeviceInfo.serialNum,
-          'protocal':this.liveDeviceInfo.protocol
-        }).then(res => {
-        });
+        sendStreamHeart(this.streamParam).then(res => {});
       },
       repeatFn(){//每5秒直播报活一次
         let _this = this;
         _this.keepStream();
-        clearTimeout(_this.timer);
+        clearInterval(_this.timer);
         _this.timer = null;//清除直播报活
-        _this.timer = setTimeout(function(){
-          _this.repeatFn();
+        _this.timer = setInterval(function(){
+          _this.keepStream();
         },5000)
       },
       initSocket(){
