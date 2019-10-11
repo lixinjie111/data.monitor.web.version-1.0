@@ -108,7 +108,7 @@ export default {
 
             ,sourceProject:"EPSG:4326"
             // ,destinatePorject:"+proj=utm +zone=50 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"//北京
-            ,destinatePorject:"+proj=utm +zone=51 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"//上海
+            ,destinatePorject:"+proj=utm +zone=49 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"//上海
             ,timeA:0
             ,timeB:0
             ,messageTime:''
@@ -1086,13 +1086,6 @@ export default {
                     person.position.z = 0;
                 } 
                 for(let p=0;p<this.deviceModels[deviceid].texts.length;p++)
-                {
-                    let text = this.deviceModels[deviceid].texts[p];
-                    text.position.x = 0;
-                    text.position.y = 0;
-                    text.position.z = 0;
-                }
-                 for(let p=0;p<this.deviceModels[deviceid].texts.length;p++)
                 {
                     let text = this.deviceModels[deviceid].texts[p];
                     text.position.x = 0;

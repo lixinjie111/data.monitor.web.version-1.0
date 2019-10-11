@@ -6,11 +6,12 @@
         <div class="monitor-video right-title">
           <live-player
                   :isStretch="true"
-                  :requestVideoUrl="rtmp"
-                  :params="forwardParam"
+                  :requestVideoUrl="startStream"
+                  :params="streamParam"
                   type="rtmp"
                   :autoplay="false"
                   ref="player"
+                  @videoLoadCompleted="videoLoadCompleted"
           >
           <span></span>
           </live-player>
@@ -69,8 +70,8 @@
         currentCar:{},
         carsData:[],
         rtmp:'',
-        forwardParam:{},
-        flvUrl:'',
+        startStream: startStream,
+        streamParam: {}
       }
     },
     components: { LivePlayer },
@@ -223,7 +224,6 @@
         getLiveDeviceInfo({
           'vehicleId': this.vehicleId,
         }).then(res => {
-          this.getStream();
           let result = res.data;
           if(result.length>0) {
             result.forEach(item=>{
@@ -234,44 +234,46 @@
                   this.rtmp = "";
                   this.$refs['player'].initVideo();
                 }else{
-                  this.getStream();
+                  this.streamParam = {
+                    vehicleId: this.vehicleId,
+                    camId: this.liveDeviceInfo.serialNum,
+                    protocal: this.liveDeviceInfo.protocol
+                  }
                 }
               }
             })
           }
         });
       },
-      getStream(){
-        startStream({
-          'vehicleId': this.vehicleId,
-          'camId':this.liveDeviceInfo.serialNum,
-          'protocal':this.liveDeviceInfo.protocol
-        }).then(res => {
-          this.$refs['player'].initVideo();
-          this.streamInfo = res.streamInfoRes;
-          //获取视频地址并赋值
-          this.rtmp = this.streamInfo.rtmp;
-          if(this.rtmp&&this.rtmp!=''){
-            //直播报活调用
-            this.repeatFn();//拉取流后，保活
-          }
-        });
+      videoLoadCompleted() {
+        this.repeatFn();//拉取流后，保活
       },
+      // getStream(){
+      //   startStream({
+      //     'vehicleId': this.vehicleId,
+      //     'camId':this.liveDeviceInfo.serialNum,
+      //     'protocal':this.liveDeviceInfo.protocol
+      //   }).then(res => {
+      //     this.$refs['player'].initVideo();
+      //     this.streamInfo = res.streamInfoRes;
+      //     //获取视频地址并赋值
+      //     this.rtmp = this.streamInfo.rtmp;
+      //     if(this.rtmp&&this.rtmp!=''){
+      //       //直播报活调用
+      //       this.repeatFn();//拉取流后，保活
+      //     }
+      //   });
+      // },
       keepStream(){
-        sendStreamHeart({
-          'vehicleId': this.vehicleId,
-          'camId':this.liveDeviceInfo.serialNum,
-          'protocal':this.liveDeviceInfo.protocol
-        }).then(res => {
-        });
+        sendStreamHeart(this.streamParam).then(res => {});
       },
       repeatFn(){//每5秒直播报活一次
         let _this = this;
         _this.keepStream();
-        clearTimeout(_this.timer);
+        clearInterval(_this.timer);
         _this.timer = null;//清除直播报活
-        _this.timer = setTimeout(function(){
-          _this.repeatFn();
+        _this.timer = setInterval(function(){
+          _this.keepStream();
         },5000)
       },
       initSocket(){
