@@ -249,6 +249,7 @@
         devicePrevData: [],
         sidePrevData:[],
         zoomStyleMapping:{
+          10:0,
           11:0,
           12:0,
           13:0,
@@ -395,11 +396,30 @@
           }
              let newPosition = ConvertCoord.wgs84togcj02(data.longitude, data.latitude);
               if(_this.isInit){
-                _this.marker = new AMap.Marker({
-                  position: newPosition,
-                  icon: 'static/images/car/car-6.png', // 添加 Icon 图标 URL
-                  zIndex:500
-                });
+                // _this.marker = new AMap.Marker({
+                //   position: newPosition,
+                //   icon: 'static/images/car/car-6.png', // 添加 Icon 图标 URL
+                //   zIndex:500
+                // });
+
+                _this.marker = new AMap.ElasticMarker({
+                  position:newPosition,
+                  zooms:[6,20],
+                  styles:[{
+                    icon:{
+                      img:'static/images/car/car-6.png',
+                      size:[17,40],
+                      ancher:[8,20],
+                      fitZoom:18,//最合适的级别，在此级别下显示为原始大小
+                      scaleFactor:1.1,//地图放大一级的缩放比例系数
+                      maxScale:1,//最大放大比例 达到此处图片不在变化
+                      minScale:0.2//最小放大比例
+                    }
+                  }],
+                  zoomStyleMapping:_this.zoomStyleMapping
+                })
+
+
                 _this.distanceMap.add(_this.marker);
                 _this.platNoMarker = new AMap.Text({
                   map: _this.distanceMap,
@@ -486,6 +506,9 @@
                       longitude:item.longitude,
                       latitude: item.latitude,
                       icon:'static/images/car/car-7.png',
+                      size:[17,40],
+                      ancher:[8,20],
+                      zIndex:50
                   };
                 
               });
@@ -559,7 +582,9 @@
                         position:ConvertCoord.wgs84togcj02(item.ptLon, item.ptLat),
                         marker: null,
                         icon:'static/images/car/car-3.png',
-                        offset:[-15, -25]
+                        size:[29,50],
+                        ancher:[15,50],
+                        zIndex:49
                     };
                  
                 });
@@ -639,6 +664,9 @@
                       latitude:item.latitude,
                       marker: null,
                       icon:'static/images/car/car-4.png',
+                      size:[54,21],
+                      ancher:[27,10],
+                      zIndex:48
                   };
                  
                   let direction = item.direction+"";
@@ -1212,13 +1240,24 @@
         }
       },
       addMarker(obj) {
-          obj.marker = new AMap.Marker({
-              map: this.distanceMap,
-              position: obj.position,
-              icon: obj.icon,
-              zIndex: 50,
-              offset:obj.offset ? new AMap.Pixel(obj.offset[0],obj.offset[1]) : new AMap.Pixel(0,0)
-          });
+          obj.marker = new AMap.ElasticMarker({
+            map: this.distanceMap,
+            position: obj.position,
+            zooms:[10,20],
+            zIndex: obj.zIndex,
+            styles:[{
+              icon:{
+                img: obj.icon,
+                size:obj.size,
+                ancher:obj.ancher,
+                fitZoom:18,//最合适的级别，在此级别下显示为原始大小
+                scaleFactor:1.1,//地图放大一级的缩放比例系数
+                maxScale:1,//最大放大比例 达到此处图片不在变化
+                minScale:0.2//最小放大比例
+              }
+            }],
+            zoomStyleMapping:this.zoomStyleMapping
+          })
       },
     },
     mounted () {
