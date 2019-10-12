@@ -152,7 +152,6 @@
   </div>
 </template>
 <script>
-  import AMap from 'AMap';
   import SingleDialog from '@/views/carMonitor/components/singleCar/dialog.vue'
   import { getAlarmInformation,getV2xInformation } from '@/api/carMonitor'
   import DateFormat from '@/assets/js/utils/date.js'
