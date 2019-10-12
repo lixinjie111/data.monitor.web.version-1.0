@@ -7,6 +7,7 @@
 
 <script>
 import { getTotalFlow } from '@/api/dataMonitor'
+import $echarts from 'echarts'
 export default {
 	name: 'PlatformDataEcharts',
 	props: {
@@ -42,7 +43,7 @@ export default {
 	},
 	mounted() {
         this.getTotalFlow();
-        this.echarts = this.$echarts.init(document.getElementById(this.id));
+        this.echarts = $echarts.init(document.getElementById(this.id));
         this.echarts.setOption(this.defaultOption());
         this.initWebSocket();
 	},

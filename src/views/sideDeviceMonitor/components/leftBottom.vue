@@ -25,6 +25,7 @@
 </template>
 <script>
   import {getTotalData} from '@/api/sideDeviceMonitor'
+  import $echarts from 'echarts'
     export default {
         data() {
             return {
@@ -289,8 +290,8 @@
 
         },
         mounted() {
-          this.sideTotalEcharts = this.$echarts.init(document.getElementById("sideTotalId"));
-          this.sideRealEcharts = this.$echarts.init(document.getElementById("sideRealId"));
+          this.sideTotalEcharts = $echarts.init(document.getElementById("sideTotalId"));
+          this.sideRealEcharts = $echarts.init(document.getElementById("sideRealId"));
           this.getTotalData();
           this.initWebSocket();
         },

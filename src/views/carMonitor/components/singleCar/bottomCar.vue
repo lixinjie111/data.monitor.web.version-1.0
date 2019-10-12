@@ -110,6 +110,7 @@
 </template>
 <script>
   import Curve from '@/assets/js/utils/curve.js';
+  import $echarts from 'echarts'
   export default {
     name:"bottom-car",
     data () {
