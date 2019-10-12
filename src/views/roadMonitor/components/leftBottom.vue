@@ -29,6 +29,7 @@
 </template>
 <script>
   import {roadLevel,roadCategory} from '@/api/roadMonitor'
+  import $echarts from 'echarts'
     export default {
         data() {
             return {
@@ -180,8 +181,8 @@
         mounted() {
         
          this.initWebSocket();
-         this.levelPie =  this.$echarts.init(document.getElementById("roadLevel"));
-         this.classifyPie =  this.$echarts.init(document.getElementById("roadClassify"));
+         this.levelPie =  $echarts.init(document.getElementById("roadLevel"));
+         this.classifyPie =  $echarts.init(document.getElementById("roadClassify"));
          /*let option = this.defaultOption();
           this.levelPie.setOption(option);
           this.classifyPie.setOption(option);*/

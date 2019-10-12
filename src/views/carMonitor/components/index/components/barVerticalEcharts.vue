@@ -10,6 +10,7 @@
 
 <script>
 import { getActiveVehStat } from '@/api/carMonitor'
+import $echarts from 'echarts'
 export default {
 	name: 'BarVerticalEcharts',
 	props: {
@@ -70,7 +71,7 @@ export default {
 					this.responseData.forEach(item => {
 						if(item.data.length > 0) {
 							if(!item.echarts) {
-								item.echarts = this.$echarts.init(document.getElementById(item.id));
+								item.echarts = $echarts.init(document.getElementById(item.id));
 							}
 							let _option = this.defaultOption(item.data);
 							item.echarts.setOption(_option);
@@ -85,7 +86,7 @@ export default {
 					item.echarts.resize();
             	}else {
             		if(item.data.length > 0) {
-						item.echarts = this.$echarts.init(document.getElementById(item.id));
+						item.echarts = $echarts.init(document.getElementById(item.id));
 						let _option = this.defaultOption(item.data);
 						item.echarts.setOption(_option);
 					}
