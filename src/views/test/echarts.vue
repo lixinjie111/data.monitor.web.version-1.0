@@ -12,6 +12,7 @@
   </div>
 </template>
 <script>
+import $echarts from 'echarts'
     export default {
         name: "EchartsTest",
         data() {
@@ -157,7 +158,7 @@
                 },1000)
             },
             getChart1(){
-                this.chart1 = this.$echarts.init(document.getElementById('echarts-1'));
+                this.chart1 = $echarts.init(document.getElementById('echarts-1'));
                 var option = {
                     xAxis:  {
                         type: 'category',
@@ -225,7 +226,7 @@
                 this.chart1.setOption(option);
             },
             chartData2() {
-                this.chart2 = this.$echarts.init(document.getElementById("echarts-2"));
+                this.chart2 = $echarts.init(document.getElementById("echarts-2"));
 
                 var initOption = this.getOption();
                 var option = {
@@ -245,7 +246,7 @@
                 }
             },
             chartData3() {
-                this.chart3 = this.$echarts.init(document.getElementById("echarts-3"));
+                this.chart3 = $echarts.init(document.getElementById("echarts-3"));
 
                 var initOption = this.getOption();
                 var option = {

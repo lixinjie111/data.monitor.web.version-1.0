@@ -1,8 +1,9 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+// import Vue from 'vue';
+// import Vuex from 'vuex';
+// Vue.use(Vuex);
 import admin from './modules/admin';
 
-Vue.use(Vuex);
+
 
 const store = new Vuex.Store({
 	modules: {

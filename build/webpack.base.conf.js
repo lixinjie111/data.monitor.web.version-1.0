@@ -23,6 +23,13 @@ module.exports = {
       ? config.build.assetsPublicPath
       : config.dev.assetsPublicPath
   },
+  externals:{
+    'vue':'Vue',
+    'vue-router':'VueRouter',
+    'vuex':'Vuex',
+    'axios':'axios',
+    'element-ui':'ELEMENT'
+  },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
@@ -79,9 +86,6 @@ module.exports = {
         }
       }
     ]
-  },
-  externals: {
-    'AMap': 'AMap'
   },
   node: {
     // prevent webpack from injecting useless setImmediate polyfill because Vue

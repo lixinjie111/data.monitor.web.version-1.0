@@ -1,5 +1,6 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+// import Vue from 'vue'
+// import Router from 'vue-router'
+// Vue.use(Router)
 
 /* 默认路由，不要删除 */
 const Login = resolve => require(['@/views/login/index'], resolve)
@@ -32,9 +33,9 @@ const SideDeviceMonitor = resolve => require(['@/views/sideDeviceMonitor/index']
 // const RenderTest = resolve => require(['@/views/test/render'], resolve)
 
 
-Vue.use(Router)
 
-export default new Router({
+
+export default new VueRouter({
   // mode: 'history',
   linkActiveClass:'is-active',
   routes: [{
