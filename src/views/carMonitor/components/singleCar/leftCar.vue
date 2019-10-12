@@ -79,7 +79,6 @@
   </div>
 </template>
 <script>
-  import AMap from 'AMap';
   import { getDrivingStatisticsData, getVehicleBaseData, getRouteDataByVehId } from '@/api/carMonitor'
   import ConvertCoord from '@/assets/js/utils/coordConvert.js'
   export default {

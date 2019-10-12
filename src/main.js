@@ -1,6 +1,6 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-import Vue from 'vue'
+// import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store';
@@ -8,8 +8,9 @@ import Qs from 'qs'
 
 
 // Element-ui
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
+// import ElementUI from 'element-ui'
+// import 'element-ui/lib/theme-chalk/index.css'
+// Vue.use(ElementUI)
 
 // 进度条
 import NProgress from 'nprogress'
@@ -19,8 +20,8 @@ import 'nprogress/nprogress.css'
 
 // import $ from 'jquery'
 //echarts
-import echarts from 'echarts'
-Vue.prototype.$echarts = echarts
+// import echarts from 'echarts'
+// Vue.prototype.$echarts = echarts
 
 //高德地图
 // import VueAMap from "vue-amap";
@@ -37,7 +38,7 @@ Vue.prototype.$echarts = echarts
 // 权限
 import { setAuthInfo, getAdminId, getAuthInfo, removeAuthInfo } from '@/session/index.js';
 
-Vue.use(ElementUI)
+
 
 // 全局静态资源
 import './assets/css/reset.css';

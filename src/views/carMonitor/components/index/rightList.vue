@@ -42,6 +42,7 @@
 
 <script>
 import { getGpsRealConfig, getGpsRealList } from '@/api/carMonitor'
+import $echarts from 'echarts'
 export default {
 	name: 'RightList',
 	data () {
@@ -133,7 +134,7 @@ export default {
 		            	item.echartsData.push(_result.speed);
 		        		setTimeout(() => {
 							if(!item.echarts) {
-								item.echarts = this.$echarts.init(document.getElementById(item.id));
+								item.echarts = $echarts.init(document.getElementById(item.id));
 							}
 		        			let _option = this.defaultOption(item.echartsData);
 		            		item.echarts.setOption(_option);

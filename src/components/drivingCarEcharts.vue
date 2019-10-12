@@ -8,6 +8,7 @@
 
 <script>
 import { getHisVehStat } from '@/api/dataMonitor'
+import $echarts from 'echarts'
 export default {
 	name: 'DrivingCarEcharts',
 	props: {
@@ -33,19 +34,20 @@ export default {
 	},
 	mounted() {
         this.getHisVehStat();
-		this.echarts = this.$echarts.init(document.getElementById(this.id));
+		this.echarts = $echarts.init(document.getElementById(this.id));
 	},
 	methods: {
 		getHisVehStat() {
             // console.log('获取上周当天在驶车辆分布数量（分钟）以及获取当天0点到目前的分布数量');
             getHisVehStat().then(res => {
                 let _resultCurDay = res.data.curDay;
-                this.responseData.curTotal = _resultCurDay[_resultCurDay.length-1].count;
-
-                _resultCurDay.forEach(item => {
-                    this.responseData.curDay.push(item.count);
-                });
-                this.echarts.setOption(this.defaultOption());
+                if(_resultCurDay.length){
+                    this.responseData.curTotal = _resultCurDay[_resultCurDay.length-1].count;
+                    _resultCurDay.forEach(item => {
+                        this.responseData.curDay.push(item.count);
+                    });
+                    this.echarts.setOption(this.defaultOption());
+                }
                 this.initWebSocket();
             });
         },

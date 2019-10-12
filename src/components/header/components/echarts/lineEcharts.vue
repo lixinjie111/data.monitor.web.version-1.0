@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import $echarts from 'echarts'
 export default {
     props: {
         lineEchartsData: Array,
@@ -47,7 +48,7 @@ export default {
         initEcharts() {
             let _option = this.defaultOption();
             if (!this.myLineChart) {
-                this.myLineChart = this.$echarts.init(document.getElementById(this.id));
+                this.myLineChart = $echarts.init(document.getElementById(this.id));
             }
             this.myLineChart.setOption(_option);
         },
