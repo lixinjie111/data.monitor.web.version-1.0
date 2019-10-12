@@ -45,6 +45,7 @@
 </template>
 <script>
   import { getVehicleCalendarData, getLiveDeviceInfo, startStream, sendStreamHeart } from '@/api/carMonitor'
+  import $echarts from 'echarts'
   import LivePlayer from '@/components/livePlayer/template';
   const isProduction = process.env.NODE_ENV === 'production'
   export default {
@@ -114,7 +115,7 @@
     methods: {
       getDriveCalendar(){
         var _this = this;
-        this.calendarMap = this.$echarts.init(document.getElementById('driveContainer'));
+        this.calendarMap = $echarts.init(document.getElementById('driveContainer'));
         this.mapData=[];
         getVehicleCalendarData({
           'vehicleId': this.vehicleId,

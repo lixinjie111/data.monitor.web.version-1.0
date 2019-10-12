@@ -8,6 +8,7 @@
   <div class="container" id="echart"></div>
 </template>
 <script>
+import $echarts from 'echarts'
     export default {
         data() {
             return {
@@ -19,7 +20,7 @@
         },
         methods: {
           getChart(){
-            this.chart = this.$echarts.init(document.getElementById('echart'));
+            this.chart = $echarts.init(document.getElementById('echart'));
             var option = {
               title: {
                 text: '未来一周气温变化',
