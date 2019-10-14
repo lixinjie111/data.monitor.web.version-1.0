@@ -668,6 +668,7 @@ export default {
       });
     },
     getExtend(x,y,r){
+        this.currentExtent = [];
         let x0=x+r;
         let y0=y+r;
         let x1=x-r;
