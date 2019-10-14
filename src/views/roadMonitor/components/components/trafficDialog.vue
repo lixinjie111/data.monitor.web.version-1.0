@@ -588,6 +588,7 @@ export default {
     },
     getExtend(x, y, r) {
       //1度=108000米；方圆200米
+      this.currentExtent = [];
       let x0 = x + r;
       let y0 = y + r;
       let x1 = x - r;
