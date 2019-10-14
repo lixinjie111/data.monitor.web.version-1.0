@@ -69,6 +69,8 @@
               ],
               roadList:[],
               pageIndex:0,
+              prevPageIndex:null,
+              nextPageIndex:null,
               pageSize:5,
               index:0,
               type:null,
@@ -188,7 +190,6 @@
         },
         getAllCross(param){
           let _this = this;
-//          console.log("pageIndex----"+_this.pageIndex);
           allCross(
             {
               'page':{
@@ -202,6 +203,7 @@
             _this.totalRoadCount = res.data.data.total;
             let position;
            /* _this.roadList=[];*/
+            let roadListTmp = [];
             result.forEach((item,index)=>{
               _this.index++;
 //              position = ConvertCoord.wgs84togcj02(item.x,item.y);
@@ -213,11 +215,17 @@
               obj.isActive=false;
               //向上滚动
               if(param=='up'){
-                _this.roadList.unshift(obj);
+                // _this.roadList.unshift(obj);
+              
+                roadListTmp.push(obj)
               }else{
                 _this.roadList.push(obj);
               }
             });
+            if(param == 'up'){
+              _this.roadList = roadListTmp.concat(_this.roadList);
+              roadListTmp = [];
+            }
             setTimeout(() => {
               _this.roadList.forEach(item=>{
                 item.map=new AMap.Map(item.id, this.mapOption);
@@ -257,16 +265,18 @@
               return;
             }
             //获取下一页的数据
-            _this.pageIndex++;
+            _this.nextPageIndex++;
+            _this.pageIndex = _this.nextPageIndex;
             _this.getAllCross();
           }
           //滚动到顶部
           if(scrollTop==0){
-            if(_this.pageInitIndex==0){
+            if(_this.prevPageIndex==0){
               return;
             }else{
-              _this.pageInitIndex--;
-              _this.pageIndex = _this.pageInitIndex;
+              
+              _this.prevPageIndex--;
+              _this.pageIndex = _this.prevPageIndex;
               _this.getAllCross('up');
             }
           }
@@ -405,6 +415,10 @@
             let result = res.data.data.data;
             _this.pageInitIndex = res.data.data.pageIndex;
             _this.pageIndex=_this.pageInitIndex;
+            _this.prevPageIndex = _this.pageInitIndex;
+            _this.nextPageIndex = _this.pageInitIndex;
+
+            
             _this.totalRoadCount=res.data.data.total;
             let position;
             /* _this.roadList=[];*/
@@ -467,7 +481,6 @@
             _filterResult = _filterResult.filter(
               x => x.targetType === 2 || x.targetType === 5
             );
-            // console.log(result.length, _filterResult.length);
             let _filterData = {};
             _filterResult.forEach((item, index) => {
               _filterData[item.vehicleId] = {
