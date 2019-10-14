@@ -11,7 +11,7 @@
               <ul class="road-content-left">
                 <li v-for="item in roadList" @click="getCrossInfo(item)" :class="{active:item.isActive}">
                   <div class="road-map-style" :id="item.id"></div>
-                  <p>{{item.crossId}}</p>
+                  <p>{{item.crossName || item.crossId}}</p>
                 </li>
 
               </ul>
@@ -212,6 +212,7 @@
               obj.id = "road"+_this.index;
               obj.crossId = item.uid;
               obj.position = position;
+              obj.crossName = item.crossName;
               obj.isActive=false;
               //向上滚动
               if(param=='up'){
@@ -432,6 +433,7 @@
               obj.id = "road"+_this.index;
               obj.crossId = item.uid;
               obj.position = position;
+              obj.crossName = item.crossName;
               if(_this.selectedItem.crossId==item.uid){
                 obj.isActive=true;
               }else {
