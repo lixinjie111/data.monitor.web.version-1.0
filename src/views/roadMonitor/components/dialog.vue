@@ -11,7 +11,7 @@
               <ul class="road-content-left">
                 <li v-for="item in roadList" @click="getCrossInfo(item)" :key="item.id" :class="{active:item.isActive}">
                   <div class="road-map-style" :id="item.id"></div>
-                  <p>{{item.crossName}}</p>
+                  <p>{{item.crossName || item.crossId}}</p>
                 </li>
               </ul>
           </div>
