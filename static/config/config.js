@@ -1,20 +1,22 @@
 window.config = {
 
     //望京 内网
-    url: 'http://172.17.1.16:9093/monPlatApp/', //监控平台
-    operateUrl: 'http://172.17.1.16:9090/operateApp/',	//运营平台
-    websocketUrl:'ws://172.17.1.16:9982/mon',  //监控
-    socketUrl:'ws://172.17.1.16:9999/ws',  //影子系统
-    dlUrl: 'http://10.0.1.22:8085/', //迪路
-    dlWmsUrl: 'http://10.0.1.22:8080/', //迪路
+    // staticUrl: "http://172.17.1.16:9090/", //静态文件路径
+    // url: 'http://172.17.1.16:9093/monPlatApp/', //监控平台
+    // operateUrl: 'http://172.17.1.16:9090/operateApp/',	//运营平台
+    // websocketUrl:'ws://172.17.1.16:9982/mon',  //监控
+    // socketUrl:'ws://172.17.1.16:9999/ws',  //影子系统
+    // dlUrl: 'http://10.0.1.22:8085/', //迪路
+    // dlWmsUrl: 'http://10.0.1.22:8080/', //迪路
 
     //望京 外网
-    // url: 'http://120.133.21.14:9093/monPlatApp/', //监控平台
-    // operateUrl: 'http://120.133.21.14:9090/operateApp/',	//运营平台
-    // websocketUrl:'ws://120.133.21.14:49982/mon',  //监控
-    // socketUrl:'ws://120.133.21.14:49999/ws',  //影子系统
-    // dlUrl: 'http://117.114.144.227:8085/', //迪路
-    // dlWmsUrl: 'http://117.114.144.227:8080/', //迪路 
+    staticUrl: "http://120.133.21.14:9090/", //静态文件路径
+    url: 'http://120.133.21.14:9093/monPlatApp/', //监控平台
+    operateUrl: 'http://120.133.21.14:9090/operateApp/',	//运营平台
+    websocketUrl:'ws://120.133.21.14:49982/mon',  //监控
+    socketUrl:'ws://120.133.21.14:49999/ws',  //影子系统
+    dlUrl: 'http://117.114.144.227:8085/', //迪路
+    dlWmsUrl: 'http://117.114.144.227:8080/', //迪路 
 
     version: 1.0,       // 版本号
 }
