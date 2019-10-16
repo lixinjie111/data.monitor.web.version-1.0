@@ -14,7 +14,7 @@ export function getMap(map){
     let circle = new dl.Circle(window.circleParam);
     // circle.updateVertices();
     // circle.setRotate([Math.PI/2,0,0]);
-    // circle.setOpacity(0.1);
+    circle.setOpacity(0.1);
     map.addGeometry(circle);
 
 }
