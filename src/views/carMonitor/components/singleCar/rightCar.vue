@@ -209,13 +209,13 @@
       },
       getVirtulData() {
         var _this = this;
-        var date = +_this.$echarts.number.parseDate('2019-05');
-        var end = +_this.$echarts.number.parseDate('2019-06');
+        var date = +$echarts.number.parseDate('2019-05');
+        var end = +$echarts.number.parseDate('2019-06');
         var dayTime = 3600 * 24 * 1000;
         var data = [];
         for (var time = date; time < end; time += dayTime) {
           data.push([
-            _this.$echarts.format.formatTime('yyyy-MM-dd', time),
+            $echarts.format.formatTime('yyyy-MM-dd', time),
             Math.floor(Math.random() * 1000)
           ]);
         }
