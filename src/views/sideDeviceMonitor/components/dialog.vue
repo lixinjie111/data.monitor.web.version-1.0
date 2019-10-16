@@ -661,7 +661,8 @@ export default {
         serialNum: this.serialNum
       }).then(res => {
         this.$refs["player"].initVideo();
-        this.flvUrl = res.data.flvUrl;
+        this.flvUrl = res.data.flvUrl;   
+        this.$refs["player"].requestVideo();
       });
     },
     getExtend(x,y,r){
