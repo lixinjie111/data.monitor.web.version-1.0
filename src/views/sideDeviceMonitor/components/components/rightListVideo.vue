@@ -29,58 +29,15 @@
         components: {LivePlayer},
         props:['index','visible','roadItem','roadList'],
         mounted() {
-          // this.getVideoByNum();
           this.forwardParam ={
               "protocal": 1,
               "serialNum": this.roadItem.camSerialNum
           }
         },
         methods: {
-          getVideoByNum(){
-            var _this = this;
-          if(!this.roadItem.camSerialNum){
-            return;
-          }
-            getVideoByNum({
-              "protocal": 1,
-              "serialNum": this.roadItem.camSerialNum
-            }).then(res => {
-                _this.flvUrl = res.data.flvUrl;
-               
-            })
-          },
           queryDeviceDetail(item,target) {
-
             this.$emit("queryDeviceDetail",item,target);
-          },
-       
-       
-
-          videoLoadCompleted(param){
-              this.repeatFn(param);
-          },
-
-          repeatFn(item){//每5秒直播报活一次
-              let _this = this;
-              _this.keepStream(item);
-              if(_this.timeObj[item.camId]){
-                  clearTimeout(_this.timeObj[item.camId]);
-              }
-              let time = setTimeout(function(){
-                  _this.repeatFn(item);
-              },5000)
-              _this.timeObj[item.camId] = time;
-          },
-
-          keepStream(item){
-                sendStreamHeart({
-                    'vehicleId': this.vehicleId,
-                    'camId':item.serialNum,
-                    'protocal':item.protocol
-                }).then(res => {
-                });
-            },
-       
+          }
         },
       watch:{
         visible(){
