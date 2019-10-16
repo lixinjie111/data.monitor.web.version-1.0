@@ -65,7 +65,7 @@
                       :requestVideoUrl="wsUrl"
                       :params="forwardParam"
                       type="wsUrl"
-                      :autoplay="false"
+                      :autoplay="true"
                       ref="player"
               >
                <span></span>
@@ -149,7 +149,7 @@
                             :requestVideoUrl="wsUrl"
                             :params="forwardParam"
                             type="wsUrl"
-                            :autoplay="false"
+                            :autoplay="true"
                             ref="player"
                     >
                     <span></span>
@@ -661,7 +661,10 @@ export default {
         serialNum: this.serialNum
       }).then(res => {
         this.$refs["player"].initVideo();
-        this.wsUrl = res.data.wsUrl;
+        this.wsUrl = res.data.wsUrl;   
+        setTimeout(() => {
+             this.$refs["player"].requestVideo();
+        }, 0);
       });
     },
     getExtend(x,y,r){
