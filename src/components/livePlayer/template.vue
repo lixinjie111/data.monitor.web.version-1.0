@@ -220,22 +220,9 @@ export default {
             }
         },
         refreshVideo(){
-            if(this.videoUrl == ''){
-                this.requestVideo();
-            }else {
-                if(this.liveFlag) {
-                    this.setVideoOptionLoading();
-                }
-                this.videoLoadingDelay.count = 0;
-                this.$emit("refreshVideo");
-                // this.$refs.livePlayer && this.player.pause();
-                // setTimeout(() => {
-                //     this.setVideoOptionLoading();
-                //     setTimeout(() => {
-                //         this.player.play();
-                //     }, 500);
-                // }, 0);
-            }
+            this.initVideo();
+            this.requestVideo();
+            this.$emit("refreshVideo");
         },
         initVideo() {
             this.initVideoTimer();
