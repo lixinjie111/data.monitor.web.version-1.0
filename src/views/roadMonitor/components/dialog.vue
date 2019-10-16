@@ -11,7 +11,7 @@
               <ul class="road-content-left">
                 <li v-for="item in roadList" @click="getCrossInfo(item)" :key="item.id" :class="{active:item.isActive}">
                   <div class="road-map-style" :id="item.id"></div>
-                  <p>{{item.crossId}}</p>
+                  <p>{{item.crossName || item.crossId}}</p>
                 </li>
               </ul>
           </div>
@@ -68,6 +68,8 @@
               ],
               roadList:[],
               pageIndex:0,
+              prevPageIndex:null,
+              nextPageIndex:null,
               pageSize:5,
               index:0,
               type:null,
@@ -185,7 +187,6 @@
         },
         getAllCross(param){
           let _this = this;
-//          console.log("pageIndex----"+_this.pageIndex);
           allCross(
             {
               'page':{
@@ -199,6 +200,7 @@
             _this.totalRoadCount = res.data.data.total;
             let position;
            /* _this.roadList=[];*/
+            let roadListTmp = [];
             result.forEach((item,index)=>{
               _this.index++;
 //              position = ConvertCoord.wgs84togcj02(item.x,item.y);
@@ -207,14 +209,21 @@
               obj.id = "road"+_this.index;
               obj.crossId = item.uid;
               obj.position = position;
+              obj.crossName = item.crossName;
               obj.isActive=false;
               //向上滚动
               if(param=='up'){
-                _this.roadList.unshift(obj);
+                // _this.roadList.unshift(obj);
+              
+                roadListTmp.push(obj)
               }else{
                 _this.roadList.push(obj);
               }
             });
+            if(param == 'up'){
+              _this.roadList = roadListTmp.concat(_this.roadList);
+              roadListTmp = [];
+            }
             setTimeout(() => {
               _this.roadList.forEach(item=>{
                 item.map=new AMap.Map(item.id, this.mapOption);
@@ -254,16 +263,18 @@
               return;
             }
             //获取下一页的数据
-            _this.pageIndex++;
+            _this.nextPageIndex++;
+            _this.pageIndex = _this.nextPageIndex;
             _this.getAllCross();
           }
           //滚动到顶部
           if(scrollTop==0){
-            if(_this.pageInitIndex==0){
+            if(_this.prevPageIndex==0){
               return;
             }else{
-              _this.pageInitIndex--;
-              _this.pageIndex = _this.pageInitIndex;
+              
+              _this.prevPageIndex--;
+              _this.pageIndex = _this.prevPageIndex;
               _this.getAllCross('up');
             }
           }
@@ -414,6 +425,10 @@
             let result = res.data.data.data;
             _this.pageInitIndex = res.data.data.pageIndex;
             _this.pageIndex=_this.pageInitIndex;
+            _this.prevPageIndex = _this.pageInitIndex;
+            _this.nextPageIndex = _this.pageInitIndex;
+
+            
             _this.totalRoadCount=res.data.data.total;
             let position;
             /* _this.roadList=[];*/
@@ -425,6 +440,7 @@
               obj.id = "road"+_this.index;
               obj.crossId = item.uid;
               obj.position = position;
+              obj.crossName = item.crossName;
               if(_this.selectedItem.crossId==item.uid){
                 obj.isActive=true;
               }else {
@@ -476,7 +492,6 @@
             _filterResult = _filterResult.filter(
               x => x.targetType === 2 || x.targetType === 5
             );
-            // console.log(result.length, _filterResult.length);
             let _filterData = {};
             _filterResult.forEach((item, index) => {
               _filterData[item.vehicleId] = {
@@ -495,10 +510,11 @@
                 _filterData[id].marker = _this.prevData[id].marker;
                 let _currentCar = _filterData[id];
                 _filterData[id].marker.setAngle(_currentCar.heading);
-                _filterData[id].marker.moveTo([_currentCar.longitude, _currentCar.latitude], _currentCar.speed);
+                // _filterData[id].marker.moveTo([_currentCar.longitude, _currentCar.latitude], _currentCar.speed);
+                _filterData[id].marker.setPosition([_currentCar.longitude, _currentCar.latitude]);
               } else {   //表示没有该点，做remove
                 // console.log(id, 'delete');
-                _this.prevData[id].marker.stopMove();
+                // _this.prevData[id].marker.stopMove();
                 _this.map.remove(_this.prevData[id].marker);
                 delete _this.prevData[id];
               }
@@ -526,7 +542,7 @@
         },
         clearCars() {
           for (let id in this.prevData) {
-            this.prevData[id].marker.stopMove();
+            // this.prevData[id].marker.stopMove();
             this.map.remove(this.prevData[id].marker);
             delete this.prevData[id];
           }
