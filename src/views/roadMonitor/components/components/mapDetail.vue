@@ -168,9 +168,10 @@
                   _filterData[id].marker = _this.prevData[id].marker;
                   let _currentCar = _filterData[id];
                   _filterData[id].marker.setAngle(_currentCar.heading);
-                  _filterData[id].marker.moveTo([_currentCar.longitude, _currentCar.latitude], _currentCar.speed);
+                  // _filterData[id].marker.moveTo([_currentCar.longitude, _currentCar.latitude], _currentCar.speed);
+                  _filterData[id].marker.setPosition([_currentCar.longitude, _currentCar.latitude]);
                 } else {   //表示没有该点，做remove
-                  _this.prevData[id].marker.stopMove();
+                  // _this.prevData[id].marker.stopMove();
                   _this.map.remove(_this.prevData[id].marker);
                   delete _this.prevData[id];
                 }
@@ -193,7 +194,7 @@
             } else {
               // 返回的数据为空
               for (let id in _this.prevData) {
-                _this.prevData[id].marker.stopMove();
+                // _this.prevData[id].marker.stopMove();
                 _this.map.remove(_this.prevData[id].marker);
                 delete _this.prevData[id];
               }
