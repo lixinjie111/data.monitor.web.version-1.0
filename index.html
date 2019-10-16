@@ -7,7 +7,6 @@
     <meta name="format-detection" content="telephone=no,email=no,address=no">
     <!-- 加图标 -->
     <link rel="shortcut icon" href="./static/images/favicon.ico" type="image/x-icon">
-    <!-- <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"> -->
     <title>监控管理中心</title>
 
 
@@ -17,12 +16,12 @@
     </script>
   </head>
   <body>
-  <!-- <script src="https://unpkg.com/element-ui/lib/index.js"></script> -->
-
-  <script src="http://120.133.21.14:9090/frontStatic/vue/vue.min.js"></script>
-  <script src="http://120.133.21.14:9090/frontStatic/vue-router/vue-router.min.js"></script>
-  <script src="http://120.133.21.14:9090/frontStatic/vuex/vuex.min.js"></script>
-  <script src="http://120.133.21.14:9090/frontStatic/axios/axios.min.js"></script>
+  <script>
+    document.write('<script src="'+ window.config.staticUrl +'frontStatic/vue/vue.min.js"><\/script>');
+    document.write('<script src="'+ window.config.staticUrl +'frontStatic/vue-router/vue-router.min.js"><\/script>');
+    document.write('<script src="'+ window.config.staticUrl +'frontStatic/vuex/vuex.min.js"><\/script>');
+    document.write('<script src="'+ window.config.staticUrl +'frontStatic/axios/axios.min.js"><\/script>');
+  </script>
 
   <script src="./static/map3d/libs/browser-polyfill.js"></script>
   <script src="./static/map3d/libs/jquery-3.1.1.min.js"></script>
