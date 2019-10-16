@@ -60,7 +60,7 @@
         </div>
         <div class="side-device-right">
           <div class="side-dialog-map">
-            <div v-if="target=='video'" class="video-style-height">
+            <div class="video-style-height">
               <live-player
                       :isStretch="true"
                       :requestVideoUrl="flvUrl"
