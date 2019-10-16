@@ -3,7 +3,7 @@
     <template v-if="roadList.length">
       <div v-for="(item,index) in roadList" :key="item.camSerialNum" class="m-info-list">
         <right-list-video :index="index" :roadItem="item"  :visible="visible" :roadList="roadList" @queryDeviceDetail="queryDeviceDetail" ></right-list-video>
-        <right-list-map   :roadItem="item" :visible="visible"  @queryDeviceDetail="queryDeviceDetail"></right-list-map>
+        <!-- <right-list-map   :roadItem="item" :visible="visible"  @queryDeviceDetail="queryDeviceDetail"></right-list-map> -->
       </div>
     </template>
     <template v-else>
@@ -20,7 +20,7 @@
 <script>
   import {getRoadList} from '@/api/sideDeviceMonitor'
   import rightListVideo from './components/rightListVideo.vue'
-  import rightListMap from './components/rightListMap.vue'
+  // import rightListMap from './components/rightListMap.vue'
     export default {
         data() {
             return {
@@ -29,7 +29,7 @@
         },
         components:{
           rightListVideo,
-          rightListMap
+          // rightListMap
         },
         props:['visible'],
         mounted() {
