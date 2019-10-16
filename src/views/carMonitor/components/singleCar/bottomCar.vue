@@ -549,8 +549,8 @@
       var _this = this;
       _this.container = document.getElementById('canvasContainer');
       //速度和加速度
-      _this.speedChart = _this.$echarts.init(document.getElementById('speedChart'));
-      _this.accelerateChart = _this.$echarts.init(document.getElementById('accelerateChart'));
+      _this.speedChart = $echarts.init(document.getElementById('speedChart'));
+      _this.accelerateChart = $echarts.init(document.getElementById('accelerateChart'));
       //开始画gps的第一条线
       let curve1 = new Curve();
       curve1.drawLines(_this.upRandom,'#d47b24','up',0,[130, 142], [320, 58]);
