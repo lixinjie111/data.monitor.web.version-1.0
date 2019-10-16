@@ -66,7 +66,7 @@
                       :requestVideoUrl="flvUrl"
                       :params="forwardParam"
                       type="flvUrl"
-                      :autoplay="false"
+                      :autoplay="true"
                       ref="player"
               >
                <span></span>
@@ -150,7 +150,7 @@
                             :requestVideoUrl="flvUrl"
                             :params="forwardParam"
                             type="flvUrl"
-                            :autoplay="false"
+                            :autoplay="true"
                             ref="player"
                     >
                     <span></span>
@@ -662,7 +662,9 @@ export default {
       }).then(res => {
         this.$refs["player"].initVideo();
         this.flvUrl = res.data.flvUrl;   
-        this.$refs["player"].requestVideo();
+        setTimeout(() => {
+             this.$refs["player"].requestVideo();
+        }, 0);
       });
     },
     getExtend(x,y,r){
