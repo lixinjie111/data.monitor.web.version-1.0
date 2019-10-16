@@ -109,9 +109,9 @@
                 <div class="side-video-style">
                   <live-player
                           :isStretch="true"
-                          :requestVideoUrl="flvUrl"
+                          :requestVideoUrl="wsUrl"
                           :params="forwardParam"
-                          type="flvUrl"
+                          type="wsUrl"
                           :autoplay="false"
                           ref="player"
                   >
@@ -175,7 +175,7 @@ export default {
       isOne: true,
       heading: "", //航向角
       position: [],
-      flvUrl:"",
+      wsUrl:"",
       forwardParam:{},
     };
   },
@@ -263,7 +263,7 @@ export default {
             if (i == item.deviceId) {
               if (item.value) {
                 //如果切换的按钮是正在播放状态，先清除视频源，后删除
-                this.flvUrl = "";
+                this.wsUrl = "";
                 this.$refs['player'].initVideo();
               }
               if (item.serialNum == this.selectedItem.cameraId) {
@@ -638,7 +638,7 @@ export default {
         //根据摄像头调取视频
         _this.getVideo();
       } else {
-        _this.flvUrl = "";
+        _this.wsUrl = "";
         _this.$refs['player'].initVideo();
       }
     },
@@ -657,14 +657,14 @@ export default {
       this.initPerceptionWebSocket();
     },
     getVideo() {
-      this.flvUrl = "";
+      this.wsUrl = "";
       getVideoByNum({
         protocal: 1,
         serialNum: this.serialNum
       }).then(res => {
         this.$refs['player'].initVideo();
         if (res.status == 200) {
-          this.flvUrl = res.data.flvUrl;
+          this.wsUrl = res.data.wsUrl;
         }
       });
     },

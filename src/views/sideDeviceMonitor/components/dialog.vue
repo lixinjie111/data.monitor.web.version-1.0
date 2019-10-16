@@ -62,9 +62,9 @@
             <div v-if="target=='video'" class="video-style-height">
               <live-player
                       :isStretch="true"
-                      :requestVideoUrl="flvUrl"
+                      :requestVideoUrl="wsUrl"
                       :params="forwardParam"
-                      type="flvUrl"
+                      type="wsUrl"
                       :autoplay="false"
                       ref="player"
               >
@@ -146,9 +146,9 @@
                   <div v-if="target=='map'" class="side-video-style">
                     <live-player
                             :isStretch="true"
-                            :requestVideoUrl="flvUrl"
+                            :requestVideoUrl="wsUrl"
                             :params="forwardParam"
-                            type="flvUrl"
+                            type="wsUrl"
                             :autoplay="false"
                             ref="player"
                     >
@@ -235,7 +235,7 @@ export default {
       selectedDevice:{},
       currentExtent:[],
       forwardParam:{},
-      flvUrl:'',
+      wsUrl:'',
     };
   },
   components: {
@@ -262,7 +262,7 @@ export default {
       /*if (_this.mapInit) {
         _this.$refs.tusvnMap3.reset3DMap();
       }*/
-      this.flvUrl = "";
+      this.wsUrl = "";
       this.$refs["player"].initVideo();
       getDeviceList({
         roadSiderId: this.roadId
@@ -654,14 +654,14 @@ export default {
       }, 1000);
     },
     getVideo() {
-      this.flvUrl = "";
+      this.wsUrl = "";
       getVideoByNum({
         protocal: 1,
         /*"serialNum": "3402000000132000001401"*/
         serialNum: this.serialNum
       }).then(res => {
         this.$refs["player"].initVideo();
-        this.flvUrl = res.data.flvUrl;
+        this.wsUrl = res.data.wsUrl;
       });
     },
     getExtend(x,y,r){
