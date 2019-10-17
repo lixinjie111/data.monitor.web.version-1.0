@@ -23,7 +23,6 @@
           :maxX="mapParam.maxX"
           :maxY="mapParam.maxY"
           :maxZ="mapParam.maxZ"
-          :z="40.5"
           @mapcomplete="onMapComplete">
         </tusvn-map>
        <!-- <div class="c-mask-tip" v-else>
@@ -58,8 +57,7 @@
         methods: {
           onMapComplete:function(){
             if(this.roadItem.camSerialNum&&this.roadItem.camSerialNum!='' && this.roadItem.cameraParam){
-              let cameraParam = JSON.parse(this.roadItem.cameraParam);  
-              cameraParam.z = 50;
+              let cameraParam = JSON.parse(this.roadItem.cameraParam);
               getMap(this.$refs[this.roadItem.camSerialNum]);
               this.$refs[this.roadItem.camSerialNum].updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);  
               this.$refs[this.roadItem.camSerialNum].changeRcuId2(
