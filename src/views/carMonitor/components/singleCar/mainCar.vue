@@ -681,6 +681,7 @@
             warningData.forEach(item=>{
               warningId = item.warnId;
               //如果告警id不存在 右侧弹出
+             
               if(!_this.warningData[warningId]){
                 _this.vehicleCount++;
                 let dist = parseInt(item.dis);
@@ -709,6 +710,7 @@
             let eventType = json.result.eventType;
             warningData.forEach(item=>{
               warningId = item.warnId;
+             
               warningId = warningId.substring(0,warningId.lastIndexOf("_"));
               let msg = item.warnMsg+" "+item.dis+"米";
               let warningObj={
@@ -895,6 +897,12 @@
           if(this.alertInit){
             this.vehicleCount = this.vehicleList.length;
             this.alertInit=  false;
+            if(this.vehicleList.length){
+              this.vehicleList.forEach(item=>{
+              let obj = {type:null,timer:null,flag:true,dist:null,message:null,icon:null,warnColor:null};
+              this.warningData[item.warnId]=obj;
+            })
+            }
           }
         })
       },
@@ -908,9 +916,14 @@
           if(this.v2xInit){
             this.cloudCount = this.cloudList.length;
             this.v2xInit=  false;
-            this.cloudList.forEach(item=>{
+            if(this.cloudList.length){
+              this.cloudList.forEach(item=>{
               this.v2xUuid.push(item.uuid);
+              let obj = {type:null,timer:null,flag:true,dist:null,message:null,icon:null,warnColor:null};
+              this.warningData[item.warnId]=obj;
             })
+            }
+           
           }
         })
       },
