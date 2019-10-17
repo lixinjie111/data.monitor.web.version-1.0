@@ -185,6 +185,8 @@
         vehicleDialog:false,
         cloudList:[],
         vehicleList:[],
+        cloudIdList:[],
+        vehicleIdList:[],
         event:[],
         count: 0,
         hostCount:0,
@@ -680,8 +682,11 @@
             let warningId;
             warningData.forEach(item=>{
               warningId = item.warnId;
+              if(_this.vehicleIdList.indexOf(warningId) >= 0){
+                 return;
+              }
+              
               //如果告警id不存在 右侧弹出
-             
               if(!_this.warningData[warningId]){
                 _this.vehicleCount++;
                 let dist = parseInt(item.dis);
@@ -710,7 +715,6 @@
             let eventType = json.result.eventType;
             warningData.forEach(item=>{
               warningId = item.warnId;
-             
               warningId = warningId.substring(0,warningId.lastIndexOf("_"));
               let msg = item.warnMsg+" "+item.dis+"米";
               let warningObj={
@@ -719,27 +723,9 @@
               }
               let warningHash = _this.hashcode(JSON.stringify(warningObj));
               let position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
-              //如果告警id不存在 右侧弹出
+              //如果告警id不存在 右侧弹出          
               if(!_this.warningData[warningId]){
-                let dist = parseInt(item.dis);
-                if(!dist){
-                  dist=-1;
-                }
-                let obj = {type:eventType,timer:null,flag:true,dist:dist,message:item.warnMsg,icon:item.warnIcon,warnColor:item.warnColor};
-                obj.timer=setTimeout(()=>{
-                  obj.flag=false;
-                  _this.warningList.forEach(item=>{
-                    if(item.flag){
-                      _this.isAllClear=true;
-                    }
-                  })
-                  if(!_this.isAllClear){
-                    this.warningList=[];
-                  }
-                },3000)
-                _this.warningList.unshift(obj);
-                _this.cloudCount++;
-
+          
                 //在地图上标记交通事件
                 let marker = new AMap.ElasticMarker({
                   position:position,
@@ -765,6 +751,32 @@
                   hash:warningHash
                 }
                 _this.warningData[warningId]=eventObj;
+
+                // 先打点 在预警信息中的内容不在右下角弹出 但是会在地图上打点
+              
+                if(_this.cloudIdList.indexOf(warningId) >= 0){
+                 return;
+                } 
+                // debugger
+                let dist = parseInt(item.dis);
+                if(!dist){
+                  dist=-1;
+                }
+                let obj = {type:eventType,timer:null,flag:true,dist:dist,message:item.warnMsg,icon:item.warnIcon,warnColor:item.warnColor};
+                obj.timer=setTimeout(()=>{
+                  obj.flag=false;
+                  _this.warningList.forEach(item=>{
+                    if(item.flag){
+                      _this.isAllClear=true;
+                    }
+                  })
+                  if(!_this.isAllClear){
+                    this.warningList=[];
+                  }
+                },3000)
+                _this.warningList.unshift(obj);
+                _this.cloudCount++;
+
               }else{
                 //判断是否需要更新
                 let eventObj = _this.warningData[warningId];
@@ -897,12 +909,9 @@
           if(this.alertInit){
             this.vehicleCount = this.vehicleList.length;
             this.alertInit=  false;
-            if(this.vehicleList.length){
-              this.vehicleList.forEach(item=>{
-              let obj = {type:null,timer:null,flag:true,dist:null,message:null,icon:null,warnColor:null};
-              this.warningData[item.warnId]=obj;
+            this.vehicleList.forEach(item=>{
+              this.vehicleIdList.push(item.warnId);
             })
-            }
           }
         })
       },
@@ -916,14 +925,10 @@
           if(this.v2xInit){
             this.cloudCount = this.cloudList.length;
             this.v2xInit=  false;
-            if(this.cloudList.length){
-              this.cloudList.forEach(item=>{
+            this.cloudList.forEach(item=>{
               this.v2xUuid.push(item.uuid);
-              let obj = {type:null,timer:null,flag:true,dist:null,message:null,icon:null,warnColor:null};
-              this.warningData[item.warnId]=obj;
+              this.cloudIdList.push(item.warnId.substring(0,item.warnId.lastIndexOf("_")));
             })
-            }
-           
           }
         })
       },
