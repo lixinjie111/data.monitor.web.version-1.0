@@ -230,6 +230,8 @@
                 setTimeout(()=>{
                       item.map.setMapStyle(window.mapOption.mapStyleEmpty);
                 },0);
+                item.map.setStatus({zoomEnable:false});
+                item.map.setStatus({dragEnable:false});
                 let _optionWms = Object.assign(
                     {},
                     window.dlWmsDefaultOption,
@@ -401,14 +403,11 @@
           if(!item.isActive){
             this.roadList.forEach(item=>{
               item.isActive=false;
-            })
-          }
-          item.isActive=!item.isActive;
-          if(item.isActive){
+            });
+            item.isActive = true;
             this.crossId = item.crossId;
             this.getCrossById(item);
           }
-//          this.wms.show();
         },
         getCrossPageById(){
           let _this = this;
@@ -455,6 +454,8 @@
                 setTimeout(()=>{
                       item.map.setMapStyle(window.mapOption.mapStyleEmpty);
                 },0);
+                item.map.setStatus({zoomEnable:false});
+                item.map.setStatus({dragEnable:false});
                 let _optionWms = Object.assign(
                     {},
                     window.dlWmsDefaultOption,
