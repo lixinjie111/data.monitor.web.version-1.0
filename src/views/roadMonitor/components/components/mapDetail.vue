@@ -40,15 +40,15 @@
         }
       },
       mounted() {  
-        let _option = Object.assign(
-          {},
-          window.defaultMapOption,
-          {
-            center: window.mapOption.defaultCenterPoint,
-            zoom: 18,
-            mapStyle:window.mapOption.mapStyleEmpty
-          }
-        );
+        let _option = {
+          center: window.mapOption.defaultCenterPoint,
+          zoom: 18,
+          mapStyle: window.mapOption.mapStyleEmpty,
+          dragEnable: false,
+          zoomEnable:  false,
+          resizeEnable: true, //是否监控地图容器尺寸变化
+          rotateEnable: true,
+        };
         this.map = new AMap.Map(this.id, _option);
         setTimeout(()=>{
               this.map.setMapStyle(window.mapOption.mapStyleEmpty);
