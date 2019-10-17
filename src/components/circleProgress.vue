@@ -3,7 +3,7 @@
   <div class="c-circle-wrap clearfix">
     <h3 class="c-title">{{title}}</h3>
     <ul class="c-circle-ul clearfix" :class="filterData.length > 4 ? 'c-circle-more' : ''">
-    	<li class="c-circle-list" v-for="item of filterData" :key="item.name">
+    	<li class="c-circle-list" v-for="item of filterData" :key="item.name" v-if="item.name != '路侧雷达'">
     		<div class="c-circle">
     			<div class="c-circle-inner c-circle-left">
 			　　　　<div class="left" v-if="item.angle <= 180" :style="{'transform': 'rotate(-180deg)'}"></div>
