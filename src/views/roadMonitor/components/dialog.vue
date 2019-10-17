@@ -321,7 +321,7 @@
           this.index=0;
           this.getAllCross();
         },
-        getCrossById(){
+        getCrossById(item){
           getCrossById({
             "crossId": this.crossId
           }).then(res=>{
@@ -335,18 +335,18 @@
               return;
             }
             let result = res.data.data;
-            if(result&&result.length==0){
-              this.$message({
-                type: 'error',
-                duration: '1500',
-                message: '该路口没有数据！',
-                showClose: true
-              });
-//              if(this.wms){
-//                this.wms.hide();
-//              }
-              return;
-            }
+//             if(result&&result.length==0){
+//               this.$message({
+//                 type: 'error',
+//                 duration: '1500',
+//                 message: '该路口没有数据！',
+//                 showClose: true
+//               });
+// //              if(this.wms){
+// //                this.wms.hide();
+// //              }
+//               return;
+//             }
 
             // 清空车辆
             this.clearCars();
@@ -367,9 +367,18 @@
                 this.wms = new AMap.TileLayer.WMS(_optionWms);
                 this.wms.setMap(this.map);
               }
-              if(result[0]) {
-                let position = new AMap.LngLat(result[0].centerX,result[0].centerY);
-                this.map.setCenter(position);
+           
+              if(item){
+                let position = new AMap.LngLat(item.position.lng,item.position.lat);
+                this.map.setCenter(position);  
+              }else{
+                if(result.length) {
+                  let position = new AMap.LngLat(result[0].centerX,result[0].centerY);
+                  this.map.setCenter(position);
+                }else{
+                  let position = new AMap.LngLat(this.selectedItem.baseData.x,this.selectedItem.baseData.y);
+                  this.map.setCenter(position);  
+                }
               }
             
 //            }
@@ -399,7 +408,7 @@
           item.isActive=!item.isActive;
           if(item.isActive){
             this.crossId = item.crossId;
-            this.getCrossById();
+            this.getCrossById(item);
           }
 //          this.wms.show();
         },
