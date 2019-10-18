@@ -22,7 +22,6 @@
         data() {
             return {
               forwardParam:{},
-              flvUrl:'',
               requestVideoUrl:getVideoByNum,  
             }
         },

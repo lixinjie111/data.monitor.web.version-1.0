@@ -91,7 +91,7 @@ export default {
             }
         },
         'videoLoadingDelay.count'(newVal, oldVal) {
-            // console.log(newVal);
+            console.log(newVal);
         }
     },
     mounted() {
