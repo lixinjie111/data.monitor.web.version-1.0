@@ -72,7 +72,7 @@ export default {
             },
             videoLoadingDelay: {
                 timer: null,
-                countTime: 15,
+                countTime: 60,
                 count: 0
             }
         }
@@ -91,7 +91,7 @@ export default {
             }
         },
         'videoLoadingDelay.count'(newVal, oldVal) {
-            // console.log(newVal);
+            console.log(newVal);
         }
     },
     mounted() {
