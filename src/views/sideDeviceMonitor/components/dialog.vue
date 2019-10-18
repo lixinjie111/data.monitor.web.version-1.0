@@ -63,9 +63,7 @@
             <div v-if="target=='video'" class="video-style-height">
               <live-player
                       :isStretch="true"
-                      :requestVideoUrl="flvUrl"
-                      :params="forwardParam"
-                      type="flvUrl"
+                      :requestVideoUrl="videoUrl"
                       :autoplay="true"
                       ref="player"
               >
@@ -147,9 +145,7 @@
                   <div v-if="target=='map'" class="side-video-style">
                     <live-player
                             :isStretch="true"
-                            :requestVideoUrl="flvUrl"
-                            :params="forwardParam"
-                            type="flvUrl"
+                            :requestVideoUrl="videoUrl"
                             :autoplay="true"
                             ref="player"
                     >
@@ -236,8 +232,7 @@ export default {
       deviceMapId:"deviceMap1",
       selectedDevice:{},
       currentExtent:[],
-      forwardParam:{},
-      flvUrl:'',
+      videoUrl:'',
     };
   },
   components: {
@@ -264,7 +259,7 @@ export default {
       /*if (_this.mapInit) {
         _this.$refs.tusvnMap3.reset3DMap();
       }*/
-      this.flvUrl = "";
+      this.videoUrl = "";
       this.$refs["player"].initVideo();
       getDeviceList({
         roadSiderId: this.roadId
@@ -654,14 +649,14 @@ export default {
       }, 1000);
     },
     getVideo() {
-      this.flvUrl = "";
+      this.videoUrl = "";
       getVideoByNum({
         protocal: 1,
         /*"serialNum": "3402000000132000001401"*/
         serialNum: this.serialNum
       }).then(res => {
         this.$refs["player"].initVideo();
-        this.flvUrl = res.data.flvUrl;   
+        this.videoUrl = res.data.wsUrl;   
         setTimeout(() => {
              this.$refs["player"].requestVideo();
         }, 0);
