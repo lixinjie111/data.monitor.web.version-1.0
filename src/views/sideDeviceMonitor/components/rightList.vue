@@ -12,7 +12,7 @@
         </div>
         <div class="c-size-style" v-if="index==1">
           <div class="c-size-inner">
-            <iframe class="m-iframe" src="http://218.76.44.22:9090/fusionMonitorIframe/#/perception/113.0600445/28.3208253/{"x":701989.0712304089,"y":3134461.1291018035,"z":25.37795181155824,"radius":9.34765086947f0886,"pitch":-0.45100466012823004,"yaw":-8.286060431772894}/0.002"></iframe>
+            <iframe class="m-iframe" src="http://218.76.44.22:9090/fusionMonitorIframe/#/perception/113.0600445/28.3208253/{%22x%22:701989.0712304089,%22y%22:3134461.1291018035,%22z%22:25.37795181155824,%22radius%22:9.347650869470886,%22pitch%22:-0.45100466012823004,%22yaw%22:-8.286060431772894}/0.002"></iframe>
           </div>
         </div>
       </div>
