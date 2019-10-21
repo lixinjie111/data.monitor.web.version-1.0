@@ -4,14 +4,16 @@
         <div class="c-mask-title">
           <a href="javascript:;"  class="title" @click="queryDeviceDetail(roadItem,'map')">路侧点：{{roadItem.roadSiderName}}</a>
           <!-- <img src="@/assets/images/carMonitor/refresh.png" class="c-mask-refresh" v-if="roadItem.online==1" @click="refresh('map')"/> -->
-          <i class="c-mask-refresh el-icon-refresh" @click="refresh('map')"></i>
+          <!-- <i class="c-mask-refresh el-icon-refresh" @click="refresh('map')"></i> -->
         </div>
         <div class="c-mask-tip" v-show="mapShow">
           <div class="c-mask-text">
             {{message}}
           </div>
         </div>
-        <tusvn-map
+
+        <iframe class="m-iframe" :src="roadItem.iframeUrl"></iframe>
+        <!-- <tusvn-map
           class="c-map-video-style"
           v-if="sideMap"
           :targetId="'mapMonitor'+roadItem.camSerialNum"
@@ -24,7 +26,7 @@
           :maxY="mapParam.maxY"
           :maxZ="mapParam.maxZ"
           @mapcomplete="onMapComplete">
-        </tusvn-map>
+        </tusvn-map> -->
        <!-- <div class="c-mask-tip" v-else>
           {{mapMessage}}
         </div>-->
@@ -36,7 +38,7 @@
   import {getMap} from '@/utils/tusvnMap_roadside.js';
   const isProduction = process.env.NODE_ENV === 'production'
 
-  import TusvnMap from '@/utils/Tusvn3DMap3'
+  // import TusvnMap from '@/utils/Tusvn3DMap3'
     export default {
         data() {
             return {
@@ -51,7 +53,7 @@
             }
         },
         components:{
-          TusvnMap
+          // TusvnMap
         },
         props:['visible','roadItem','roadList'],
         methods: {
@@ -130,5 +132,10 @@
     }
 </script>
 <style lang="scss" scoped>
-  @import '@/assets/scss/theme.scss';
+.m-iframe {
+  border: none;
+  background: #000;
+  width: 100%;
+  height: 100%;
+}
 </style>
