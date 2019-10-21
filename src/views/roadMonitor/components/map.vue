@@ -81,16 +81,35 @@
 				speedWms: null,
         carTimer:0,
         speedTimer:0,
-        masstraffic:null
+        masstraffic:null,
+        wms:null,
       }
     },
     watch: {
         trafficData: {
-            handler: function (newVal, oldVal) {
+            handler(newVal, oldVal) {
               this.rwDisMap(newVal,"traffic")
             },
             deep: true
-        }
+        },
+        options:{
+          handler(newVal,oldVal) {
+           for (let i = 0; i < newVal.length; i++) {
+              if(newVal[i].id == "car" || newVal[i].id == "speed"){
+                if(newVal[i].isActive){
+                   this.wms.hide();
+                   break;
+                }else{
+                   this.wms.show();  
+                }
+              }else{
+                  this.wms.show();
+              }  
+           }
+          },      
+          deep: true   
+        } 
+        
     },
     mounted() {
       let _this = this;
@@ -295,8 +314,8 @@
               }
           );
 
-        let _wms  = new AMap.TileLayer.WMS(_optionWms);
-        _wms.setMap(this.map);
+        this.wms  = new AMap.TileLayer.WMS(_optionWms);
+        this.wms.setMap(this.map);
       },
       getCarWms() {
       	if(this.carWms) {
