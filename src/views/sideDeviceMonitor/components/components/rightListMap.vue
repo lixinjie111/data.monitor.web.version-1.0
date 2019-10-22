@@ -12,7 +12,7 @@
           </div>
         </div>
         
-        <iframe v-if="sideMap" class="m-iframe" :src="roadItem.iframeUrl"></iframe>
+        <iframe v-if="!visible" class="m-iframe" :src="roadItem.iframeUrl"></iframe>
         <!-- <tusvn-map
           class="c-map-video-style"
           v-if="sideMap"
@@ -47,7 +47,6 @@
               rtmp:"",
               mapShow:false,
               message:'',
-              sideMap:true,
               mapMessage:'该路口没有数据，请稍候再试！',
               currentExtent:[],
             }
@@ -99,14 +98,11 @@
           if(!this.visible) {
             //重新连接数据和视频
             if(_this.roadList==0){
-              this.sideMap=false;
               _this.mapMessage='路侧设备不存在!';
               return;
             }
-            _this.sideMap=true;
           }else{
             //打开窗口，关闭连接
-            _this.sideMap=false;
             _this.mapMessage='连接关闭';
             if(this.$refs[this.roadItem.camSerialNum]){
               this.$refs[this.roadItem.camSerialNum].reset3DMap();
