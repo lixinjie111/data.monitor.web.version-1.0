@@ -12,7 +12,7 @@
           </div>
         </div>
 
-        <iframe class="m-iframe" :src="roadItem.iframeUrl"></iframe>
+        <iframe class="m-iframe" v-if="sideMap" :src="roadItem.iframeUrl"></iframe>
         <!-- <tusvn-map
           class="c-map-video-style"
           v-if="sideMap"
