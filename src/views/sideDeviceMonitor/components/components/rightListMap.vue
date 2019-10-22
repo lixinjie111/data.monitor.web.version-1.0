@@ -11,8 +11,8 @@
             {{message}}
           </div>
         </div>
-
-        <iframe class="m-iframe" :src="roadItem.iframeUrl"></iframe>
+        
+        <iframe v-if="sideMap" class="m-iframe" :src="roadItem.iframeUrl"></iframe>
         <!-- <tusvn-map
           class="c-map-video-style"
           v-if="sideMap"
@@ -62,10 +62,7 @@
               let cameraParam = JSON.parse(this.roadItem.cameraParam);
               getMap(this.$refs[this.roadItem.camSerialNum]);
               this.$refs[this.roadItem.camSerialNum].updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);  
-              this.$refs[this.roadItem.camSerialNum].changeRcuId2(
-                window.config.websocketUrl,
-                this.getExtend(this.roadItem.lon,this.roadItem.lat,0.0002)
-              );
+            
               return;
             }
           },
@@ -75,10 +72,7 @@
           //后端请求超时的解决办法
           refresh(){
             let _this = this;
-            this.$refs[this.roadItem.camSerialNum].changeRcuId2(
-              window.config.websocketUrl,
-              _this.getExtend(this.roadItem.lon,this.roadItem.lat,0.0002)
-            );
+         
             this.mapShow=true;
             this.message='数据正在加载，请稍候...';
             setTimeout(()=>{
