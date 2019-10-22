@@ -188,7 +188,7 @@ import {
   getDevListByRoadId,
   getDeviceCountByCity
 } from "@/api/sideDeviceMonitor";
-import TusvnMap from "@/utils/Tusvn3DMap3";
+import TusvnMap from "@/utils/Tusvn3DMap4";
 import { getMap } from "@/utils/tusvnMap.js";
 import LivePlayer from '@/components/livePlayer/template'
 const isProduction = process.env.NODE_ENV === "production";
@@ -209,6 +209,7 @@ export default {
         type: "type",
         isLeaf: "leaf"
       },
+    
       deviceList: [],
       active: "active",
       unActive: "close-active",
@@ -312,11 +313,10 @@ export default {
                   _this.cameraParam.pitch,
                   _this.cameraParam.yaw
                 );
-                _this.$refs.tusvnMap3.changeRcuId2(
-                  window.config.websocketUrl,
-                  _this.getExtend(item.lon,item.lat,0.0002)
-                  // item.serialNum
-                );
+                _this.perceptionWebsocket.close();
+                _this.getExtend(item.lon,item.lat,0.0002);
+                _this.initPerceptionWebSocket();
+              
               }
             }
           } else {
@@ -330,11 +330,6 @@ export default {
           }
         }
 
-
-        //  this.$refs.tusvnMap3.changeRcuId2(
-        //   window.config.websocketUrl,
-        //   this.currentExtent
-        // );
       });
     },
     switchChange(item) {
@@ -399,14 +394,12 @@ export default {
             _this.cameraParam.pitch,
             _this.cameraParam.yaw
           );
-          this.$refs.tusvnMap3.changeRcuId2(
-            window.config.websocketUrl,
-            _this.getExtend(item.lon,item.lat,0.0002)
-            // item.serialNum
-          );
+          this.perceptionWebsocket.close();
+          this.getExtend(item.lon,item.lat,0.0002)
+          this.initPerceptionWebSocket();
+        
         }
-       // _this.$refs.tusvnMap3.reset3DMap();
-
+      
       } else {
         if (this.$refs.tusvnMap3) {
           _this.$refs.tusvnMap3.reset3DMap();
@@ -587,11 +580,11 @@ export default {
       this.time = time;
     },
     mapcomplete: function() {
-      //this.mapInit = true;
-      getMap(this.$refs.tusvnMap3);
+   
+      this.initPerceptionWebSocket();
+
       if (this.serialNum && this.serialNum != "") {
         this.mapInit = true;
-        console.log(this.cameraParam);
         this.$refs.tusvnMap3.updateCameraPosition(
           this.cameraParam.x,
           this.cameraParam.y,
@@ -600,12 +593,7 @@ export default {
           this.cameraParam.pitch,
           this.cameraParam.yaw
         );
-        this.$refs.tusvnMap3.changeRcuId2(
-          window.config.websocketUrl,
-          //this.getExtend(item.lon,item.lat,0.0002)
-          this.currentExtent
-          // this.serialNum
-        );
+     
         return;
       }
       let count = 0;
@@ -632,13 +620,6 @@ export default {
               window.defaultMapParam.yaw
             );
           }
-          // this.getExtend(121.1750307,31.2826193,0.0002)
-          
-          this.$refs.tusvnMap3.changeRcuId2(
-            window.config.websocketUrl,
-              this.currentExtent
-            // this.serialNum
-          );
           clearInterval(time);
         }
         //超过5s仍然没有响应 则停止渲染
@@ -673,7 +654,48 @@ export default {
         this.currentExtent.push([x0, y1]);
         this.currentExtent.push([x1, y1]);
         return this.currentExtent;
-    }
+    },
+
+    //感知车
+    initPerceptionWebSocket() {
+      let _this = this;
+      if ("WebSocket" in window) {
+        _this.perceptionWebsocket = new WebSocket(window.config.websocketUrl); //获得WebSocket对象
+        _this.perceptionWebsocket.onmessage = _this.onPerceptionMessage;
+        _this.perceptionWebsocket.onclose = _this.onPerceptionClose;
+        _this.perceptionWebsocket.onopen = _this.onPerceptionOpen;
+      }
+    },
+    onPerceptionMessage(messasge) {
+      this.perceptionCar = messasge;
+      this.$refs.tusvnMap3.addPerceptionData(messasge);
+    },
+    onPerceptionClose(data) {
+      console.log("结束连接");
+    },
+    onPerceptionOpen(data) {
+      //旁车
+      var perception = {
+        action: "road_real_data_per",
+        data: {
+          polygon: this.currentExtent
+        }
+      };
+      var perceptionMsg = JSON.stringify(perception);
+      this.sendPerceptionMsg(perceptionMsg);
+    },
+    sendPerceptionMsg(msg) {
+      let _this = this;
+      if (window.WebSocket) {
+        if (_this.perceptionWebsocket.readyState == WebSocket.OPEN) {
+          //如果WebSocket是打开状态
+          _this.perceptionWebsocket.send(msg); //send()发送消息
+        }
+      } else {
+        return;
+      }
+    },
+    
   },
   mounted() {
     this.selectAddr = this.selectedItem.path.split("|");
@@ -684,6 +706,10 @@ export default {
     this.getDeviceList();
     this.getSideTree();
     this.getDeviceCountByCity();
+  },
+  destroyed(){
+      //销毁Socket
+      this.perceptionWebsocket&&this.perceptionWebsocket.close();
   }
 };
 </script>
