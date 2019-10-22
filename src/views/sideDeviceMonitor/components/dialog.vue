@@ -629,6 +629,8 @@ export default {
         }
         count++;
       }, 1000);
+
+    
     },
     getVideo() {
       this.videoUrl = "";

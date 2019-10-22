@@ -11,8 +11,7 @@
             {{message}}
           </div>
         </div>
-
-        <iframe class="m-iframe" v-if="sideMap" :src="roadItem.iframeUrl"></iframe>
+        <iframe v-if="!visible" class="m-iframe" :src="roadItem.iframeUrl"></iframe>
         <!-- <tusvn-map
           class="c-map-video-style"
           v-if="sideMap"
@@ -47,7 +46,6 @@
               rtmp:"",
               mapShow:false,
               message:'',
-              sideMap:true,
               mapMessage:'该路口没有数据，请稍候再试！',
               currentExtent:[],
             }
@@ -62,10 +60,7 @@
               let cameraParam = JSON.parse(this.roadItem.cameraParam);
               getMap(this.$refs[this.roadItem.camSerialNum]);
               this.$refs[this.roadItem.camSerialNum].updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);  
-              this.$refs[this.roadItem.camSerialNum].changeRcuId2(
-                window.config.websocketUrl,
-                this.getExtend(this.roadItem.lon,this.roadItem.lat,0.0002)
-              );
+            
               return;
             }
           },
@@ -75,10 +70,7 @@
           //后端请求超时的解决办法
           refresh(){
             let _this = this;
-            this.$refs[this.roadItem.camSerialNum].changeRcuId2(
-              window.config.websocketUrl,
-              _this.getExtend(this.roadItem.lon,this.roadItem.lat,0.0002)
-            );
+         
             this.mapShow=true;
             this.message='数据正在加载，请稍候...';
             setTimeout(()=>{
@@ -105,14 +97,11 @@
           if(!this.visible) {
             //重新连接数据和视频
             if(_this.roadList==0){
-              this.sideMap=false;
               _this.mapMessage='路侧设备不存在!';
               return;
             }
-            _this.sideMap=true;
           }else{
             //打开窗口，关闭连接
-            _this.sideMap=false;
             _this.mapMessage='连接关闭';
             if(this.$refs[this.roadItem.camSerialNum]){
               this.$refs[this.roadItem.camSerialNum].reset3DMap();
