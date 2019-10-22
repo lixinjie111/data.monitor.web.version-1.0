@@ -232,6 +232,7 @@ export default {
       selectedDevice:{},
       currentExtent:[],
       videoUrl:'',
+      extend: 0.0002
     };
   },
   components: {
@@ -275,7 +276,7 @@ export default {
         _this.deviceList.forEach(function(item, index) {
           //第一次默认并且是摄像头而且在线设置其打开状态
           if (flag && item.deviceType == "N" ) {
-            _this.currentExtent = _this.getExtend(item.lon,item.lat,0.0002)
+            _this.currentExtent = _this.getExtend(item.lon,item.lat,_this.extend)
             if (_this.selectedItem.camSerialNum == "") {//通过地图点击进来的
               flag = false;
               //设置默认的选中值
@@ -314,7 +315,7 @@ export default {
                   _this.cameraParam.yaw
                 );
                 _this.perceptionWebsocket.close();
-                _this.getExtend(item.lon,item.lat,0.0002);
+                _this.getExtend(item.lon,item.lat,_this.extend);
                 _this.initPerceptionWebSocket();
               
               }
@@ -395,7 +396,7 @@ export default {
             _this.cameraParam.yaw
           );
           this.perceptionWebsocket.close();
-          this.getExtend(item.lon,item.lat,0.0002)
+          this.getExtend(item.lon,item.lat,_this.extend)
           this.initPerceptionWebSocket();
         
         }

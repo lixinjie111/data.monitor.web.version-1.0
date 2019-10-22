@@ -132,6 +132,9 @@
     }
 </script>
 <style lang="scss" scoped>
+.c-size-inner {
+  background: #000;
+}
 .m-iframe {
   border: none;
   background: #000;

@@ -957,21 +957,8 @@
                 });
             },
             animate: function(time) {
-                // requestAnimationFrame(animate);
-                // TWEEN.update(time);
             },
             update: function(e) {
-                // console.log("=====================update====================================");
-                // console.log(e)
-                // model.position.x = lastUtmPosition.x;
-                // model.position.y = lastUtmPosition.y;
-                // model.setHeading(-Math.PI / 180 * (lastUtmPosition.rotation));
-                // dl.moveTo({
-                //         position: [lastUtmPosition.x+6,lastUtmPosition.y, 12.816],
-                //         radius: 80,
-                //         yaw: -Math.PI / 180 * (lastUtmPosition.rotation),
-                //         pitch: -0.8
-                // });
             },
             resetCamera: function() {
                 this.updateCameraPosition(window.defaultMapParam.x,window.defaultMapParam.y,window.defaultMapParam.z,window.defaultMapParam.radius,window.defaultMapParam.pitch,window.defaultMapParam.yaw);
@@ -1016,9 +1003,6 @@
                     if (this.deviceModels[deviceid] == null) {
                         this.deviceModels[deviceid] = { cars: [], persons: [], texts: [] };
                         for (let m = 0; m < this.cacheModelNum; m++) {
-                            //车
-                            //var geoBox1 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
-                            // var model1 = new THREE.Mesh(geoBox1, this.matStdObjects);
 
                             var model1 = myBox.addMyBox(0.4, 0.4, 1.7, this.carColor);
 
@@ -1030,7 +1014,6 @@
                             dl.scene.add(model1);
                             this.deviceModels[deviceid].cars[m] = model1;
 
-                            // var pBox1 = new THREE.BoxBufferGeometry(0.4, 0.4, 1.7);
                             var pmodel1 = new THREE.Mesh(pBox1, this.person);
                             var pmodel1 = myBox.addMyBox(0.4, 0.4, 1.7, this.carColor);
 
@@ -1110,26 +1093,14 @@
                 }
             },
             onPerceptionMessage: function(data) {
-
-                //            console.log("=======================onPerceptionMessage===================");
-                //            console.log(new Date().getTime());
                 this.lastPerceptionMessage = data;
                 var data2 = JSON.parse(data.data);
                 if (data2.result.dataFlag == 1) {
                     this.platformCars = data2.result.vehDataDTO;
                 }
                 return;
-                // this.models={};
-                // this.count++;
-                // if((this.count%this.interval)!=0)
-                // {
-                //     return;
-                // }
             },
             addPerceptionData: function(data) {
-
-                //     console.log("===========addPerceptionData=============");
-                //     console.log(new Date().getTime());
 
                 this.cachePerceptionQueue.push(data);
             },
@@ -1138,8 +1109,6 @@
 //      let timeA = new Date().getTime();
                 this.processPerceptionDataIntervalId = setInterval(() => {
                     this.timeA = new Date().getTime();
-                    //                console.log(this.timeA-this.timeB);
-                    //                console.log("2处理感知车辆缓存队列中的数据:"+this.cachePerceptionQueue.length);
                     if (this.cachePerceptionQueue.length > 0) {
                         let data = this.cachePerceptionQueue.shift();
                         let length = 0;
@@ -1157,13 +1126,8 @@
                                 d2_vehDataStat=data2.result.vehDataStat;
                                 length = data2.result.vehDataDTO.length;
                             } catch (e) {
-//              console.log(data2.result);
                             }
                             if (d2 != null) {
-                                // if(this.lastPerceptionData!=null&&d2.gpsTime<this.lastPerceptionData.gpsTime)
-                                // {
-                                //     return;
-                                // }
                                 let pcarnum = 0;
                                 let persons = 0;
                                 let zcarnum = 0;
@@ -1217,11 +1181,8 @@
                                 } else {
                                     ss += this.timetrans(d2.gpsTime);
                                 }
-
-                                // this.$emit("processPerceptionDataTime",ss)
                                 //不丢包
                                 this.processPerceptionMesage();
-                                //  this.processPlatformCars();
                                 this.timeB = new Date().getTime();
 
                                 let hs = this.timeB - this.timeA;
@@ -1230,26 +1191,10 @@
 
 
                                 this.$emit("processPerceptionDataTime", ss,d2.gpsTime,d2_vehDataStat);
-//                                this.$emit("processDataTime",d2.gpsTime)
-                                // if(this.lastPerceptionData!=null)
-                                // {
-                                //     this.processPerceptionInterval = d2.gpsTime- this.lastPerceptionData.gpsTime-(timeB-timeA);
-                                // }else{
-                                //     this.processPerceptionInterval = 1;
-                                // }
-                                // if(this.processPerceptionInterval<=0)
-                                // {
-                                //     this.processPerceptionInterval = 1;
-                                // }
-                                // if(this.processPerceptionInterval>1000)
-                                // {
-                                //     this.processPerceptionInterval=200;
-                                // }
 
                                 if (d2 != null) {
                                     this.lastPerceptionData = d2;
                                 }
-                                //                            console.log("处理间隔："+this.processPerceptionInterval);
                             }
                         }
                     }
@@ -1490,6 +1435,7 @@
                 console.log("结束连接");
             },
             reset3DMap: function() {
+                // dl.viewer = null;
                 for (var key in this.deviceModels) {
                     for (let p = 0; p < this.deviceModels[key].cars.length; p++) {
                         let car = this.deviceModels[key].cars[p];
@@ -1953,6 +1899,7 @@
                     color: color == null ? "#fff" : color
                 });
                 dl.scene.add(shp);
+                this.shps[name]=shp;
             },
             addShape1:function(name,url,color,width,size,visible,map,proj,z){
                 let shp = new dl.Shape({
@@ -1969,27 +1916,12 @@
                 dl.scene.add(shp);
 
                 this.shps[name]=shp;
+            },
+            clearCache:function(object) {
+                let  mesh = object;
+                mesh.geometry.dispose();
+                mesh.material.dispose();
             }
-            // addStaticModel: function(dl, name, url, x, y, z, pitch, yaw, roll) {
-            //   let model = new dl.Model({
-            //     url: url
-            //     // ,scale:scale==null?[1,1,1]:scale
-            //     // scale:[5,5,5]
-            //   });
-            //   model.position.x = x;
-            //   model.position.y = y;
-            //   model.position.z = z;
-            //   // if(color!=null)
-            //   // {
-            //   //     model.setColor(color);
-            //   // }
-            //   // model.setColor("#ffffff");
-            //   let pitch1 = pitch == null ? 0 : pitch;
-            //   let yaw1 = yaw == null ? 0 : yaw;
-            //   let roll1 = roll == null ? 0 : roll;
-            //   model.rotation.set(pitch1, yaw1, roll1);
-            //   dl.scene.add(model);
-            // },
         },
         created() {},
         mounted() {
@@ -2009,7 +1941,37 @@
             }, 1000);
         },
         destroyed() {
-
+            
+            if(this.deviceModels["0"]) {
+                if(this.deviceModels["0"].cars && this.deviceModels["0"].cars.length>0) {
+                    for(let i=0;i<this.deviceModels["0"].cars.length;i++)
+                    {
+                        this.clearCache(this.deviceModels["0"].cars[i].children[0]);
+                        this.clearCache(this.deviceModels["0"].cars[i].children[1]);
+                    }
+                }
+                if(this.deviceModels["0"].persions && this.deviceModels["0"].persions.length>0) {
+                    for(let i=0;i<this.deviceModels["0"].persions.length;i++) {
+                        this.clearCache(this.deviceModels["0"].persions[i]); 
+                    }
+                }
+                // if(this.deviceModels["0"].texts && this.deviceModels["0"].texts.length>0) {
+                //     for(let i=0;i<this.deviceModels["0"].texts.length;i++) {
+                //         this.clearCache(this.deviceModels["0"].texts[i]); 
+                //     }
+                // }
+            }
+           if(this.shps.length>0) {
+                for(let i=0;i<this.shps.length;i++) {
+                    this.clearCache(this.shps[i]); 
+                }
+            }
+            dl.viewer.renderer.dispose();
+            dl.viewer.renderer.forceContextLoss();
+            dl.viewer.renderer.context = null;
+            dl.viewer.renderer.domElement = null;
+            dl.viewer.renderer = null; 
+            dl.viewer = null;
             this.cacheMainCarTrackData = new Array();
             for (let i = 0; i < this.intervalIds.length; i++) {
                 clearInterval(this.intervalIds[i]);
