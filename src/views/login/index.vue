@@ -163,6 +163,8 @@ export default {
 
 <style lang="scss" scoped>
 #login-warpper {
+    font-family: Avenir,Helvetica,Arial,sans-serif;
+    letter-spacing: 0;
     height: 100%;
     background-image: url('../../../static/images/login-bg.jpg');
     background-repeat: no-repeat;
@@ -231,7 +233,7 @@ export default {
     }
     .el-form-item__label {
         position: relative;
-        color: #fff;
+        color: #fff !important;
         height: 48px;
         padding: 0;
         @include layoutMode();
