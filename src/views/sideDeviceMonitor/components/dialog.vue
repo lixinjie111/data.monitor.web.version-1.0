@@ -74,7 +74,7 @@
                 <div class="time-style">
                   <span class="t-class">{{time}}</span>
                 </div>
-                <tusvn-map
+                <tusvn-map4
                   :target-id="deviceMapId"
                   ref="tusvnMap3"
                   :background="mapParam.background"
@@ -86,7 +86,7 @@
                   :maxZ="mapParam.maxZ"
                   @mapcomplete="mapcomplete"
                   @showTimeStamp="showTimeStamp"
-                ></tusvn-map>
+                ></tusvn-map4>
               </div>
             </div>
           </div>
@@ -156,7 +156,7 @@
                       <div class="time-style">
                         <span class="t-class">{{time}}</span>
                       </div>
-                      <tusvn-map
+                      <tusvn-map4
                         :target-id="deviceMapId"
                         ref="tusvnMap3"
                         :background="mapParam.background"
@@ -168,7 +168,7 @@
                         :maxZ="mapParam.maxZ"
                         @mapcomplete="mapcomplete"
                         @showTimeStamp="showTimeStamp"
-                      ></tusvn-map>
+                      ></tusvn-map4>
                     </div>
                   </div>
                 </div>
@@ -188,7 +188,7 @@ import {
   getDevListByRoadId,
   getDeviceCountByCity
 } from "@/api/sideDeviceMonitor";
-import TusvnMap from "@/utils/Tusvn3DMap4";
+import TusvnMap4 from "@/utils/Tusvn3DMap4";
 import { getMap } from "@/utils/tusvnMap.js";
 import LivePlayer from '@/components/livePlayer/template'
 const isProduction = process.env.NODE_ENV === "production";
@@ -236,7 +236,7 @@ export default {
     };
   },
   components: {
-    TusvnMap,
+    TusvnMap4,
     LivePlayer
   },
   props: {
