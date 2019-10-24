@@ -681,7 +681,7 @@ export default {
             let position = proj4(this.sourceProject,this.destinatePorject,[data.longitude,data.latitude]);
             if(carModel==null)
             {
-                this.addModel(vid,"./static/map3d/map_photo/car.3DS",position[0],position[1],this.defualtZ);
+                this.addModel(vid,"./static/map3d/models/car/car.3DS",position[0],position[1],this.defualtZ);
             }else{
                 this.models[vid].position.set(position[0],position[1], this.defualtZ );
                 this.models[vid].rotation.set( this.pitch,this.yaw,(-Math.PI / 180) * data.heading);
@@ -728,7 +728,7 @@ export default {
                 {
                     if(model==undefined||model==null)
                     {
-                        this.addModel(vid,"./static/map3d/map_photo/car.3DS",data2.longitude,data2.latitude,this.defualtZ);
+                        this.addModel(vid,"./static/map3d/models/car/car.3DS",data2.longitude,data2.latitude,this.defualtZ);
                     }else{
                         this.models[vid]=model;
                     }
@@ -1656,7 +1656,7 @@ export default {
         //         {
         //             if(model==undefined)
         //             {
-        //                 this.addModel(vid,"./static/map3d/map_photo/car.3DS",data2.longitude,data2.latitude,this.defualtZ);
+        //                 this.addModel(vid,"./static/map3d/models/car/car.3DS",data2.longitude,data2.latitude,this.defualtZ);
         //             }else{
         //                 this.models[vid]=model;
         //             }
@@ -1789,7 +1789,7 @@ export default {
         //         {
         //             if(model==undefined)
         //             {
-        //                 this.addModel(vid,"./static/map3d/map_photo/car.3DS",data2.longitude,data2.latitude,this.defualtZ);
+        //                 this.addModel(vid,"./static/map3d/models/car/car.3DS",data2.longitude,data2.latitude,this.defualtZ);
         //             }else{
         //                 this.models[vid]=model;
         //             }
