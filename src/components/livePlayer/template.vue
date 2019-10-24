@@ -228,8 +228,14 @@ export default {
             }else {
                 if(!this.liveFlag) {
                     this.setVideoOptionClose();
+                    this.player.play();
+                }else {
+                    let _oldUrl = this.videoUrl;
+                    this.videoUrl = "";
+                    setTimeout(() => {
+                        this.videoUrl = _oldUrl;
+                    }, 0);
                 }
-                this.player.play();
             }
         },
         refreshVideo(){
