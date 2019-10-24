@@ -151,7 +151,7 @@
       // var pt = new dl.PointCloud({url:"../resources/pointclouds/suzhou/cloud.js",
       //     ptColor: Pt.PointColorType.INTENSITY_GRADIENT});
 
-      let model = new dl.Model({url: "static/map3D/map_photo/car.3DS"});
+      let model = new dl.Model({url: "static/map3d/models/car/car.3DS"});
       self.models = model;
       model.position.x = parseFloat(convert_coord_array[0][0]);
       model.position.y = parseFloat(convert_coord_array[0][1]);
