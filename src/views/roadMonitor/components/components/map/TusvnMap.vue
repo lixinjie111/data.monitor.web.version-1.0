@@ -860,7 +860,6 @@ export default {
 }
 </script>
 <style scoped>
-
     #map {
         width: 100%;
         height: 100%;
@@ -999,6 +998,9 @@ export default {
 
 </style>
 <style lang="scss">
+.ol-viewport {
+    background-color: rgba(25, 32, 43, 1);
+}
 .path-view-popover {
     max-width: 256px;
     border: none;
