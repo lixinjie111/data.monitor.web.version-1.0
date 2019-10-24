@@ -1941,7 +1941,6 @@
             }, 1000);
         },
         destroyed() {
-            
             if(this.deviceModels["0"]) {
                 if(this.deviceModels["0"].cars && this.deviceModels["0"].cars.length>0) {
                     for(let i=0;i<this.deviceModels["0"].cars.length;i++)

@@ -1945,6 +1945,38 @@ export default {
     },
   
     destroyed(){
+         if(this.deviceModels["0"]) {
+            if(this.deviceModels["0"].cars && this.deviceModels["0"].cars.length>0) {
+                for(let i=0;i<this.deviceModels["0"].cars.length;i++)
+                {
+                    this.clearCache(this.deviceModels["0"].cars[i].children[0]);
+                    this.clearCache(this.deviceModels["0"].cars[i].children[1]);
+                }
+            }
+            if(this.deviceModels["0"].persions && this.deviceModels["0"].persions.length>0) {
+                for(let i=0;i<this.deviceModels["0"].persions.length;i++) {
+                    this.clearCache(this.deviceModels["0"].persions[i]); 
+                }
+            }
+            // if(this.deviceModels["0"].texts && this.deviceModels["0"].texts.length>0) {
+            //     for(let i=0;i<this.deviceModels["0"].texts.length;i++) {
+            //         this.clearCache(this.deviceModels["0"].texts[i]); 
+            //     }
+            // }
+        }
+        if(this.shps.length>0) {
+            for(let i=0;i<this.shps.length;i++) {
+                this.clearCache(this.shps[i]); 
+            }
+        }
+        this.viewer.renderer.forceContextLoss();
+        this.viewer.renderer.context = null;
+        this.viewer.renderer.domElement = null;
+        this.viewer.renderer.dispose();
+        this.viewer.renderer = null; 
+        this.viewer = null;
+
+
         if ('WebSocket' in window) {
             if(window.WebSocket){
                 if(this.carTrackWebsocket!=null)
