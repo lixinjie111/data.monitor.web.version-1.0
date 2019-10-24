@@ -73,6 +73,7 @@ export default {
             videoLoadingDelay: {
                 timer: null,
                 countTime: 60,
+                reloadTime: 2,
                 count: 0
             }
         }
@@ -117,7 +118,17 @@ export default {
                 }
             }, 1000);
         },
+        videoTimerReload() {
+            this.videoLoadingDelay.timer = setInterval(() => {
+                if(this.videoLoadingDelay.count >= this.videoLoadingDelay.reloadTime) {
+                    this.requestVideo();
+                }else {
+                    this.videoLoadingDelay.count ++;
+                }
+            }, 1000);
+        },
         setVideoOptionPause() {
+            this.initVideoTimer();
             this.videoOption.videoMaskFlag = true;
             this.videoOption.playFlag = true;
             this.videoOption.loadingFlag = false;
@@ -130,6 +141,7 @@ export default {
             this.videoOption.playError = false;
         },
         setVideoOptionError(errorMsg) {
+            this.initVideoTimer();
             this.videoOption.videoMaskFlag = true;
             this.videoOption.playFlag = false;
             this.videoOption.loadingFlag = false;
@@ -158,6 +170,7 @@ export default {
         onPlayerTimeupdate(player) {
             // console.log("timeupdate", player);
             this.setVideoOptionClose();
+            this.videoTimerReload();
             this.$emit("videoTimeupdate",player);
         },
         onPlayerPause() {
@@ -222,7 +235,7 @@ export default {
         refreshVideo(){
             this.setVideoOptionLoading();
             this.videoUrl = '';
-            this.initVideoTimer();
+            // this.initVideoTimer();
             // this.initVideo();
             setTimeout(() => {
                 this.requestVideo();
@@ -230,7 +243,7 @@ export default {
             }, 0);
         },
         initVideo() {
-            this.initVideoTimer();
+            // this.initVideoTimer();
             this.setVideoOptionPause();
             this.videoUrl = '';
         }
