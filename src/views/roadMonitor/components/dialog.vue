@@ -57,7 +57,7 @@
 </template>
 <script>
   import ConvertCoord from '@/assets/js/utils/coordConvert.js'
-  import TusvnMap from './TusvnMap.vue';
+  import TusvnMap from './components/map/TusvnMap.vue';
   import {allCross,getCrossById,getCrossPageById} from '@/api/roadMonitor'
     export default {
       	components: {
