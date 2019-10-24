@@ -121,7 +121,7 @@
           'vehicleId': this.vehicleId,
         }).then(res => {
           var list = res.vehicleCalendarDetail;
-          if(list==null&&list.length<=0){
+          if(!list){
             this.$message({
                 type: 'error',
                 duration: '1500',
