@@ -22,7 +22,34 @@
               {{item.text}}
             </li>
           </ul>
-          <div class="c-map-style" id="mapContainer"></div>
+          <!-- <div class="c-map-style" id="mapContainer"></div> -->
+          <!-- <tusvn-map 
+            class="c-map-style" 
+            ref="refTusvnMap" 
+            style="height: 998px;"  
+            targetId="ddd" 
+            overlayContainerId="ccc" 
+            :isMasker='false' 
+            :isCircle='false' 
+            @MapClick="mapClick" 
+            @ExtentChange="extentChange" 
+            @ViewLevelChange="viewLevelChange" 
+            @MapInitComplete='mapInitComplete'
+            @setPointer='setPointer' 
+            @PublishInfo='publishInfo' 
+            @UpdateInfo='updateInfo' 
+            @DestroyInfo='destroyInfo' 
+            @TemporaryClearPubMsg='temporaryClearPubMsg($event)'>
+		      </tusvn-map> -->
+          <tusvn-map
+                  ref="refTusvnMap"
+                  targetId="refTusvnMap"
+                  overlayContainerId="overlay1"
+                  :isMasker='false'
+                  :isCircle='false'
+                  @ExtentChange="extentChange" 
+                  @MapInitComplete='mapInitComplete'>
+          </tusvn-map>
         </div>
     </div>
   </div>
@@ -30,8 +57,12 @@
 </template>
 <script>
   import ConvertCoord from '@/assets/js/utils/coordConvert.js'
+  import TusvnMap from './TusvnMap.vue';
   import {allCross,getCrossById,getCrossPageById} from '@/api/roadMonitor'
     export default {
+      	components: {
+          TusvnMap
+        },
         data() {
             return {
               mapOption:{
@@ -83,7 +114,8 @@
               // mapList:[],
               wms:null,
               finalFourPosition: [],
-              prevData: {}
+              prevData: {},
+              prevLight:[],
             }
         },
       props:{
@@ -106,7 +138,6 @@
       },
       watch:{
         "finalFourPosition"(newVal, oldVal) {
-            // console.log("finalFourPosition");
             if(this.webSocket) {
               this.onopen();
             }else {
@@ -115,25 +146,41 @@
         }
       },
       mounted() {
-        this.getCrossPageById();
-        this.crossId = this.selectedItem.crossId;
-        this.getCrossById();
-
-        this.map = new AMap.Map('mapContainer', this.mapOption);
-        setTimeout(()=>{
-            this.map.setMapStyle(window.mapOption.mapStyleEmpty);
-        },0);
-        this.map.on('moveend', this.getFourPosition);
-        let divScroll = document.getElementById("divScroll");
-        if (this && !this._isDestroyed) {
-          divScroll.addEventListener("scroll",this.scrollHandler,true);
-        }
+       
       },
       methods: {
+         mapInitComplete(){
+            this.$refs.refTusvnMap.centerAt(window.mapOption.defaultCenterPoint[0],window.mapOption.defaultCenterPoint[1]);   
+            this.$refs.refTusvnMap.addWms(
+              window.dlWmsOption.LAYERS_gjlk,
+              window.dlWmsDefaultOption.url,
+              window.dlWmsOption.LAYERS_gjlk,
+              "",
+              1,true,null
+            ); // 上海汽车城
+
+            this.getCrossPageById();
+            this.crossId = this.selectedItem.crossId;
+            this.getCrossById();
+
+            // this.map = new AMap.Map('mapContainer', this.mapOption);
+            // setTimeout(()=>{
+            //     this.map.setMapStyle(window.mapOption.mapStyleEmpty);
+            // },0);
+          
+          
+            let divScroll = document.getElementById("divScroll");
+            if (this && !this._isDestroyed) {
+              divScroll.addEventListener("scroll",this.scrollHandler,true);
+            }
+        },
+        extentChange(){
+          this.getFourPosition();
+        },
         // 获取四周的经纬度
         getFourPosition() {
           let finalFourPosition = [];
-          let bounds;
+          let bounds = {};
           let northEast = [];
           let southWest = [];
           let northWest = [];
@@ -142,7 +189,17 @@
           let northeast;
           let x = 0.0005;
           let y = 0.0003;
-          bounds = this.map.getBounds();
+          
+          let boundsArr = this.$refs.refTusvnMap.getCurrentExtent();   
+          
+          bounds.southwest = {
+            lng:boundsArr[0],
+            lat:boundsArr[1]
+          }
+          bounds.northeast = {
+            lng:boundsArr[2],
+            lat:boundsArr[3]
+          }
           // 西南
           southWest.push(bounds.southwest.lng - x);
           southWest.push(bounds.southwest.lat - y);
@@ -161,25 +218,13 @@
           finalFourPosition.push(southEast);
           southwest = [bounds.southwest.lng, bounds.southwest.lat];
           northeast = [bounds.northeast.lng, bounds.northeast.lat];
-            // let mapBounds = new AMap.Bounds(southWest, northEast);
-            // let rectangle = new AMap.Rectangle({
-            //   bounds: mapBounds,
-            //   strokeColor: "red",
-            //   strokeWeight: 6,
-            //   strokeOpacity: 0.5,
-            //   strokeDasharray: [30, 10],
-            //   // strokeStyle还支持 solid
-            //   strokeStyle: "dashed",
-            //   fillColor: "green",
-            //   fillOpacity: 0.3,
-            //   cursor: "pointer",
-            //   zIndex: 50
-            // });
-            // rectangle.setMap(this.map);
+     
           this.finalFourPosition = finalFourPosition;  
-          // this.initWebSocket();
+        
         },
         closeDialog(){
+          this.clearCars();
+          this.clearLight();
           this.webSocket && this.webSocket.close();
           var divScroll = document.getElementById("divScroll");
           divScroll.removeEventListener("scroll",this.scrollHandler,true);
@@ -334,67 +379,41 @@
               return;
             }
             let result = res.data.data;
-//             if(result&&result.length==0){
-//               this.$message({
-//                 type: 'error',
-//                 duration: '1500',
-//                 message: '该路口没有数据！',
-//                 showClose: true
-//               });
-// //              if(this.wms){
-// //                this.wms.hide();
-// //              }
-//               return;
-//             }
-
+          
             // 清空车辆
             this.clearCars();
-
-            // this.webSocket&&this.webSocket.close();
-            // this.initWebSocket();
-//            if(this.wms) {
-//              this.wms.show()
-//            }else {
-              if(!this.wms){
-                let _optionWms = Object.assign(
-                  {},
-                  window.dlWmsDefaultOption,
-                  {
-                    params:{'LAYERS': window.dlWmsOption.LAYERS_gjlk, 'VERSION': window.dlWmsOption.VERSION}
-                  }
-                );
-                this.wms = new AMap.TileLayer.WMS(_optionWms);
-                this.wms.setMap(this.map);
-              }
-              
+            this.clearLight();
+         
+            setTimeout(() => {
+              this.$refs.refTusvnMap.zoomTo(18);
               if(item){
-                let position = new AMap.LngLat(item.position.lng,item.position.lat);
-                this.map.setCenter(position);  
+                this.$refs.refTusvnMap.centerAt(item.position.lng,item.position.lat);
               }else{
                 if(result.length) {
-                  let position = new AMap.LngLat(result[0].centerX,result[0].centerY);
-                  this.map.setCenter(position);
+                  this.$refs.refTusvnMap.centerAt(result[0].centerX,result[0].centerY);
                 }else{
-                  let position = new AMap.LngLat(this.selectedItem.baseData.x,this.selectedItem.baseData.y);
-                  this.map.setCenter(position);  
+                  this.$refs.refTusvnMap.centerAt(this.selectedItem.baseData.x,this.selectedItem.baseData.y);
                 }
               }
-              
-            
-//            }
-//            let position = ConvertCoord.wgs84togcj02(result[0].x,result[0].y);
-            
-            let p;
+            }, 0);
             result.forEach(item=>{
-//              p =  ConvertCoord.wgs84togcj02(item.x,item.y);
-              p=new AMap.LngLat(item.centerX,item.centerY);
-              //画灯的位置
-              let marker = new AMap.Marker({
-                position: p,
-                icon: 'static/images/car/car-4.png', // 添加 Icon 图标 URL
-              });
-              this.markerList.push(marker)
-              this.map.add(marker);
+              this.prevLight.push(item.uid);
+              let id = item.uid;
+              let imgUrl =  'static/images/car/car-4.png';
+              let courseAngle = null;
+              let bdata = null;
+              let offset = [0,0];
+              let callback = null;
+              this.$refs.refTusvnMap.addImgOverlay(id, 
+                imgUrl, 
+                courseAngle, 
+                item.centerX,
+                item.centerY, 
+                bdata, 
+                offset, 
+                callback
+              );   
+
             })
           });
         },
@@ -448,6 +467,7 @@
 
               _this.roadList.push(obj);
             });
+
             setTimeout(() => {
               _this.roadList.forEach(item=>{
                 item.map=new AMap.Map(item.id, this.mapOption);
@@ -465,8 +485,6 @@
                 );
                 let _wms  = new AMap.TileLayer.WMS(_optionWms);
                 _wms.setMap(item.map);
-
-
                 item.map.setCenter(item.position);
                 item.map.setZoom(17);
               })
@@ -487,7 +505,8 @@
           let _this=this;
           let json = JSON.parse(mesasge.data);
           let result = json.result.vehDataDTO;
-          // 车辆
+          // 车辆3
+        
           if (result.length > 0) {
             let _filterResult = result;
             _filterResult = _filterResult.filter(
@@ -507,33 +526,37 @@
 
             for (let id in _this.prevData) {
               if(_filterData[id]) {   //表示有该点，做move
-                // console.log(id, _this.prevData[id].heading, 'move');
                 _filterData[id].marker = _this.prevData[id].marker;
                 let _currentCar = _filterData[id];
-                _filterData[id].marker.setAngle(_currentCar.heading);
-                // _filterData[id].marker.moveTo([_currentCar.longitude, _currentCar.latitude], _currentCar.speed);
-                _filterData[id].marker.setPosition([_currentCar.longitude, _currentCar.latitude]);
+                _this.$refs.refTusvnMap.setOverlayPosition(id,_currentCar.longitude, _currentCar.latitude,_currentCar.heading)
               } else {   //表示没有该点，做remove
-                // console.log(id, 'delete');
-                // _this.prevData[id].marker.stopMove();
-                _this.map.remove(_this.prevData[id].marker);
+           
+                _this.$refs.refTusvnMap.removeOverlayById(id);
                 delete _this.prevData[id];
               }
             }
+         
             for (let id in _filterData) {
               if(!_this.prevData[id]) {   //表示新增该点，做add
-                // console.log(id, 'add');
-                  _filterData[id].marker = new AMap.Marker({
-                    position: [_filterData[id].longitude, _filterData[id].latitude],
-                    map: _this.map,
-                    icon: "static/images/road/car.png",
-                    angle: _filterData[id].heading,
-                    devId: _filterData[id].devId,
-                    zIndex: 1
-                  });
+                  let imgUrl =  "static/images/road/car.png";
+                  let courseAngle = _filterData[id].heading;
+                  let bdata = null;
+                  let offset = [0,0];
+                  let callback = null;
+                 
+                  _this.$refs.refTusvnMap.addImgOverlay(
+                    id, 
+                    imgUrl, 
+                    courseAngle, 
+                    _filterData[id].longitude,
+                    _filterData[id].latitude,
+                    bdata, 
+                    offset, 
+                    callback
+                  );  
+         
               }
             }
-          
             _this.prevData = _filterData;
 
           } else {
@@ -543,14 +566,18 @@
         },
         clearCars() {
           for (let id in this.prevData) {
-            // this.prevData[id].marker.stopMove();
-            this.map.remove(this.prevData[id].marker);
-            delete this.prevData[id];
+            this.$refs.refTusvnMap.removeOverlayById(id);
           }
+          this.prevData = {};
+        },
+        clearLight(){
+          this.prevLight.map((i)=>{
+            this.$refs.refTusvnMap.removeOverlayById(i);
+          })
+          this.prevLight = [];
         },
         onclose(data){
           this.webSocket = null;
-          this.clearCars();
           console.log("结束连接");
         },
         onopen(data){
@@ -574,7 +601,8 @@
           }else{
             return;
           }
-        }
+        },
+       
       }
     }
 </script>
