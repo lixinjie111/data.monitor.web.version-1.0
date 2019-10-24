@@ -220,9 +220,14 @@ export default {
             }
         },
         refreshVideo(){
-            this.initVideo();
-            this.requestVideo();
-            this.$emit("refreshVideo");
+            this.setVideoOptionLoading();
+            this.videoUrl = '';
+            this.initVideoTimer();
+            // this.initVideo();
+            setTimeout(() => {
+                this.requestVideo();
+                this.$emit("refreshVideo");
+            }, 0);
         },
         initVideo() {
             this.initVideoTimer();
