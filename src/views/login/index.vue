@@ -250,7 +250,7 @@ export default {
     .el-input__inner {
         font-size: 14px;
         background: transparent;        
-        border: none;
+        border: none !important;
         height: 48px;
         padding: 0 21px;
         @include layoutMode(pack);
