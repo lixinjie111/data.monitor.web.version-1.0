@@ -788,7 +788,7 @@
             let eventType = json.result.eventType;
             warningData.forEach(item=>{
               warningId = item.warnId;
-              warningId = warningId.substring(0,warningId.lastIndexOf("_"));
+              // warningId = warningId.substring(0,warningId.lastIndexOf("_"));
               let msg = item.warnMsg+" "+item.dis+"米";
               let warningObj={
                 longitude:item.longitude,
@@ -990,7 +990,8 @@
             this.v2xInit=  false;
             this.cloudList.forEach(item=>{
               this.v2xUuid.push(item.uuid);
-              this.cloudIdList.push(item.warnId.substring(0,item.warnId.lastIndexOf("_")));
+              // this.cloudIdList.push(item.warnId.substring(0,item.warnId.lastIndexOf("_")));
+              this.cloudIdList.push(item.warnId);
             })
           }
         })
