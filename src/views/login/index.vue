@@ -109,11 +109,13 @@ export default {
             this.goLogin(params).then(res => {
                 this.loading = false;
                 if(res.status == 200) {
-                    if (this.checked == true) {
-                        this.setCookie(this.loginForm.userNo, params.password, 7);
-                    }else {
-                        this.clearCookie();
-                    }
+                    if(params.password){
+                        if (this.checked == true) {
+                            this.setCookie(this.loginForm.userNo, params.password, 7);
+                        }else {
+                            this.clearCookie();
+                        }
+                    }            
                     this.$router.push({ path: '/dataMonitor' });
                     localStorage.setItem("yk-token",JSON.stringify({data:JSON.parse(res.data).token,"time":new Date().getTime()}));
                 }else {
