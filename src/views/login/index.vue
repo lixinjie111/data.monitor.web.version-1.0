@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import md5 from 'js-md5'
 import { mapActions } from 'vuex';
 import { removeAuthInfo } from '@/session/index';
 export default {
@@ -93,12 +94,11 @@ export default {
             this.$refs.loginForm.validate(valid => {
                 if (valid) {
                     this.loading = true;
-                    if (this.checked == true) {
-                        this.setCookie(this.loginForm.userNo, this.loginForm.password, 7);
-                    }else {
-                        this.clearCookie();
-                    }
-                    this.loginFunc(this.loginForm); 
+                    let _password = this.loginForm.password.length > 20 ? this.loginForm.password : md5(this.loginForm.password);             
+                    let _param = Object.assign({}, this.loginForm, {
+                        password: _password
+                    });
+                    this.loginFunc(_param);
                 } else {
                     this.loading = false;
                     return false;
@@ -109,6 +109,11 @@ export default {
             this.goLogin(params).then(res => {
                 this.loading = false;
                 if(res.status == 200) {
+                    if (this.checked == true) {
+                        this.setCookie(this.loginForm.userNo, params.password, 7);
+                    }else {
+                        this.clearCookie();
+                    }
                     this.$router.push({ path: '/dataMonitor' });
                     localStorage.setItem("yk-token",JSON.stringify({data:JSON.parse(res.data).token,"time":new Date().getTime()}));
                 }else {
