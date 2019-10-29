@@ -971,6 +971,11 @@ export default {
             dl.scene.add(model);
             this.staticmodels[name] = model;
         },
+        clearCache:function(object) {
+            let  mesh = object;
+            mesh.geometry.dispose();
+            mesh.material.dispose();
+        }
 
 
 
