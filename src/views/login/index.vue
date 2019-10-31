@@ -94,19 +94,11 @@ export default {
             this.$refs.loginForm.validate(valid => {
                 if (valid) {
                     this.loading = true;
-<<<<<<< HEAD
                     let _password = this.loginForm.password.length > 20 ? this.loginForm.password : md5(this.loginForm.password);             
-=======
-                    let _password = this.loginForm.password.length > 20 ? this.loginForm.password : md5(this.loginForm.password);
->>>>>>> master
                     let _param = Object.assign({}, this.loginForm, {
                         password: _password
                     });
                     this.loginFunc(_param);
-<<<<<<< HEAD
-=======
-                    // this.loginFunc(this.loginForm);
->>>>>>> master
                 } else {
                     this.loading = false;
                     return false;
