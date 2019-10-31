@@ -10,7 +10,7 @@
     <div class="road-distribute trans" v-show="distributeShow">
       <div class="road-title">
         <span >{{message.title}}</span>
-        <i class="road-title-close" @click="closeDialog"></i>
+        <i class="road-title-close" @click="closeDistributeDialog"></i>
       </div>
       <div class="road-legend">
         <div class="road-text">说明</div>
@@ -83,6 +83,9 @@
         speedTimer:0,
         masstraffic:null,
         wms:null,
+        carSpeedFlag:{},
+        distributeDialogFlag:null,
+
       }
     },
     watch: {
@@ -94,18 +97,34 @@
         },
         options:{
           handler(newVal,oldVal) {
-           for (let i = 0; i < newVal.length; i++) {
-              if(newVal[i].id == "car" || newVal[i].id == "speed"){
-                if(newVal[i].isActive){
-                   this.wms.hide();
-                   break;
+            for (let i = 0; i < newVal.length; i++) {
+                if(newVal[i].id == "car" || newVal[i].id == "speed"){
+                  if(newVal[i].isActive){
+                    this.wms.hide();
+                    break;
+                  }else{
+                    this.wms.show();  
+                  }
                 }else{
-                   this.wms.show();  
+                    this.wms.show();
+                }  
+            }
+            for (let i = 0; i < newVal.length; i++) {
+              if(newVal[i].id == "car" || newVal[i].id == "speed"){
+                  if(newVal[i].isActive){
+                    this.carSpeedFlag[newVal[i].id] = true;
+                  }else{
+                    this.carSpeedFlag[newVal[i].id] = false;             
+                  }
                 }
-              }else{
-                  this.wms.show();
-              }  
-           }
+            }
+            if(this.distributeDialogFlag){
+              this.distributeShow = false; 
+            }else{
+              if(!this.carSpeedFlag.car && !this.carSpeedFlag.speed){
+                this.distributeShow = false; 
+              }
+            }
           },      
           deep: true   
         } 
@@ -137,28 +156,12 @@
           //当选中后才进行请求
           if(item.isActive){
             //如果是车辆分布，弹出弹出框
+            this.distributeDialogFlag = false;
             if(item.id=='car'){
 //              clearInterval(this.carTimer);
-                this.message={
-                  title:"车辆分布:显示车辆在每段路上的分布情况",
-                  legend:[{
-                    msg:"1-5辆",
-                    color:'#ffe1be'
-                  },
-                  {
-                    msg:"6-10辆",
-                    color:'#fba947'
-                  },
-                  {
-                    msg:"11-20辆",
-                    color:'#db7a06'
-                  },
-                  {
-                    msg:"21辆以上",
-                    color:'#9d5704'
-                  }
-                 ]
-                };
+              this.distributeDialogFlag = false;
+              this.setMessage("car");
+              
               this.distributeShow = true;
               //获取车辆分布数据
               this.getCarWms();
@@ -171,29 +174,8 @@
               this.initWebSocket();
             }else if(item.id=='speed'){
 //              clearInterval(this.carTimer);
-              this.message={
-                title:"通行速度:显示每条车道的通行速度",
-                legend:[{
-                  msg:"≤ 10 km/h",
-                  color:'#7a0a09'
-                },
-                {
-                  msg:"10-15 km/h",
-                  color:'#db3131'
-                },
-                {
-                  msg:"15-25 km/h",
-                  color:'#db7a06'
-                },
-                {
-                  msg:"25-35 km/h",
-                  color:'#e7cc19'
-                },
-                {
-                  msg:"> 35 km/h",
-                  color:'#5cc93a'
-                }]
-              };
+              this.distributeDialogFlag = false;
+              this.setMessage("speed");
               this.distributeShow = true;
               //获取车辆分布数据
               this.getSpeedWms();
@@ -207,21 +189,79 @@
             }
             
           }else{
-            if(item.id=='car'){
-              clearInterval(this.carTimer);
-              this.distributeShow = false;
-              this.map.remove(this.carWms);
+            if(item.id=='car' || item.id=='speed'){
+              if(item.id=='car'){
+                clearInterval(this.carTimer);
+                this.map.remove(this.carWms);
+              }
+              if(item.id=='speed'){
+                clearInterval(this.speedTimer);
+                this.map.remove(this.speedWms);
+              }
+
+              this.options.map((x)=>{
+                if(x.id=='car' || x.id=='speed'){
+                  if(x.isActive){
+                    this.setMessage(x.id)
+                  }
+                }    
+              })
             }
-            if(item.id=='speed'){
-              clearInterval(this.speedTimer);
-              this.distributeShow = false;
-              this.map.remove(this.speedWms);
-            }
-              //取消选中，将设备从地图中消除
-              this.removeMarkers(item.id);
-              this.webSocket && this.webSocket.close();
+           
+      
+            //取消选中，将设备从地图中消除
+            this.removeMarkers(item.id);
+            this.webSocket && this.webSocket.close();
             }
           }
+      },
+      setMessage(type){
+        if(type == "car"){
+          this.message={
+            title:"车辆分布:显示车辆在每段路上的分布情况",
+            legend:[{
+              msg:"1-5辆",
+              color:'#ffe1be'
+            },
+            {
+              msg:"6-10辆",
+              color:'#fba947'
+            },
+            {
+              msg:"11-20辆",
+              color:'#db7a06'
+            },
+            {
+              msg:"21辆以上",
+              color:'#9d5704'
+            }
+            ]
+          };
+        }else if(type == "speed"){
+          this.message={
+            title:"通行速度:显示每条车道的通行速度",
+            legend:[{
+              msg:"≤ 10 km/h",
+              color:'#7a0a09'
+            },
+            {
+              msg:"10-15 km/h",
+              color:'#db3131'
+            },
+            {
+              msg:"15-25 km/h",
+              color:'#db7a06'
+            },
+            {
+              msg:"25-35 km/h",
+              color:'#e7cc19'
+            },
+            {
+              msg:"> 35 km/h",
+              color:'#5cc93a'
+            }]
+          };
+        }
       },
       
       getRwDis(disParam){
@@ -238,7 +278,6 @@
             //转成高德地图的坐标
             let posotionData = [];
             resultData.forEach((item, index, arr)=>{
-              // console.log(arr)
               resultData[index].position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
                   _this.count ++;
                   if(_this.count == arr.length) {
@@ -284,7 +323,6 @@
         }
       },
       removeMarkers(type){
-        //console.log(type)
         if(type=='spat'&& this.massspat){  
           this.massspat.hide();
         }
@@ -302,9 +340,15 @@
         }
       },
       closeDialog(){
-        this.distributeShow=false;
+        // this.distributeShow=false;
         this.trafficDialog=false;
       },
+      closeDistributeDialog(){
+        this.distributeDialogFlag = true;
+        this.distributeShow=false;
+        // this.trafficDialog=false;
+      },
+      
       getWms() {
         let _optionWms = Object.assign(
               {},
