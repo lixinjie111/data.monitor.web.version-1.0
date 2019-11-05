@@ -313,7 +313,6 @@ export default {
           }
         }
       }
-
       if(!selectFlag && this.deviceObj && this.isFirst){
         for (var i in this.deviceObj) {
             this.switchChange(this.deviceObj[i])
