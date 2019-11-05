@@ -31,7 +31,7 @@
         <li class="left-item-list clearfix">
             <i class="left-item-icon icon-5"></i>
             <div class="left-item-text">
-                <p class="left-item-title">红绿灯总数</p>
+                <p class="left-item-title">信号灯总数</p>
                 <p class="left-item-num">{{filterData.spatNum || '--'}}</p>
             </div>
         </li>
@@ -50,7 +50,8 @@ export default {
         filterData() {
             let _filterData = {};
             for(let attr in this.responseData) {
-                _filterData[attr] = parseFloat(this.responseData[attr]).toLocaleString() || '--';
+                // _filterData[attr] = parseFloat(this.responseData[attr]).toLocaleString() || '--';
+                _filterData[attr] = parseFloat(this.responseData[attr]).toString() || '--';
             }
             return _filterData;
         }

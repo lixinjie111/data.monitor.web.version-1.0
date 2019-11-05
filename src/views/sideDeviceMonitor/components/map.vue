@@ -31,7 +31,7 @@
         options:[
           {
             'id':1,
-            'text':'红绿灯',
+            'text':'信号灯',
             'isActive':false
           },
           {

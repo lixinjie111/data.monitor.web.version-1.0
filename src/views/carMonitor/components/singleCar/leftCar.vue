@@ -149,9 +149,11 @@
           let _filterData = {};
           for(let attr in this.drivingStatistics) {
             if(attr=='tripNums'){
-              _filterData[attr] = parseFloat(this.drivingStatistics[attr]).toLocaleString() || '--';
+              // _filterData[attr] = parseFloat(this.drivingStatistics[attr]).toLocaleString() || '--';
+              _filterData[attr] = parseFloat(this.drivingStatistics[attr]).toString() || '--';
             }else{
-              _filterData[attr] = parseFloat(this.drivingStatistics[attr]).toFixed(1).toLocaleString() || '--';
+              // _filterData[attr] = parseFloat(this.drivingStatistics[attr]).toFixed(1).toLocaleString() || '--';
+              _filterData[attr] = parseFloat(this.drivingStatistics[attr]).toFixed(1).toString() || '--';
             }
           }
           return _filterData;
@@ -466,8 +468,10 @@
         this.routeInfo = {
           routeStartTime: json.data.routeStartTime, //行驶开始时间
           durationTime: json.data.durationTime, //累计行驶时间
-          mileage: parseFloat(json.data.mileage).toFixed(1).toLocaleString(), //累计行驶里程
-          avgSpd: parseFloat(json.data.avgSpd).toFixed(1).toLocaleString() //平均测速
+          // mileage: parseFloat(json.data.mileage).toFixed(1).toLocaleString(), //累计行驶里程
+          // avgSpd: parseFloat(json.data.avgSpd).toFixed(1).toLocaleString() //平均测速
+          mileage: parseFloat(json.data.mileage).toFixed(1).toString(), //累计行驶里程
+          avgSpd: parseFloat(json.data.avgSpd).toFixed(1).toString() //平均测速
         };
         // console.log(this.getRunTime(json.data.durationTime));
         if(pointList && pointList.length > 0) {

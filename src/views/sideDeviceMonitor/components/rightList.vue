@@ -37,7 +37,8 @@
 //          setInterval(()=>{
 //            let connectionInfo = navigator.connection;
 //            let date = new Date();
-//            let time = date.toLocaleString();
+//            // let time = date.toLocaleString();
+//            let time = date.toString();
 ////          let time =
 //            console.log("下载速度："+connectionInfo.downlink);
 //          },10)

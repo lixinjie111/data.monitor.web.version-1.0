@@ -9,7 +9,7 @@
     	<p class="c-info-text">{{responseData.rsuCount|| '--'}}</p>
     </li>
     <li class="c-info-list">
-    	<p class="c-info-title">红绿灯</p>
+    	<p class="c-info-title">信号灯</p>
     	<p class="c-info-text">{{responseData.lightCount|| '--'}}</p>
     </li>
     <li class="c-info-list">

@@ -47,7 +47,7 @@
         options:[
           {
             'id':'spat',
-            'text':'红绿灯',
+            'text':'信号灯',
             'isActive':true
           },
           {
@@ -283,7 +283,7 @@
                   if(_this.count == arr.length) {
                     //绘制线的轨迹             
                     resultData.forEach(function (subItem,subIndex) {
-                      //红绿灯
+                      //信号灯
                       if(disParam=='spat'){          
                         posotionData.push({
                           lnglat: subItem.position

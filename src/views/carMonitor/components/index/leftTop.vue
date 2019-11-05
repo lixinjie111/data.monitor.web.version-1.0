@@ -32,7 +32,8 @@ export default {
         filterData() {
             let _filterData = {};
             for(let attr in this.responseData) {
-                _filterData[attr] = parseFloat(this.responseData[attr]).toLocaleString() || '--';
+                // _filterData[attr] = parseFloat(this.responseData[attr]).toLocaleString() || '--';
+                _filterData[attr] = parseFloat(this.responseData[attr]).toString() || '--';
             }
             return _filterData;
         }
