@@ -291,6 +291,7 @@ export default {
           this.deviceObj[item.deviceId] = item;
         }
       });
+      let selectFlag = false;
       for (var i in this.deviceObj) {
         let item = this.deviceObj[i];
         if (this.isFirst) {
@@ -308,7 +309,16 @@ export default {
           } else {
             item.value = false;
           }
+          if(item.value == true){
+            selectFlag = true;
+          }
         }
+      }
+      if(!selectFlag && this.deviceObj && this.isFirst){
+        for (var i in this.deviceObj) {
+            this.switchChange(this.deviceObj[i])
+            return;
+        }  
       }
       if (this.$refs.tusvnMap3) {
         // if (this.PlatformCar) {
@@ -668,6 +678,9 @@ export default {
         this.$refs['player'].initVideo();
         if (res.status == 200) {
           this.flvUrl = res.data.flvUrl;
+          setTimeout(() => {
+             this.$refs["player"].requestVideo();
+          }, 0);
         }
       });
     },
