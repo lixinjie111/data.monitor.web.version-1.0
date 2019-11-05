@@ -1163,7 +1163,6 @@
                                     "  缓存数:" +
                                     this.cachePerceptionQueue.length +
                                     "  最新数据时间：";
-                                    console.log(this.cachePerceptionQueu)
                                 if (this.cachePerceptionQueue.length > 0) {
                                     let d3 = this.cachePerceptionQueue[
                                     this.cachePerceptionQueue.length - 1
@@ -1726,9 +1725,6 @@
                                 this.monitorTag = true;
                             }
 
-                            console.log("time:" + time);
-                            console.log("time2:" + this.time2);
-                            console.log(time - this.time2);
                         },
                         time - this.time2 <= 0 ? 1 : time - this.time2
                     ); //time-this.time2
