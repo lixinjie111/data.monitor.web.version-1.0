@@ -220,19 +220,19 @@
           this.message={
             title:"车辆分布:显示车辆在每段路上的分布情况",
             legend:[{
-              msg:"1-5辆",
+              msg:"1-50辆",
               color:'#ffe1be'
             },
             {
-              msg:"6-10辆",
+              msg:"51-100辆",
               color:'#fba947'
             },
             {
-              msg:"11-20辆",
+              msg:"101-200辆",
               color:'#db7a06'
             },
             {
-              msg:"21辆以上",
+              msg:"200辆以上",
               color:'#9d5704'
             }
             ]
