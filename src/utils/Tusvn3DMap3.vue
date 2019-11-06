@@ -113,7 +113,9 @@ export default {
             this.initView(this.viewVector1.x,this.viewVector1.y,this.viewVector1.z,this.viewVector2.x,this.viewVector2.y,this.viewVector2.z);
             setTimeout(()=>{
                 this.$emit("mapcomplete",this);
-                this.viewer.addEventListener("camera_changed", this.onCameraChanged)
+                if(this.viewer){
+                    this.viewer.addEventListener("camera_changed", this.onCameraChanged)
+                }     
             },500);
 
             //处理缓存队列的数据
@@ -322,7 +324,7 @@ export default {
         },
         sendMsg:function(msg){
             if(window.WebSocket){
-                if(this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+                if(this.hostWebsocket && this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
                     this.hostWebsocket.send(msg); //send()发送消息
                 }
             }
@@ -1974,14 +1976,15 @@ export default {
                 this.clearCache(this.shps[i]); 
             }
         }
-        this.viewer.renderer.forceContextLoss();
-        this.viewer.renderer.context = null;
-        this.viewer.renderer.domElement = null;
-        this.viewer.renderer.dispose();
-        this.viewer.renderer = null; 
-        this.viewer = null;
-
-
+        if(this.viewer){
+            this.viewer.renderer.forceContextLoss();
+            this.viewer.renderer.context = null;
+            this.viewer.renderer.domElement = null;
+            this.viewer.renderer.dispose();
+            this.viewer.renderer = null; 
+            this.viewer = null;
+        }
+      
         if ('WebSocket' in window) {
             if(window.WebSocket){
                 if(this.carTrackWebsocket!=null)

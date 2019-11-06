@@ -168,7 +168,7 @@
               this.carTimer = setInterval(()=>{
                 //获取车辆分布数据
                 this.getCarWms();
-              },5000)
+              },180000)
               return;
             }else if(item.id=='traffic'){
               this.initWebSocket();
