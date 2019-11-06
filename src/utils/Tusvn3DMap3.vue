@@ -596,7 +596,7 @@ export default {
             }
         },
         resetModels(deviceid = "0") {
-            if(this.deviceModels[deviceid] || (this.deviceModels[deviceid].cars && this.deviceModels[deviceid].cars.length)) {
+            if(this.deviceModels[deviceid]) {
                 for (let p = 0; p < this.deviceModels[deviceid].cars.length; p++) {
                     let car = this.deviceModels[deviceid].cars[p];
                     car.position.x = 0;
