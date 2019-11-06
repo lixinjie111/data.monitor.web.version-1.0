@@ -218,7 +218,7 @@
       setMessage(type){
         if(type == "car"){
           this.message={
-            title:"车辆分布:显示车辆在每段路上的分布情况",
+            title:"车辆分布:显示每段道路5分钟内的车辆分布情况",
             legend:[{
               msg:"1-5辆",
               color:'#ffe1be'
