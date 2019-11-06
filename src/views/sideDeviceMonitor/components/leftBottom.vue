@@ -32,6 +32,7 @@
               sideTotalEcharts:{},
               sideRealEcharts:{},
               count:0,
+              countTimer:null,
               webSocket:null,
               totalData:[],
               rsuData:[],
@@ -293,11 +294,13 @@
           this.sideTotalEcharts = $echarts.init(document.getElementById("sideTotalId"));
           this.sideRealEcharts = $echarts.init(document.getElementById("sideRealId"));
           this.getTotalData();
+          this.countTimer = setInterval(this.getTotalData, 5000);
           this.initWebSocket();
         },
       destroyed(){
         //销毁Socket
         this.webSocket&&this.webSocket.close();
+        clearInterval(this.countTimer);
       }
     }
 </script>
