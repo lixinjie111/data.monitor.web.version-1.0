@@ -257,7 +257,8 @@
           let _filterData = {};
           for(let attr in this.realData) {
             if(attr=='speed'){
-              _filterData[attr] = parseFloat(this.realData[attr]).toFixed(1).toLocaleString() || '--';
+              // _filterData[attr] = parseFloat(this.realData[attr]).toFixed(1).toLocaleString() || '--';
+              _filterData[attr] = parseFloat(this.realData[attr]).toFixed(1).toString() || '--';
             }
           }
           return _filterData;

@@ -18,7 +18,7 @@
       </div>
       <div class="side-real-legend">
         <span class="real-legend-style light-style"></span>
-        <span>红绿灯</span>
+        <span>信号灯</span>
       </div>
     </div>
   </div>

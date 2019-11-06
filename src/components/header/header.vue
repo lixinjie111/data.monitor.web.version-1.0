@@ -65,14 +65,16 @@ export default {
         },
         warningNum() {
             if(this.responseData.warningNum || this.responseData.warningNum == 0){
-                return parseFloat(this.responseData.warningNum).toLocaleString();
+                // return parseFloat(this.responseData.warningNum).toLocaleString();
+                return parseFloat(this.responseData.warningNum).toString();
             }else {
                 return '--'
             }
         },
         faultNum() {
             if(this.responseData.faultNum || this.responseData.faultNum == 0){
-                return parseFloat(this.responseData.faultNum).toLocaleString();
+                // return parseFloat(this.responseData.faultNum).toLocaleString();
+                return parseFloat(this.responseData.faultNum).toString();
             }else {
                 return '--'
             }

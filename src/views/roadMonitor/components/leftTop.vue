@@ -9,7 +9,7 @@
         <p class="c-info-text">{{filterData.crossing|| '--'}}</p>
       </li>
       <li class="c-info-list">
-        <p class="c-info-title">红绿灯数</p>
+        <p class="c-info-title">信号灯数</p>
         <p class="c-info-text">{{filterData.trafficLight|| '--'}}</p>
       </li>
       <li class="c-info-list">
@@ -32,7 +32,8 @@ export default {
       filterData() {
           let _filterData = {};
           for(let attr in this.responseData) {
-              _filterData[attr] = parseFloat(this.responseData[attr]).toLocaleString() || '--';
+              // _filterData[attr] = parseFloat(this.responseData[attr]).toLocaleString() || '--';
+              _filterData[attr] = parseFloat(this.responseData[attr]).toString() || '--';
           }
           return _filterData;
       }
