@@ -193,10 +193,12 @@
               if(item.id=='car'){
                 clearInterval(this.carTimer);
                 this.map.remove(this.carWms);
+                this.carWms = null;
               }
               if(item.id=='speed'){
                 clearInterval(this.speedTimer);
                 this.map.remove(this.speedWms);
+                this.speedWms = null;
               }
 
               this.options.map((x)=>{
@@ -362,34 +364,40 @@
         this.wms.setMap(this.map);
       },
       getCarWms() {
-      	if(this.carWms) {
-      		this.map.remove(this.carWms);
-      	}
-        let _optionWms = Object.assign(
-              {},
-              window.dlWmsDefaultOption,
-              {
-                  params:{'LAYERS': window.dlWmsOption.LAYERS_centerline,'STYLES': window.dlWmsOption.STYLES, 'VERSION': window.dlWmsOption.VERSION}
-              }
-          );
-        this.carWms  = new AMap.TileLayer.WMS(_optionWms);
-        //this.layerList.push(_wms);
-        this.carWms.setMap(this.map);
+        let _params = {'LAYERS': window.dlWmsOption.LAYERS_centerline,'STYLES': window.dlWmsOption.STYLES, 'VERSION': window.dlWmsOption.VERSION, 'TIME': new Date().getTime()};
+        if(this.carWms) {
+          // this.map.remove(this.carWms);
+          this.carWms.setParams(_params);
+        }else {
+          let _optionWms = Object.assign(
+                {},
+                window.dlWmsDefaultOption,
+                {
+                    params: _params
+                }
+            );
+          this.carWms  = new AMap.TileLayer.WMS(_optionWms);
+          //this.layerList.push(_wms);
+          this.carWms.setMap(this.map);
+        }
       },
       getSpeedWms() {
-      	if(this.speedWms) {
-      		this.map.remove(this.speedWms);
-      	}
-        let _optionWms = Object.assign(
-              {},
-              window.dlWmsDefaultOption,
-              {
-                  params:{'LAYERS': window.dlWmsOption.LAYERS_laneavgspeed, 'VERSION': window.dlWmsOption.VERSION}
-              }
-          );
-        this.speedWms = new AMap.TileLayer.WMS(_optionWms);
-        //this.speedList.push(_wms);
-        this.speedWms.setMap(this.map);  
+        let _params = {'LAYERS': window.dlWmsOption.LAYERS_laneavgspeed, 'VERSION': window.dlWmsOption.VERSION, 'TIME': new Date().getTime()};
+        if(this.speedWms) {
+          // this.map.remove(this.speedWms);
+          this.speedWms.setParams(_params);
+        }else {
+          let _optionWms = Object.assign(
+                {},
+                window.dlWmsDefaultOption,
+                {
+                    params: _params
+                }
+            );
+          this.speedWms = new AMap.TileLayer.WMS(_optionWms);
+          //this.speedList.push(_wms);
+          this.speedWms.setMap(this.map);  
+        }
       },
       initWebSocket(){
         let _this=this;
