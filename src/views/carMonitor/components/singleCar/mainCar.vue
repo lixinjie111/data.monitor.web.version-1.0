@@ -121,15 +121,19 @@
           border>
           <el-table-column label="序号" type="index" width="100"></el-table-column>
           <el-table-column label="预警时间" min-width="25%">
-            <template slot-scope="scope">{{scope.row.warningTime | dateFormat}}</template>
+            <template slot-scope="scope">{{scope.row.timestamp | dateFormat}}</template>
           </el-table-column>
-          <el-table-column label="预警类型" prop="warningName" min-width="25%"></el-table-column>
+          <el-table-column label="预警类型" prop="warnMsg" min-width="25%"></el-table-column>
           <el-table-column label="预警级别" min-width="25%">
             <template slot-scope="scope">
-              <p class="c-alert-level">{{scope.row.warningLevel}}</p>
+              <p class="c-alert-level">{{scope.row.warnLevel}}</p>
             </template>
           </el-table-column>
-          <el-table-column label="预警位置" prop="position" min-width="25%"></el-table-column>
+          <el-table-column label="预警位置" min-width="25%">
+            <template slot-scope="scope">
+              <p>{{scope.row.longitude}},{{scope.row.latitude}}</p>
+            </template>
+          </el-table-column>
       </el-table>
     </single-dialog>
     <single-dialog :dialogVisible="vehicleDialog" :title="'告警信息'" @closeDialog="vehicleDialog=false">
@@ -679,6 +683,7 @@
         let warningData = json.result.data;
         let type = json.result.type;
         if(warningData.length>0){
+         
           if(type=='VEHICLE'){
             let warningId;
             warningData.forEach(item=>{
@@ -686,6 +691,10 @@
               if(_this.vehicleIdList.indexOf(warningId) >= 0){
                  return;
               }
+              // else{
+              //   this.vehicleIdList.push(item.warnId);
+              //   _this.vehicleList.push(item)
+              // }
               
               //如果告警id不存在 右侧弹出
               if(!_this.warningData[warningId]){
@@ -756,8 +765,11 @@
                 // 先打点 在预警信息中的内容不在右下角弹出 但是会在地图上打点
               
                 if(_this.cloudIdList.indexOf(warningId) >= 0){
-                 return;
-                } 
+                    return;
+                }else{
+                    this.cloudIdList.push(item.warnId);
+                    _this.cloudList.push(item)
+                }
                 // debugger
                 let dist = parseInt(item.dis);
                 if(!dist){
@@ -936,7 +948,7 @@
       },
       getCloudEvent(){
         this.cloudDialog=true;
-        this.getV2xInformation();
+        // this.getV2xInformation();
       },
       getVehicleEvent(){
         this.vehicleDialog=true;
