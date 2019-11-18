@@ -928,7 +928,7 @@
           }
         })
       },
-      getV2xInformation(){
+       getV2xInformation(){
         var param = {
           "vehicleId": this.vehicleId
         }
@@ -938,10 +938,14 @@
           if(this.v2xInit){
             this.cloudCount = this.cloudList.length;
             this.v2xInit=  false;
-            this.cloudList.forEach(item=>{
+            this.cloudList.forEach((item,k)=>{
               this.v2xUuid.push(item.uuid);
-              // this.cloudIdList.push(item.warnId.substring(0,item.warnId.lastIndexOf("_")));
               this.cloudIdList.push(item.warnId);
+              this.cloudList[k].timestamp = item.warningTime;
+              this.cloudList[k].warnMsg = item.warningName;
+              this.cloudList[k].warnLevel = item.warningLevel;
+              this.cloudList[k].longitude = item.position.split(",")[0];
+              this.cloudList[k].latitude = item.position.split(",")[1];
             })
           }
         })
