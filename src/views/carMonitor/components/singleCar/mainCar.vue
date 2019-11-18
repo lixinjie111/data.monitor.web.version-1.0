@@ -929,24 +929,28 @@
           }
         })
       },
-      // getV2xInformation(){
-      //   var param = {
-      //     "vehicleId": this.vehicleId
-      //   }
-      //   this.cloudList = [];
-      //   getV2xInformation(param).then(res=>{
-      //     this.cloudList=res.earlyWarningInfoList;
-      //     if(this.v2xInit){
-      //       this.cloudCount = this.cloudList.length;
-      //       this.v2xInit=  false;
-      //       this.cloudList.forEach(item=>{
-      //         this.v2xUuid.push(item.uuid);
-      //         // this.cloudIdList.push(item.warnId.substring(0,item.warnId.lastIndexOf("_")));
-      //         this.cloudIdList.push(item.warnId);
-      //       })
-      //     }
-      //   })
-      // },
+       getV2xInformation(){
+        var param = {
+          "vehicleId": this.vehicleId
+        }
+        this.cloudList = [];
+        getV2xInformation(param).then(res=>{
+          this.cloudList=res.earlyWarningInfoList;
+          if(this.v2xInit){
+            this.cloudCount = this.cloudList.length;
+            this.v2xInit=  false;
+            this.cloudList.forEach((item,k)=>{
+              this.v2xUuid.push(item.uuid);
+              this.cloudIdList.push(item.warnId);
+              this.cloudList[k].timestamp = item.warningTime;
+              this.cloudList[k].warnMsg = item.warningName;
+              this.cloudList[k].warnLevel = item.warningLevel;
+              this.cloudList[k].longitude = item.position.split(",")[0];
+              this.cloudList[k].latitude = item.position.split(",")[1];
+            })
+          }
+        })
+      },
       getCloudEvent(){
         this.cloudDialog=true;
         // this.getV2xInformation();
@@ -1013,7 +1017,7 @@
       this.initWarningWebSocket();
       this.initLightWebSocket();
       //云端和车端此次行程统计
-      // this.getV2xInformation();
+      this.getV2xInformation();
       this.getAlarmInformation();
     },
     destroyed(){
