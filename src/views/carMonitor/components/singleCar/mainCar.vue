@@ -763,13 +763,14 @@
                 _this.warningData[warningId]=eventObj;
 
                 // 先打点 在预警信息中的内容不在右下角弹出 但是会在地图上打点
-              
+               
                 if(_this.cloudIdList.indexOf(warningId) >= 0){
                     return;
                 }else{
                     this.cloudIdList.push(item.warnId);
                     _this.cloudList.push(item)
                 }
+               
                 // debugger
                 let dist = parseInt(item.dis);
                 if(!dist){
@@ -928,24 +929,24 @@
           }
         })
       },
-      getV2xInformation(){
-        var param = {
-          "vehicleId": this.vehicleId
-        }
-        this.cloudList = [];
-        getV2xInformation(param).then(res=>{
-          this.cloudList=res.earlyWarningInfoList;
-          if(this.v2xInit){
-            this.cloudCount = this.cloudList.length;
-            this.v2xInit=  false;
-            this.cloudList.forEach(item=>{
-              this.v2xUuid.push(item.uuid);
-              // this.cloudIdList.push(item.warnId.substring(0,item.warnId.lastIndexOf("_")));
-              this.cloudIdList.push(item.warnId);
-            })
-          }
-        })
-      },
+      // getV2xInformation(){
+      //   var param = {
+      //     "vehicleId": this.vehicleId
+      //   }
+      //   this.cloudList = [];
+      //   getV2xInformation(param).then(res=>{
+      //     this.cloudList=res.earlyWarningInfoList;
+      //     if(this.v2xInit){
+      //       this.cloudCount = this.cloudList.length;
+      //       this.v2xInit=  false;
+      //       this.cloudList.forEach(item=>{
+      //         this.v2xUuid.push(item.uuid);
+      //         // this.cloudIdList.push(item.warnId.substring(0,item.warnId.lastIndexOf("_")));
+      //         this.cloudIdList.push(item.warnId);
+      //       })
+      //     }
+      //   })
+      // },
       getCloudEvent(){
         this.cloudDialog=true;
         // this.getV2xInformation();
@@ -1012,7 +1013,7 @@
       this.initWarningWebSocket();
       this.initLightWebSocket();
       //云端和车端此次行程统计
-      this.getV2xInformation();
+      // this.getV2xInformation();
       this.getAlarmInformation();
     },
     destroyed(){
