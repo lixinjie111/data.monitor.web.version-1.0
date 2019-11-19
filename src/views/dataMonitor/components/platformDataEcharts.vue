@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { getTotalFlow } from '@/api/dataMonitor'
+// import { getTotalFlow } from '@/api/dataMonitor'
 import $echarts from 'echarts'
 export default {
 	name: 'PlatformDataEcharts',
@@ -42,22 +42,22 @@ export default {
 		}
 	},
 	mounted() {
-        this.getTotalFlow();
+        // this.getTotalFlow();
         this.echarts = $echarts.init(document.getElementById(this.id));
         this.echarts.setOption(this.defaultOption());
         this.initWebSocket();
 	},
 	methods: {
-        getTotalFlow() {
-            // console.log('获取平台总数据流量');
-            getTotalFlow().then(res => {
-                this.responseData.total = res.data.flow;
-            });
-        },
+        // getTotalFlow() {
+        //     // console.log('获取平台总数据流量');
+        //     getTotalFlow().then(res => {
+        //         this.responseData.total = res.data.flow;
+        //     });
+        // },
         initWebSocket(){
             // console.log('websocket获取当前时间节点的平台数据流量');
             if ('WebSocket' in window) {
-                this.webSocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
+                this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
             }
             this.webSocket.onmessage = this.onmessage;
             this.webSocket.onclose = this.onclose;
