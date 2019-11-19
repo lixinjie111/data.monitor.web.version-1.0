@@ -180,7 +180,9 @@ export default {
                 yAxis:  {
                     type: 'value',
                     show: false,
-                    max: 2
+                    max: function(value) {
+                        return value.max + 2;
+                    }
                 },
                 animation: false,
                 series: [{
