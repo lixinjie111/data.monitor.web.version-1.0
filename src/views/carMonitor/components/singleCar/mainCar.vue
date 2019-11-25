@@ -613,9 +613,11 @@
                 _this.devicePrevData = _filterData;
           } else {
                 // 返回的数据为空
+                // console.log(_this.devicePrevData)
                 // for (let id in _this.devicePrevData) {
+                //   console.log(111111)
                 //     _this.distanceMap.remove(_this.devicePrevData[id].marker);
-                //     delete _this.devicePrevData[id];
+                //     // delete _this.devicePrevData[id];
                 // }
           } 
 
