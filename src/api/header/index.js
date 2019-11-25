@@ -11,7 +11,8 @@ export const getTopHead = params => { return axios.post(`${HTTPURL}g/comStat/get
  * 获取天气数据
  * I_G3_01
  */
-export const getTopWeather = params => { return axios.post(`${HTTPURL}g/comStat/getTopWeather`, params).then(res => res.data); };
+// export const getTopWeather = params => { return axios.post(`${HTTPURL}g/comStat/getTopWeather`, params).then(res => res.data); };
+export const getTopWeather = params => { return axios.post(`http://120.133.21.14:9093/monPlatApp/g/comStat/getTopWeather`, params).then(res => res.data); };
 
 /**
  * 获取预警列表数据
