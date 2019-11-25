@@ -613,10 +613,10 @@
                 _this.devicePrevData = _filterData;
           } else {
                 // 返回的数据为空
-                for (let id in _this.devicePrevData) {
-                    _this.distanceMap.remove(_this.devicePrevData[id].marker);
-                    delete _this.devicePrevData[id];
-                }
+                // for (let id in _this.devicePrevData) {
+                //     _this.distanceMap.remove(_this.devicePrevData[id].marker);
+                //     delete _this.devicePrevData[id];
+                // }
           } 
 
       },
