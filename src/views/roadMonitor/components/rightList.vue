@@ -4,7 +4,7 @@
         <div class="c-size-style" v-for="item in resultData" :key="item.crossId">
           <div class="c-size-inner">
             <div class="c-mask-title" >
-              <a class="title" href="javascript:;" @click="queryCrossDetail(item)">路口：{{item.crossName || item.crossId}}</a>
+              <a class="title" href="javascript:;" @click="queryCrossDetail(item)">路口：{{item.crossId || item.crossName}}</a>
             </div>
             <map-detail :id="'map'+item.crossId" class="c-map-video-style" :reqData="item"></map-detail>
           </div>
