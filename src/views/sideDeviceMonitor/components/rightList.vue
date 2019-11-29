@@ -2,8 +2,8 @@
   <div class="c-info-style">
     <template v-if="roadList.length">
       <div v-for="(item,index) in roadList" :key="item.camSerialNum" class="m-info-list">
-        <right-list-video :index="index" :roadItem="item"  :visible="visible" :roadList="roadList" @queryDeviceDetail="queryDeviceDetail" ></right-list-video>
-        <right-list-map   :roadItem="item" :visible="visible"  @queryDeviceDetail="queryDeviceDetail"></right-list-map>
+        <right-list-video :ref="'video'+item.camSerialNum" :index="index" :roadItem="item"  :visible="visible" :roadList="roadList" @queryDeviceDetail="queryDeviceDetail" ></right-list-video>
+        <right-list-map :index="index" :roadItem="item" :visible="visible"  @queryDeviceDetail="queryDeviceDetail"></right-list-map>
       </div>
     </template>
     <template v-else>
@@ -37,7 +37,8 @@
 //          setInterval(()=>{
 //            let connectionInfo = navigator.connection;
 //            let date = new Date();
-//            let time = date.toLocaleString();
+//            // let time = date.toLocaleString();
+//            let time = date.toString();
 ////          let time =
 //            console.log("下载速度："+connectionInfo.downlink);
 //          },10)
@@ -46,14 +47,20 @@
           getRoadList(param){
             var _this = this;
             getRoadList().then(res=>{
-              _this.roadList = res.data;
+              // _this.roadList = res.data;
+              let _data = res.data;
+              _data.forEach(item => {
+                item.iframeUrl = window.config.staticUrl+"fusionMonitorIframe/#/perception/"+item.lon+"/"+item.lat+"/"+item.cameraParam+"/0.0002";
+              });
+              _this.roadList = _data;
             });
           },
           queryDeviceDetail(item,target) {
-            this.$children.map((item,index)=>{
-               if(item.$children[0].initVideo){
-                 item.$children[0].initVideo();
-               } 
+            this.roadList.map((item,index)=>{
+                this.$refs['video'+item.camSerialNum][0].$children[0].initVideo();
+              //  if(item.$children[0].initVideo){
+              //    item.$children[0].initVideo();
+              //  } 
             })
             this.$emit("queryDeviceDetail",item,target);
           },

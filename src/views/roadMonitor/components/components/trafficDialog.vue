@@ -1,124 +1,127 @@
 <template>
-  <div>
-    <div class="c-dialog-wrapper">
-      <div class="c-dialog-container">
-        <div class="c-dialog-header">
-          <span class="c-dialog-title">交通事件</span>
-          <i class="c-dialog-close" @click="closeDialog"></i>
+  <div class="c-dialog-wrapper">
+    <div class="c-dialog-container">
+      <div class="c-dialog-header">
+        <span class="c-dialog-title">交通事件</span>
+        <i class="c-dialog-close" @click="closeDialog"></i>
+      </div>
+      <div class="c-dialog-content m-side-dialog-content">
+        <div class="side-device-left">
+          <div class="c-scroll-wrap">
+            <div class="c-scroll-inner">
+              <div class="side-device-detail clearfix">
+                <span class="side-device-label">事件类型：</span>
+                <span class="device-detail-style">{{itemData.eventName || '--'}}</span>
+              </div>
+              <div class="side-device-detail clearfix">
+                <span class="side-device-label">发生时间：</span>
+                <span
+                  class="device-detail-style"
+                >{{itemData.beginTime?$dateUtil.formatTime(Number(itemData.beginTime)) : '--'}}</span>
+              </div>
+              <div class="side-device-detail clearfix">
+                <span class="side-device-label">发生地点：</span>
+                <span
+                  class="device-detail-style"
+                >{{itemData.longitude || '--'}} , {{itemData.latitude || '--'}}</span>
+              </div>
+              <div class="side-device-detail clearfix">
+                <span class="side-device-label">道路名称：</span>
+                <span class="device-detail-style">{{itemData.roadName || '--'}}</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="c-dialog-content m-side-dialog-content">
-          <div class="side-device-left">
-            <div class="c-scroll-wrap">
-              <div class="c-scroll-inner">
-                <div class="side-device-detail clearfix">
-                  <span class="side-device-label">事件类型：</span>
-                  <span class="device-detail-style">{{itemData.eventName || '--'}}</span>
-                </div>
-                <div class="side-device-detail clearfix">
-                  <span class="side-device-label">发生时间：</span>
-                  <span
-                    class="device-detail-style"
-                  >{{itemData.beginTime?$dateUtil.formatTime(Number(itemData.beginTime)) : '--'}}</span>
-                </div>
-                <div class="side-device-detail clearfix">
-                  <span class="side-device-label">发生地点：</span>
-                  <span
-                    class="device-detail-style"
-                  >{{itemData.longitude || '--'}} , {{itemData.latitude || '--'}}</span>
-                </div>
-                <div class="side-device-detail clearfix">
-                  <span class="side-device-label">道路名称：</span>
-                  <span class="device-detail-style">{{itemData.roadName || '--'}}</span>
-                </div>
+        <!-- <div class="side-dialog-map">
+          <div style="width: 100%;height: 100%;">
+            <div style="width: 100%;height: 100%;" v-if="sideMap"> -->
+              <!-- <div class="time-style">
+              <span class="t-class">{{time}}</span>
+              </div>-->
+              <!-- <tusvn-map
+                :target-id="deviceMapId"
+                ref="tusvnMap3"
+                :background="mapParam.background"
+                :minX="mapParam.minX"
+                :minY="mapParam.minY"
+                :minZ="mapParam.minZ"
+                :maxX="mapParam.maxX"
+                :maxY="mapParam.maxY"
+                :maxZ="mapParam.maxZ"
+                @mapcomplete="mapcomplete"
+                @showTimeStamp="showTimeStamp"
+      				  :waitingtime='50'
+              ></tusvn-map> -->
+
+              <!-- <div id="cesiumContainer" class="c-map">
+
               </div>
             </div>
+            <div v-else class="side-map-tip side-tip-style">{{mapMessage}}</div>
           </div>
-          <div class="side-dialog-map">
-            <div style="width: 100%;height: 100%;">
-              <div style="width: 100%;height: 100%;" v-if="sideMap">
-                <!-- <div class="time-style">
-                <span class="t-class">{{time}}</span>
-                </div>-->
-                <tusvn-map
-                  :target-id="deviceMapId"
-                  ref="tusvnMap3"
-                  :background="mapParam.background"
-                  :minX="mapParam.minX"
-                  :minY="mapParam.minY"
-                  :minZ="mapParam.minZ"
-                  :maxX="mapParam.maxX"
-                  :maxY="mapParam.maxY"
-                  :maxZ="mapParam.maxZ"
-                  @mapcomplete="mapcomplete"
-                  @showTimeStamp="showTimeStamp"
-				  :waitingtime='50'
-                ></tusvn-map>
-              </div>
-              <div v-else class="side-map-tip side-tip-style">{{mapMessage}}</div>
-            </div>
-          </div>
-          <div class="side-device-list">
-            <div class="c-scroll-wrap">
-              <div class="c-scroll-inner">
-                <p class="side-device-title">设备列表</p>
-                <div class="device-list-style">
-                  <div class="table-header-group">
-                    <ul class="table-row">
-                      <li class="table-cell table-title device-num" style="text-align: center">设备编号</li>
-                      <li class="table-cell table-title device-style">联网状态</li>
-                      <li class="table-cell table-title device-style">开启监控</li>
-                    </ul>
-                  </div>
-                  <div class="table-row-group">
-                    <ul class="table-row" v-for="item in deviceObj" :key="item.deviceId">
-                      <li class="table-cell device-num">
-                        <img
-                          src="@/assets/images/monitorManage/monitor-3.png"
-                          class="monitor-device-img-1"
-                          v-if="item.type=='N'"
-                        />
-                        <img
-                          src="@/assets/images/monitorManage/monitor-4.png"
-                          class="monitor-device-img-2"
-                          v-else
-                        />
-                        <span class="monitor-device-text">{{item.deviceId}}</span>
-                      </li>
-                      <li class="table-cell">
-                        <span
-                          class="monitor-device-symbol"
-                          :class="[item.cameraRunStatus==1?'online':'offline']"
-                        ></span>
-                      </li>
-                      <li class="table-cell">
-                        <div
-                          class="c-switch-style"
-                          :class="[item.value?active:unActive]"
-                          @click="switchChange(item)"
-                          v-show="item.type=='N'"
-                        >
-                          <i></i>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
+        </div> -->
+        <div id="cesiumContainer" class="side-dialog-map"></div>
+        <div class="side-device-list">
+          <div class="c-scroll-wrap">
+            <div class="c-scroll-inner">
+              <p class="side-device-title">设备列表</p>
+              <div class="device-list-style">
+                <div class="table-header-group">
+                  <ul class="table-row">
+                    <li class="table-cell table-title device-num" style="text-align: center">设备编号</li>
+                    <li class="table-cell table-title device-style">联网状态</li>
+                    <li class="table-cell table-title device-style">开启监控</li>
+                  </ul>
                 </div>
-                <p class="side-device-title">
-                  <span>监控视频</span>
-                </p>
-                <div class="device-video-style">
-                  <div class="side-video-style">
-                    <live-player
-                            :isStretch="true"
-                            :requestVideoUrl="wsUrl"
-                            :params="forwardParam"
-                            type="wsUrl"
-                            :autoplay="false"
-                            ref="player"
-                    >
-                    <span class="title">智能摄像头：{{deviceId}}</span>
-                    </live-player>
-                  </div>
+                <div class="table-row-group">
+                  <ul class="table-row" v-for="item in deviceObj" :key="item.deviceId">
+                    <li class="table-cell device-num">
+                      <img
+                        src="@/assets/images/monitorManage/monitor-3.png"
+                        class="monitor-device-img-1"
+                        v-if="item.type=='N'"
+                      />
+                      <img
+                        src="@/assets/images/monitorManage/monitor-4.png"
+                        class="monitor-device-img-2"
+                        v-else
+                      />
+                      <span class="monitor-device-text">{{item.deviceId}}</span>
+                    </li>
+                    <li class="table-cell">
+                      <span
+                        class="monitor-device-symbol"
+                        :class="[item.cameraRunStatus==1?'online':'offline']"
+                      ></span>
+                    </li>
+                    <li class="table-cell">
+                      <div
+                        class="c-switch-style"
+                        :class="[item.value?active:unActive]"
+                        @click="switchChange(item)"
+                        v-show="item.type=='N'"
+                      >
+                        <i></i>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <p class="side-device-title">
+                <span>监控视频</span>
+              </p>
+              <div class="device-video-style">
+                <div class="side-video-style">
+                  <live-player
+                          :isStretch="true"
+                          :requestVideoUrl="wsUrl"
+                          :params="forwardParam"
+                          type="wsUrl"
+                          :autoplay="false"
+                          ref="player"
+                  >
+                  <span class="title">智能摄像头：{{deviceId}}</span>
+                  </live-player>
                 </div>
               </div>
             </div>
@@ -137,10 +140,15 @@ import {
   getDeviceCountByCity
 } from "@/api/sideDeviceMonitor";
 import { getFeaturesByPoint } from "@/api/roadMonitor";
-import TusvnMap from "@/utils/Tusvn3DMap4";
 import ConvertCoord from "@/assets/js/utils/coordConvert.js";
 import LivePlayer from '@/components/livePlayer/template';
 const isProduction = process.env.NODE_ENV === "production";
+
+import GIS3D from '@/utils/GIS3D.js'
+import PerceptionCars from '@/utils/PerceptionCars.js'
+let gis3d=new GIS3D();
+let perceptionCars = new PerceptionCars();
+
 export default {
   name: "SideDialog",
   data() {
@@ -157,7 +165,6 @@ export default {
       webSocket1: null, //交通事件车辆
       platformWebsocket: null, //平台车
       perceptionWebsocket: null, //感知车
-      PlatformCar: "",
       perceptionCar: "",
       webSocketData1: {},
       itemData: {},
@@ -179,10 +186,12 @@ export default {
       position: [],
       wsUrl:"",
       forwardParam:{},
+      platformConnectCount:0,
+      mapOk:false,
     };
   },
   components: {
-    TusvnMap,LivePlayer
+    LivePlayer
   },
   props: ["selectedItem"],
   created() {
@@ -193,30 +202,34 @@ export default {
       this.selectedItem.latitude,
       0.002
     );
-    // this.webSocketData1 = {
-    // 	"action": "fusel_event_veh",
-    // 	"region": {
-    // 		"longitude": this.selectedItem.longitude,
-    // 		"latitude": this.selectedItem.latitude,
-    // 		"taskCode": this.selectedItem.taskCode
-    // 	}
-    // }
   },
   mounted() {
+      let _this = this;
+      gis3d.initload("cesiumContainer",false);
+      perceptionCars.viewer=gis3d.cesium.viewer;
+
+      _this.mapParam=window.mapParam;
+      _this.rsId = _this.$route.params.crossId;
+    
+      this.mapOk = true;
+      this.onMapComplete();
   },
   watch: {
     deviceList: {
       handler: function(newVal, oldVal) {
-        if (oldVal.length > 0 && newVal.length > 0) {
-          //大于一次的
-          this.compare(newVal, oldVal);
-        } else if (newVal.length <= 0) {
-          //返回空列表
-          this.handleData(newVal);
-        } else {
-          //第一次
-          this.handleData(newVal);
+        if(this.mapOk){
+           if (oldVal.length > 0 && newVal.length > 0) {
+            //大于一次的
+            this.compare(newVal, oldVal);
+          } else if (newVal.length <= 0) {
+            //返回空列表
+            this.handleData(newVal);
+          } else {
+            //第一次
+            this.handleData(newVal);
+          }
         }
+       
       },
       deep: true
     }
@@ -268,18 +281,6 @@ export default {
                 this.wsUrl = "";
                 this.$refs['player'].initVideo();
               }
-              if (item.serialNum == this.selectedItem.cameraId) {
-                //如果事件源数据被要删除，先清空模型;后删除
-                if (
-                  this.$refs.tusvnMap3.getStaticModel(
-                    this.selectedItem.cameraId
-                  )
-                ) {
-                  this.$refs.tusvnMap3.removeStaticModel(
-                    this.selectedItem.cameraId
-                  );
-                }
-              }
               delete this.deviceObj[i];
             }
           }
@@ -291,6 +292,7 @@ export default {
           this.deviceObj[item.deviceId] = item;
         }
       });
+    
       let selectFlag = false;
       for (var i in this.deviceObj) {
         let item = this.deviceObj[i];
@@ -320,33 +322,26 @@ export default {
             return;
         }  
       }
-      if (this.$refs.tusvnMap3) {
-        // if (this.PlatformCar) {
-        //   this.$refs.tusvnMap3.onCarMessage(this.PlatformCar);
-        // }
-        // if (this.perceptionCar) {
-        //   this.$refs.tusvnMap3.addPerceptionData(this.perceptionCar);
-        // }
+     
+      if (this.mapOk) {
         if (this.isOne) {
           this.isOne = false;
-          if (this.selectedItem.cameraId) {
-            if (this.cameraParam) {
-              this.$refs.tusvnMap3.updateCameraPosition1(
-                this.cameraParam.x,
-                this.cameraParam.y,
-                this.cameraParam.z,
-                this.cameraParam.radius,
-                this.cameraParam.pitch,
-                this.cameraParam.yaw
-              );
-              //this.updateCameraPosition();
-            } else {
-              this.updateCameraPosition();
-            }
-          } else {
+          // if (this.selectedItem.cameraId) {
+          //   if (this.cameraParam) {
+          //     this.updateCameraPosition(
+          //       this.cameraParam.x,
+          //       this.cameraParam.y,
+          //       this.cameraParam.z,
+          //       this.cameraParam.radius,
+          //       this.cameraParam.pitch,
+          //       this.cameraParam.yaw
+          //     );
+          //   } else {
+          //     this.updateCameraPosition();
+          //   }
+          // } else {
             this.updateCameraPosition();
-          }
-
+          // }
           let formData = new FormData(); //创建form对象
           formData.append("featureclass", "dl_shcsq_wgs84_lb_points");
           formData.append("lng", this.selectedItem.longitude); //通过append向form对象添加数据
@@ -371,31 +366,10 @@ export default {
               let _length = this.itemData.modelIcon.split("/").length;
               let _name = this.itemData.modelIcon.split("/")[_length - 1];
               let _url = "./static/map3d/models/" + _name;
-              //let _url = "./static/map3d/models/carEventModel.3ds";
-              this.$refs.tusvnMap3.addStaticModel(
-                this.selectedItem.cameraId,
-                _url,
-                this.position[0],
-                this.position[1],
-                20,
-                0,
-                0,
-                (Math.PI / 180.0) * (-this.heading + 80)
-              ); //添加模型
             }
           });
-          //this.$refs.tusvnMap3.addModel(this.selectedItem.cameraId,this.itemData.modelIcon,this.position[0],this.position[1],13); //添加模型
-          //this.$refs.tusvnMap3.addStaticModel(this.selectedItem.cameraId, "./static/map3d/models/carEventModel.3ds", this.position[0], this.position[1], 13); //添加模型
-        } else {
-          if (this.$refs.tusvnMap3.getStaticModel(this.selectedItem.cameraId)) {
-            this.$refs.tusvnMap3.updateStaticModelPostion(
-              this.selectedItem.cameraId,
-              this.position[0],
-              this.position[1],
-              20,
-              (Math.PI / 180.0) * (-this.heading + 80)
-            );
-          }
+          } else {
+       
         }
       }
     },
@@ -408,23 +382,27 @@ export default {
       }
     },
     updateCameraPosition() {
+      if(!this.position.length){
+        this.position = [112.94760914128275, 28.325093927226323]
+      }
+    
       if (this.heading) {
-        this.$refs.tusvnMap3.updateCameraPosition1(
+        gis3d.updateCameraPosition(
           this.position[0],
           this.position[1],
-          25,
-          20,
-          -0.2,
-          (Math.PI / 180.0) * (this.heading+25)
+          39,
+          70,
+          -0.2369132859032279,
+          0.0029627735803421373
         );
       } else {
-        this.$refs.tusvnMap3.updateCameraPosition1(
+        gis3d.updateCameraPosition(
           this.position[0],
           this.position[1],
-          25,
-          20,
-          -0.2,
-          5
+          39,
+          70,
+          -0.2369132859032279,
+          0.0029627735803421373
         );
       }
     },
@@ -437,31 +415,20 @@ export default {
       this.webSocket.onopen = this.onopen;
       this.webSocket.onerror = this.onerror;
     },
-    onmessage(mesasge) {
-      //console.log(JSON.parse(mesasge.data))
-	  this.itemData = JSON.parse(mesasge.data).result.data;
+    onmessage(message) {
+      //console.log(JSON.parse(message.data))
+	  this.itemData = JSON.parse(message.data).result.data;
 	  this.getExtend(
-		this.itemData.longitude,
-		this.itemData.latitude,
-		0.002
+      this.itemData.longitude,
+      this.itemData.latitude,
+      0.002
 	  );
-      this.position = this.coordinateTransfer(
-        "EPSG:4326",
-        "+proj=utm +zone=51 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
-        this.itemData.longitude,
-        this.itemData.latitude
-      );
-      let list = JSON.parse(mesasge.data).result.deviceList;
+      this.position = [this.itemData.longitude,this.itemData.latitude];
+      let list = JSON.parse(message.data).result.deviceList;
       if (list) {
-        this.deviceList = JSON.parse(mesasge.data).result.deviceList;
+        this.deviceList = JSON.parse(message.data).result.deviceList;
       } else {
         this.deviceList = [];
-      }
-      if (this.itemData.status == 2) {
-        //事件消失取消模型
-        if (this.$refs.tusvnMap3.getStaticModel(this.selectedItem.cameraId)) {
-          this.$refs.tusvnMap3.removeStaticModel(this.selectedItem.cameraId);
-        }
       }
     },
     onclose(data) {
@@ -482,60 +449,103 @@ export default {
       }
     },
     //平台车 小汽车
-    initPlatformWebSocket() {
-      let _this = this;
-      if ("WebSocket" in window) {
-        _this.platformWebsocket = new WebSocket(window.config.websocketUrl); //获得WebSocket对象
-        _this.platformWebsocket.onmessage = _this.onPlatformMessage;
-        _this.platformWebsocket.onclose = _this.onPlatformClose;
-        _this.platformWebsocket.onopen = _this.onPlatformOpen;
-      }
-    },
-    onPlatformMessage(messasge) {
-      this.PlatformCar = messasge;
-      this.$refs.tusvnMap3.onCarMessage(messasge);
-    },
-    onPlatformClose(data) {
-      console.log("结束连接");
-    },
-    onPlatformOpen(data) {
-      //旁车
-      var platform = {
-        action: "road_real_data_reg",
-        data: {
-          polygon: this.currentExtent
-        }
-      };
-      var platformMsg = JSON.stringify(platform);
-      this.sendPlatformMsg(platformMsg);
-    },
-    sendPlatformMsg(msg) {
-      let _this = this;
-      if (window.WebSocket) {
-        if (_this.platformWebsocket.readyState == WebSocket.OPEN) {
-          //如果WebSocket是打开状态
-          _this.platformWebsocket.send(msg); //send()发送消息
-        }
-      } else {
-        return;
-      }
-    },
+  
+    // initPlatformWebSocket(){
+    //     let _this=this;
+    //     try{
+    //         if ('WebSocket' in window) {
+    //             _this.platformWebsocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+    //             _this.platformWebsocket.onmessage = _this.onPlatformMessage;
+    //             _this.platformWebsocket.onclose = _this.onPlatformClose;
+    //             _this.platformWebsocket.onopen = _this.onPlatformOpen;
+    //             _this.platformWebsocket.onerror=_this.onPlatformError;
+    //         }else{
+    //             _this.$message("此浏览器不支持websocket");
+    //         }
+    //     }catch (e){
+    //         this.platformReconnect();
+    //     }
+    // },
+    // onPlatformMessage(message) {
+    //   let _this=this;
+    //   let json = JSON.parse(message.data);
+    //   platCars.onCarMessage(json,0);
+
+    //   let keys = Object.keys(platCars.cacheAndInterpolateDataByVid);
+    //   if(keys&&keys.length>0){
+    //       let key = keys[0];
+    //       _this.$parent.vehData = platCars.cacheAndInterpolateDataByVid[key].data;
+    //   }
+    // },
+
+    // onPlatformClose(data) {
+    //   console.log("结束连接");
+    //   this.platformReconnect();
+    // },
+    // onPlatformError(){
+    //   console.log("平台车连接error");
+    //   this.platformReconnect();
+    // },
+    // onPlatformOpen(data) {
+    //   //旁车
+    //   var platform = {
+    //     action: "road_real_data_reg",
+    //     data: {
+    //       polygon: this.currentExtent
+    //     }
+    //   };
+    //   var platformMsg = JSON.stringify(platform);
+    //   this.sendPlatformMsg(platformMsg);
+    // },
+    // sendPlatformMsg(msg) {
+    //   let _this = this;
+    //   if (window.WebSocket) {
+    //     if (_this.platformWebsocket.readyState == WebSocket.OPEN) {
+    //       //如果WebSocket是打开状态
+    //       _this.platformWebsocket.send(msg); //send()发送消息
+    //     }
+    //   } else {
+    //     return;
+    //   }
+    // },
     //感知车
-    initPerceptionWebSocket() {
-      let _this = this;
-      if ("WebSocket" in window) {
-        _this.perceptionWebsocket = new WebSocket(window.config.websocketUrl); //获得WebSocket对象
-        _this.perceptionWebsocket.onmessage = _this.onPerceptionMessage;
-        _this.perceptionWebsocket.onclose = _this.onPerceptionClose;
-        _this.perceptionWebsocket.onopen = _this.onPerceptionOpen;
-      }
+    initPerceptionWebSocket(){
+        let _this=this;
+        try{
+            if ('WebSocket' in window) {
+                _this.perceptionWebsocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+                _this.perceptionWebsocket.onmessage = _this.onPerceptionMessage;
+                _this.perceptionWebsocket.onclose = _this.onPerceptionClose;
+                _this.perceptionWebsocket.onopen = _this.onPerceptionOpen;
+                _this.perceptionWebsocket.onerror= _this.onPerceptionError;
+            }else{
+                _this.$message("此浏览器不支持websocket");
+            }
+        }catch (e){
+            this.perceptionReconnect();
+        }
+
     },
-    onPerceptionMessage(messasge) {
-      this.perceptionCar = messasge;
-      this.$refs.tusvnMap3.addPerceptionData(messasge);
+    onPerceptionMessage(mesasge){
+        let _this=this;
+        // if(_this.perIsFirst){
+        //     setTimeout(()=>{
+        //         _this.perIsFirst=false;
+        //     },_this.waitingtime);
+        //     return;
+        // }
+      
+        let data = JSON.parse(mesasge.data)
+      
+        _this.processPerData(data);
+      
     },
     onPerceptionClose(data) {
       console.log("结束连接");
+    },
+    onPerceptionError(){
+        console.log("感知车连接error");
+        this.perceptionReconnect();
     },
     onPerceptionOpen(data) {
       //旁车
@@ -548,6 +558,34 @@ export default {
       var perceptionMsg = JSON.stringify(perception);
       this.sendPerceptionMsg(perceptionMsg);
     },
+    processPerData(data){
+        let _this = this;
+        perceptionCars.addPerceptionData(data,0);
+        let cars = data.result.vehDataDTO;
+        if(cars.length>0){
+            _this.processDataTime = cars[0].gpsTime;
+            let pcarnum = 0;
+            let persons = 0;
+            let zcarnum = 0;
+            for (let i = 0; i < cars.length; i++) {
+                let obj = cars[i];
+                if (obj.type == 1) {
+                    zcarnum++;
+                    continue;
+                }
+                if (
+                    obj.targetType == 0 ||
+                    obj.targetType == 1 ||
+                    obj.targetType == 3
+                ) {
+                    persons++;
+                } else {
+                    pcarnum++;
+                }
+            }
+            this.statisticData ="当前数据包："+cars.length +"=" +zcarnum +"(自车)+" +pcarnum +"(感知)+" +persons +"(人)";
+        }
+    },
     sendPerceptionMsg(msg) {
       let _this = this;
       if (window.WebSocket) {
@@ -559,36 +597,7 @@ export default {
         return;
       }
     },
-    // initWebSocket1() {
-    // 	if("WebSocket" in window) {
-    // 		this.webSocket1 = new WebSocket(window.config.websocketUrl); //获得WebSocket对象
-    // 	}
-    // 	this.webSocket1.onmessage = this.onmessage1;
-    // 	this.webSocket1.onclose = this.onclose1;
-    // 	this.webSocket1.onopen = this.onopen1;
-    // 	this.webSocket1.onerror = this.onerror1;
-    // },
-    // onmessage1(mesasge) {
-    // 	this.carData = mesasge;
-    // },
-
-    // onclose1(data) {
-    // 	console.log("结束连接");
-    // },
-    // onopen1(data) {
-    // 	let _traffic1 = JSON.stringify(this.webSocketData1);
-    // 	this.sendMsg1(_traffic1);
-    // },
-    // sendMsg1(msg) {
-    // 	if(window.WebSocket) {
-    // 		if(this.webSocket1.readyState == WebSocket.OPEN) {
-    // 			//如果WebSocket是打开状态
-    // 			this.webSocket1.send(msg); //send()发送消息
-    // 		}
-    // 	} else {
-    // 		return;
-    // 	}
-    // },
+   
     coordinateTransfer(sourceProject, destinatePorject, longitude, latitude) {
       let targetCoor = proj4(sourceProject, destinatePorject, [
         longitude,
@@ -656,18 +665,46 @@ export default {
       }
     },
     closeDialog() {
-      if (this.$refs.tusvnMap3) {
-        this.$refs.tusvnMap3.reset3DMap();
-      }
       this.$emit("closeDialog");
     },
     showTimeStamp(time) {
       this.time = time;
     },
-    mapcomplete() {
-      this.initWebSocket();
-      this.initPlatformWebSocket();
-      this.initPerceptionWebSocket();
+    onMapComplete(){ 
+        this.updateCameraPosition(112.94760914128275, 28.325093927226323,39,70,-0.2369132859032279, 0.0029627735803421373); 
+        this.getData();
+      
+    },
+    getData(){
+        this.initWebSocket();
+        this.initPerceptionWebSocket();
+        // this.initPlatformWebSocket();
+    },
+    // platformReconnect(){
+    //     //实例销毁后不进行重连
+    //     if(this._isDestroyed){
+    //         return;
+    //     }
+    //     //重连不能超过10次
+    //     if(this.platformConnectCount>=10){
+    //         return;
+    //     }
+    //     this.initPlatformWebSocket();
+    //     //重连不能超过5次
+    //     this.platformConnectCount++;
+    // },
+    perceptionReconnect(){
+        //实例销毁后不进行重连
+        if(this._isDestroyed){
+            return;
+        }
+        //重连不能超过10次
+        if(this.perceptionConnectCount>=10){
+            return;
+        }
+        this.initPerceptionWebSocket();
+        //重连不能超过5次
+        this.perceptionConnectCount++;
     },
     getVideo() {
       this.wsUrl = "";
@@ -682,12 +719,14 @@ export default {
              this.$refs["player"].requestVideo();
           }, 0);
         }
+   
       });
+
     },
   },
   destroyed() {
     this.webSocket && this.webSocket.close();
-    this.platformWebsocket && this.platformWebsocket.close();
+    // this.platformWebsocket && this.platformWebsocket.close();
     this.perceptionWebsocket && this.perceptionWebsocket.close();
   }
 };

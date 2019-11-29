@@ -89,3 +89,9 @@ window.circleParam = {
     opacity:0.5,
     rotate:[0,0,0]
 };
+
+// 703107.8554066379 3134156.7025534217 507.27478379813056 470.8646483310546 -1.4534003822911599 -6.6197325184937625
+window.currentExtent=[window.mapOption.center,window.mapOption.center,window.mapOption.center,window.mapOption.center];
+window.mapUrl=window.config.dlWmsUrl+"geoserver/gwc/service/wmts/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=shanghai_qcc:dl_shcsq_wgs84_zc_0709&STYLE=&FORMAT=image/png&TILEMATRIXSET=EPSG:900913&TileMatrix=EPSG:900913:{TileMatrix}&TileCol={TileCol}&TileRow={TileRow}"
+window.defualtZ=0;
+window.pro="shanghai"

@@ -826,6 +826,11 @@ export default {
         addWms:function(id,url,layers,styles,opacity,visble,version){
             mapInit.addWms(id,url,layers,styles,opacity,visble,version,this.$data.map)
         },
+
+        removeWms:function(id){
+            mapInit.removeWms(id,this.$data.map)
+        },
+
         // 规划路线
         translateCallback(data,color){
 

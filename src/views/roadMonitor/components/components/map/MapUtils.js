@@ -77,6 +77,15 @@ export function addWms(id, url, layers, styles, opacity, visble, version, map) {
     wmsLayer.set("id", id);
     map.addLayer(wmsLayer);
 }
+
+/**
+ * 删除wms图层
+ * 
+ * @param {String} id 图层id
+ */
+export function removeWms(id, map) {
+    map.removeLayer(id);
+}
 /**
  * 向地图中添加覆盖物
  * 

@@ -74,7 +74,7 @@
                 <div class="time-style">
                   <span class="t-class">{{time}}</span>
                 </div>
-                <tusvn-map4
+                <!-- <tusvn-map4
                   :target-id="deviceMapId"
                   ref="tusvnMap3"
                   :background="mapParam.background"
@@ -86,7 +86,8 @@
                   :maxZ="mapParam.maxZ"
                   @mapcomplete="mapcomplete"
                   @showTimeStamp="showTimeStamp"
-                ></tusvn-map4>
+                ></tusvn-map4> -->
+                <div id="cesiumContainer" class="side-dialog-map"></div>
               </div>
             </div>
           </div>
@@ -156,7 +157,7 @@
                       <div class="time-style">
                         <span class="t-class">{{time}}</span>
                       </div>
-                      <tusvn-map4
+                      <!-- <tusvn-map4
                         :target-id="deviceMapId"
                         ref="tusvnMap3"
                         :background="mapParam.background"
@@ -168,7 +169,8 @@
                         :maxZ="mapParam.maxZ"
                         @mapcomplete="mapcomplete"
                         @showTimeStamp="showTimeStamp"
-                      ></tusvn-map4>
+                      ></tusvn-map4> -->
+                      <div id="cesiumContainer" class="side-dialog-map"></div>
                     </div>
                   </div>
                 </div>
@@ -188,10 +190,13 @@ import {
   getDevListByRoadId,
   getDeviceCountByCity
 } from "@/api/sideDeviceMonitor";
-import TusvnMap4 from "@/utils/Tusvn3DMap4";
-import { getMap } from "@/utils/tusvnMap.js";
 import LivePlayer from '@/components/livePlayer/template'
 const isProduction = process.env.NODE_ENV === "production";
+
+import GIS3D from '@/utils/GIS3D.js'
+import PerceptionCars from '@/utils/PerceptionCars.js'
+let gis3d=new GIS3D();
+let perceptionCars = new PerceptionCars();
 export default {
   name: "SideDialog",
   data() {
@@ -232,11 +237,11 @@ export default {
       selectedDevice:{},
       currentExtent:[],
       videoUrl:'',
-      extend: 0.0002
+      extend: 0.0002,
+      mapOk:false,
     };
   },
   components: {
-    TusvnMap4,
     LivePlayer
   },
   props: {
@@ -251,14 +256,42 @@ export default {
       default: ""
     }
   },
+  watch:{
+    mapOk: {
+      handler: function(newVal, oldVal) {
+        if(this.mapOk){
+          this.initMap();
+        }    
+      },
+      deep: true
+    }
+  },
+  mounted() {
+    this.selectAddr = this.selectedItem.path.split("|");
+    this.provinceCode = this.selectAddr[0];
+    this.cityCode = this.selectAddr[1];
+    //默认选中的
+    this.roadId = this.selectedItem.roadSiderId;
+    this.getDeviceList();
+    this.getSideTree();
+    this.getDeviceCountByCity();
+
+
+   
+  },
   methods: {
+
+    initMap(){
+      let _this = this;
+      gis3d.initload("cesiumContainer",false);
+      perceptionCars.viewer=gis3d.cesium.viewer;
+      _this.mapParam=window.mapParam;
+      _this.rsId = _this.$route.params.crossId;
+      this.onMapComplete();
+    },
 
     getDeviceList() {
       var _this = this;
-      //切换杆的时候清理模型
-      /*if (_this.mapInit) {
-        _this.$refs.tusvnMap3.reset3DMap();
-      }*/
       this.videoUrl = "";
       this.$refs["player"].initVideo();
       getDeviceList({
@@ -295,24 +328,29 @@ export default {
             }
             //选中的设备
             _this.selectedDevice = item;
+            
             if(item.cameraParam){
               _this.cameraParam = JSON.parse(item.cameraParam);
+              _this.cameraParam.x = item.lon;
+              _this.cameraParam.y = item.lat;
+            }else{
+              _this.cameraParam = {
+                x:item.lon,
+                y:item.lat
+              }
             }
             if (_this.serialNum != "") {
               _this.getVideo();
               //切换路侧点时，重新切换3D地图
               //第一次地图加载后调整位置即可
-              //                    console.log("地图初始化---"+_this.mapInit)
               if (_this.mapInit) {
-                _this.$refs.tusvnMap3.reset3DMap();
-                //                      let cameraParam = JSON.parse(item.cameraParam);
-                _this.$refs.tusvnMap3.updateCameraPosition(
+                gis3d.updateCameraPosition(
                   _this.cameraParam.x,
                   _this.cameraParam.y,
-                  _this.cameraParam.z,
-                  _this.cameraParam.radius,
-                  _this.cameraParam.pitch,
-                  _this.cameraParam.yaw
+                  39,
+                  70,
+                  -0.2369132859032279,
+                  0.0029627735803421373
                 );
                 _this.perceptionWebsocket.close();
                 _this.getExtend(item.lon,item.lat,_this.extend);
@@ -324,12 +362,8 @@ export default {
             /*_this.$set(item, 'value', false);*/
             item.value = false;
           }
+          _this.mapOk = true;
         });
-        if (_this.serialNum == "") {
-          if (this.$refs.tusvnMap3) {
-            this.$refs.tusvnMap3.reset3DMap();
-          }
-        }
 
       });
     },
@@ -371,29 +405,21 @@ export default {
         _this.openVideoList.push(item);
         _this.serialNum = item.serialNum;
         _this.selectedDevice = item;
-        /*if (item.workStatus != 1) {
-        _this.$message({
-            type: 'error',
-            duration: '1500',
-            message: '设备不在线',
-            showClose: true
-          });
-        return;
-      }*/
         //根据摄像头调取视频
         _this.getVideo();
         //选中后重新请求
          if (this.$refs.tusvnMap3) {
-          this.$refs.tusvnMap3.reset3DMap();
           if(!item.cameraParam) return;
           _this.cameraParam = JSON.parse(item.cameraParam);
-          this.$refs.tusvnMap3.updateCameraPosition(
+          _this.cameraParam.x = item.lon;
+          _this.cameraParam.y = item.lat;
+          gis3d.updateCameraPosition(
             _this.cameraParam.x,
             _this.cameraParam.y,
-            _this.cameraParam.z,
-            _this.cameraParam.radius,
-            _this.cameraParam.pitch,
-            _this.cameraParam.yaw
+            39,
+            70,
+            -0.2369132859032279,
+            0.0029627735803421373
           );
           this.perceptionWebsocket.close();
           this.getExtend(item.lon,item.lat,_this.extend)
@@ -401,10 +427,6 @@ export default {
         
         }
       
-      } else {
-        if (this.$refs.tusvnMap3) {
-          _this.$refs.tusvnMap3.reset3DMap();
-        }
       }
     },
     loadNode(node, resolve) {
@@ -572,27 +594,29 @@ export default {
       });
     },
     closeDialog() { 
-      if (this.$refs.tusvnMap3) {
-        this.$refs.tusvnMap3.reset3DMap();
-      }
       this.$emit("closeDialog");
     },
     showTimeStamp(time) {
       this.time = time;
     },
-    mapcomplete: function() {
-   
+    onMapComplete(){
+        gis3d.updateCameraPosition(112.94760914128275, 28.325093927226323,39,70,-0.2369132859032279, 0.0029627735803421373); 
+        this.getData();
+      
+    },
+    getData() {
+      
       this.initPerceptionWebSocket();
 
       if (this.serialNum && this.serialNum != "") {
         this.mapInit = true;
-        this.$refs.tusvnMap3.updateCameraPosition(
+        gis3d.updateCameraPosition(
           this.cameraParam.x,
           this.cameraParam.y,
-          this.cameraParam.z,
-          this.cameraParam.radius,
-          this.cameraParam.pitch,
-          this.cameraParam.yaw
+          39,
+          70,
+          -0.2369132859032279,
+          0.0029627735803421373
         );
      
         return;
@@ -603,22 +627,22 @@ export default {
           this.mapInit = true;
           if(this.selectedItem.cameraParam){
             let cameraParam = JSON.parse(this.selectedItem.cameraParam);
-            this.$refs.tusvnMap3.updateCameraPosition(
+            gis3d.updateCameraPosition(
               this.cameraParam.x,
               this.cameraParam.y,
-              this.cameraParam.z,
-              this.cameraParam.radius,
-              this.cameraParam.pitch,
-              this.cameraParam.yaw
+              39,
+              70,
+              -0.2369132859032279,
+              0.0029627735803421373
             );
           }else{
-            this.$refs.tusvnMap3.updateCameraPosition(
+            gis3d.updateCameraPosition(
               window.defaultMapParam.x,
               window.defaultMapParam.y,
-              window.defaultMapParam.z,
-              window.defaultMapParam.radius,
-              window.defaultMapParam.pitch,
-              window.defaultMapParam.yaw
+              39,
+              70,
+              -0.2369132859032279,
+              0.0029627735803421373
             );
           }
           clearInterval(time);
@@ -660,21 +684,42 @@ export default {
     },
 
     //感知车
-    initPerceptionWebSocket() {
-      let _this = this;
-      if ("WebSocket" in window) {
-        _this.perceptionWebsocket = new WebSocket(window.config.websocketUrl); //获得WebSocket对象
-        _this.perceptionWebsocket.onmessage = _this.onPerceptionMessage;
-        _this.perceptionWebsocket.onclose = _this.onPerceptionClose;
-        _this.perceptionWebsocket.onopen = _this.onPerceptionOpen;
-      }
+    initPerceptionWebSocket(){
+        let _this=this;
+        try{
+            if ('WebSocket' in window) {
+                _this.perceptionWebsocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+                _this.perceptionWebsocket.onmessage = _this.onPerceptionMessage;
+                _this.perceptionWebsocket.onclose = _this.onPerceptionClose;
+                _this.perceptionWebsocket.onopen = _this.onPerceptionOpen;
+                _this.perceptionWebsocket.onerror= _this.onPerceptionError;
+            }else{
+                _this.$message("此浏览器不支持websocket");
+            }
+        }catch (e){
+            this.perceptionReconnect();
+        }
     },
-    onPerceptionMessage(messasge) {
-      this.perceptionCar = messasge;
-      this.$refs.tusvnMap3.addPerceptionData(messasge);
+
+    onPerceptionMessage(mesasge){
+        let _this=this;
+        // if(_this.perIsFirst){
+        //     setTimeout(()=>{
+        //         _this.perIsFirst=false;
+        //     },_this.waitingtime);
+        //     return;
+        // }
+      
+        let data = JSON.parse(mesasge.data)
+        _this.processPerData(data);
+      
     },
     onPerceptionClose(data) {
       console.log("结束连接");
+    },
+    onPerceptionError(){
+        console.log("感知车连接error");
+        this.perceptionReconnect();
     },
     onPerceptionOpen(data) {
       //旁车
@@ -687,6 +732,7 @@ export default {
       var perceptionMsg = JSON.stringify(perception);
       this.sendPerceptionMsg(perceptionMsg);
     },
+
     sendPerceptionMsg(msg) {
       let _this = this;
       if (window.WebSocket) {
@@ -698,18 +744,50 @@ export default {
         return;
       }
     },
+    processPerData(data){
+        let _this = this;
+        perceptionCars.addPerceptionData(data,0);
+        let cars = data.result.vehDataDTO;
+        if(cars.length>0){
+            _this.processDataTime = cars[0].gpsTime;
+            let pcarnum = 0;
+            let persons = 0;
+            let zcarnum = 0;
+            for (let i = 0; i < cars.length; i++) {
+                let obj = cars[i];
+                if (obj.type == 1) {
+                    zcarnum++;
+                    continue;
+                }
+                if (
+                    obj.targetType == 0 ||
+                    obj.targetType == 1 ||
+                    obj.targetType == 3
+                ) {
+                    persons++;
+                } else {
+                    pcarnum++;
+                }
+            }
+            this.statisticData ="当前数据包："+cars.length +"=" +zcarnum +"(自车)+" +pcarnum +"(感知)+" +persons +"(人)";
+        }
+    },
+    perceptionReconnect(){
+        //实例销毁后不进行重连
+        if(this._isDestroyed){
+            return;
+        }
+        //重连不能超过10次
+        if(this.perceptionConnectCount>=10){
+            return;
+        }
+        this.initPerceptionWebSocket();
+        //重连不能超过5次
+        this.perceptionConnectCount++;
+    },
     
   },
-  mounted() {
-    this.selectAddr = this.selectedItem.path.split("|");
-    this.provinceCode = this.selectAddr[0];
-    this.cityCode = this.selectAddr[1];
-    //默认选中的
-    this.roadId = this.selectedItem.roadSiderId;
-    this.getDeviceList();
-    this.getSideTree();
-    this.getDeviceCountByCity();
-  },
+ 
   destroyed(){
       //销毁Socket
       this.perceptionWebsocket&&this.perceptionWebsocket.close();

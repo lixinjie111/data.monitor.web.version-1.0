@@ -1,17 +1,20 @@
 <template>
     <div class="c-size-style">
-      <div class="c-size-inner" :id="roadItem.camSerialNum">
+      <div class="c-size-inner">
         <div class="c-mask-title">
           <a href="javascript:;"  class="title" @click="queryDeviceDetail(roadItem,'map')">路侧点：{{roadItem.roadSiderName}}</a>
           <!-- <img src="@/assets/images/carMonitor/refresh.png" class="c-mask-refresh" v-if="roadItem.online==1" @click="refresh('map')"/> -->
-          <i class="c-mask-refresh el-icon-refresh" @click="refresh('map')"></i>
+          <!-- <i class="c-mask-refresh el-icon-refresh" @click="refresh('map')"></i> -->
         </div>
         <div class="c-mask-tip" v-show="mapShow">
           <div class="c-mask-text">
             {{message}}
           </div>
         </div>
-        <tusvn-map
+        <div v-if="!visible" :id="roadItem.camSerialNum" class="c-map-style"></div>
+        <!-- <iframe v-if="!visible" class="m-iframe" :src="roadItem.iframeUrl"></iframe> -->
+
+        <!-- <tusvn-map
           class="c-map-video-style"
           v-if="sideMap"
           :targetId="'mapMonitor'+roadItem.camSerialNum"
@@ -24,7 +27,7 @@
           :maxY="mapParam.maxY"
           :maxZ="mapParam.maxZ"
           @mapcomplete="onMapComplete">
-        </tusvn-map>
+        </tusvn-map> -->
        <!-- <div class="c-mask-tip" v-else>
           {{mapMessage}}
         </div>-->
@@ -33,10 +36,13 @@
 </template>
 <script>
   import {getVideoByNum} from '@/api/sideDeviceMonitor'
-  import {getMap} from '@/utils/tusvnMap.js';
   const isProduction = process.env.NODE_ENV === 'production'
-
-  import TusvnMap from '@/utils/Tusvn3DMap3'
+  import GIS3D from '@/utils/GIS3D.js'
+  import PerceptionCars from '@/utils/PerceptionCars.js'
+  let gis3d=new GIS3D();
+  let perceptionCars1 = new PerceptionCars();
+  let perceptionCars0 = new PerceptionCars();
+ 
     export default {
         data() {
             return {
@@ -45,27 +51,100 @@
               rtmp:"",
               mapShow:false,
               message:'',
-              sideMap:true,
               mapMessage:'该路口没有数据，请稍候再试！',
               currentExtent:[],
             }
         },
         components:{
-          TusvnMap
+          // TusvnMap
         },
-        props:['visible','roadItem','roadList'],
+        props:['visible','roadItem','index'],
+        mounted() {
+          this.getExtend(
+            this.roadItem.lon,
+            this.roadItem.lat,
+            0.0002
+          );
+          this.initMap();
+        },
         methods: {
+
+          initMap(){
+            let _this = this;
+            gis3d.initload(_this.roadItem.camSerialNum,false);
+            if(this.index){
+              perceptionCars1.viewer=gis3d.cesium.viewer;
+            }else{
+              perceptionCars0.viewer=gis3d.cesium.viewer;  
+            }
+            
+            _this.mapParam=window.mapParam;
+            _this.rsId = _this.$route.params.crossId;
+            this.onMapComplete();
+          },  
+
+
+
           onMapComplete:function(){
             if(this.roadItem.camSerialNum&&this.roadItem.camSerialNum!='' && this.roadItem.cameraParam){
-              let cameraParam = JSON.parse(this.roadItem.cameraParam);  
-              getMap(this.$refs[this.roadItem.camSerialNum]);
-              this.$refs[this.roadItem.camSerialNum].updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw);  
-              this.$refs[this.roadItem.camSerialNum].changeRcuId2(
-                window.config.websocketUrl,
-                this.getExtend(this.roadItem.lon,this.roadItem.lat,0.0002)
+              let cameraParam = JSON.parse(this.roadItem.cameraParam);
+              cameraParam.x = this.roadItem.lon;
+              cameraParam.y = this.roadItem.lat;
+              gis3d.updateCameraPosition(cameraParam.x,cameraParam.y,39,70,-0.2369132859032279, 0.0029627735803421373); 
+              this.getData();
+            }
+          },
+          getData() {
+   
+            this.initPerceptionWebSocket();
+
+            if (this.serialNum && this.serialNum != "") {
+              this.mapInit = true;
+              gis3d.updateCameraPosition(
+                this.cameraParam.x,
+                this.cameraParam.y,
+                39,
+                70,
+                -0.2369132859032279,
+                0.0029627735803421373
               );
+          
               return;
             }
+            let count = 0;
+            let time = setInterval(() => {
+              if (this.serialNum && this.serialNum != "") {
+                this.mapInit = true;
+                if(this.selectedItem.cameraParam){
+                  let cameraParam = JSON.parse(this.selectedItem.cameraParam);
+                  gis3d.updateCameraPosition(
+                    this.cameraParam.x,
+                    this.cameraParam.y,
+                    39,
+                    70,
+                    -0.2369132859032279,
+                    0.0029627735803421373
+                  );
+                }else{
+                  gis3d.updateCameraPosition(
+                    window.defaultMapParam.x,
+                    window.defaultMapParam.y,
+                    39,
+                    70,
+                    -0.2369132859032279,
+                    0.0029627735803421373
+                  );
+                }
+                clearInterval(time);
+              }
+              //超过5s仍然没有响应 则停止渲染
+              if (count == 5) {
+                clearInterval(time);
+              }
+              count++;
+            }, 1000);
+
+          
           },
           queryDeviceDetail(item,target) {
             this.$emit("queryDeviceDetail",item,target);
@@ -73,10 +152,7 @@
           //后端请求超时的解决办法
           refresh(){
             let _this = this;
-            this.$refs[this.roadItem.camSerialNum].changeRcuId2(
-              window.config.websocketUrl,
-              _this.getExtend(this.roadItem.lon,this.roadItem.lat,0.0002)
-            );
+         
             this.mapShow=true;
             this.message='数据正在加载，请稍候...';
             setTimeout(()=>{
@@ -94,7 +170,114 @@
               this.currentExtent.push([x0, y1]);
               this.currentExtent.push([x1, y1]);
               return this.currentExtent;
-          }
+          },
+          //感知车
+          initPerceptionWebSocket(){
+              let _this=this;
+              try{
+                  if ('WebSocket' in window) {
+                      _this.perceptionWebsocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+                      _this.perceptionWebsocket.onmessage = _this.onPerceptionMessage;
+                      _this.perceptionWebsocket.onclose = _this.onPerceptionClose;
+                      _this.perceptionWebsocket.onopen = _this.onPerceptionOpen;
+                      _this.perceptionWebsocket.onerror= _this.onPerceptionError;
+                  }else{
+                      _this.$message("此浏览器不支持websocket");
+                  }
+              }catch (e){
+                  this.perceptionReconnect();
+              }
+          },
+
+          onPerceptionMessage(mesasge){
+              let _this=this;
+              // if(_this.perIsFirst){
+              //     setTimeout(()=>{
+              //         _this.perIsFirst=false;
+              //     },_this.waitingtime);
+              //     return;
+              // }
+            
+              let data = JSON.parse(mesasge.data)
+              _this.processPerData(data);
+            
+          },
+          onPerceptionClose(data) {
+            console.log("结束连接");
+          },
+          onPerceptionError(){
+              console.log("感知车连接error");
+              this.perceptionReconnect();
+          },
+          onPerceptionOpen(data) {
+            //旁车
+            var perception = {
+              action: "road_real_data_per",
+              data: {
+                polygon: this.currentExtent
+              }
+            };
+            var perceptionMsg = JSON.stringify(perception);
+            this.sendPerceptionMsg(perceptionMsg);
+          },
+
+          sendPerceptionMsg(msg) {
+            let _this = this;
+            if (window.WebSocket) {
+              if (_this.perceptionWebsocket.readyState == WebSocket.OPEN) {
+                //如果WebSocket是打开状态
+                _this.perceptionWebsocket.send(msg); //send()发送消息
+              }
+            } else {
+              return;
+            }
+          },
+          processPerData(data){
+              let _this = this;
+               if(this.index){
+                 perceptionCars1.addPerceptionData(data,0);
+               }else{
+                 perceptionCars0.addPerceptionData(data,0);
+               }
+              
+              let cars = data.result.vehDataDTO;
+              if(cars.length>0){
+                  _this.processDataTime = cars[0].gpsTime;
+                  let pcarnum = 0;
+                  let persons = 0;
+                  let zcarnum = 0;
+                  for (let i = 0; i < cars.length; i++) {
+                      let obj = cars[i];
+                      if (obj.type == 1) {
+                          zcarnum++;
+                          continue;
+                      }
+                      if (
+                          obj.targetType == 0 ||
+                          obj.targetType == 1 ||
+                          obj.targetType == 3
+                      ) {
+                          persons++;
+                      } else {
+                          pcarnum++;
+                      }
+                  }
+                  this.statisticData ="当前数据包："+cars.length +"=" +zcarnum +"(自车)+" +pcarnum +"(感知)+" +persons +"(人)";
+              }
+          },
+          perceptionReconnect(){
+              //实例销毁后不进行重连
+              if(this._isDestroyed){
+                  return;
+              }
+              //重连不能超过10次
+              if(this.perceptionConnectCount>=10){
+                  return;
+              }
+              this.initPerceptionWebSocket();
+              //重连不能超过5次
+              this.perceptionConnectCount++;
+          },
         },
       watch:{
         visible(){
@@ -102,33 +285,35 @@
           //当窗口关闭
           if(!this.visible) {
             //重新连接数据和视频
-            if(_this.roadList==0){
-              this.sideMap=false;
+            if(!_this.roadItem){
               _this.mapMessage='路侧设备不存在!';
               return;
             }
-            _this.sideMap=true;
+            this.$nextTick(() => {
+              this.initMap();
+            })   
           }else{
             //打开窗口，关闭连接
-            _this.sideMap=false;
             _this.mapMessage='连接关闭';
-            if(this.$refs[this.roadItem.camSerialNum]){
-              this.$refs[this.roadItem.camSerialNum].reset3DMap();
-            }
+            this.perceptionWebsocket&&this.perceptionWebsocket.close();
           }
         }
       },
-      mounted() {
-        //console.log(this.roadItem)
-      },
+     
       destroyed(){
         //销毁Socket
-        if(this.$refs[this.roadItem.camSerialNum]){
-          this.$refs[this.roadItem.camSerialNum].reset3DMap();
-        }
+        this.perceptionWebsocket&&this.perceptionWebsocket.close();
       }
     }
 </script>
 <style lang="scss" scoped>
-  @import '@/assets/scss/theme.scss';
+.c-size-inner {
+  background: #000;
+}
+.m-iframe {
+  border: none;
+  background: #000;
+  width: 100%;
+  height: 100%;
+}
 </style>
