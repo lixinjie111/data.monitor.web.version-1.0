@@ -83,68 +83,17 @@
             this.onMapComplete();
           },  
 
-
-
           onMapComplete:function(){
             if(this.roadItem.camSerialNum&&this.roadItem.camSerialNum!='' && this.roadItem.cameraParam){
               let cameraParam = JSON.parse(this.roadItem.cameraParam);
               cameraParam.x = this.roadItem.lon;
               cameraParam.y = this.roadItem.lat;
               gis3d.updateCameraPosition(cameraParam.x,cameraParam.y,39,70,-0.2369132859032279, 0.0029627735803421373); 
-              this.getData();
             }
+            this.getData();
           },
           getData() {
-   
-            this.initPerceptionWebSocket();
-
-            if (this.serialNum && this.serialNum != "") {
-              this.mapInit = true;
-              gis3d.updateCameraPosition(
-                this.cameraParam.x,
-                this.cameraParam.y,
-                39,
-                70,
-                -0.2369132859032279,
-                0.0029627735803421373
-              );
-          
-              return;
-            }
-            let count = 0;
-            let time = setInterval(() => {
-              if (this.serialNum && this.serialNum != "") {
-                this.mapInit = true;
-                if(this.selectedItem.cameraParam){
-                  let cameraParam = JSON.parse(this.selectedItem.cameraParam);
-                  gis3d.updateCameraPosition(
-                    this.cameraParam.x,
-                    this.cameraParam.y,
-                    39,
-                    70,
-                    -0.2369132859032279,
-                    0.0029627735803421373
-                  );
-                }else{
-                  gis3d.updateCameraPosition(
-                    window.defaultMapParam.x,
-                    window.defaultMapParam.y,
-                    39,
-                    70,
-                    -0.2369132859032279,
-                    0.0029627735803421373
-                  );
-                }
-                clearInterval(time);
-              }
-              //超过5s仍然没有响应 则停止渲染
-              if (count == 5) {
-                clearInterval(time);
-              }
-              count++;
-            }, 1000);
-
-          
+            this.initPerceptionWebSocket();   
           },
           queryDeviceDetail(item,target) {
             this.$emit("queryDeviceDetail",item,target);
@@ -176,7 +125,7 @@
               let _this=this;
               try{
                   if ('WebSocket' in window) {
-                      _this.perceptionWebsocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+                      _this.perceptionWebsocket = new WebSocket(window.config.socketTestUrl);  //获得WebSocket对象
                       _this.perceptionWebsocket.onmessage = _this.onPerceptionMessage;
                       _this.perceptionWebsocket.onclose = _this.onPerceptionClose;
                       _this.perceptionWebsocket.onopen = _this.onPerceptionOpen;
@@ -191,13 +140,6 @@
 
           onPerceptionMessage(mesasge){
               let _this=this;
-              // if(_this.perIsFirst){
-              //     setTimeout(()=>{
-              //         _this.perIsFirst=false;
-              //     },_this.waitingtime);
-              //     return;
-              // }
-            
               let data = JSON.parse(mesasge.data)
               _this.processPerData(data);
             
@@ -211,12 +153,22 @@
           },
           onPerceptionOpen(data) {
             //旁车
+            // var perception = {
+            //   action: "road_real_data_per",
+            //   data: {
+            //     polygon: this.currentExtent
+            //   }
+            // };
+            // var perceptionMsg = JSON.stringify(perception);
+            // this.sendPerceptionMsg(perceptionMsg);
+
             var perception = {
-              action: "road_real_data_per",
-              data: {
-                polygon: this.currentExtent
-              }
-            };
+            action:"road_real_data_per",
+            data:{
+                type:1,
+                polygon:[[121.17403069999999,31.2836193],[121.1760307,31.2836193],[121.1760307,31.2816193],[121.17403069999999,31.2816193]]
+                }
+            }
             var perceptionMsg = JSON.stringify(perception);
             this.sendPerceptionMsg(perceptionMsg);
           },
@@ -234,36 +186,47 @@
           },
           processPerData(data){
               let _this = this;
+              let maxGpsTime = 0;
+              let fiterData;
+              if(data.result.perList.length){
+                data.result.perList.map(item=>{
+                  if(item.gpsTime > maxGpsTime){
+                    maxGpsTime = item.gpsTime;
+                    fiterData = item;
+                  }
+                })
+                    
+              }
                if(this.index){
-                 perceptionCars1.addPerceptionData(data,0);
+                 perceptionCars1.addPerceptionData(fiterData.data,0);
                }else{
-                 perceptionCars0.addPerceptionData(data,0);
+                 perceptionCars0.addPerceptionData(fiterData.data,0);
                }
               
-              let cars = data.result.vehDataDTO;
-              if(cars.length>0){
-                  _this.processDataTime = cars[0].gpsTime;
-                  let pcarnum = 0;
-                  let persons = 0;
-                  let zcarnum = 0;
-                  for (let i = 0; i < cars.length; i++) {
-                      let obj = cars[i];
-                      if (obj.type == 1) {
-                          zcarnum++;
-                          continue;
-                      }
-                      if (
-                          obj.targetType == 0 ||
-                          obj.targetType == 1 ||
-                          obj.targetType == 3
-                      ) {
-                          persons++;
-                      } else {
-                          pcarnum++;
-                      }
-                  }
-                  this.statisticData ="当前数据包："+cars.length +"=" +zcarnum +"(自车)+" +pcarnum +"(感知)+" +persons +"(人)";
-              }
+              // let cars = data.result.vehDataDTO;
+              // if(cars.length>0){
+              //     _this.processDataTime = cars[0].gpsTime;
+              //     let pcarnum = 0;
+              //     let persons = 0;
+              //     let zcarnum = 0;
+              //     for (let i = 0; i < cars.length; i++) {
+              //         let obj = cars[i];
+              //         if (obj.type == 1) {
+              //             zcarnum++;
+              //             continue;
+              //         }
+              //         if (
+              //             obj.targetType == 0 ||
+              //             obj.targetType == 1 ||
+              //             obj.targetType == 3
+              //         ) {
+              //             persons++;
+              //         } else {
+              //             pcarnum++;
+              //         }
+              //     }
+              //     this.statisticData ="当前数据包："+cars.length +"=" +zcarnum +"(自车)+" +pcarnum +"(感知)+" +persons +"(人)";
+              // }
           },
           perceptionReconnect(){
               //实例销毁后不进行重连

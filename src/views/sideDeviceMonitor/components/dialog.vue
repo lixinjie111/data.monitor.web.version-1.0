@@ -239,6 +239,14 @@ export default {
       videoUrl:'',
       extend: 0.0002,
       mapOk:false,
+      perCaptureList:[],
+      captureCount:0,
+      pulseInterval:40,
+      pulseNowTime:'',
+      pulseCount:0,
+      delayTime:9000,
+      pulseConnectCount:0,
+      perceptionConnectCount:0,
     };
   },
   components: {
@@ -286,7 +294,6 @@ export default {
       gis3d.initload("cesiumContainer",false);
       perceptionCars.viewer=gis3d.cesium.viewer;
       _this.mapParam=window.mapParam;
-      _this.rsId = _this.$route.params.crossId;
       this.onMapComplete();
     },
 
@@ -600,13 +607,16 @@ export default {
       this.time = time;
     },
     onMapComplete(){
-        gis3d.updateCameraPosition(112.94760914128275, 28.325093927226323,39,70,-0.2369132859032279, 0.0029627735803421373); 
+        perceptionCars.stepTime = this.pulseInterval;
+        perceptionCars.pulseInterval = parseInt(this.pulseInterval)*2*0.8;
+
+        // gis3d.updateCameraPosition(112.94760914128275, 28.325093927226323,39,70,-0.2369132859032279, 0.0029627735803421373); 
         this.getData();
       
     },
     getData() {
       
-      this.initPerceptionWebSocket();
+      this.initPulseWebSocket();
 
       if (this.serialNum && this.serialNum != "") {
         this.mapInit = true;
@@ -618,7 +628,6 @@ export default {
           -0.2369132859032279,
           0.0029627735803421373
         );
-     
         return;
       }
       let count = 0;
@@ -688,7 +697,7 @@ export default {
         let _this=this;
         try{
             if ('WebSocket' in window) {
-                _this.perceptionWebsocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+                _this.perceptionWebsocket = new WebSocket(window.config.socketTestUrl);  //获得WebSocket对象
                 _this.perceptionWebsocket.onmessage = _this.onPerceptionMessage;
                 _this.perceptionWebsocket.onclose = _this.onPerceptionClose;
                 _this.perceptionWebsocket.onopen = _this.onPerceptionOpen;
@@ -703,16 +712,9 @@ export default {
 
     onPerceptionMessage(mesasge){
         let _this=this;
-        // if(_this.perIsFirst){
-        //     setTimeout(()=>{
-        //         _this.perIsFirst=false;
-        //     },_this.waitingtime);
-        //     return;
-        // }
-      
         let data = JSON.parse(mesasge.data)
-        _this.processPerData(data);
-      
+        let sideList = data.result.perList;
+        perceptionCars.receiveData(sideList);    
     },
     onPerceptionClose(data) {
       console.log("结束连接");
@@ -723,12 +725,20 @@ export default {
     },
     onPerceptionOpen(data) {
       //旁车
+      // var perception = {
+      //   action: "road_real_data_per",
+      //   data: {
+      //     polygon: this.currentExtent
+      //   }
+      // };
+
       var perception = {
-        action: "road_real_data_per",
-        data: {
-          polygon: this.currentExtent
-        }
-      };
+        action:"road_real_data_per",
+        data:{
+          type:1,
+          polygon:[[121.17403069999999,31.2836193],[121.1760307,31.2836193],[121.1760307,31.2816193],[121.17403069999999,31.2816193]]
+          }
+      }
       var perceptionMsg = JSON.stringify(perception);
       this.sendPerceptionMsg(perceptionMsg);
     },
@@ -744,34 +754,7 @@ export default {
         return;
       }
     },
-    processPerData(data){
-        let _this = this;
-        perceptionCars.addPerceptionData(data,0);
-        let cars = data.result.vehDataDTO;
-        if(cars.length>0){
-            _this.processDataTime = cars[0].gpsTime;
-            let pcarnum = 0;
-            let persons = 0;
-            let zcarnum = 0;
-            for (let i = 0; i < cars.length; i++) {
-                let obj = cars[i];
-                if (obj.type == 1) {
-                    zcarnum++;
-                    continue;
-                }
-                if (
-                    obj.targetType == 0 ||
-                    obj.targetType == 1 ||
-                    obj.targetType == 3
-                ) {
-                    persons++;
-                } else {
-                    pcarnum++;
-                }
-            }
-            this.statisticData ="当前数据包："+cars.length +"=" +zcarnum +"(自车)+" +pcarnum +"(感知)+" +persons +"(人)";
-        }
-    },
+
     perceptionReconnect(){
         //实例销毁后不进行重连
         if(this._isDestroyed){
@@ -785,12 +768,105 @@ export default {
         //重连不能超过5次
         this.perceptionConnectCount++;
     },
+
+
+    //脉冲
+    initPulseWebSocket(){
+        let _this=this;
+        try{
+            if ('WebSocket' in window) {
+                _this.pulseWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
+                _this.pulseWebsocket.onmessage = _this.onPulseMessage;
+                _this.pulseWebsocket.onclose = _this.onPulseClose;
+                _this.pulseWebsocket.onopen = _this.onPulseOpen;
+                _this.pulseWebsocket.onerror= _this.onPulseError;
+            }else{
+                _this.$message("此浏览器不支持websocket");
+            }
+        }catch (e){
+            this.pulseReconnect();
+        }
+
+    },
+    onPulseMessage(mesasge){
+        let json = JSON.parse(mesasge.data);
+        let result = json.result;
+        if(this.pulseNowTime==''){
+            this.initPerceptionWebSocket();
+        }
+        this.pulseNowTime = result.timestamp;
+        this.pulseCount++;
+        if (Object.keys(perceptionCars.devObj).length > 0) {
+            for (let devId in perceptionCars.devObj) {
+                let devList = perceptionCars.devObj[devId];
+                if (devList.length > 0) {
+                    //分割之前将车辆移动到上一个点
+                    //将第一个点进行分割
+                    let data = devList.shift();
+                    perceptionCars.cacheAndInterpolatePerCar(data);
+                }
+            }
+        }
+        let pulseNum = this.delayTime/40;
+        let delayTime=this.delayTime*0.5;
+        //当pulseCount为delayTime*2/40*0.5
+        if(this.pulseCount>=pulseNum) {
+            //当平台车开始插值时，调用其他接口
+            this.processDataTime = result.timestamp-delayTime;
+            if(Object.keys(perceptionCars.devObj).length>0){
+                let processPerCar = perceptionCars.processPerTrack(result.timestamp,delayTime);
+            }
+        }
+    },
+    onPulseClose(data){
+        console.log("感知车结束连接");
+        this.PulseReconnect();
+    },
+    onPulseError(){
+        console.log("感知车连接error");
+        this.PulseReconnect();
+    },
+    onPulseOpen(data){
+        //旁车
+        let pulse = {
+            "action":"pulse",
+            "data":{
+                "frequency":this.pulseInterval
+            }
+        }
+        let pulseMsg = JSON.stringify(pulse);
+        this.sendPulseMsg(pulseMsg);
+    },
+    sendPulseMsg(msg) {
+        let _this=this;
+        if(window.WebSocket){
+            if(_this.pulseWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+                _this.pulseWebsocket.send(msg); //send()发送消息
+            }
+        }else{
+            return;
+        }
+    },
+    PulseReconnect(){
+        //实例销毁后不进行重连
+        if(this._isDestroyed){
+            return;
+        }
+        //重连不能超过10次
+        if(this.pulseConnectCount>=10){
+            return;
+        }
+        this.initPulseWebSocket();
+        //重连不能超过5次
+        this.pulseConnectCount++;
+    },
     
   },
  
   destroyed(){
       //销毁Socket
       this.perceptionWebsocket&&this.perceptionWebsocket.close();
+      this.pulseWebsocket&&this.pulseWebsocket.close();
   }
 };
 </script>

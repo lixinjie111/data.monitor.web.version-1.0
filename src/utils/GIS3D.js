@@ -9,7 +9,7 @@ class GIS3D {
         this.cesiumContainer = document.getElementById(id);
         this.initCesium(); // Initialize Cesium renderer  
         if (!isFXAA) { 
-            this.cesium.viewer.scene.screenSpaceCameraController.minimumZoomDistance = 55; //距离地形的距离？这个值可以多测试几个值，，我这不太好描述
+            this.cesium.viewer.scene.screenSpaceCameraController.minimumZoomDistance =this.defualtZ+5; //距离地形的距离？这个值可以多测试几个值，，我这不太好描述
         } 
     }
     initCesium() {
@@ -28,8 +28,8 @@ class GIS3D {
             fullscreenButton: false,
             vrButton: false,
             orderIndependentTranslucency: false,
-            baseLayerPicker: false, //是否显示图层选择控件
-            infoBox: false, //是否显示点击要素之后显示的信息
+            // baseLayerPicker: false, //是否显示图层选择控件
+            // infoBox: false, //是否显示点击要素之后显示的信息
 
         });
         this.cesium.viewer.scene.globe.depthTestAgainstTerrain = false;
@@ -45,172 +45,36 @@ class GIS3D {
         //     canvas: this.cesium.viewer.scene.canvas,
         //     clampToGround: true //开启贴
         // } 
-        // let promise=   this.cesium.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/data/'+window.pro+'/4.geojson', {
+        // let promise=   this.cesium.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/4.geojson', {
         //     fill: Cesium.Color.fromCssColorString('#71446b').withAlpha(0.9),//'static/images/login-bg.jpg',//.withAlpha(1)
         //     stroke: Cesium.Color.fromCssColorString('#71446b').withAlpha(0),// Cesium.Color.ORANGE,
         //     strokeWidth: 0,
         //     zIndex:1,
         //     markerSymbol: '?'
         //   }));
-        //   this.cesium.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/data/'+window.pro+'/3.geojson', {
-        //     fill: Cesium.Color.ALICEBLUE.withAlpha(0.996),//.withAlpha(1)
-        //     stroke: Cesium.Color.fromCssColorString('#fff'),// Cesium.Color.ORANGE,
-        //     strokeWidth: 0,
-        //     markerSymbol: '?'
-        //   }));
-        //  this.cesium.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/data/'+window.pro+'/2.geojson', {
-        //     stroke: Cesium.Color.ALICEBLUE.withAlpha(0.996),// Cesium.Color.ORANGE, new Cesium.Color(135,75,43,1)
-        //     strokeWidth: 2,
-        //     markerSymbol: '?'
-        // }));
-        //   this.cesium.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/data/'+window.pro+'/1.geojson', {
-        //     stroke: new Cesium.Color(0.5372549019607843, 0.2941176470588235, 0.1686274509803922, 0.996),// Cesium.Color.ALICEBLUE.withAlpha(0.996),
-        //     strokeWidth: 2,
-        //     markerSymbol: '?'
-        //   })); 
-
-
-
-
-
-        this.cesium.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/shanghai/33.geojson', {
-            fill: Cesium.Color.ALICEBLUE.withAlpha(1).withAlpha(0.996),//.withAlpha(1)
-            stroke: Cesium.Color.fromCssColorString('#fff').withAlpha(0.996),// Cesium.Color.ORANGE, 
+          this.cesium.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/3.geojson', {
+            fill: Cesium.Color.ALICEBLUE.withAlpha(0.996),//.withAlpha(1)
+            stroke: Cesium.Color.fromCssColorString('#fff'),// Cesium.Color.ORANGE,
+            strokeWidth: 0,
             markerSymbol: '?'
-        }));
-        this.cesium.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/shanghai/绿化带.geojson', {
-            fill: Cesium.Color.fromCssColorString('#758152').withAlpha(0.996),//.withAlpha(1)
-            stroke: Cesium.Color.fromCssColorString('#758152').withAlpha(0.996),// Cesium.Color.ORANGE, 
-            markerSymbol: '?',
-            zIndex: 1
-        }));
-
-
-        this.cesium.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/shanghai/斑马线.geojson', {
-            fill: Cesium.Color.fromCssColorString('#f3f3f3').withAlpha(0.996),
-            stroke: Cesium.Color.fromCssColorString('#f3f3f3').withAlpha(0.996),// Cesium.Color.ORANGE, 
-            markerSymbol: '?',
-            zIndex: 2
-        }));
-        this.cesium.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/shanghai/感知区域.geojson', {
-            fill: Cesium.Color.fromCssColorString('#71446b').withAlpha(0.5),//'static/images/login-bg.jpg',//.withAlpha(1)
-            stroke: Cesium.Color.fromCssColorString('#71446b').withAlpha(0.5),// Cesium.Color.ORANGE,  
-            markerSymbol: '?',
-            zIndex: 0
-        }));
-
-        let dlwbk = this.cesium.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/shanghai/道路外边框.geojson', {
-            fill: Cesium.Color.fromCssColorString('#c0c7c5').withAlpha(0.996),//.withAlpha(1)
-            stroke: Cesium.Color.fromCssColorString('#c0c7c5').withAlpha(0.996),// Cesium.Color.ORANGE, 
-            markerSymbol: '?',
-            zIndex: 1
-        }));
-        
-        this.cesium.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/shanghai/10.geojson', {
-            fill: Cesium.Color.fromCssColorString('#626669').withAlpha(1),//.withAlpha(1)
-            stroke: Cesium.Color.fromCssColorString('#626669').withAlpha(1),// Cesium.Color.ORANGE, 
-            markerSymbol: '?',
-            zIndex: 0
-        }));
-
-
-
-        let dcdx = this.cesium.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/shanghai/6.geojson', {
-            stroke: Cesium.Color.ALICEBLUE.withAlpha(0.996),// Cesium.Color.ORANGE, new Cesium.Color(135,75,43,1) 
-            strokeWidth: 1,
-            markerSymbol: '?'
-        }));
-        dcdx.then(function (dataSource) {
-            var entities = dataSource.entities.values;
-            for (var i = 0; i < entities.length; i++) {
-                var entity = entities[i];
-                entity.polyline.material = new Cesium.PolylineDashMaterialProperty({
-                    color: Cesium.Color.ALICEBLUE.withAlpha(0.996),
-                    dashLength: 10.0
-                });
-                entity.polyline.distanceDisplayCondition = new Cesium.DistanceDisplayCondition(0, 2000);
-            }
-        }).otherwise(function (error) {
-            //Display any errrors encountered while loading.
-            window.alert(error);
-        });
-
-        let dcxx = this.cesium.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/shanghai/5.geojson', {
+          }));
+         this.cesium.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/2.geojson', {
             stroke: Cesium.Color.ALICEBLUE.withAlpha(0.996),// Cesium.Color.ORANGE, new Cesium.Color(135,75,43,1)
             strokeWidth: 2,
             markerSymbol: '?'
         }));
-        dcxx.then(function (dataSource) {
-            var entities = dataSource.entities.values;
-            for (var i = 0; i < entities.length; i++) {
-                var entity = entities[i];
-                entity.polyline.material = new Cesium.PolylineDashMaterialProperty({
-                    color: Cesium.Color.ALICEBLUE.withAlpha(0.996),
-                    dashLength: 25.0
-                })
-                entity.polyline.distanceDisplayCondition = new Cesium.DistanceDisplayCondition(0, 2000);
-            }
-        }).otherwise(function (error) {
-            //Display any errrors encountered while loading.
-            window.alert(error);
-        });
-        this.cesium.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/shanghai/step.geojson', {
-            stroke: Cesium.Color.fromCssColorString('#c0c0c0').withAlpha(0.996),// Cesium.Color.ORANGE, new Cesium.Color(135,75,43,1)
+          this.cesium.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/1.geojson', {
+            stroke: new Cesium.Color(0.5372549019607843, 0.2941176470588235, 0.1686274509803922, 0.996),// Cesium.Color.ALICEBLUE.withAlpha(0.996),
             strokeWidth: 2,
             markerSymbol: '?'
-        }));
-       let dlzx= this.cesium.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/shanghai/道路直线.geojson', {
-            stroke: Cesium.Color.fromCssColorString('#f3f3f3').withAlpha(0.996),// Cesium.Color.ORANGE, new Cesium.Color(135,75,43,1)
-            strokeWidth: 2,
-            markerSymbol: '?',
-            zIndex: 1
-        }));
-        dlzx.then(function (dataSource) {
-            var entities = dataSource.entities.values;
-            for (var i = 0; i < entities.length; i++) {
-                var entity = entities[i]; 
-                entity.polyline.distanceDisplayCondition = new Cesium.DistanceDisplayCondition(0, 2000);
-            }
-        }).otherwise(function (error) {
-            //Display any errrors encountered while loading.
-            window.alert(error);
-        });
-
-        let dlbk = this.cesium.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/shanghai/1.geojson', {
-            stroke: Cesium.Color.fromCssColorString('#516b03').withAlpha(0.996),// Cesium.Color.ALICEBLUE.withAlpha(0.996),
-            strokeWidth: 2,
-            markerSymbol: '?'
-        }));
-        dlbk.then(function (dataSource) {
-            var entities = dataSource.entities.values;
-            for (var i = 0; i < entities.length; i++) {
-                var entity = entities[i]; 
-                entity.polyline.distanceDisplayCondition = new Cesium.DistanceDisplayCondition(0, 500);
-            }
-        }).otherwise(function (error) {
-            //Display any errrors encountered while loading.
-            window.alert(error);
-        });
-
-
-
-
-
-
-
-
-
-
-
-
-
+          })); 
 
         //业务数据
-          this.cesium.viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({
-            url: window.mapUrl,
-            maximumLevel: 20,
-            id: "layer1"
-          }));
+        //   this.cesium.viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({
+        //     url: window.mapUrl,
+        //     maximumLevel: 20,
+        //     id: "layer1"
+        //   }));
         //去除版权信息
           this.cesium.viewer._cesiumWidget._creditContainer.style.display = "none";
         //   var heading = Cesium.Math.toRadians(70);

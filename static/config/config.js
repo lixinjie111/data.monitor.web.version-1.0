@@ -18,6 +18,8 @@ window.config = {
     dlUrl: 'http://117.114.144.227:8085/', //迪路
     dlWmsUrl: 'http://117.114.144.227:8080/', //迪路
 
+    socketTestUrl:'ws://172.17.1.16:8888/ws',
+
     //上海正式环境  外网
     // staticUrl: "http://116.236.72.204:49090/", //静态文件路径
     // url: 'http://116.236.72.206:49093/monPlatApp/', //监控平台
@@ -94,4 +96,3 @@ window.circleParam = {
 window.currentExtent=[window.mapOption.center,window.mapOption.center,window.mapOption.center,window.mapOption.center];
 window.mapUrl=window.config.dlWmsUrl+"geoserver/gwc/service/wmts/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=shanghai_qcc:dl_shcsq_wgs84_zc_0709&STYLE=&FORMAT=image/png&TILEMATRIXSET=EPSG:900913&TileMatrix=EPSG:900913:{TileMatrix}&TileCol={TileCol}&TileRow={TileRow}"
 window.defualtZ=0;
-window.pro="shanghai"
