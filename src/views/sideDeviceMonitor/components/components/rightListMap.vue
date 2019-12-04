@@ -197,36 +197,11 @@
                 })
                     
               }
-               if(this.index){
-                 perceptionCars1.addPerceptionData(fiterData.data,0);
-               }else{
-                 perceptionCars0.addPerceptionData(fiterData.data,0);
-               }
-              
-              // let cars = data.result.vehDataDTO;
-              // if(cars.length>0){
-              //     _this.processDataTime = cars[0].gpsTime;
-              //     let pcarnum = 0;
-              //     let persons = 0;
-              //     let zcarnum = 0;
-              //     for (let i = 0; i < cars.length; i++) {
-              //         let obj = cars[i];
-              //         if (obj.type == 1) {
-              //             zcarnum++;
-              //             continue;
-              //         }
-              //         if (
-              //             obj.targetType == 0 ||
-              //             obj.targetType == 1 ||
-              //             obj.targetType == 3
-              //         ) {
-              //             persons++;
-              //         } else {
-              //             pcarnum++;
-              //         }
-              //     }
-              //     this.statisticData ="当前数据包："+cars.length +"=" +zcarnum +"(自车)+" +pcarnum +"(感知)+" +persons +"(人)";
-              // }
+              if(this.index){
+                perceptionCars1.addPerceptionData(fiterData.data,0);
+              }else{
+                perceptionCars0.addPerceptionData(fiterData.data,0);
+              }
           },
           perceptionReconnect(){
               //实例销毁后不进行重连

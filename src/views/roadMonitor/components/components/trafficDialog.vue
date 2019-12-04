@@ -513,7 +513,7 @@ export default {
         let _this=this;
         try{
             if ('WebSocket' in window) {
-                _this.perceptionWebsocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+                _this.perceptionWebsocket = new WebSocket(window.config.socketTestUrl);  //获得WebSocket对象
                 _this.perceptionWebsocket.onmessage = _this.onPerceptionMessage;
                 _this.perceptionWebsocket.onclose = _this.onPerceptionClose;
                 _this.perceptionWebsocket.onopen = _this.onPerceptionOpen;
@@ -528,17 +528,8 @@ export default {
     },
     onPerceptionMessage(mesasge){
         let _this=this;
-        // if(_this.perIsFirst){
-        //     setTimeout(()=>{
-        //         _this.perIsFirst=false;
-        //     },_this.waitingtime);
-        //     return;
-        // }
-      
         let data = JSON.parse(mesasge.data)
-      
         _this.processPerData(data);
-      
     },
     onPerceptionClose(data) {
       console.log("结束连接");
@@ -549,42 +540,40 @@ export default {
     },
     onPerceptionOpen(data) {
       //旁车
+      // var perception = {
+      //   action: "road_real_data_per",
+      //   data: {
+      //     polygon: this.currentExtent
+      //   }
+      // };
+      // var perceptionMsg = JSON.stringify(perception);
+      // this.sendPerceptionMsg(perceptionMsg);
+
       var perception = {
-        action: "road_real_data_per",
-        data: {
-          polygon: this.currentExtent
-        }
-      };
+      action:"road_real_data_per",
+      data:{
+          type:1,
+          polygon:[[121.17403069999999,31.2836193],[121.1760307,31.2836193],[121.1760307,31.2816193],[121.17403069999999,31.2816193]]
+          }
+      }
       var perceptionMsg = JSON.stringify(perception);
       this.sendPerceptionMsg(perceptionMsg);
     },
     processPerData(data){
         let _this = this;
-        perceptionCars.addPerceptionData(data,0);
-        let cars = data.result.vehDataDTO;
-        if(cars.length>0){
-            _this.processDataTime = cars[0].gpsTime;
-            let pcarnum = 0;
-            let persons = 0;
-            let zcarnum = 0;
-            for (let i = 0; i < cars.length; i++) {
-                let obj = cars[i];
-                if (obj.type == 1) {
-                    zcarnum++;
-                    continue;
-                }
-                if (
-                    obj.targetType == 0 ||
-                    obj.targetType == 1 ||
-                    obj.targetType == 3
-                ) {
-                    persons++;
-                } else {
-                    pcarnum++;
-                }
+        let maxGpsTime = 0;
+        let fiterData;
+        if(data.result.perList.length){
+          data.result.perList.map(item=>{
+            if(item.gpsTime > maxGpsTime){
+              maxGpsTime = item.gpsTime;
+              fiterData = item;
             }
-            this.statisticData ="当前数据包："+cars.length +"=" +zcarnum +"(自车)+" +pcarnum +"(感知)+" +persons +"(人)";
+          })
+              
         }
+        perceptionCars.addPerceptionData(fiterData.data,0);
+      
     },
     sendPerceptionMsg(msg) {
       let _this = this;
