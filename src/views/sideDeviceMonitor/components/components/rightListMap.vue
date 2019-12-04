@@ -88,7 +88,7 @@
               let cameraParam = JSON.parse(this.roadItem.cameraParam);
               cameraParam.x = this.roadItem.lon;
               cameraParam.y = this.roadItem.lat;
-              gis3d.updateCameraPosition(cameraParam.x,cameraParam.y,39,70,-0.2369132859032279, 0.0029627735803421373); 
+              gis3d.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw); 
             }
             this.getData();
           },

@@ -326,22 +326,22 @@ export default {
       if (this.mapOk) {
         if (this.isOne) {
           this.isOne = false;
-          // if (this.selectedItem.cameraId) {
-          //   if (this.cameraParam) {
-          //     this.updateCameraPosition(
-          //       this.cameraParam.x,
-          //       this.cameraParam.y,
-          //       this.cameraParam.z,
-          //       this.cameraParam.radius,
-          //       this.cameraParam.pitch,
-          //       this.cameraParam.yaw
-          //     );
-          //   } else {
-          //     this.updateCameraPosition();
-          //   }
-          // } else {
+          if (this.selectedItem.cameraId) {
+            if (this.cameraParam) {
+              gis3d.updateCameraPosition(
+                this.cameraParam.x,
+                this.cameraParam.y,
+                this.cameraParam.z,
+                this.cameraParam.radius,
+                this.cameraParam.pitch,
+                this.cameraParam.yaw
+              );
+            } else {
+              this.updateCameraPosition();
+            }
+          } else {
             this.updateCameraPosition();
-          // }
+          }
           let formData = new FormData(); //创建form对象
           formData.append("featureclass", "dl_shcsq_wgs84_lb_points");
           formData.append("lng", this.selectedItem.longitude); //通过append向form对象添加数据
@@ -382,6 +382,7 @@ export default {
       }
     },
     updateCameraPosition() {
+      
       if(!this.position.length){
         this.position = [112.94760914128275, 28.325093927226323]
       }
@@ -393,7 +394,7 @@ export default {
           39,
           70,
           -0.2369132859032279,
-          0.0029627735803421373
+          (Math.PI / 180.0) * (this.heading+25)
         );
       } else {
         gis3d.updateCameraPosition(

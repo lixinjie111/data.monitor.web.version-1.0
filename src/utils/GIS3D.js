@@ -282,10 +282,9 @@ class GIS3D {
         this.cesium.viewer.scene.primitives.add(entity);
     }
     updateCameraPosition(x, y, z, radius, pitch, yaw) {
-        var heading = Cesium.Math.toRadians(radius);
-        var hpr = new Cesium.HeadingPitchRoll(heading, pitch, yaw);
+        var hpr = new Cesium.HeadingPitchRoll(radius, pitch, yaw);
         this.cesium.viewer.camera.flyTo({
-            destination: Cesium.Cartesian3.fromDegrees(x, y, this.defualtZ + 39.142101722743725),
+            destination: Cesium.Cartesian3.fromDegrees(x, y, z),
             orientation: hpr
         });
 

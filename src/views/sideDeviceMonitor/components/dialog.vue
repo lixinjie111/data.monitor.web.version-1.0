@@ -74,19 +74,6 @@
                 <div class="time-style">
                   <span class="t-class">{{time}}</span>
                 </div>
-                <!-- <tusvn-map4
-                  :target-id="deviceMapId"
-                  ref="tusvnMap3"
-                  :background="mapParam.background"
-                  :minX="mapParam.minX"
-                  :minY="mapParam.minY"
-                  :minZ="mapParam.minZ"
-                  :maxX="mapParam.maxX"
-                  :maxY="mapParam.maxY"
-                  :maxZ="mapParam.maxZ"
-                  @mapcomplete="mapcomplete"
-                  @showTimeStamp="showTimeStamp"
-                ></tusvn-map4> -->
                 <div id="cesiumContainer" class="side-dialog-map"></div>
               </div>
             </div>
@@ -157,19 +144,6 @@
                       <div class="time-style">
                         <span class="t-class">{{time}}</span>
                       </div>
-                      <!-- <tusvn-map4
-                        :target-id="deviceMapId"
-                        ref="tusvnMap3"
-                        :background="mapParam.background"
-                        :minX="mapParam.minX"
-                        :minY="mapParam.minY"
-                        :minZ="mapParam.minZ"
-                        :maxX="mapParam.maxX"
-                        :maxY="mapParam.maxY"
-                        :maxZ="mapParam.maxZ"
-                        @mapcomplete="mapcomplete"
-                        @showTimeStamp="showTimeStamp"
-                      ></tusvn-map4> -->
                       <div id="cesiumContainer" class="side-dialog-map"></div>
                     </div>
                   </div>
@@ -415,24 +389,23 @@ export default {
         //根据摄像头调取视频
         _this.getVideo();
         //选中后重新请求
-         if (this.$refs.tusvnMap3) {
-          if(!item.cameraParam) return;
-          _this.cameraParam = JSON.parse(item.cameraParam);
-          _this.cameraParam.x = item.lon;
-          _this.cameraParam.y = item.lat;
-          gis3d.updateCameraPosition(
-            _this.cameraParam.x,
-            _this.cameraParam.y,
-            39,
-            70,
-            -0.2369132859032279,
-            0.0029627735803421373
-          );
-          this.perceptionWebsocket.close();
-          this.getExtend(item.lon,item.lat,_this.extend)
-          this.initPerceptionWebSocket();
+        if(!item.cameraParam) return;
+        _this.cameraParam = JSON.parse(item.cameraParam);
+        _this.cameraParam.x = item.lon;
+        _this.cameraParam.y = item.lat;
+        gis3d.updateCameraPosition(
+          _this.cameraParam.x,
+          _this.cameraParam.y,
+          this.cameraParam.z,
+          this.cameraParam.radius,
+          this.cameraParam.pitch,
+          this.cameraParam.yaw
+        );
+        this.perceptionWebsocket.close();
+        this.getExtend(item.lon,item.lat,_this.extend)
+        this.initPerceptionWebSocket();
         
-        }
+        
       
       }
     },
@@ -610,7 +583,6 @@ export default {
         perceptionCars.stepTime = this.pulseInterval;
         perceptionCars.pulseInterval = parseInt(this.pulseInterval)*2*0.8;
 
-        // gis3d.updateCameraPosition(112.94760914128275, 28.325093927226323,39,70,-0.2369132859032279, 0.0029627735803421373); 
         this.getData();
       
     },
@@ -623,10 +595,10 @@ export default {
         gis3d.updateCameraPosition(
           this.cameraParam.x,
           this.cameraParam.y,
-          39,
-          70,
-          -0.2369132859032279,
-          0.0029627735803421373
+          this.cameraParam.z,
+          this.cameraParam.radius,
+          this.cameraParam.pitch,
+          this.cameraParam.yaw
         );
         return;
       }
@@ -639,10 +611,10 @@ export default {
             gis3d.updateCameraPosition(
               this.cameraParam.x,
               this.cameraParam.y,
-              39,
-              70,
-              -0.2369132859032279,
-              0.0029627735803421373
+              this.cameraParam.z,
+              this.cameraParam.radius,
+              this.cameraParam.pitch,
+              this.cameraParam.yaw
             );
           }else{
             gis3d.updateCameraPosition(
