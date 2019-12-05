@@ -365,7 +365,25 @@ export default {
               }
               let _length = this.itemData.modelIcon.split("/").length;
               let _name = this.itemData.modelIcon.split("/")[_length - 1];
-              let _url = "./static/map3d/models/" + _name;
+              let _url = "./static/map3d/traffic_models/" + _name;
+
+              _url = "./static/map3d/model/zhui_tong.glb";
+              // gis3d.addModel(
+              //   _name,
+              //   _url,
+              //   this.position[0],
+              //   this.position[1],
+              //   0
+              // );
+              gis3d.addModeCar({
+                longitude:this.position[0],
+                latitude:this.position[1],
+                heading:0,
+                vehicleId:""
+              },
+              _name,
+              "zhui_tong"
+              );
             }
           });
           } else {
