@@ -427,7 +427,8 @@ export default {
     },
     initWebSocket() {
       if ("WebSocket" in window) {
-        this.webSocket = new WebSocket(window.config.websocketUrl); //获得WebSocket对象
+        // this.webSocket = new WebSocket(window.config.websocketUrl); //获得WebSocket对象
+        this.webSocket = new WebSocket(window.config.socketTestUrl); //获得WebSocket对象
       }
       this.webSocket.onmessage = this.onmessage;
       this.webSocket.onclose = this.onclose;

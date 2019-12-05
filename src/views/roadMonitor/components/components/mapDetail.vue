@@ -44,8 +44,8 @@
           center: window.mapOption.defaultCenterPoint,
           zoom: 18,
           mapStyle: window.mapOption.mapStyleEmpty,
-          dragEnable: false,
-          zoomEnable:  false,
+          // dragEnable: false,
+          // zoomEnable:  false,
           resizeEnable: true, //是否监控地图容器尺寸变化
           rotateEnable: true,
         };
@@ -132,7 +132,8 @@
         initWebSocket(){
           let _this=this;
           if ('WebSocket' in window) {
-            _this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+            // _this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+            _this.webSocket = new WebSocket(window.config.socketTestUrl);  //获得WebSocket对象
           }
           _this.webSocket.onmessage = _this.onmessage;
           _this.webSocket.onclose = _this.onclose;
@@ -144,60 +145,68 @@
           let jsonData = JSON.parse(message.data);
           let result = jsonData.result;
           // 车辆
-           if (result.vehDataDTO) {
-            _this.crossData.roadSenseCars = result.vehDataDTO;
-            if (_this.crossData.roadSenseCars.length > 0) {
-              _this.crossData.roadSenseCars = _this.crossData.roadSenseCars.filter(
-                x => x.targetType === 2 || x.targetType === 5
-              );
-              let _filterData = {};
-              _this.crossData.roadSenseCars.forEach((item, index) => {
-                _filterData[item.vehicleId] = {
-                  longitude: item.longitude,
-                  latitude: item.latitude,
-                  heading: item.heading,
-                  speed: item.speed,
-                  vehicleId: item.vehicleId,
-                  devId: item.devId,
-                  marker: null,
-                };
-              });
-
-              for (let id in _this.prevData) {
-                if(_filterData[id]) {   //表示有该点，做move
-                  _filterData[id].marker = _this.prevData[id].marker;
-                  let _currentCar = _filterData[id];
-                  _filterData[id].marker.setAngle(_currentCar.heading);
-                  // _filterData[id].marker.moveTo([_currentCar.longitude, _currentCar.latitude], _currentCar.speed);
-                  _filterData[id].marker.setPosition([_currentCar.longitude, _currentCar.latitude]);
-                } else {   //表示没有该点，做remove
-                  // _this.prevData[id].marker.stopMove();
-                  _this.map.remove(_this.prevData[id].marker);
-                  delete _this.prevData[id];
-                }
-              }
-              for (let id in _filterData) {
-                if(!_this.prevData[id]) {   //表示新增该点，做add
-                    _filterData[id].marker = new AMap.Marker({
-                      position: [_filterData[id].longitude, _filterData[id].latitude],
-                      map: _this.map,
-                      icon: "static/images/road/car.png",
-                      angle: _filterData[id].heading,
-                      devId: _filterData[id].devId,
-                      zIndex: 1
-                    });
-                }
-              }
+          if (result.data) {
+            for (const k in  result.data) {        
+                  _this.crossData.roadSenseCars = result.data[k];
+                 if (_this.crossData.roadSenseCars.length > 0) {
+                    _this.crossData.roadSenseCars = _this.crossData.roadSenseCars.filter(
+                      x => x.targetType === 2 || x.targetType === 5
+                    );
+                    let _filterData = {};
+                    let maxGpsTime = 0;
+                    let fiterData;      
+                    _this.crossData.roadSenseCars.map(item=>{
+                      if(item.gpsTime > maxGpsTime){
+                        maxGpsTime = item.gpsTime;
+                        _filterData = {
+                          longitude: item.longitude,
+                          latitude: item.latitude,
+                          heading: item.heading,
+                          speed: item.speed,
+                          vehicleId: item.vehicleId,
+                          devId: item.devId,
+                          marker: null,
+                          timer:null,
+                        };
+                      }
+                    })
+                        
+                    for (let id in _this.prevData) {
+                      if(_filterData.vehicleId == id) {   //表示有该点，做move
+                        clearTimeout(_this.prevData[_filterData.vehicleId].timer)
+                        _filterData.marker = _this.prevData[id].marker;
+                        let _currentCar = _filterData;
+                        _filterData.marker.setAngle(_currentCar.heading);
+                        // _filterData[id].marker.moveTo([_currentCar.longitude, _currentCar.latitude], _currentCar.speed);
+                        _filterData.marker.setPosition([_currentCar.longitude, _currentCar.latitude]);
+                      } 
+                      // else {   //表示没有该点，做remove
+                      //   // _this.prevData[id].marker.stopMove();
+                      //   _this.map.remove(_this.prevData[id].marker);
+                      //   delete _this.prevData[id];
+                      // }
+                    }
+      
+                    if(!_this.prevData[_filterData.vehicleId]) {   //表示新增该点，做add
+                        _filterData.marker = new AMap.Marker({
+                          position: [_filterData.longitude, _filterData.latitude],
+                          map: _this.map,
+                          icon: "static/images/road/car.png",
+                          angle: _filterData.heading,
+                          devId: _filterData.devId,
+                          zIndex: 1
+                        });
+                    }
             
-              _this.prevData = _filterData;
+                    _this.prevData[_filterData.vehicleId] = _filterData;
+                    _this.prevData[_filterData.vehicleId].timer = setTimeout(() => {
+                      console.log(_filterData.vehicleId)
+                      console.log(_this.prevData)
+                      _this.map.remove(_this.prevData[_filterData.vehicleId].marker);
+                      delete _this.prevData[_filterData.vehicleId];
+                    }, 5000);
 
-            } else {
-              // 返回的数据为空
-              for (let id in _this.prevData) {
-                // _this.prevData[id].marker.stopMove();
-                _this.map.remove(_this.prevData[id].marker);
-                delete _this.prevData[id];
-              }
+                 }
             }
           }
         },
@@ -206,19 +215,14 @@
         },
         onopen(data){
           //获取在驶车辆状态
-          // let _params = {
-          //   'action':'cross_real_data',
-          //   'token':'tusvn',
-          //   'crossId':this.cross.crossId
-          // }
-          let _params = {
-            action: "road_real_data_reg",
-            data: {
-              polygon: this.crossData.finalFourPosition,
-              fuselType: 1
-            }
-          };
-          let _paramsMsg = JSON.stringify(_params);
+          let platform ={
+              "action": "vehicle",
+              "body": {
+                  "polygon": this.crossData.finalFourPosition,
+              },
+              "type": 3
+          }
+          let _paramsMsg = JSON.stringify(platform);
           this.sendMsg(_paramsMsg);
         },
         sendMsg(msg) {
