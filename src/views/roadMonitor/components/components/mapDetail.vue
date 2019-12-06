@@ -21,7 +21,8 @@
               sideVehicleObj: {}, // 地图上画车辆
               sideLight: {} //
             },
-            prevData: {}
+            prevData: {},
+            timeOut:1000*60*5
           }
       },
       computed: {
@@ -200,11 +201,9 @@
             
                     _this.prevData[_filterData.vehicleId] = _filterData;
                     _this.prevData[_filterData.vehicleId].timer = setTimeout(() => {
-                      console.log(_filterData.vehicleId)
-                      console.log(_this.prevData)
                       _this.map.remove(_this.prevData[_filterData.vehicleId].marker);
                       delete _this.prevData[_filterData.vehicleId];
-                    }, 5000);
+                    }, this.timeOut);
 
                  }
             }

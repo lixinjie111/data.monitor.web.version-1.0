@@ -117,6 +117,7 @@
               prevData: {},
               prevLight:[],
               roadSenseCars:"",
+              timeOut:1000*60*5
             }
         },
       props:{
@@ -570,7 +571,7 @@
                     _this.prevData[_filterData.vehicleId].timer = setTimeout(() => {
                       _this.$refs.refTusvnMap.removeOverlayById(_this.prevData[_filterData.vehicleId].vehicleId);
                       delete _this.prevData[_filterData.vehicleId];
-                    }, 5000);
+                    }, this.timeOut);
 
                  }
             }
