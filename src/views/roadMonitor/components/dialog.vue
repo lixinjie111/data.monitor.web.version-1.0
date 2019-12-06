@@ -116,6 +116,8 @@
               finalFourPosition: [],
               prevData: {},
               prevLight:[],
+              roadSenseCars:"",
+              timeOut:1000*60*5
             }
         },
       props:{
@@ -138,6 +140,7 @@
       },
       watch:{
         "finalFourPosition"(newVal, oldVal) {
+            this.clearCars();
             if(this.webSocket) {
               this.onopen();
             }else {
@@ -494,78 +497,154 @@
         initWebSocket(){
           let _this=this;
           if ('WebSocket' in window) {
-            _this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+            // _this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+            _this.webSocket = new WebSocket(window.config.socketTestUrl);  //获得WebSocket对象
           }
           _this.webSocket.onmessage = _this.onmessage;
           _this.webSocket.onclose = _this.onclose;
           _this.webSocket.onopen = _this.onopen;
           _this.webSocket.onerror = _this.onerror;
         },
-        onmessage(mesasge){
-          let _this=this;
-          let json = JSON.parse(mesasge.data);
-          let result = json.result.vehDataDTO;
-          // 车辆3
-        
-          if (result.length > 0) {
-            let _filterResult = result;
-            _filterResult = _filterResult.filter(
-              x => x.targetType === 2 || x.targetType === 5
-            );
-            let _filterData = {};
-            _filterResult.forEach((item, index) => {
-              _filterData[item.vehicleId] = {
-                longitude: item.longitude,
-                latitude: item.latitude,
-                heading: item.heading,
-                speed: item.speed,
-                vehicleId: item.vehicleId,
-                marker: null,
-              };
-            });
+        onmessage(message){
+          let _this = this;
+          let jsonData = JSON.parse(message.data);
+          let result = jsonData.result;
+          // 车辆
+          if (result.data) {
+            for (const k in  result.data) {        
+                 if (result.data[k].length > 0) {
+                    _this.roadSenseCars = result.data[k].filter(
+                      x => x.targetType === 2 || x.targetType === 5
+                    );
+                    let _filterData = {};
+                    let maxGpsTime = 0;
+                    let fiterData;      
+                    _this.roadSenseCars.map(item=>{
+                      if(item.gpsTime > maxGpsTime){
+                        maxGpsTime = item.gpsTime;
+                        _filterData = {
+                          longitude: item.longitude,
+                          latitude: item.latitude,
+                          heading: item.heading,
+                          speed: item.speed,
+                          vehicleId: item.vehicleId,
+                          devId: item.devId,
+                          marker: null,
+                          timer:null,
+                        };
+                      }
+                    })
 
-            for (let id in _this.prevData) {
-              if(_filterData[id]) {   //表示有该点，做move
-                _filterData[id].marker = _this.prevData[id].marker;
-                let _currentCar = _filterData[id];
-                _this.$refs.refTusvnMap.setOverlayPosition(id,_currentCar.longitude, _currentCar.latitude,_currentCar.heading)
-              } else {   //表示没有该点，做remove
-           
-                _this.$refs.refTusvnMap.removeOverlayById(id);
-                delete _this.prevData[id];
-              }
-            }
-         
-            for (let id in _filterData) {
-              if(!_this.prevData[id]) {   //表示新增该点，做add
-                  let imgUrl =  "static/images/road/car.png";
-                  let courseAngle = _filterData[id].heading;
-                  let bdata = null;
-                  let offset = [0,0];
-                  let callback = null;
-                 
-                  _this.$refs.refTusvnMap.addImgOverlay(
-                    id, 
-                    imgUrl, 
-                    courseAngle, 
-                    _filterData[id].longitude,
-                    _filterData[id].latitude,
-                    bdata, 
-                    offset, 
-                    callback
-                  );  
-         
-              }
-            }
-            _this.prevData = _filterData;
+                           
+                    for (let id in _this.prevData) {
+                      if(_filterData.vehicleId == id) {   //表示有该点，做move
+                        clearTimeout(_this.prevData[_filterData.vehicleId].timer)
+                        _filterData.marker = _this.prevData[id].marker;
+                        let _currentCar = _filterData;
+                        _this.$refs.refTusvnMap.setOverlayPosition(id,_currentCar.longitude, _currentCar.latitude,_currentCar.heading)
+                      } 
+                    }
 
-          } else {
-            // 返回的数据为空
-            this.clearCars();
+
+                   
+                    if(!_this.prevData[_filterData.vehicleId]) {   //表示新增该点，做add
+                        let imgUrl =  "static/images/road/car.png";
+                        let courseAngle = _filterData.heading;
+                        let bdata = null;
+                        let offset = [0,0];
+                        let callback = null;
+                      
+                        _this.$refs.refTusvnMap.addImgOverlay(
+                          _filterData.vehicleId, 
+                          imgUrl, 
+                          courseAngle, 
+                          _filterData.longitude,
+                          _filterData.latitude,
+                          bdata, 
+                          offset, 
+                          callback
+                        );  
+              
+                    }
+                    
+                    _this.prevData[_filterData.vehicleId] = _filterData;
+                    _this.prevData[_filterData.vehicleId].timer = setTimeout(() => {
+                      _this.$refs.refTusvnMap.removeOverlayById(_this.prevData[_filterData.vehicleId].vehicleId);
+                      delete _this.prevData[_filterData.vehicleId];
+                    }, this.timeOut);
+
+                 }
+            }
           }
         },
+        // onmessage(mesasge){
+
+
+        //   let _this=this;
+        //   let json = JSON.parse(mesasge.data);
+        //   let result = json.result.vehDataDTO;
+        //   // 车辆3
+        
+        //   if (result.length > 0) {
+        //     let _filterResult = result;
+        //     _filterResult = _filterResult.filter(
+        //       x => x.targetType === 2 || x.targetType === 5
+        //     );
+        //     let _filterData = {};
+        //     _filterResult.forEach((item, index) => {
+        //       _filterData[item.vehicleId] = {
+        //         longitude: item.longitude,
+        //         latitude: item.latitude,
+        //         heading: item.heading,
+        //         speed: item.speed,
+        //         vehicleId: item.vehicleId,
+        //         marker: null,
+        //       };
+        //     });
+
+        //     for (let id in _this.prevData) {
+        //       if(_filterData[id]) {   //表示有该点，做move
+        //         _filterData[id].marker = _this.prevData[id].marker;
+        //         let _currentCar = _filterData[id];
+        //         _this.$refs.refTusvnMap.setOverlayPosition(id,_currentCar.longitude, _currentCar.latitude,_currentCar.heading)
+        //       } else {   //表示没有该点，做remove
+           
+        //         _this.$refs.refTusvnMap.removeOverlayById(id);
+        //         delete _this.prevData[id];
+        //       }
+        //     }
+         
+        //     for (let id in _filterData) {
+        //       if(!_this.prevData[id]) {   //表示新增该点，做add
+        //           let imgUrl =  "static/images/road/car.png";
+        //           let courseAngle = _filterData[id].heading;
+        //           let bdata = null;
+        //           let offset = [0,0];
+        //           let callback = null;
+                 
+        //           _this.$refs.refTusvnMap.addImgOverlay(
+        //             id, 
+        //             imgUrl, 
+        //             courseAngle, 
+        //             _filterData[id].longitude,
+        //             _filterData[id].latitude,
+        //             bdata, 
+        //             offset, 
+        //             callback
+        //           );  
+         
+        //       }
+        //     }
+        //     _this.prevData = _filterData;
+
+        //   } else {
+        //     // 返回的数据为空
+        //     this.clearCars();
+        //   }
+        // },
         clearCars() {
           for (let id in this.prevData) {
+            clearTimeout(this.prevData[id].timer)
             this.$refs.refTusvnMap.removeOverlayById(id);
           }
           this.prevData = {};
@@ -582,14 +661,24 @@
         },
         onopen(data){
           //获取在驶车辆状态
-          let _params = {
-            action: "road_real_data_reg",
-            data: {
-              polygon: this.finalFourPosition,
-              fuselType: 1
-            }
-          };
-          var _paramsMsg = JSON.stringify(_params);
+          // let _params = {
+          //   action: "road_real_data_reg",
+          //   data: {
+          //     polygon: this.finalFourPosition,
+          //     fuselType: 1
+          //   }
+          // };
+          // var _paramsMsg = JSON.stringify(_params);
+          // this.sendMsg(_paramsMsg);
+
+          let platform ={
+              "action": "vehicle",
+              "body": {
+                  "polygon": this.finalFourPosition,
+              },
+              "type": 3
+          }
+          let _paramsMsg = JSON.stringify(platform);
           this.sendMsg(_paramsMsg);
         },
         sendMsg(msg) {

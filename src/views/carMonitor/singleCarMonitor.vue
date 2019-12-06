@@ -139,9 +139,6 @@
     mounted () {
       this.initWebSocket();
       this.getBaseData();
-      // setTimeout(() => {
-      //   this.isStop = true;
-      // }, 5000);
     },
     destroyed(){
       //销毁Socket

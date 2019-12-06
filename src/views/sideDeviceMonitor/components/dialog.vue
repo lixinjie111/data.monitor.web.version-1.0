@@ -247,12 +247,18 @@ export default {
       deep: true
     }
   },
+  computed:{
+    treeItem(){
+      let _filterData = Object.assign({},this.selectedItem);
+      return _filterData;
+    }
+  },
   mounted() {
-    this.selectAddr = this.selectedItem.path.split("|");
+    this.selectAddr = this.treeItem.path.split("|");
     this.provinceCode = this.selectAddr[0];
     this.cityCode = this.selectAddr[1];
     //默认选中的
-    this.roadId = this.selectedItem.roadSiderId;
+    this.roadId = this.treeItem.roadSiderId;
     this.getDeviceList();
     this.getSideTree();
     this.getDeviceCountByCity();
@@ -290,7 +296,7 @@ export default {
           //第一次默认并且是摄像头而且在线设置其打开状态
           if (flag && item.deviceType == "N" ) {
             _this.currentExtent = _this.getExtend(item.lon,item.lat,_this.extend)
-            if (_this.selectedItem.camSerialNum == "") {//通过地图点击进来的
+            if (_this.treeItem.camSerialNum == "") {//通过地图点击进来的
               flag = false;
               //设置默认的选中值
               item.value = true;
@@ -298,7 +304,7 @@ export default {
               _this.serialNum = item.serialNum;
             } else {//通过右侧列表点击进来的
               item.value = false;
-              if (item.serialNum == _this.selectedItem.camSerialNum) {
+              if (item.serialNum == _this.treeItem.camSerialNum) {
                 flag = false;
                 //设置默认的选中值
                  item.value = true;
@@ -443,7 +449,7 @@ export default {
           var children = [];
           if (deviceList.length > 0) {
             //默认选中的样式
-            var roadId = _this.selectedItem.roadSiderId;
+            var roadId = _this.treeItem.roadSiderId;
             /*var roadId = '110108_002';*/
             deviceList.forEach(function(item1) {
               var obj = {};
@@ -468,7 +474,7 @@ export default {
       //当切换树的时候，设备列表，感知结果进行切换
       this.openVideoList=[];
       this.serialNum = "";
-      this.selectedItem.camSerialNum = "";
+      this.treeItem.camSerialNum = "";
       this.roadId = node.code;
       this.getDeviceList();
       this.getDeviceCountByCity();
@@ -605,8 +611,8 @@ export default {
       let time = setInterval(() => {
         if (this.serialNum && this.serialNum != "") {
           this.mapInit = true;
-          if(this.selectedItem.cameraParam){
-            let cameraParam = JSON.parse(this.selectedItem.cameraParam);
+          if(this.treeItem.cameraParam){
+            let cameraParam = JSON.parse(this.treeItem.cameraParam);
             gis3d.updateCameraPosition(
               this.cameraParam.x,
               this.cameraParam.y,
