@@ -56,7 +56,8 @@ export default {
                 action: 'can_real_data',
                 token: 'fpx',
                 vehicleIds: ''
-            }
+			},
+			timeOut:1000*60*5
 		}
 	},
 	mounted() {
@@ -103,12 +104,14 @@ export default {
 			_filterResult.echarts = null;
 			_filterResult.echartsData = [];
 			_filterResult.echartsData.push(result.speed);
+			_filterResult.timer = null;
 			this.responseData.push(_filterResult);
         },
         initWebSocket(){
             // console.log('websocket获取指定车辆实时信息');
             if ('WebSocket' in window) {
-                this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+                // this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+                this.webSocket = new WebSocket(window.config.socketTestUrl);  //获得WebSocket对象
             }
             this.webSocket.onmessage = this.onmessage;
             this.webSocket.onclose = this.onclose;
@@ -116,12 +119,22 @@ export default {
             this.webSocket.onerror = this.onerror;
         },
         onmessage(message){
-            let _json = JSON.parse(message.data),
-            	_result = _json.result,
-            	_vehicleId = _result.vehicleId;
+            let _json = JSON.parse(message.data)
+            let _result;
+			let maxGpsTime = 0;
+			_json.result.map(item=>{
+				if(item.gpsTime > maxGpsTime){
+					maxGpsTime = item.gpsTime;
+					_result = item;
+				}
+			}) 
+			let	_vehicleId = _result.vehicleId;
+
 
             this.responseData.forEach((item, index) => {
+			
             	if(item.vehicleId == _vehicleId ) {
+					clearTimeout(item.timer)
 		            item.transmission = _result.transmission;
             		if(_result.transmission != 'P') {
 		            	item.speed = _result.speed;
@@ -136,12 +149,21 @@ export default {
 							if(!item.echarts) {
 								item.echarts = $echarts.init(document.getElementById(item.id));
 							}
-		        			let _option = this.defaultOption(item.echartsData);
+							let _option = this.defaultOption(item.echartsData);
+							console.log(111111)
+							console.log(_option)
 		            		item.echarts.setOption(_option);
 		            	}, 0);
-            		}else {
-            			item.speed = 0;
-            		}
+					}
+				
+					item.timer = setTimeout(() => {
+						item.transmission = "P";
+						item.turnLight = "";
+						let _option = this.defaultOption([]);
+						item.echarts.setOption(_option);	
+						item.speed = 0;
+
+					}, this.timeOut);
             	}
             });
         },
