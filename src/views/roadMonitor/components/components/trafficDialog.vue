@@ -142,7 +142,6 @@ import {
 import { getFeaturesByPoint } from "@/api/roadMonitor";
 import ConvertCoord from "@/assets/js/utils/coordConvert.js";
 import LivePlayer from '@/components/livePlayer/template';
-const isProduction = process.env.NODE_ENV === "production";
 
 import GIS3D from '@/utils/GIS3D.js'
 import PerceptionCars from '@/utils/PerceptionCars.js'
@@ -514,6 +513,7 @@ export default {
         let _this=this;
         try{
             if ('WebSocket' in window) {
+                // _this.perceptionWebsocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
                 _this.perceptionWebsocket = new WebSocket(window.config.socketTestUrl);  //获得WebSocket对象
                 _this.perceptionWebsocket.onmessage = _this.onPerceptionMessage;
                 _this.perceptionWebsocket.onclose = _this.onPerceptionClose;

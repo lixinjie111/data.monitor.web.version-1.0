@@ -47,7 +47,6 @@
   import { getVehicleCalendarData, getLiveDeviceInfo, startStream, sendStreamHeart } from '@/api/carMonitor'
   import $echarts from 'echarts'
   import LivePlayer from '@/components/livePlayer/template';
-  const isProduction = process.env.NODE_ENV === 'production'
   export default {
     data () {
       return {

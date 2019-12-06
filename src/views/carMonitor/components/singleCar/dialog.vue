@@ -17,7 +17,6 @@
 </template>
 <script>
   import {getDeviceList,getVideoByNum,getSideTree,getDevListByRoadId,getDeviceCountByCity} from '@/api/sideDeviceMonitor'
-  const isProduction = process.env.NODE_ENV === 'production'
     export default {
       name: "SideDialog",
         data() {

@@ -17,7 +17,6 @@
 <script>
   import {getVideoByNum} from '@/api/sideDeviceMonitor'
   import LivePlayer from '@/components/livePlayer/template'
-  const isProduction = process.env.NODE_ENV === 'production'
     export default {
         data() {
             return {

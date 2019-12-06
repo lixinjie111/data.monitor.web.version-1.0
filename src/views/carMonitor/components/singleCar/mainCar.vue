@@ -53,25 +53,6 @@
           <span class="spat-detail-font" :class="[item.lightColor=='YELLOW' ? 'light-yellow' : item.lightColor=='RED'?'light-red':'light-green']">{{item.spareTime}}</span>
         </div>
       </div>
-      <!--<div class="spat-detail-style">
-        <div class="spat-detail-img">
-          <img src="@/assets/images/car/left-red.png"/>
-        </div>
-        <span class="spat-detail-font">20</span>
-      </div>
-      <div class="spat-detail-style">
-        <div class="spat-detail-img">
-          <img src="@/assets/images/car/car-28.png"/>
-        </div>
-
-        <span class="spat-detail-font spat-detail-color">43</span>
-      </div>
-      <div class="spat-detail-style">
-        <div class="spat-detail-img spat-right">
-          <img src="@/assets/images/car/car-28.png"/>
-        </div>
-        <span class="spat-detail-font spat-detail-color">10</span>
-      </div>-->
     </div>
     <div class="alert-event">
       <div class="event-style" @click="getCloudEvent">
@@ -290,23 +271,24 @@
     },
     methods: {
       getAngle(map,start, end) {
-        var p_start = map.lngLatToContainer(start),
+        let p_start = map.lngLatToContainer(start),
           p_end = map.lngLatToContainer(end);
-        var diff_x = p_end.x - p_start.x,
+        let diff_x = p_end.x - p_start.x,
           diff_y = p_end.y - p_start.y;
         return 360*Math.atan2(diff_y, diff_x)/(2*Math.PI);
       },
       getMapAngle(map,start){
-        var map_center = map.lngLatToContainer([116.478935,39.997761]);
-        var p_start = map.lngLatToContainer(start);
-        var diff_x = map_center.x - p_start.x,
+        let map_center = map.lngLatToContainer([116.478935,39.997761]);
+        let p_start = map.lngLatToContainer(start);
+        let diff_x = map_center.x - p_start.x,
           diff_y = map_center.y - p_start.y;
         return 360*Math.atan2(diff_y, diff_x)/(2*Math.PI);
       },
       initWebSocket(){
         let _this=this;
         if ('WebSocket' in window) {
-          _this.hostWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
+          // _this.hostWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
+          _this.hostWebsocket = new WebSocket(window.config.socketTestUrl);  //获得WebSocket对象
         }
         _this.hostWebsocket.onmessage = _this.onmessage;
         _this.hostWebsocket.onclose = _this.onclose;
@@ -314,12 +296,12 @@
         _this.hostWebsocket.onerror = _this.onerror;
       },
       onmessage(mesasge){
-        var _this=this;
-        var json = JSON.parse(mesasge.data);
-        var data = json.result;
-        var type = json.action;
-          var platNo;
-          var source="";
+        let _this=this;
+        let json = JSON.parse(mesasge.data);
+        let data = json.result;
+        let type = json.action;
+          let platNo;
+          let source="";
           if(_this.isInit){
             platNo=data.plateNo;
             data.source.forEach(item=>{
@@ -393,11 +375,18 @@
       },
       onopen(data){
         //自车
-        var hostVehicle = {
-          "action": "hostVehicle",
-          "vehicleId": this.vehicleId
+        let hostVehicle ={
+            "action": "vehicle",
+            "body": {
+                "vehicleId": this.vehicleId
+            },
+            "type": 1
         }
-        var hostVehicleMsg = JSON.stringify(hostVehicle);
+        // let hostVehicle = {
+        //   "action": "hostVehicle",
+        //   "vehicleId": this.vehicleId
+        // }
+        let hostVehicleMsg = JSON.stringify(hostVehicle);
         this.sendMsg(hostVehicleMsg);
       },
       sendMsg(msg) {
@@ -422,9 +411,9 @@
       },
       onSideMessage(mesasge){
 
-        var _this=this;
-        var json = JSON.parse(mesasge.data);
-        var deviceData = json.result.data;
+        let _this=this;
+        let json = JSON.parse(mesasge.data);
+        let deviceData = json.result.data;
         if (deviceData.length > 0) {
               let _filterData = {};
               deviceData.forEach((item, index) => {
@@ -475,11 +464,18 @@
       },
       onSideOpen(data){
         //旁车
-        var sideVehicle = {
-          "action": "sideVehicle",
-          "vehicleId": this.vehicleId
+        let sideVehicle ={
+            "action": "vehicle",
+            "body": {
+                "vehicleId": this.vehicleId
+            },
+            "type": 2
         }
-        var sideVehicleMsg = JSON.stringify(sideVehicle);
+        // let sideVehicle = {
+        //   "action": "sideVehicle",
+        //   "vehicleId": this.vehicleId
+        // }
+        let sideVehicleMsg = JSON.stringify(sideVehicle);
         this.sendSideMsg(sideVehicleMsg);
       },
       sendSideMsg(msg) {
@@ -502,9 +498,9 @@
         _this.deviceWebsocket.onopen = _this.onDeviceOpen;
       },
       onDeviceMessage(mesasge){
-          var _this=this;
-          var json = JSON.parse(mesasge.data);
-          var deviceData = json.result.data;
+          let _this=this;
+          let json = JSON.parse(mesasge.data);
+          let deviceData = json.result.data;
           if (deviceData.length > 0) {
                 let _filterData = {};
                 deviceData.forEach((item, index) => {
@@ -554,11 +550,11 @@
       },
       onDeviceOpen(data){
         //旁车
-        var deviceVehicle = {
+        let deviceVehicle = {
           "action": "rsb",
           "vehicleId": this.vehicleId
         }
-        var deviceVehicleMsg = JSON.stringify(deviceVehicle);
+        let deviceVehicleMsg = JSON.stringify(deviceVehicle);
         this.sendDeviceMsg(deviceVehicleMsg);
       },
       sendDeviceMsg(msg) {
@@ -581,9 +577,9 @@
         _this.lightWebsocket.onopen = _this.onLightOpen;
       },
       onLightMessage(mesasge){
-        var _this=this;
-        var json = JSON.parse(mesasge.data);
-        var lightData = json.result.data;
+        let _this=this;
+        let json = JSON.parse(mesasge.data);
+        let lightData = json.result.data;
         if (lightData.length > 0) {
               let _filterData = {};
               lightData.forEach((item, index) => {
@@ -653,11 +649,11 @@
       },
       onLightOpen(data){
         //旁车
-        var light = {
+        let light = {
           "action": "spat",
           "vehicleId": this.vehicleId
         }
-        var lightMsg = JSON.stringify(light);
+        let lightMsg = JSON.stringify(light);
         this.sendLightMsg(lightMsg);
       },
       sendLightMsg(msg) {
@@ -802,83 +798,18 @@
               }
             })
           }
-         /* if(type=='CLOUD'){
-            let eventType = json.result.eventType;
-            //如果发过来的数据存在，则进行计数,不存在的如果3s消失
-            if(_this.event.length>0){
-              _this.event.forEach(item=>{
-                console.log(item.uuid+"-----uuid")
-                console.log(item.type+"-----eventType")
-                let flag=false;
-                warningData.forEach(item1=>{
-                  if(item.uuid==item1.uuid){
-                    flag=true;
-                  }
-                });
-                //如果存在
-                if(flag){
-                  item.count++;
-                  //如果存在更新定时器
-                  clearTimeout(item.timer);
-                  item.timer = setTimeout(()=>{
-                    item.flag = false;//控制隐藏
-//                console.log('如果存在，更新定时器'+item.count)
-                  },3000)
-                }
-              })
-            }
-            //新推过来的数据中有新发生的事件，进行保存开始计时
-            let flag = true;
-            warningData.forEach(item=>{
-              let obj = {};
-              if(_this.event.length>0){
-                _this.event.forEach(item1=>{
-                  if(item.uuid==item1.uuid){
-                    flag= false;
-                  }
-                })
-                //如果不存在，将车辆信息存储起来
-                if(flag){
-                  obj.count=1;
-                  obj.timer=setTimeout(()=>{
-                    obj.flag=false;
-//                console.log('我要消失了====='+item.vehicleId);
-                  },3000);
-                  obj.flag=true;
-                  obj.type=eventType;
-                  obj.uuid = item.uuid;
-                }
-                _this.event.unshift(obj);
-              }else {
-                obj.count=1;
-                obj.timer=setTimeout(()=>{
-                  obj.flag=false;
-//              console.log('我要消失了===='+item.vehicleId);
-                },3000);
-                obj.flag=true;
-                obj.type=eventType;
-                obj.uuid = item.uuid;
-                _this.event.push(obj);
-              }
-            });
-            _this.warningList = [];
-            _this.event.forEach(item=>{
-              _this.warningList.unshift(item);
-            })
-          }*/
         }
-
       },
       onWarningClose(data){
         console.log("结束连接");
       },
       onWarningOpen(data){
         //旁车
-        var warning = {
+        let warning = {
           "action": "warning",
           "vehicleId": this.vehicleId
         }
-        var warningMsg = JSON.stringify(warning);
+        let warningMsg = JSON.stringify(warning);
         this.sendWarningMsg(warningMsg);
       },
       sendWarningMsg(msg) {
@@ -902,20 +833,8 @@
       }
       return hash;
     },
-      /**
-       * 传入最小最大像素坐标
-       * **/
-      computedGeoRange(){
-        //通过像素坐标算出地理坐标
-        var minPixel = new AMap.Pixel(0,700);
-        var minLnglat = this.distanceMap.containerToLngLat(minPixel,18);
-        var maxPixel = new AMap.Pixel(1300,0);
-        var maxLnglat = this.distanceMap.containerToLngLat(maxPixel,18);
-        var bounds = new AMap.Bounds(minLnglat, maxLnglat);
-        return bounds;
-      },
       getAlarmInformation(){
-        var param = {
+        let param = {
           "vehicleId": this.vehicleId
         }
         this.vehicleList= [];
@@ -931,7 +850,7 @@
         })
       },
        getV2xInformation(){
-        var param = {
+        let param = {
           "vehicleId": this.vehicleId
         }
         this.cloudList = [];

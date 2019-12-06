@@ -411,23 +411,23 @@
           if(_result && _result.length > 0) {
             this.onmessage(res);
           }
-          this.initWebSocket();
+          // this.initWebSocket();
         }).catch(error => {
           // console.log("hahahah");
           // this.initWebSocket();
         });
       },
-      initWebSocket(){
-        // debugger
-        let _this=this;
-        if ('WebSocket' in window) {
-          _this.webSocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
-        }
-        _this.webSocket.onmessage = _this.onmessage;
-        _this.webSocket.onclose = _this.onclose;
-        _this.webSocket.onopen = _this.onopen;
-        _this.webSocket.onerror = _this.onerror;
-      },
+      // initWebSocket(){
+      //   // debugger
+      //   let _this=this;
+      //   if ('WebSocket' in window) {
+      //     _this.webSocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
+      //   }
+      //   _this.webSocket.onmessage = _this.onmessage;
+      //   _this.webSocket.onclose = _this.onclose;
+      //   _this.webSocket.onopen = _this.onopen;
+      //   _this.webSocket.onerror = _this.onerror;
+      // },
       onmessage(message){
         // console.log("行程概览 route *********************************************");
         clearInterval(this.countTimer);
@@ -448,16 +448,16 @@
             pointList = json.data.pointList;
           }else{
             pointList = [{
-              gnss_LONG: json.data.lon,
-              gnss_LAT: json.data.lat,
-              gnss_HEAD: json.data.head
+              longitude: json.data.longitude,
+              latitude: json.data.latitude,
+              heading: json.data.heading
             }];
           }
         }else{
           pointList = [{
-            gnss_LONG: json.data.lon,
-            gnss_LAT: json.data.lat,
-            gnss_HEAD: json.data.head
+            longitude: json.data.longitude,
+            latitude: json.data.latitude,
+            heading: json.data.heading
           }]; 
         }
         // let _pointer = [json.data.lon, json.data.lat];
@@ -481,31 +481,31 @@
             console.log("第一次开启行程");
             this.routeId = json.data.routeId;
             // console.log(this.routeId);
-            _this.carStartPoint = ConvertCoord.wgs84togcj02(pointList[0].gnss_LONG, pointList[0].gnss_LAT);
+            _this.carStartPoint = ConvertCoord.wgs84togcj02(pointList[0].longitude, pointList[0].latitude);
             _this.distanceMapStart();
           }
 
-          if(this.prevLastPointPath.length !=0 && pointList.length==1 && this.prevLastPointPath[0] == pointList[0].gnss_LONG && this.prevLastPointPath[1] == pointList[0].gnss_LAT){
+          if(this.prevLastPointPath.length !=0 && pointList.length==1 && this.prevLastPointPath[0] == pointList[0].longitude && this.prevLastPointPath[1] == pointList[0].latitude){
             this.changeLngLat();
             return false;
           }
 
           if(pointList.length!=0){
-            this.prevLastPointPath = [pointList[pointList.length-1].gnss_LONG, pointList[pointList.length-1].gnss_LAT];
+            this.prevLastPointPath = [pointList[pointList.length-1].longitude, pointList[pointList.length-1].latitude];
           }
 
           var handlePointList = [];
           pointList.forEach((item, index) => {
-            if(item.gnss_LONG && item.gnss_LAT){
-              // let lnglatArr = new AMap.LngLat(item.gnss_LONG, item.gnss_LAT);
-              let lnglatArr = [item.gnss_LONG, item.gnss_LAT];
+            if(item.longitude && item.latitude){
+              // let lnglatArr = new AMap.LngLat(item.longitude, item.latitude);
+              let lnglatArr = [item.longitude, item.latitude];
               handlePointList.push(lnglatArr);
             }
           });
           // console.log(handlePointList);
           let _dataLength = handlePointList.length;
           this.wholePath.push( {
-            angle: pointList[_dataLength-1].gnss_HEAD >= 0 ? pointList[_dataLength-1].gnss_HEAD : 90,
+            angle: pointList[_dataLength-1].heading >= 0 ? pointList[_dataLength-1].heading : 90,
             routeId: json.data.routeId,
             pathList: handlePointList
           });
@@ -538,42 +538,42 @@
             };
         }
       },
-      onclose(data){
-        console.log("结束连接");
-      },
-      onopen(data){
-        //行程
-        this.webSocketData.vehicleId = this.vehicleId;
-        this.webSocketData.scale = this.scale;
-        this.webSocketData.all = this.all;
-        this.sendMsg(JSON.stringify(this.webSocketData));
-      },
-      sendMsg(msg) {
-        let _this=this;
-        if(window.WebSocket){
-          if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-            _this.webSocket.send(msg); //send()发送消息
-          }
-        }else{
-          return;
-        }
-      },
+      // onclose(data){
+      //   console.log("结束连接");
+      // },
+      // onopen(data){
+      //   //行程
+      //   this.webSocketData.vehicleId = this.vehicleId;
+      //   this.webSocketData.scale = this.scale;
+      //   this.webSocketData.all = this.all;
+      //   this.sendMsg(JSON.stringify(this.webSocketData));
+      // },
+      // sendMsg(msg) {
+      //   let _this=this;
+      //   if(window.WebSocket){
+      //     if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+      //       _this.webSocket.send(msg); //send()发送消息
+      //     }
+      //   }else{
+      //     return;
+      //   }
+      // },
       /**
        * 传入最小最大像素坐标
        * **/
-      computedGeoRange(min,mx,zoom){
-        //通过像素坐标算出地理坐标
-        var minPixel = new AMap.Pixel(min[0],min[1]);
-        var minLnglat = map.pixelToLngLat(minPixel,zoom);
-        var maxPixel = new AMap.Pixel(max[0],max[1]);
-        var maxLnglat = map.pixelToLngLat(maxPixel,zoom);
-        var bounds = new AMap.Bounds(minLnglat, maxLnglat);
-        return bounds;
-      }
+      // computedGeoRange(min,mx,zoom){
+      //   //通过像素坐标算出地理坐标
+      //   var minPixel = new AMap.Pixel(min[0],min[1]);
+      //   var minLnglat = map.pixelToLngLat(minPixel,zoom);
+      //   var maxPixel = new AMap.Pixel(max[0],max[1]);
+      //   var maxLnglat = map.pixelToLngLat(maxPixel,zoom);
+      //   var bounds = new AMap.Bounds(minLnglat, maxLnglat);
+      //   return bounds;
+      // }
     },
     destroyed(){
       //销毁Socket
-      this.webSocket.close();
+      // this.webSocket.close();
     }
   }
 </script>
@@ -670,7 +670,7 @@
     margin-left: 20px;
     margin-right: 20px;
     height: 200px;
-    border:1px solid #ef920e;
+    border:1px solid #402800;
     margin-top: 35px;
 
   }
