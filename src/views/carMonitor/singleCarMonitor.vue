@@ -102,6 +102,10 @@
         }
         this.timer = setTimeout(() => {
             this.isStop=true;
+            this.realData.transmission='P';
+            this.realData.oilDoor=0;
+            this.realData.brakePedal=0;
+            this.routeStartTime="";
         }, this.timeOut);
       },
       onclose(data){
@@ -185,9 +189,17 @@
       },
     },
     mounted () {
+       var a = sessionStorage.getItem("isStop");
       this.initWebSocket();
       this.initVehWebSocket();
       this.getBaseData();
+      this.timer = setTimeout(() => {
+          this.isStop=true;
+          this.realData.transmission='P';
+          this.realData.oilDoor=0;
+          this.realData.brakePedal=0;
+          this.routeStartTime="";
+      }, this.timeOut);
     },
     destroyed(){
       //销毁Socket

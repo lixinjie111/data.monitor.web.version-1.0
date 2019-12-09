@@ -152,10 +152,6 @@
     },
     watch:{
       deep:true,
-      realData(oldValue,newValue){
-        console.log(111111)
-        console.log(this.realData)
-      },
 
       isStop(newVal,oldVal){
         // if(newVal){

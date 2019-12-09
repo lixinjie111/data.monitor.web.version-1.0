@@ -87,8 +87,7 @@ export default {
                         } 
                     }
       
-                    if(!_this.prevData[_filterData.vehicleId]) {   //表示新增该点，做add
-                        console.log(_filterData)
+                    if(!_this.prevData[_filterData.vehicleId] && _filterData.vehicleId) {   //表示新增该点，做add
                         _this.addMarker(_filterData);
                         _this.addPlateNoMarker(_filterData);
                     }       

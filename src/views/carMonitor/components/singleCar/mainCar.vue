@@ -466,15 +466,13 @@
 
         let _json = JSON.parse(message.data);
         let deviceData = _json.result.data;
-
         if (deviceData) {
               let _filterData = {};
               let maxGpsTime = 0;
               for (const k in deviceData) {
-                if( deviceData[k].vehicleId == _this.realData.vehicleId){
+                if( k == _this.realData.vehicleId){
                   return;
                 }
-
                 deviceData[k].forEach((item, index) => {
                     _filterData[item.vehicleId] = {
                         vehicleId:item.vehicleId,
