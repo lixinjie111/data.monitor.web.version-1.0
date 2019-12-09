@@ -1,7 +1,7 @@
 <template>
 <div class="car-view-wrapper clearfix">
     <div class="single-left">
-        <left-car :singleVehicle="singleVehicle"></left-car>
+        <left-car :vehWsData="vehWsData" :singleVehicle="singleVehicle"></left-car>
     </div>
     <div class="single-main">
         <div class="single-header">
@@ -10,7 +10,7 @@
         <div class="single-content ">
             <div class="single-content-left">
               <div class="single-content-top" :class="{'stop-style':isStop}">
-                  <main-car :real-data="realData" :isStop="isStop"></main-car>
+                  <main-car :vehWsData="vehWsData" :real-data="realData" :isStop="isStop"></main-car>
               </div>
               <div class="single-content-bottom">
                   <bottom-car></bottom-car>
@@ -65,15 +65,20 @@
         /*vehicleId:'B21E-00-017',*/
         vehicleId:this.$route.params.vehicleId,
         webSocket:null,
+        webSocketVeh:null,
         isStop:false,
-        singleVehicle:{}
+        singleVehicle:{},
+        vehWsData:null,
+        timer:null,
+        timeOut:1000*60*5,
       }
     },
     methods: {
       initWebSocket(){
         let _this=this;
         if ('WebSocket' in window) {
-          _this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+          // _this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+          _this.webSocket = new WebSocket(window.config.socketTestUrl);  //获得WebSocket对象
         }
         _this.webSocket.onmessage = _this.onmessage;
         _this.webSocket.onclose = _this.onclose;
@@ -81,35 +86,32 @@
         _this.webSocket.onerror = _this.onerror;
       },
       onmessage(mesasge){
+        if(this.timer) clearTimeout(this.timer);
         let _this=this;
         var json = JSON.parse(mesasge.data);
         /*var type = json.action;*/
         var data = json.result;
-        // console.log("data.transmission========"+data.transmission);
-        // console.log("data.turnLight========"+this.realData.turnLight);
-        // console.log(this.realData.latitude, this.realData.longitude);
         if(data.transmission=='P'){
           this.realData.transmission='P';
           this.realData.oilDoor=0;
           this.realData.brakePedal=0;
           this.routeStartTime="";
-          this.isStop=true;
         }else{
-          this.realData = json.result;
+          this.realData = json.result[0];
           this.isStop=false;
-         /* console.log("转向灯---"+this.realData.turnLight)*/
         }
+        this.timer = setTimeout(() => {
+            this.isStop=true;
+        }, this.timeOut);
       },
       onclose(data){
         console.log("结束连接");
       },
       onopen(data){
         var real = {
-          // 'action':'vehicleDetail',
-          // 'vehicleId':this.vehicleId
-          'action':'can_real_data',
-          /*'vid':this.vehicleID,*/
-          'vehicleIds':this.vehicleId
+          action: 'can_real_data',
+          token: 'fpx',
+          vehicleIds: this.vehicleId
         }
         var realMsg = JSON.stringify(real);
         this.sendMsg(realMsg);
@@ -127,6 +129,52 @@
       onerror(event){
         console.error("WebSocket error observed:", event);
       },
+
+      initVehWebSocket(){
+        let _this=this;
+        if ('WebSocket' in window) {
+          // _this.webSocketVeh = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+          _this.webSocketVeh = new WebSocket(window.config.socketTestUrl);  //获得WebSocket对象
+        }
+        _this.webSocketVeh.onmessage = _this.onmessageVeh;
+        _this.webSocketVeh.onclose = _this.oncloseVeh;
+        _this.webSocketVeh.onopen = _this.onopenVeh;
+        _this.webSocketVeh.onerror = _this.onerrorVeh;
+      },
+
+      onmessageVeh(mesasge){
+        this.vehWsData = JSON.parse(mesasge.data);
+       
+      },
+      oncloseVeh(data){
+        console.log("结束连接");
+      },
+      onopenVeh(data){
+        let param = {
+          "action": "vehicle",
+          "body": {
+              "vehicleId": this.vehicleId
+          },
+          "type": 1
+        }
+        var paramMsg = JSON.stringify(param);
+        this.sendVehMsg(paramMsg);
+      },
+      sendVehMsg(msg) {
+        let _this=this;
+        if(window.WebSocket){
+          if(_this.webSocketVeh.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+            _this.webSocketVeh.send(msg); //send()发送消息
+          }
+        }else{
+          return;
+        }
+      },
+      onerrorVeh(event){
+        console.error("webSocketVeh error observed:", event);
+      },
+
+
       getBaseData(){
         var _this = this;
         getVehicleBaseData({
@@ -138,11 +186,14 @@
     },
     mounted () {
       this.initWebSocket();
+      this.initVehWebSocket();
       this.getBaseData();
     },
     destroyed(){
       //销毁Socket
        this.webSocket&&this.webSocket.close();
+       this.webSocketVeh&&this.webSocketVeh.close();
+       
     }
   }
 </script>

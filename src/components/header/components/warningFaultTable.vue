@@ -57,14 +57,14 @@
                         <el-table-column label="序号" type="index" width="100"></el-table-column>
                         <el-table-column label="预警名称" prop="warningName" min-width="15%"></el-table-column>
                         <el-table-column label="预警来源" prop="warningSource" min-width="15%"></el-table-column>
-                        <el-table-column label="预警级别" prop="warningLevel" min-width="15%">
+                        <el-table-column label="预警级别" prop="warningLevel" min-width="10%">
                             <template slot-scope="scope">
                               <p class="c-alert-level" style="background-color: #ae3717">{{scope.row.warningLevel}}</p>
                             </template>
                         </el-table-column>
                         <el-table-column label="预警时间" prop="warningTime" min-width="20%"></el-table-column>
                         <el-table-column label="车牌号" prop="plateNo" min-width="20%"></el-table-column>
-                        <el-table-column label="设备ID" min-width="15%"></el-table-column>
+                        <el-table-column label="设备ID" prop="deviceId" min-width="20%"></el-table-column>
                     </el-table>
                     <el-table  
                         v-if="type == 2"

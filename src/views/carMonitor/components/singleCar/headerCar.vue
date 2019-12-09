@@ -51,6 +51,7 @@
         <span class="current-electric">{{realData.remainElec | toFixed(1)}} km</span>
       </li>
     </ul>
+    <!-- 1 绿（良好），2 红（故障），3 灰（未安装） -->
     <ul class="monitor-header signal-detail">
       <li>
         <div class="signal-item1 signal-style">
@@ -150,19 +151,24 @@
       }*/
     },
     watch:{
-      isStop(newVal,oldVal){
-        if(newVal){
-          this.vehicleStatus.gpsStatus=3;
-          this.vehicleStatus.cameraStatus=3;
-          this.vehicleStatus.canStatus=3;
-          this.vehicleStatus.radarStatus=3;
+      deep:true,
+      realData(oldValue,newValue){
+        console.log(111111)
+        console.log(this.realData)
+      },
 
-          this.naviStatus.naviControlStatus=3;
-          this.naviStatus.naviPlanningStatus=3;
-          this.naviStatus.naviPerceptionStatus=3;
-          this.naviStatus.naviPredictionStatus=3;
-          this.webSocket&&this.webSocket.close()
-        }
+      isStop(newVal,oldVal){
+        // if(newVal){
+          // this.vehicleStatus.gpsStatus=3;
+          // this.vehicleStatus.cameraStatus=3;
+          // this.vehicleStatus.canStatus=3;
+          // this.vehicleStatus.radarStatus=3;
+          // this.naviStatus.naviControlStatus=3;
+          // this.naviStatus.naviPlanningStatus=3;
+          // this.naviStatus.naviPerceptionStatus=3;
+          // this.naviStatus.naviPredictionStatus=3;
+          // this.webSocket&&this.webSocket.close()
+        // }
       },
       lastTime(oldValue,newValue){
         if(oldValue>=30000){

@@ -2,15 +2,15 @@
   <div class="monitor-traffic">
     <div class="travel-detail" v-show="!isStop">
       <div class="detail1">
-        <span>{{realData.longitude? realData.longitude.toFixed(8):'--'}}</span>
+        <span>{{trackRealData.longitude? trackRealData.longitude.toFixed(8):'--'}}</span>
         <span class="detail2">E</span>
       </div>
       <div class="detail1">
-        <span>{{realData.latitude ?realData.latitude.toFixed(8):'--'}}</span>
+        <span>{{trackRealData.latitude ?trackRealData.latitude.toFixed(8):'--'}}</span>
         <span class="detail2">N</span>
       </div>
       <div class="detail1">
-        <span>{{filterData.speed || '--'}}</span>
+        <span>{{trackRealData.speed ? parseFloat(trackRealData.speed).toFixed(1).toString() : '--'}}</span>
         <span class="detail2">km/h</span>
       </div>
       <div class="detail1">
@@ -205,7 +205,9 @@
           18:0,
           19:0,
           20:0
-        }
+        },
+        timeOut:1000*60*5,
+        wsFlag:true,
       }
     },
     props:{
@@ -221,33 +223,43 @@
       isStop:{
         type:Boolean,
         default:false
+      },
+      vehWsData:{
+        type:Object,
+        default() {
+          return {};
+        }
       }
     },
     computed:{
+      routeRealData(){
+        if(this.vehWsData){
+           return this.vehWsData.result.route;
+        }else{
+           return "";
+        }
+      },
+      trackRealData(){
+        if(this.vehWsData){
+          return this.vehWsData.result.track[0];
+        }else{
+           return "";
+        }    
+      },
       nowYear(){
-        if(this.realData.gpsTime==''){
+        if(this.trackRealData.gpsTime==''){
           return '--';
         }else{
-          return this.$dateUtil.formatTime(this.realData.gpsTime).split(" ")[0];
+          return this.$dateUtil.formatTime(this.trackRealData.gpsTime).split(" ")[0];
         }
       },
       nowTime(){
-        if(this.realData.gpsTime==''){
+        if(this.trackRealData.gpsTime==''){
           return '--';
         }else{
-          return this.$dateUtil.formatTime(this.realData.gpsTime).split(" ")[1];
+          return this.$dateUtil.formatTime(this.trackRealData.gpsTime).split(" ")[1];
         }
       },
-      filterData() {
-          let _filterData = {};
-          for(let attr in this.realData) {
-            if(attr=='speed'){
-              // _filterData[attr] = parseFloat(this.realData[attr]).toFixed(1).toLocaleString() || '--';
-              _filterData[attr] = parseFloat(this.realData[attr]).toFixed(1).toString() || '--';
-            }
-          }
-          return _filterData;
-      }
     },
     filters: {
       dateFormat: function (value) {
@@ -257,6 +269,7 @@
       }
     },
     watch:{
+      deep: true,
       isStop(newVal,oldVal){
         if(newVal){
           this.sideWebsocket.close();
@@ -264,10 +277,51 @@
           console.log("第一次是否走此方法")
           this.initSideWebSocket();
         }
-      }
+      },
+      // 自车WS
+      vehWsData(newVal,oldVal){
+        this.onmessage(newVal);
+      },
+      realData(newVal,oldVal){
+        if(this.wsFlag){
+          this.$nextTick(()=>{
+            this.initSideWebSocket();
+            this.wsFlag = false;
+          })
+        }
+      },
+      
     },
     components:{
       SingleDialog
+    },
+    mounted () {
+    
+      let _option = Object.assign(
+        {},
+        window.defaultMapOption,
+        {
+          center: window.mapOption.singlePoint,
+          zoom: 18
+        }
+      );
+      this.distanceMap = new AMap.Map('realTraffic', _option);
+      setTimeout(()=>{
+            this.distanceMap.setMapStyle(window.defaultMapOption.mapStyle);
+      },0);
+
+      // this.initWebSocket();
+     
+
+      // 杆
+      this.initDeviceWebSocket();
+      // 事件
+      this.initWarningWebSocket();
+      // 红绿灯
+      this.initLightWebSocket();
+      //云端和车端此次行程统计
+      this.getV2xInformation();
+      this.getAlarmInformation();
     },
     methods: {
       getAngle(map,start, end) {
@@ -284,24 +338,29 @@
           diff_y = map_center.y - p_start.y;
         return 360*Math.atan2(diff_y, diff_x)/(2*Math.PI);
       },
-      initWebSocket(){
-        let _this=this;
-        if ('WebSocket' in window) {
-          // _this.hostWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
-          _this.hostWebsocket = new WebSocket(window.config.socketTestUrl);  //获得WebSocket对象
-        }
-        _this.hostWebsocket.onmessage = _this.onmessage;
-        _this.hostWebsocket.onclose = _this.onclose;
-        _this.hostWebsocket.onopen = _this.onopen;
-        _this.hostWebsocket.onerror = _this.onerror;
-      },
+      // initWebSocket(){
+      //   let _this=this;
+      //   if ('WebSocket' in window) {
+      //     // _this.hostWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
+      //     _this.hostWebsocket = new WebSocket(window.config.socketTestUrl);  //获得WebSocket对象
+      //   }
+      //   _this.hostWebsocket.onmessage = _this.onmessage;
+      //   _this.hostWebsocket.onclose = _this.onclose;
+      //   _this.hostWebsocket.onopen = _this.onopen;
+      //   _this.hostWebsocket.onerror = _this.onerror;
+      // },
       onmessage(mesasge){
+        if(!mesasge.result.track || !mesasge.result.track[0]){
+          return;
+        }
         let _this=this;
-        let json = JSON.parse(mesasge.data);
-        let data = json.result;
-        let type = json.action;
+        let json = mesasge;
+
+        let data = mesasge.result.track[0];
+
           let platNo;
           let source="";
+
           if(_this.isInit){
             platNo=data.plateNo;
             data.source.forEach(item=>{
@@ -311,12 +370,7 @@
           }
              let newPosition = ConvertCoord.wgs84togcj02(data.longitude, data.latitude);
               if(_this.isInit){
-                // _this.marker = new AMap.Marker({
-                //   position: newPosition,
-                //   icon: 'static/images/car/car-6.png', // 添加 Icon 图标 URL
-                //   zIndex:500
-                // });
-
+             
                 _this.marker = new AMap.ElasticMarker({
                   position:newPosition,
                   zooms:[6,20],
@@ -333,7 +387,6 @@
                   }],
                   zoomStyleMapping:_this.zoomStyleMapping
                 })
-
 
                 _this.distanceMap.add(_this.marker);
                 _this.platNoMarker = new AMap.Text({
@@ -357,107 +410,134 @@
                 _this.isInit=false;
                 _this.lastPoint = newPosition;
               }
-             /* let lastPoint = _this.lastPoint;
-              _this.lastPoint = newPosition;*/
+           
               //设置中心点
-//              console.log("newPosition----"+newPosition)
               _this.distanceMap.setCenter(newPosition);
               //设置旋转角度
               _this.headingAngle = data.heading;
               _this.marker.setAngle(_this.headingAngle);
               _this.marker.setPosition(newPosition);
               _this.platNoMarker.setPosition(newPosition);
-      
 
       },
-      onclose(data){
-        console.log("结束连接");
-      },
-      onopen(data){
-        //自车
-        let hostVehicle ={
-            "action": "vehicle",
-            "body": {
-                "vehicleId": this.vehicleId
-            },
-            "type": 1
-        }
-        // let hostVehicle = {
-        //   "action": "hostVehicle",
-        //   "vehicleId": this.vehicleId
-        // }
-        let hostVehicleMsg = JSON.stringify(hostVehicle);
-        this.sendMsg(hostVehicleMsg);
-      },
-      sendMsg(msg) {
-        let _this=this;
-        if(window.WebSocket){
-          if(_this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-            _this.hostWebsocket.send(msg); //send()发送消息
-          }
-        }else{
-          return;
-        }
-      },
+      // onclose(data){
+      //   console.log("结束连接");
+      // },
+      // onopen(data){
+      //   //自车
+      //   let hostVehicle ={
+      //       "action": "vehicle",
+      //       "body": {
+      //           "vehicleId": this.vehicleId
+      //       },
+      //       "type": 1
+      //   }
+      //   // let hostVehicle = {
+      //   //   "action": "hostVehicle",
+      //   //   "vehicleId": this.vehicleId
+      //   // }
+      //   let hostVehicleMsg = JSON.stringify(hostVehicle);
+      //   this.sendMsg(hostVehicleMsg);
+      // },
+      // sendMsg(msg) {
+      //   let _this=this;
+      //   if(window.WebSocket){
+      //     if(_this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+      //       _this.hostWebsocket.send(msg); //send()发送消息
+      //     }
+      //   }else{
+      //     return;
+      //   }
+      // },
       initSideWebSocket(){
         let _this=this;
         if ('WebSocket' in window) {
-          _this.sideWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
+          // _this.sideWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
+          _this.sideWebsocket = new WebSocket(window.config.socketTestUrl);  //获得WebSocket对象
         }
         _this.sideWebsocket.onmessage = _this.onSideMessage;
         _this.sideWebsocket.onclose = _this.onSideClose;
         _this.sideWebsocket.onopen = _this.onSideOpen;
         _this.sideWebsocket.onerror = _this.onSideError;
       },
-      onSideMessage(mesasge){
+      onSideMessage(message){
 
         let _this=this;
-        let json = JSON.parse(mesasge.data);
-        let deviceData = json.result.data;
-        if (deviceData.length > 0) {
+
+        let _json = JSON.parse(message.data);
+        let deviceData = _json.result.data;
+
+        if (deviceData) {
               let _filterData = {};
-              deviceData.forEach((item, index) => {
-                  _filterData[item.vehicleId] = {
-                      vehicleId:item.vehicleId,
-                      position:ConvertCoord.wgs84togcj02(item.longitude, item.latitude),
-                      heading:item.heading,
-                      speed:item.speed,
-                      longitude:item.longitude,
-                      latitude: item.latitude,
-                      icon:'static/images/car/car-7.png',
-                      size:[17,40],
-                      ancher:[8,20],
-                      zIndex:50
-                  };
-                
-              });
-              for (let id in _this.sidePrevData) {
-                  if(_filterData[id]) {   //表示有该点，做setPosition
-                      _filterData[id].marker = _this.sidePrevData[id].marker;
-                      let _currentCar = _filterData[id];
-                      _filterData[id].marker.setAngle(_currentCar.heading);
-                      _filterData[id].marker.setPosition(_currentCar.position);
-                  } 
-              }
-              for (let id in _filterData) {       
-                  if(!_this.sidePrevData[id]) {   //表示新增该点，做add
-                      _this.addMarker(_filterData[id]);
-                  }       
-              }
-              if(_this.setFitViewFlag) {
-                  setTimeout(_ => {
-                      _this.distanceMap.setFitView();
-                      _this.setFitViewFlag = false;
-                  }, 500);  
-              }
-              _this.sidePrevData = _filterData;
-        } else {
-              // 返回的数据为空
-              for (let id in _this.sidePrevData) {
-                  _this.distanceMap.remove(_this.sidePrevData[id].marker);
-                  delete _this.sidePrevData[id];
-              }
-        }   
+              let maxGpsTime = 0;
+              for (const k in deviceData) {
+                if( deviceData[k].vehicleId == _this.realData.vehicleId){
+                  return;
+                }
+
+                deviceData[k].forEach((item, index) => {
+                    _filterData[item.vehicleId] = {
+                        vehicleId:item.vehicleId,
+                        position:ConvertCoord.wgs84togcj02(item.longitude, item.latitude),
+                        heading:item.heading,
+                        speed:item.speed,
+                        longitude:item.longitude,
+                        latitude: item.latitude,
+                        icon:'static/images/car/car-7.png',
+                        size:[17,40],
+                        ancher:[8,20],
+                        zIndex:50
+                    }; 
+                });
+
+                deviceData[k].map(item=>{
+                    if(item.gpsTime > maxGpsTime){
+                      maxGpsTime = item.gpsTime;
+                      _filterData = {
+                          vehicleId:item.vehicleId,
+                          position:ConvertCoord.wgs84togcj02(item.longitude, item.latitude),
+                          heading:item.heading,
+                          speed:item.speed,
+                          longitude:item.longitude,
+                          latitude: item.latitude,
+                          icon:'static/images/car/car-7.png',
+                          size:[17,40],
+                          ancher:[8,20],
+                          zIndex:50,
+                          timer:null
+                      }; 
+                    }
+                })  
+               
+                for (let id in _this.sidePrevData) {
+                    if(_filterData.vehicleId == id) {   //表示有该点，做setPosition
+                        clearTimeout(_this.sidePrevData[_filterData.vehicleId].timer)
+                        _filterData.marker = _this.sidePrevData[_filterData.vehicleId].marker;
+                        let _currentCar = _filterData;
+                        _filterData.marker.setAngle(_currentCar.heading);
+                        _filterData.marker.setPosition(_currentCar.position);
+                    } 
+                }
+               
+                if(!_this.sidePrevData[_filterData.vehicleId]) {   //表示新增该点，做add
+                    _this.addMarker(_filterData);
+                }    
+
+                if(_this.setFitViewFlag) {
+                    setTimeout(_ => {
+                        _this.distanceMap.setFitView();
+                        _this.setFitViewFlag = false;
+                    }, 500);  
+                }
+
+                _this.sidePrevData[_filterData.vehicleId] = _filterData;
+                _this.sidePrevData[_filterData.vehicleId].timer = setTimeout(() => {
+                  _this.distanceMap.remove(_this.sidePrevData[_filterData.vehicleId].marker);
+                  delete _this.sidePrevData[_filterData.vehicleId];
+                }, this.timeOut);
+              }    
+        } 
+     
       },
       onSideClose(data){
         console.log("结束连接");
@@ -549,7 +629,6 @@
         console.log("结束连接");
       },
       onDeviceOpen(data){
-        //旁车
         let deviceVehicle = {
           "action": "rsb",
           "vehicleId": this.vehicleId
@@ -900,46 +979,7 @@
           })
       },
     },
-    mounted () {
-      let _option = Object.assign(
-        {},
-        window.defaultMapOption,
-        {
-          center: window.mapOption.singlePoint,
-          zoom: 18
-        }
-      );
-      this.distanceMap = new AMap.Map('realTraffic', _option);
-      setTimeout(()=>{
-            this.distanceMap.setMapStyle(window.defaultMapOption.mapStyle);
-      },0);
-      /*let marker1 = new AMap.Marker({
-        position: [121.18653381418872,31.274421462567677],
-        icon: 'static/images/car/car-1.png', // 添加 Icon 图标 URL
-        zIndex:500
-      });
-      let marker2 = new AMap.Marker({
-        position: [121.18696087827043,31.274363226403192],
-        icon: 'static/images/car/car-2.png', // 添加 Icon 图标 URL
-        zIndex:500
-      });
-      let marker3 = new AMap.Marker({
-        position: [121.18684514591077,31.27437144715565],
-        icon: 'static/images/car/car-6.png', // 添加 Icon 图标 URL
-        zIndex:500
-      });
-      this.distanceMap.add(marker1);
-      this.distanceMap.add(marker2);
-      this.distanceMap.add(marker3);*/
-      this.initWebSocket();
-      this.initSideWebSocket();
-      this.initDeviceWebSocket();
-      this.initWarningWebSocket();
-      this.initLightWebSocket();
-      //云端和车端此次行程统计
-      this.getV2xInformation();
-      this.getAlarmInformation();
-    },
+    
     destroyed(){
       //销毁Socket
       this.hostWebsocket&&this.hostWebsocket.close();

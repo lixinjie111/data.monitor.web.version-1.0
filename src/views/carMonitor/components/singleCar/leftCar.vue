@@ -131,7 +131,8 @@
 
         countTimer: null,
         countTimeLimit: 1000*60*5,
-        countTime: 0
+        countTime: 0,
+        wsFlag:false,
       }
     },
     props:{
@@ -139,10 +140,17 @@
         type:Object,
         default() {
           return {
-
           };
         }
-      }
+      },
+      vehWsData:{
+        type:Object,
+        default() {
+          return {
+          };
+        }
+      },
+      
     },
     computed: {
       filterData() {
@@ -194,7 +202,13 @@
               }
           })
         }
-      }
+      },
+      vehWsData(newVal,oldVal){
+        if(this.wsFlag){
+          this.onmessage(newVal)
+        }
+        
+      },
     },
     mounted () {
       this.initMap();
@@ -216,9 +230,6 @@
         setTimeout(()=>{
             this.distanceMap.setMapStyle(window.defaultMapOption.mapStyle);
         },0);
-        // console.log(this.distanceMap.getZoom());
-
-
       },
       getRunTime(nS) {
         nS = nS / 1000;
@@ -308,10 +319,6 @@
         this.countTimer = null;
         this.countTime = 0;
 
-        // this.distanceMap.setCenter(window.mapOption.defaultCenterPoint);
-        // this.distanceMap.setZoom(this.zoom);
-
-        // this.webSocket.send(JSON.stringify(this.webSocketData));
       },
       //行程概览--绘制起点
       distanceMapStart(){
@@ -411,12 +418,14 @@
           if(_result && _result.length > 0) {
             this.onmessage(res);
           }
+          this.wsFlag = true;
           // this.initWebSocket();
         }).catch(error => {
           // console.log("hahahah");
           // this.initWebSocket();
         });
       },
+      
       // initWebSocket(){
       //   // debugger
       //   let _this=this;
@@ -430,6 +439,7 @@
       // },
       onmessage(message){
         // console.log("行程概览 route *********************************************");
+       
         clearInterval(this.countTimer);
         this.countTime = 0;
         this.countTimer = setInterval(() => {
@@ -437,11 +447,13 @@
         }, 1000);
         var _this=this;
         var json  = {};
-        if(typeof message.data == "string") {
-          json = JSON.parse(message.data);
+        if(message.result) {
+          json.data =  message.result.track[0];
+          json.data.routeId = message.result.route.routeId;
         }else {
           json = message;
         }
+        // var json = message.result.track[0];
         var pointList = [];
         if(this.all == 1){
           if(json.data.pointList && json.data.pointList.length > 0){
@@ -453,23 +465,28 @@
               heading: json.data.heading
             }];
           }
+          this.routeInfo = {
+            routeStartTime: json.data.routeStartTime, //行驶开始时间
+            durationTime: json.data.durationTime, //累计行驶时间
+            mileage: parseFloat(json.data.mileage).toFixed(1).toLocaleString(), //累计行驶里程
+            avgSpd: parseFloat(json.data.avgSpd).toFixed(1).toLocaleString() //平均测速
+          };
         }else{
           pointList = [{
             longitude: json.data.longitude,
             latitude: json.data.latitude,
             heading: json.data.heading
           }]; 
+          this.routeInfo = {
+            routeStartTime: message.result.route.routeStartTime, //行驶开始时间
+            durationTime: message.result.route.durationTime, //累计行驶时间
+            mileage: parseFloat(message.result.route.mileage/1000).toFixed(1).toLocaleString(), //累计行驶里程
+            avgSpd: parseFloat(message.result.route.avgSpd).toFixed(1).toLocaleString() //平均测速
+          };
         }
         // let _pointer = [json.data.lon, json.data.lat];
         // console.log("行程概览 route *********************************************");
-        // console.log(_pointer);
-        this.routeInfo = {
-          routeStartTime: json.data.routeStartTime, //行驶开始时间
-          durationTime: json.data.durationTime, //累计行驶时间
-          mileage: parseFloat(json.data.mileage).toFixed(1).toLocaleString(), //累计行驶里程
-          avgSpd: parseFloat(json.data.avgSpd).toFixed(1).toLocaleString() //平均测速
-        };
-        // console.log(this.getRunTime(json.data.durationTime));
+       
         if(pointList && pointList.length > 0) {
           if(this.routeId != ""){
             if(this.routeId != json.data.routeId) {
@@ -480,7 +497,6 @@
           }else{
             console.log("第一次开启行程");
             this.routeId = json.data.routeId;
-            // console.log(this.routeId);
             _this.carStartPoint = ConvertCoord.wgs84togcj02(pointList[0].longitude, pointList[0].latitude);
             _this.distanceMapStart();
           }
@@ -502,7 +518,6 @@
               handlePointList.push(lnglatArr);
             }
           });
-          // console.log(handlePointList);
           let _dataLength = handlePointList.length;
           this.wholePath.push( {
             angle: pointList[_dataLength-1].heading >= 0 ? pointList[_dataLength-1].heading : 90,

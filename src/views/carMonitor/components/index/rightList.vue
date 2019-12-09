@@ -150,8 +150,6 @@ export default {
 								item.echarts = $echarts.init(document.getElementById(item.id));
 							}
 							let _option = this.defaultOption(item.echartsData);
-							console.log(111111)
-							console.log(_option)
 		            		item.echarts.setOption(_option);
 		            	}, 0);
 					}
