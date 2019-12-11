@@ -11,36 +11,14 @@
             {{message}}
           </div>
         </div>
-        <div v-if="!visible" :id="roadItem.camSerialNum" class="c-map-style"></div>
-        <!-- <iframe v-if="!visible" class="m-iframe" :src="roadItem.iframeUrl"></iframe> -->
+        <!-- <div v-if="!visible" :id="roadItem.camSerialNum" class="c-map-style"></div> -->
+        <iframe @load ="onLoadMap" :id=roadItem.camSerialNum :name ="roadItem.camSerialNum" ref="iframe1" v-if="!visible" class="c-iframe" :src="roadItem.iframeUrl"></iframe>
 
-        <!-- <tusvn-map
-          class="c-map-video-style"
-          v-if="sideMap"
-          :targetId="'mapMonitor'+roadItem.camSerialNum"
-          :ref="roadItem.camSerialNum"
-          :background="mapParam.background"
-          :minX="mapParam.minX"
-          :minY="mapParam.minY"
-          :minZ="mapParam.minZ"
-          :maxX="mapParam.maxX"
-          :maxY="mapParam.maxY"
-          :maxZ="mapParam.maxZ"
-          @mapcomplete="onMapComplete">
-        </tusvn-map> -->
-       <!-- <div class="c-mask-tip" v-else>
-          {{mapMessage}}
-        </div>-->
       </div>
     </div>
 </template>
 <script>
   import {getVideoByNum} from '@/api/sideDeviceMonitor'
-  import GIS3D from '@/utils/GIS3D.js'
-  import PerceptionCars from '@/utils/PerceptionCars.js'
-  let gis3d=new GIS3D();
-  let perceptionCars1 = new PerceptionCars();
-  let perceptionCars0 = new PerceptionCars();
  
     export default {
         data() {
@@ -54,9 +32,7 @@
               currentExtent:[],
             }
         },
-        components:{
-          // TusvnMap
-        },
+        components:{},
         props:['visible','roadItem','index'],
         mounted() {
           this.getExtend(
@@ -64,35 +40,40 @@
             this.roadItem.lat,
             0.0002
           );
-          this.initMap();
+          // this.initMap();
+           
         },
+      
         methods: {
-
-          initMap(){
-            let _this = this;
-            gis3d.initload(_this.roadItem.camSerialNum,false);
-            if(this.index){
-              perceptionCars1.viewer=gis3d.cesium.viewer;
-            }else{
-              perceptionCars0.viewer=gis3d.cesium.viewer;  
+          onLoadMap(){
+            let msgData = {
+              type:"position",
+              data:{
+                currentExtent:this.currentExtent
+              }
             }
-            
-            _this.mapParam=window.mapParam;
-            _this.rsId = _this.$route.params.crossId;
+            document.getElementById(this.roadItem.camSerialNum).contentWindow.postMessage(msgData,'*');
             this.onMapComplete();
-          },  
+          },
 
           onMapComplete:function(){
             if(this.roadItem.camSerialNum&&this.roadItem.camSerialNum!='' && this.roadItem.cameraParam){
               let cameraParam = JSON.parse(this.roadItem.cameraParam);
               cameraParam.x = this.roadItem.lon;
               cameraParam.y = this.roadItem.lat;
-              gis3d.updateCameraPosition(cameraParam.x,cameraParam.y,cameraParam.z,cameraParam.radius,cameraParam.pitch,cameraParam.yaw); 
+              let msgData = {
+                type:"updateCam",
+                data:{
+                  x:cameraParam.x,
+                  y:cameraParam.y,
+                  z:cameraParam.z,
+                  radius:cameraParam.radius,
+                  pitch:cameraParam.pitch,
+                  yaw:cameraParam.yaw
+                }
+              }
+              document.getElementById(this.roadItem.camSerialNum).contentWindow.postMessage(msgData,'*');   
             }
-            this.getData();
-          },
-          getData() {
-            this.initPerceptionWebSocket();   
           },
           queryDeviceDetail(item,target) {
             this.$emit("queryDeviceDetail",item,target);
@@ -119,103 +100,6 @@
               this.currentExtent.push([x1, y1]);
               return this.currentExtent;
           },
-          //感知车
-          initPerceptionWebSocket(){
-              let _this=this;
-              try{
-                  if ('WebSocket' in window) {
-                      // _this.perceptionWebsocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
-                      _this.perceptionWebsocket = new WebSocket(window.config.socketTestUrl);  //获得WebSocket对象
-                      _this.perceptionWebsocket.onmessage = _this.onPerceptionMessage;
-                      _this.perceptionWebsocket.onclose = _this.onPerceptionClose;
-                      _this.perceptionWebsocket.onopen = _this.onPerceptionOpen;
-                      _this.perceptionWebsocket.onerror= _this.onPerceptionError;
-                  }else{
-                      _this.$message("此浏览器不支持websocket");
-                  }
-              }catch (e){
-                  this.perceptionReconnect();
-              }
-          },
-
-          onPerceptionMessage(mesasge){
-              let _this=this;
-              let data = JSON.parse(mesasge.data)
-              _this.processPerData(data);
-            
-          },
-          onPerceptionClose(data) {
-            console.log("结束连接");
-          },
-          onPerceptionError(){
-              console.log("感知车连接error");
-              this.perceptionReconnect();
-          },
-          onPerceptionOpen(data) {
-            //旁车
-            // var perception = {
-            //   action: "road_real_data_per",
-            //   data: {
-            //     polygon: this.currentExtent
-            //   }
-            // };
-            // var perceptionMsg = JSON.stringify(perception);
-            // this.sendPerceptionMsg(perceptionMsg);
-
-            var perception = {
-            action:"road_real_data_per",
-            data:{
-                type:1,
-                polygon:[[121.17403069999999,31.2836193],[121.1760307,31.2836193],[121.1760307,31.2816193],[121.17403069999999,31.2816193]]
-                }
-            }
-            var perceptionMsg = JSON.stringify(perception);
-            this.sendPerceptionMsg(perceptionMsg);
-          },
-
-          sendPerceptionMsg(msg) {
-            let _this = this;
-            if (window.WebSocket) {
-              if (_this.perceptionWebsocket.readyState == WebSocket.OPEN) {
-                //如果WebSocket是打开状态
-                _this.perceptionWebsocket.send(msg); //send()发送消息
-              }
-            } else {
-              return;
-            }
-          },
-          processPerData(data){
-              let _this = this;
-              let maxGpsTime = 0;
-              let fiterData;
-              if(data.result.perList.length){
-                data.result.perList.map(item=>{
-                  if(item.gpsTime > maxGpsTime){
-                    maxGpsTime = item.gpsTime;
-                    fiterData = item;
-                  }
-                })
-                    
-              }
-              if(this.index){
-                perceptionCars1.addPerceptionData(fiterData.data,0);
-              }else{
-                perceptionCars0.addPerceptionData(fiterData.data,0);
-              }
-          },
-          perceptionReconnect(){
-              //实例销毁后不进行重连
-              if(this._isDestroyed){
-                  return;
-              }
-              //重连不能超过10次
-              if(this.perceptionConnectCount>=10){
-                  return;
-              }
-              this.initPerceptionWebSocket();
-              //重连不能超过5次
-              this.perceptionConnectCount++;
-          },
         },
       watch:{
         visible(){
@@ -228,7 +112,7 @@
               return;
             }
             this.$nextTick(() => {
-              this.initMap();
+              // this.initMap();
             })   
           }else{
             //打开窗口，关闭连接
@@ -247,11 +131,5 @@
 <style lang="scss" scoped>
 .c-size-inner {
   background: #000;
-}
-.m-iframe {
-  border: none;
-  background: #000;
-  width: 100%;
-  height: 100%;
 }
 </style>

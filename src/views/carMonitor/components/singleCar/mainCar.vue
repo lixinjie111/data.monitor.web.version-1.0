@@ -883,9 +883,13 @@
       onWarningOpen(data){
         //旁车
         let warning = {
-          "action": "warning",
-          "vehicleId": this.vehicleId
+          "action":"warning",
+          "type":1,
+          "body":{
+            "vehicleId":"B21E0004"
+          }
         }
+        
         let warningMsg = JSON.stringify(warning);
         this.sendWarningMsg(warningMsg);
       },

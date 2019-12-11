@@ -32,35 +32,19 @@
             </div>
           </div>
         </div>
-        <!-- <div class="side-dialog-map">
-          <div style="width: 100%;height: 100%;">
-            <div style="width: 100%;height: 100%;" v-if="sideMap"> -->
-              <!-- <div class="time-style">
-              <span class="t-class">{{time}}</span>
-              </div>-->
-              <!-- <tusvn-map
-                :target-id="deviceMapId"
-                ref="tusvnMap3"
-                :background="mapParam.background"
-                :minX="mapParam.minX"
-                :minY="mapParam.minY"
-                :minZ="mapParam.minZ"
-                :maxX="mapParam.maxX"
-                :maxY="mapParam.maxY"
-                :maxZ="mapParam.maxZ"
-                @mapcomplete="mapcomplete"
-                @showTimeStamp="showTimeStamp"
-      				  :waitingtime='50'
-              ></tusvn-map> -->
-
-              <!-- <div id="cesiumContainer" class="c-map">
-
-              </div>
-            </div>
-            <div v-else class="side-map-tip side-tip-style">{{mapMessage}}</div>
-          </div>
-        </div> -->
-        <div id="cesiumContainer" class="side-dialog-map"></div>
+      
+        <!-- <div id="cesiumContainer" class="side-dialog-map"></div> -->
+        <iframe 
+        @load ="onLoadMap" 
+        id="cesiumContainer"
+        name ="cesiumContainer" 
+        ref="iframe" 
+        class="c-iframe" 
+        :src="iframeSrc"
+        >
+        </iframe>
+      
+     
         <div class="side-device-list">
           <div class="c-scroll-wrap">
             <div class="c-scroll-inner">
@@ -193,6 +177,9 @@ export default {
     LivePlayer
   },
   props: ["selectedItem"],
+  beforeCreate(){
+    this.iframeSrc = window.config.staticUrl+'Cesium-map';        
+  },
   created() {
     this.webSocketData.taskCode = this.selectedItem.taskCode;
     this.serialNum = this.selectedItem.cameraId; //点击进来的设备编号
@@ -203,15 +190,7 @@ export default {
     );
   },
   mounted() {
-      let _this = this;
-      gis3d.initload("cesiumContainer",false);
-      perceptionCars.viewer=gis3d.cesium.viewer;
-
-      _this.mapParam=window.mapParam;
-      _this.rsId = _this.$route.params.crossId;
-    
-      this.mapOk = true;
-      this.onMapComplete();
+      
   },
   watch: {
     deviceList: {
@@ -234,6 +213,21 @@ export default {
     }
   },
   methods: {
+
+
+    onLoadMap(){
+      this.mapOk = true;
+      this.initWebSocket();
+      
+      let msgData = {
+        type:"position",
+        data:{
+          currentExtent:this.currentExtent
+        }
+      }
+      document.getElementById("cesiumContainer").contentWindow.postMessage(msgData,'*');
+    },
+
     compare(newArr, oldArr) {
       let newData = []; //新增的数据
       let sameData = []; //相同的数据
@@ -327,20 +321,26 @@ export default {
           this.isOne = false;
           if (this.selectedItem.cameraId) {
             if (this.cameraParam) {
-              gis3d.updateCameraPosition(
-                this.cameraParam.x,
-                this.cameraParam.y,
-                this.cameraParam.z,
-                this.cameraParam.radius,
-                this.cameraParam.pitch,
-                this.cameraParam.yaw
-              );
+
             } else {
-              this.updateCameraPosition();
+              this.setCameraPosition();
             }
           } else {
-            this.updateCameraPosition();
+            this.setCameraPosition();
           }
+          let camData = {
+            type:"updateCam",
+            data:{
+              x:this.cameraParam.x,
+              y:this.cameraParam.y,
+              z:this.cameraParam.z,
+              radius:this.cameraParam.radius,
+              pitch:this.cameraParam.pitch,
+              yaw:this.cameraParam.yaw
+            }
+          }
+          document.getElementById("cesiumContainer").contentWindow.postMessage(camData,'*'); 
+
           let formData = new FormData(); //创建form对象
           formData.append("featureclass", "dl_shcsq_wgs84_lb_points");
           formData.append("lng", this.selectedItem.longitude); //通过append向form对象添加数据
@@ -360,29 +360,37 @@ export default {
                  this.heading = res.data[0].heading;
               }
               if (!this.cameraParam) {
-                this.updateCameraPosition();
+                this.setCameraPosition();
+                  let camData = {
+                    type:"updateCam",
+                    data:{
+                      x:this.cameraParam.x,
+                      y:this.cameraParam.y,
+                      z:this.cameraParam.z,
+                      radius:this.cameraParam.radius,
+                      pitch:this.cameraParam.pitch,
+                      yaw:this.cameraParam.yaw
+                    }
+                  }
+                  document.getElementById("cesiumContainer").contentWindow.postMessage(camData,'*'); 
               }
               let _length = this.itemData.modelIcon.split("/").length;
               let _name = this.itemData.modelIcon.split("/")[_length - 1];
-              let _url = "./static/map3d/traffic_models/" + _name;
+              // let _url = "./static/map3d/traffic_models/" + _name;
+              // _url = "./static/map3d/model/zhui_tong.glb";
 
-              _url = "./static/map3d/model/zhui_tong.glb";
-              // gis3d.addModel(
-              //   _name,
-              //   _url,
-              //   this.position[0],
-              //   this.position[1],
-              //   0
-              // );
-              gis3d.addModeCar({
-                longitude:this.position[0],
-                latitude:this.position[1],
-                heading:0,
-                vehicleId:""
-              },
-              _name,
-              "zhui_tong"
-              );
+              let modelData = {
+                type:"addModel",
+                data:{
+                  longitude:this.position[0],
+                  latitude:this.position[1],
+                  heading:0,
+                  vehicleId:"",
+                  name:_name,
+                  glbName:"zhui_tong",
+                }
+              }
+              document.getElementById("cesiumContainer").contentWindow.postMessage(modelData,'*'); 
             }
           });
           } else {
@@ -398,36 +406,35 @@ export default {
         return (heading = -(Math.PI / 180.0) * heading);
       }
     },
-    updateCameraPosition() {
+    setCameraPosition() {
       
       if(!this.position.length){
         this.position = [112.94760914128275, 28.325093927226323]
       }
-    
       if (this.heading) {
-        gis3d.updateCameraPosition(
-          this.position[0],
-          this.position[1],
-          39,
-          70,
-          -0.2369132859032279,
-          (Math.PI / 180.0) * (this.heading+25)
-        );
+        this.cameraParam = {
+          x: this.position[0],
+          y: this.position[1],
+          z: 39,
+          radius: 70,
+          pitch: -0.2369132859032279,
+          yaw: (Math.PI / 180.0) * (this.heading+25),
+        }
       } else {
-        gis3d.updateCameraPosition(
-          this.position[0],
-          this.position[1],
-          39,
-          70,
-          -0.2369132859032279,
-          0.0029627735803421373
-        );
+         this.cameraParam = {
+          x: this.position[0],
+          y: this.position[1],
+          z: 39,
+          radius: 70,
+          pitch: -0.2369132859032279,
+          yaw: 0.0029627735803421373
+        }
       }
     },
     initWebSocket() {
       if ("WebSocket" in window) {
         // this.webSocket = new WebSocket(window.config.websocketUrl); //获得WebSocket对象
-        this.webSocket = new WebSocket(window.config.socketTestUrl); //获得WebSocket对象
+        this.webSocket = new WebSocket(window.config.websocketUrl); //获得WebSocket对象
       }
       this.webSocket.onmessage = this.onmessage;
       this.webSocket.onclose = this.onclose;
@@ -528,92 +535,92 @@ export default {
     //   }
     // },
     //感知车
-    initPerceptionWebSocket(){
-        let _this=this;
-        try{
-            if ('WebSocket' in window) {
-                // _this.perceptionWebsocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
-                _this.perceptionWebsocket = new WebSocket(window.config.socketTestUrl);  //获得WebSocket对象
-                _this.perceptionWebsocket.onmessage = _this.onPerceptionMessage;
-                _this.perceptionWebsocket.onclose = _this.onPerceptionClose;
-                _this.perceptionWebsocket.onopen = _this.onPerceptionOpen;
-                _this.perceptionWebsocket.onerror= _this.onPerceptionError;
-            }else{
-                _this.$message("此浏览器不支持websocket");
-            }
-        }catch (e){
-            this.perceptionReconnect();
-        }
+    // initPerceptionWebSocket(){
+    //     let _this=this;
+    //     try{
+    //         if ('WebSocket' in window) {
+    //             // _this.perceptionWebsocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+    //             _this.perceptionWebsocket = new WebSocket(window.config.socketTestUrl);  //获得WebSocket对象
+    //             _this.perceptionWebsocket.onmessage = _this.onPerceptionMessage;
+    //             _this.perceptionWebsocket.onclose = _this.onPerceptionClose;
+    //             _this.perceptionWebsocket.onopen = _this.onPerceptionOpen;
+    //             _this.perceptionWebsocket.onerror= _this.onPerceptionError;
+    //         }else{
+    //             _this.$message("此浏览器不支持websocket");
+    //         }
+    //     }catch (e){
+    //         this.perceptionReconnect();
+    //     }
 
-    },
-    onPerceptionMessage(mesasge){
-        let _this=this;
-        let data = JSON.parse(mesasge.data)
-        _this.processPerData(data);
-    },
-    onPerceptionClose(data) {
-      console.log("结束连接");
-    },
-    onPerceptionError(){
-        console.log("感知车连接error");
-        this.perceptionReconnect();
-    },
-    onPerceptionOpen(data) {
-      //旁车
-      // var perception = {
-      //   action: "road_real_data_per",
-      //   data: {
-      //     polygon: this.currentExtent
-      //   }
-      // };
-      // var perceptionMsg = JSON.stringify(perception);
-      // this.sendPerceptionMsg(perceptionMsg);
+    // },
+    // onPerceptionMessage(mesasge){
+    //     let _this=this;
+    //     let data = JSON.parse(mesasge.data)
+    //     _this.processPerData(data);
+    // },
+    // onPerceptionClose(data) {
+    //   console.log("结束连接");
+    // },
+    // onPerceptionError(){
+    //     console.log("感知车连接error");
+    //     this.perceptionReconnect();
+    // },
+    // onPerceptionOpen(data) {
+    //   //旁车
+    //   // var perception = {
+    //   //   action: "road_real_data_per",
+    //   //   data: {
+    //   //     polygon: this.currentExtent
+    //   //   }
+    //   // };
+    //   // var perceptionMsg = JSON.stringify(perception);
+    //   // this.sendPerceptionMsg(perceptionMsg);
 
-      var perception = {
-      action:"road_real_data_per",
-      data:{
-          type:1,
-          polygon:[[121.17403069999999,31.2836193],[121.1760307,31.2836193],[121.1760307,31.2816193],[121.17403069999999,31.2816193]]
-          }
-      }
-      var perceptionMsg = JSON.stringify(perception);
-      this.sendPerceptionMsg(perceptionMsg);
-    },
-    processPerData(data){
-        let _this = this;
-        let maxGpsTime = 0;
-        let fiterData;
-        if(data.result.perList.length){
-          data.result.perList.map(item=>{
-            if(item.gpsTime > maxGpsTime){
-              maxGpsTime = item.gpsTime;
-              fiterData = item;
-            }
-          })
+    //   var perception = {
+    //   action:"road_real_data_per",
+    //   data:{
+    //       type:1,
+    //       polygon:[[121.17403069999999,31.2836193],[121.1760307,31.2836193],[121.1760307,31.2816193],[121.17403069999999,31.2816193]]
+    //       }
+    //   }
+    //   var perceptionMsg = JSON.stringify(perception);
+    //   this.sendPerceptionMsg(perceptionMsg);
+    // },
+    // processPerData(data){
+    //     let _this = this;
+    //     let maxGpsTime = 0;
+    //     let fiterData;
+    //     if(data.result.perList.length){
+    //       data.result.perList.map(item=>{
+    //         if(item.gpsTime > maxGpsTime){
+    //           maxGpsTime = item.gpsTime;
+    //           fiterData = item;
+    //         }
+    //       })
               
-        }
-        perceptionCars.addPerceptionData(fiterData.data,0);
+    //     }
+    //     perceptionCars.addPerceptionData(fiterData.data,0);
       
-    },
-    sendPerceptionMsg(msg) {
-      let _this = this;
-      if (window.WebSocket) {
-        if (_this.perceptionWebsocket.readyState == WebSocket.OPEN) {
-          //如果WebSocket是打开状态
-          _this.perceptionWebsocket.send(msg); //send()发送消息
-        }
-      } else {
-        return;
-      }
-    },
+    // },
+    // sendPerceptionMsg(msg) {
+    //   let _this = this;
+    //   if (window.WebSocket) {
+    //     if (_this.perceptionWebsocket.readyState == WebSocket.OPEN) {
+    //       //如果WebSocket是打开状态
+    //       _this.perceptionWebsocket.send(msg); //send()发送消息
+    //     }
+    //   } else {
+    //     return;
+    //   }
+    // },
    
-    coordinateTransfer(sourceProject, destinatePorject, longitude, latitude) {
-      let targetCoor = proj4(sourceProject, destinatePorject, [
-        longitude,
-        latitude
-      ]);
-      return targetCoor;
-    },
+    // coordinateTransfer(sourceProject, destinatePorject, longitude, latitude) {
+    //   let targetCoor = proj4(sourceProject, destinatePorject, [
+    //     longitude,
+    //     latitude
+    //   ]);
+    //   return targetCoor;
+    // },
     getExtend(x, y, r) {
       //1度=108000米；方圆200米
       this.currentExtent = [];
@@ -679,16 +686,16 @@ export default {
     showTimeStamp(time) {
       this.time = time;
     },
-    onMapComplete(){ 
-        this.updateCameraPosition(112.94760914128275, 28.325093927226323,39,70,-0.2369132859032279, 0.0029627735803421373); 
-        this.getData();
+    // onMapComplete(){ 
+       
+    //     this.getData();
       
-    },
-    getData(){
-        this.initWebSocket();
-        this.initPerceptionWebSocket();
-        // this.initPlatformWebSocket();
-    },
+    // },
+    // getData(){
+    //     this.initWebSocket();
+    //     this.initPerceptionWebSocket();
+    //     // this.initPlatformWebSocket();
+    // },
     // platformReconnect(){
     //     //实例销毁后不进行重连
     //     if(this._isDestroyed){
@@ -702,19 +709,19 @@ export default {
     //     //重连不能超过5次
     //     this.platformConnectCount++;
     // },
-    perceptionReconnect(){
-        //实例销毁后不进行重连
-        if(this._isDestroyed){
-            return;
-        }
-        //重连不能超过10次
-        if(this.perceptionConnectCount>=10){
-            return;
-        }
-        this.initPerceptionWebSocket();
-        //重连不能超过5次
-        this.perceptionConnectCount++;
-    },
+    // perceptionReconnect(){
+    //     //实例销毁后不进行重连
+    //     if(this._isDestroyed){
+    //         return;
+    //     }
+    //     //重连不能超过10次
+    //     if(this.perceptionConnectCount>=10){
+    //         return;
+    //     }
+    //     this.initPerceptionWebSocket();
+    //     //重连不能超过5次
+    //     this.perceptionConnectCount++;
+    // },
     getVideo() {
       this.wsUrl = "";
       getVideoByNum({
@@ -742,6 +749,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "@/assets/scss/dialog.scss";
+
 .m-side-dialog-content {
   padding: 0;
   background-color: #000;
