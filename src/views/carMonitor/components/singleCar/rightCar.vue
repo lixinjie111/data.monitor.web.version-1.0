@@ -294,10 +294,13 @@
           this.sendMsg();
       },
       sendMsg(){
-          var params = {
-                  action:'vehPer',
-                  vehicleId:this.vehicleId
-              }
+          let params = {
+            "action": "vehicle",
+            "body": {
+                "vehicleId": this.vehicleId
+            },
+            "type": 5
+          }
           this.socket.send(JSON.stringify(params));
       },
       error(msg){

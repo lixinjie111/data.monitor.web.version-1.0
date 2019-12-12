@@ -756,126 +756,132 @@
       onWarningMessage(mesasge){
         let _this=this;
         let json = JSON.parse(mesasge.data);
-        let warningData = json.result.data;
-        let type = json.result.type;
+        let warningData = json.result;
+        
         if(warningData.length>0){
-         
-          if(type=='VEHICLE'){
-            let warningId;
-            warningData.forEach(item=>{
-              warningId = item.warnId;
-              if(_this.vehicleIdList.indexOf(warningId) >= 0){
-                 return;
-              }
-              // else{
-              //   this.vehicleIdList.push(item.warnId);
-              //   _this.vehicleList.push(item)
-              // }
-              
-              //如果告警id不存在 右侧弹出
-              if(!_this.warningData[warningId]){
-                _this.vehicleCount++;
-                let dist = parseInt(item.dis);
-                if(!dist){
-                  dist=-1;
-                }
-                let obj = {type: item.eventType,timer: null, flag: true,dist:dist,message:item.warnMsg,icon:item.warnIcon,warnColor:item.warnColor};
-                obj.timer=setTimeout(()=>{
-                  obj.flag=false;
-                  _this.warningList.forEach(item=>{
-                    if(item.flag){
-                      _this.isAllClear=true;
-                    }
-                  })
-                  if(!_this.isAllClear){
-                    this.warningList=[];
-                  }
-                },3000)
-                _this.warningList.unshift(obj);
-                _this.warningData[warningId]=obj;
-              }
-            })
-          }
-          if(type=='CLOUD'){
-            let warningId;
-            let eventType = json.result.eventType;
-            warningData.forEach(item=>{
-              warningId = item.warnId;
-              // warningId = warningId.substring(0,warningId.lastIndexOf("_"));
-              let msg = item.warnMsg+" "+item.dis+"米";
-              let warningObj={
-                longitude:item.longitude,
-                latitude:item.latitude
-              }
-              let warningHash = _this.hashcode(JSON.stringify(warningObj));
-              let position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
-              //如果告警id不存在 右侧弹出          
-              if(!_this.warningData[warningId]){
-          
-                //在地图上标记交通事件
-                let marker = new AMap.ElasticMarker({
-                  position:position,
-                  zooms:[10,20],
-                  zIndex:47,
-                  styles:[{
-                    icon:{
-                      img:item.warnMapIcon,
-                      size:[44,60],
-                      ancher:[22,60],
-                      fitZoom:18,//最合适的级别，在此级别下显示为原始大小
-                      scaleFactor:1.3,//地图放大一级的缩放比例系数
-                      maxScale:1.3,//最大放大比例 达到此处图片不在变化
-                      minScale:0.5//最小放大比例
-                    }
-                  }],
-                  zoomStyleMapping:_this.zoomStyleMapping
-                })
-                _this.distanceMap.add(marker);
-                //同时
-                let eventObj = {
-                  marker:marker,
-                  hash:warningHash
-                }
-                _this.warningData[warningId]=eventObj;
-
-                // 先打点 在预警信息中的内容不在右下角弹出 但是会在地图上打点
-              
-                if(_this.cloudIdList.indexOf(warningId) >= 0){
+          warningData.map((v,k)=>{  
+              let type = v.type;     
+              if(type=='VEHICLE'){
+                let warningId;          
+                  warningId = v.data.warnId;
+                  if(_this.vehicleIdList.indexOf(warningId) >= 0){
                     return;
-                }else{
-                    this.cloudIdList.push(item.warnId);
-                    _this.cloudList.push(item)
-                }
-                // debugger
-                let dist = parseInt(item.dis);
-                if(!dist){
-                  dist=-1;
-                }
-                let obj = {type:eventType,timer:null,flag:true,dist:dist,message:item.warnMsg,icon:item.warnIcon,warnColor:item.warnColor};
-                obj.timer=setTimeout(()=>{
-                  obj.flag=false;
-                  _this.warningList.forEach(item=>{
-                    if(item.flag){
-                      _this.isAllClear=true;
-                    }
-                  })
-                  if(!_this.isAllClear){
-                    this.warningList=[];
                   }
-                },3000)
-                _this.warningList.unshift(obj);
-                _this.cloudCount++;
-
-              }else{
-                //判断是否需要更新
-                let eventObj = _this.warningData[warningId];
-                if(eventObj.hash!=warningHash){
-                  //进行更新
-                  eventObj.marker.setPosition(position);
-                }
+                  
+                  //如果告警id不存在 右侧弹出
+                  if(!_this.warningData[warningId]){
+                    _this.vehicleCount++;
+                    let dist = parseInt(v.data.dis);
+                    if(!dist){
+                      dist=-1;
+                    }
+                    let obj = {type: v.data.eventType,timer: null, flag: true,dist:dist,message:v.data.warnMsg,icon:v.data.warnIcon,warnColor:v.data.warnColor};
+                    obj.timer=setTimeout(()=>{
+                      obj.flag=false;
+                      _this.warningList.forEach(item=>{
+                        if(item.flag){
+                          _this.isAllClear=true;
+                        }
+                      })
+                      if(!_this.isAllClear){
+                        this.warningList=[];
+                      }
+                    },3000)
+                    _this.warningList.unshift(obj);
+                    _this.warningData[warningId]=obj;
+                  }
+                
               }
-            })
-          }
+              if(type=='CLOUD'){
+                let warningId;
+                let eventType = v.eventType;
+                
+                  warningId = v.data.warnId;
+                  // warningId = warningId.substring(0,warningId.lastIndexOf("_"));
+                  let msg = v.data.warnMsg+" "+v.data.dis+"米";
+                  let warningObj={
+                    longitude:v.data.longitude,
+                    latitude:v.data.latitude
+                  }
+                  let warningHash = _this.hashcode(JSON.stringify(warningObj));
+                  let position = ConvertCoord.wgs84togcj02(v.data.longitude, v.data.latitude);
+                  //如果告警id不存在 右侧弹出          
+                  if(!_this.warningData[warningId]){
+              
+                    //在地图上标记交通事件
+                    let marker = new AMap.ElasticMarker({
+                      position:position,
+                      zooms:[10,20],
+                      zIndex:47,
+                      styles:[{
+                        icon:{
+                          img:v.data.warnMapIcon,
+                          size:[44,60],
+                          ancher:[22,60],
+                          fitZoom:18,//最合适的级别，在此级别下显示为原始大小
+                          scaleFactor:1.3,//地图放大一级的缩放比例系数
+                          maxScale:1.3,//最大放大比例 达到此处图片不在变化
+                          minScale:0.5//最小放大比例
+                        }
+                      }],
+                      zoomStyleMapping:_this.zoomStyleMapping
+                    })
+                    _this.distanceMap.add(marker);
+                    //同时
+                    let eventObj = {
+                      marker:marker,
+                      hash:warningHash
+                    }
+                    _this.warningData[warningId]=eventObj;
+
+                    // 先打点 在预警信息中的内容不在右下角弹出 但是会在地图上打点
+                  
+                    if(_this.cloudIdList.indexOf(warningId) >= 0){
+                        return;
+                    }else{
+                        this.cloudIdList.push(v.data.warnId);
+                        _this.cloudList.push(v.data)
+                    }
+                    // debugger
+                    let dist = parseInt(v.data.dis);
+                    if(!dist){
+                      dist=-1;
+                    }
+                    let obj = {type:eventType,timer:null,flag:true,dist:dist,message:v.data.warnMsg,icon:v.data.warnIcon,warnColor:v.data.warnColor};
+                    obj.timer=setTimeout(()=>{
+                      obj.flag=false;
+                      _this.warningList.forEach(item=>{
+                        if(item.flag){
+                          _this.isAllClear=true;
+                        }
+                      })
+                      if(!_this.isAllClear){
+                        this.warningList=[];
+                      }
+                    },3000)
+                    _this.warningList.unshift(obj);
+                    _this.cloudCount++;
+
+                  }else{
+                    //判断是否需要更新
+                    let eventObj = _this.warningData[warningId];
+                    if(eventObj.hash!=warningHash){
+                      //进行更新
+                      eventObj.marker.setPosition(position);
+                    }
+                  }
+                
+              }
+
+
+
+
+
+
+
+          })
+         
+        
         }
       },
       onWarningClose(data){

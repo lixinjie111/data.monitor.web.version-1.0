@@ -346,16 +346,16 @@
         };
         return timeArr;
       },
-      initWebSocket(){
-        let _this=this;
-        if ('WebSocket' in window) {
-          _this.webSocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
-        }
-        _this.webSocket.onmessage = _this.onmessage;
-        _this.webSocket.onclose = _this.onclose;
-        _this.webSocket.onopen = _this.onopen;
-        _this.webSocket.onerror = _this.onerror;
-      },
+      // initWebSocket(){
+      //   let _this=this;
+      //   if ('WebSocket' in window) {
+      //     _this.webSocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
+      //   }
+      //   _this.webSocket.onmessage = _this.onmessage;
+      //   _this.webSocket.onclose = _this.onclose;
+      //   _this.webSocket.onopen = _this.onopen;
+      //   _this.webSocket.onerror = _this.onerror;
+      // },
       onmessage(message){
         let _this=this;
         
@@ -405,32 +405,32 @@
           this.isStop = true;
         }
       },
-      onclose(data){
-        console.log("结束连接");
-      },
-      onopen(data){
-        console.log("建立连接,,,,,,");
+      // onclose(data){
+      //   console.log("结束连接");
+      // },
+      // onopen(data){
+      //   console.log("建立连接,,,,,,");
 
-        //获取速度加速度
-        var speed = {
-          'action':'track',
-          /*'vid':this.vehicleID,*/
-          'vehicleId':this.vehicleId
-        }
-        var speedMsg = JSON.stringify(speed);
-        this.sendMsg(speedMsg);
-      },
-      sendMsg(msg) {
-        let _this=this;
-        if(window.WebSocket){
-          if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-            // console.log("speedAcceleration 发送请求成功");
-            _this.webSocket.send(msg); //send()发送消息
-          }
-        }else{
-          return;
-        }
-      },
+      //   //获取速度加速度
+      //   var speed = {
+      //     'action':'track',
+      //     /*'vid':this.vehicleID,*/
+      //     'vehicleId':this.vehicleId
+      //   }
+      //   var speedMsg = JSON.stringify(speed);
+      //   this.sendMsg(speedMsg);
+      // },
+      // sendMsg(msg) {
+      //   let _this=this;
+      //   if(window.WebSocket){
+      //     if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+      //       // console.log("speedAcceleration 发送请求成功");
+      //       _this.webSocket.send(msg); //send()发送消息
+      //     }
+      //   }else{
+      //     return;
+      //   }
+      // },
       realReportWebSocket(){
         let _this=this;
         if ('WebSocket' in window) {
