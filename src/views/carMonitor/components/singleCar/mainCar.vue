@@ -728,7 +728,8 @@
         //旁车
         let light = {
           "action": "spat",
-          "vehicleId": this.vehicleId
+          "vehicleId": this.vehicleId,
+          "type":1
         }
         let lightMsg = JSON.stringify(light);
         this.sendLightMsg(lightMsg);
@@ -886,7 +887,7 @@
           "action":"warning",
           "type":1,
           "body":{
-            "vehicleId":"B21E0004"
+            "vehicleId": this.vehicleId
           }
         }
         

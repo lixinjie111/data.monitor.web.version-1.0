@@ -184,10 +184,10 @@ import {
 } from "@/api/sideDeviceMonitor";
 import LivePlayer from '@/components/livePlayer/template'
 
-import GIS3D from '@/utils/GIS3D.js'
-import PerceptionCars from '@/utils/PerceptionCars.js'
-let gis3d=new GIS3D();
-let perceptionCars = new PerceptionCars();
+// import GIS3D from '@/utils/GIS3D.js'
+// import PerceptionCars from '@/utils/PerceptionCars.js'
+// let gis3d=new GIS3D();
+// let perceptionCars = new PerceptionCars();
 export default {
   name: "SideDialog",
   data() {
@@ -309,8 +309,8 @@ export default {
 
     initMap(){
       let _this = this;
-      gis3d.initload("cesiumContainer",false);
-      perceptionCars.viewer=gis3d.cesium.viewer;
+      // gis3d.initload("cesiumContainer",false);
+      // perceptionCars.viewer=gis3d.cesium.viewer;
       _this.mapParam=window.mapParam;
       this.onMapComplete();
     },
@@ -644,8 +644,8 @@ export default {
       this.time = time;
     },
     onMapComplete(){
-        perceptionCars.stepTime = this.pulseInterval;
-        perceptionCars.pulseInterval = parseInt(this.pulseInterval)*2*0.8;
+        // perceptionCars.stepTime = this.pulseInterval;
+        // perceptionCars.pulseInterval = parseInt(this.pulseInterval)*2*0.8;
 
         this.getData();
       

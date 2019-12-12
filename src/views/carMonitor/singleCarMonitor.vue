@@ -13,7 +13,7 @@
                   <main-car :vehWsData="vehWsData" :real-data="realData" :isStop="isStop"></main-car>
               </div>
               <div class="single-content-bottom">
-                  <bottom-car></bottom-car>
+                  <bottom-car :vehWsData="vehWsData"></bottom-car>
               </div>
               <div class="stop-left-style" v-show="isStop">
                 <div class="stop-left-text">

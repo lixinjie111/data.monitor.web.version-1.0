@@ -127,10 +127,10 @@ import { getFeaturesByPoint } from "@/api/roadMonitor";
 import ConvertCoord from "@/assets/js/utils/coordConvert.js";
 import LivePlayer from '@/components/livePlayer/template';
 
-import GIS3D from '@/utils/GIS3D.js'
-import PerceptionCars from '@/utils/PerceptionCars.js'
-let gis3d=new GIS3D();
-let perceptionCars = new PerceptionCars();
+// import GIS3D from '@/utils/GIS3D.js'
+// import PerceptionCars from '@/utils/PerceptionCars.js'
+// let gis3d=new GIS3D();
+// let perceptionCars = new PerceptionCars();
 
 export default {
   name: "SideDialog",

@@ -148,15 +148,17 @@
       }
     },
     props:{
-      speedData:{
-        type: Object,
+      vehWsData:{
+        type:Object,
         default() {
           return {};
         }
-      },
-      time:{
-
       }
+    },
+    watch:{
+      vehWsData(newVal,oldVal){
+        this.onmessage(newVal);
+      },
     },
     methods: {
       getSpeedChart(){
@@ -356,10 +358,11 @@
       },
       onmessage(message){
         let _this=this;
-        var json = JSON.parse(message.data),
-            gpsTime = json.result.gpsTime,
-            speed = json.result.speed,
-            acceleration = json.result.acceleration;
+        
+        var json = message.result.track[0],
+            gpsTime = json.gpsTime,
+            speed = json.speed,
+            acceleration = json.acceleration;
         if(gpsTime){
           //动态数据
           this.isStop = false;
@@ -581,7 +584,7 @@
       downCurve1.drawImgs("-"+_this.downRandom,'SPAT','down',12, [552, 150],[356, 55],'#59d44f');//信号灯
       _this.spatRandom = _this.downRandom;
 
-      _this.initWebSocket();
+      // _this.initWebSocket();
       _this.realReportWebSocket();
     },
     destroyed(){
