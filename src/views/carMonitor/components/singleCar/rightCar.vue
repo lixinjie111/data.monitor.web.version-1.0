@@ -25,7 +25,7 @@
           <div class="car-container" :style="{transform:'rotate(-'+currentCar.heading+'deg)'}">
             <img src="@/assets/images/car/car-11.png" class="host-vehicle" :style="{transform:'rotate('+currentCar.heading+'deg)'}"/>
             <div class="otherCarsContainer">
-              <div class="item" v-for="(carItem,index) in carsDataformate" :style="{left:carItem.Sx+'px',top:carItem.Sy+'px',transform:'rotate('+carItem.heading+'deg)'}">
+              <div class="item" v-for="(carItem,index) in carsData" :style="{left:carItem.Sx+'px',top:carItem.Sy+'px',transform:'rotate('+carItem.heading+'deg)'}">
                   <img src="@/assets/images/car/car-17.png" class="car-position1"/>
               </div>
             </div>
@@ -68,10 +68,12 @@
         },
         //自车数据
         currentCar:{},
-        carsData:[],
+        carsData:{},
         rtmp:'',
         startStream: startStream,
-        streamParam: {}
+        streamParam: {},
+        carDataTimer:{},
+        computedCars:[],
       }
     },
     components: { LivePlayer },
@@ -79,6 +81,12 @@
       isStop:{
         type:Boolean,
         default:false
+      },
+      vehWsData:{
+        type:Object,
+        default() {
+          return {};
+        }
       }
     },
     created() {
@@ -89,27 +97,14 @@
       isStop(oldValue,newValue){
         if(this.isStop){
           this.$refs['player'].initVideo();
-          this.carsData=[];
+          this.carsData={};
         }else {
           this.getDeviceInfo();
         }
-      }
-    },
-    computed:{
-      carsDataformate(){
-          var that = this;
-          if(this.carsData && this.carsData.length > 0) {
-            var carsDataformate = this.carsData.map(function(item,index,self){
-                var formateItem = that.mapPtToScrPt(item);
-                item.Sx = formateItem.Sx;
-                item.Sy = formateItem.Sy;
-                return item;
-            });
-            return carsDataformate;
-          }else{
-            return [];
-          }
-      }
+      },
+      vehWsData(newVal,oldVal){
+        this.currentCar = newVal.result.track[0];
+      },
     },
     methods: {
       getDriveCalendar(){
@@ -311,14 +306,26 @@
 //        console.log("感知事件----")
           var that = this;
           var res = JSON.parse(msg.data);
-          // let _currentCar = res.result.data.vechicleInfo;
-          // this.currentCar = {
-          //   longitude: _currentCar.longitude,
-          //   latitude: _currentCar.latitude,
-          //   heading: _currentCar.heading
-          // };
-          this.currentCar = res.result.data.vechicleInfo;
-          this.carsData = res.result.data.liveRadarDetailList ? res.result.data.liveRadarDetailList : [];
+          var arr = Object.keys(res.result.data);
+          if(arr.length != 0){
+            arr.map((v,k)=>{
+                if(this.carsData[v]){
+                  clearTimeout(this.carsData[v].carDataTimer);
+                }      
+                this.carsData[v] = res.result.data[v][0];
+                let formateItem = this.mapPtToScrPt(this.carsData[v]);
+                this.carsData[v].Sx = formateItem.Sx;
+                this.carsData[v].Sy = formateItem.Sy;
+                this.carsData[v].carDataTimer = setTimeout(() => {
+                  delete this.carsData[v];
+                }, 3000);
+            })
+          }else{
+       
+          }
+
+          console.log(this.carsData)
+       
       },
       close(){
           console.log('Socket已经关闭');
@@ -329,10 +336,6 @@
        * @param {*} latitude 纬度
        */
       mapPtToScrPt(item){
-        /*console.log('当前车的经度：'+this.currentCar.longitude);
-        console.log('当前车的维度：'+this.currentCar.latitude);
-        console.log("旁车的经度"+longitude);
-        console.log("旁车的维度"+latitude);*/
           var srcCenterPtX = this.screenConfig.scrWidth/2,//视图中心点x
               srcCenterPtY = this.screenConfig.scrHeight*3/4,//视图中心点y
               // srcCenterPtY = this.screenConfig.scrHeight/2,//视图中心点y
@@ -349,16 +352,6 @@
               Ssy = (lat1 - srcMapCenterLat)/this.screenConfig.scalefactor,
               Sx = srcCenterPtX + Ssx,
               Sy = srcCenterPtY - Ssy;
-
-              // console.log('SX',Ssx,'Sy',Ssy)
-
-          //判断是否需要旋转坐标
-          // if(this.currentCar.heading != 0){
-          //     //var rotatedData = this.rotateCoordinateAxis(Sx,Sy,this.currentCar.heading);
-          //     var rotatedData = this.rotateCoordinateAxis(Ssx,Ssy,this.currentCar.heading);
-          //     Sx = srcCenterPtX + rotatedData.s;
-          //     Sy = srcCenterPtY + rotatedData.t;
-          // }
           return {
               Sx: parseInt(Sx),
               Sy: parseInt(Sy)

@@ -208,6 +208,8 @@
         },
         timeOut:1000*60*5,
         wsFlag:true,
+        makerPosition:null,
+        mountedFlag:true,
       }
     },
     props:{
@@ -281,6 +283,19 @@
       // 自车WS
       vehWsData(newVal,oldVal){
         this.onmessage(newVal);
+
+        if(this.mountedFlag){
+              // 杆
+          this.initDeviceWebSocket();   
+          // 红绿灯
+          this.initLightWebSocket();
+          //云端和车端此次行程统计
+          this.getV2xInformation();
+          this.getAlarmInformation();
+          // 事件
+          this.initWarningWebSocket();
+          this.mountedFlag = false;
+        }
       },
       realData(newVal,oldVal){
         if(this.wsFlag){
@@ -311,17 +326,7 @@
       },0);
 
       // this.initWebSocket();
-     
-
-      // 杆
-      this.initDeviceWebSocket();
-      // 事件
-      this.initWarningWebSocket();
-      // 红绿灯
-      this.initLightWebSocket();
-      //云端和车端此次行程统计
-      this.getV2xInformation();
-      this.getAlarmInformation();
+    
     },
     methods: {
       getAngle(map,start, end) {
@@ -414,10 +419,12 @@
               //设置中心点
               _this.distanceMap.setCenter(newPosition);
               //设置旋转角度
+             
               _this.headingAngle = data.heading;
               _this.marker.setAngle(_this.headingAngle);
               _this.marker.setPosition(newPosition);
               _this.platNoMarker.setPosition(newPosition);
+              _this.makerPosition = newPosition;
 
       },
       // onclose(data){
@@ -671,7 +678,8 @@
                       icon:'static/images/car/car-4.png',
                       size:[54,21],
                       ancher:[27,10],
-                      zIndex:48
+                      zIndex:48,
+                      heading:item.heading || 0,
                   };
                  
                   let direction = item.direction+"";
@@ -798,7 +806,6 @@
                 
                   warningId = v.data.warnId;
                   // warningId = warningId.substring(0,warningId.lastIndexOf("_"));
-                  let msg = v.data.warnMsg+" "+v.data.dis+"米";
                   let warningObj={
                     longitude:v.data.longitude,
                     latitude:v.data.latitude
@@ -843,10 +850,16 @@
                         _this.cloudList.push(v.data)
                     }
                     // debugger
-                    let dist = parseInt(v.data.dis);
+                    let dist;
+                   
+                   
+                    console.log(this.makerPosition)
+                    let dis = AMap.GeometryUtil.distance([this.makerPosition[0],this.makerPosition[1]], [v.data.longitude,v.data.latitude]);
+                    dist = parseInt(dis);
                     if(!dist){
                       dist=-1;
                     }
+                       
                     let obj = {type:eventType,timer:null,flag:true,dist:dist,message:v.data.warnMsg,icon:v.data.warnIcon,warnColor:v.data.warnColor};
                     obj.timer=setTimeout(()=>{
                       obj.flag=false;
@@ -872,11 +885,6 @@
                   }
                 
               }
-
-
-
-
-
 
 
           })
@@ -911,16 +919,16 @@
           return;
         }
       },
-    hashcode(str) {
-      let hash = 0, i, chr, len;
-      if (str.length === 0) return hash;
-      for (i = 0, len = str.length; i < len; i++) {
-        chr   = str.charCodeAt(i);
-        hash  = ((hash << 5) - hash) + chr;
-        hash |= 0; // Convert to 32bit integer
-      }
-      return hash;
-    },
+      hashcode(str) {
+        let hash = 0, i, chr, len;
+        if (str.length === 0) return hash;
+        for (i = 0, len = str.length; i < len; i++) {
+          chr   = str.charCodeAt(i);
+          hash  = ((hash << 5) - hash) + chr;
+          hash |= 0; // Convert to 32bit integer
+        }
+        return hash;
+      },
       getAlarmInformation(){
         let param = {
           "vehicleId": this.vehicleId
@@ -987,6 +995,9 @@
             zoomStyleMapping:this.zoomStyleMapping
           })
       },
+      
+    
+
     },
     
     destroyed(){

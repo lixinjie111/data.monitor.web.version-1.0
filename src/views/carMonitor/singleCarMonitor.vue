@@ -29,7 +29,7 @@
               </div>
             </div>
             <div class="single-content-right">
-                <right-car :isStop="isStop"></right-car>
+                <right-car :vehWsData="vehWsData" :isStop="isStop"></right-car>
             </div>
         </div>
     </div>
@@ -70,7 +70,7 @@
         singleVehicle:{},
         vehWsData:null,
         timer:null,
-        timeOut:1000*60*5,
+        timeOut:1000*60*0.2,
       }
     },
     methods: {
