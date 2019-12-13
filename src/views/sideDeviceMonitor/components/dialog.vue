@@ -272,7 +272,7 @@ export default {
     }
   },
   beforeCreate(){
-    this.iframeSrc = window.config.staticUrl+'Cesium-map';        
+    this.iframeSrc = window.config.staticUrl+'cesium-map/modules/monPlatform/sideDeviceMonitor.html';
   },
   mounted() {
     this.selectAddr = this.treeItem.path.split("|");

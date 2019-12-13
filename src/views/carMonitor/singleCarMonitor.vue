@@ -70,7 +70,7 @@
         singleVehicle:{},
         vehWsData:null,
         timer:null,
-        timeOut:1000*60*0.2,
+        timeOut:1000*60*5,
       }
     },
     methods: {

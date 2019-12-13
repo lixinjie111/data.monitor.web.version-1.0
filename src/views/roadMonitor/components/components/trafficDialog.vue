@@ -178,7 +178,7 @@ export default {
   },
   props: ["selectedItem"],
   beforeCreate(){
-    this.iframeSrc = window.config.staticUrl+'Cesium-map';        
+    this.iframeSrc = window.config.staticUrl+'cesium-map/modules/monPlatform/roadMonitor.html';        
   },
   created() {
     this.webSocketData.taskCode = this.selectedItem.taskCode;
