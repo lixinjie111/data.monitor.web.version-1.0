@@ -178,7 +178,7 @@ export default {
   },
   props: ["selectedItem"],
   beforeCreate(){
-    this.iframeSrc = window.config.staticUrl+'cesium-map/modules/monPlatform/roadMonitor.html';        
+    this.iframeSrc = 'http://127.0.0.1:8080/modules/monPlatform/roadMonitor.html';      
   },
   created() {
     this.webSocketData.taskCode = this.selectedItem.taskCode;
@@ -339,6 +339,11 @@ export default {
               yaw:this.cameraParam.yaw
             }
           }
+          for (const i in camData.data) {
+            if(!camData.data[i] && camData.data[i] != 0){
+              return;
+            }
+          }
           document.getElementById("cesiumContainer").contentWindow.postMessage(camData,'*'); 
 
           let formData = new FormData(); //创建form对象
@@ -370,6 +375,11 @@ export default {
                       radius:this.cameraParam.radius,
                       pitch:this.cameraParam.pitch,
                       yaw:this.cameraParam.yaw
+                    }
+                  }
+                  for (const i in camData.data) {
+                    if(!camData.data[i] && camData.data[i] != 0){
+                      return;
                     }
                   }
                   document.getElementById("cesiumContainer").contentWindow.postMessage(camData,'*'); 

@@ -72,6 +72,11 @@
                   yaw:cameraParam.yaw
                 }
               }
+              for (const i in msgData.data) {
+                if(!msgData.data[i] && msgData.data[i] != 0){
+                  return;
+                }
+              }
               document.getElementById(this.roadItem.camSerialNum).contentWindow.postMessage(msgData,'*');   
             }
           },

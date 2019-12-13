@@ -272,7 +272,7 @@ export default {
     }
   },
   beforeCreate(){
-    this.iframeSrc = window.config.staticUrl+'cesium-map/modules/monPlatform/sideDeviceMonitor.html';
+    this.iframeSrc = 'http://127.0.0.1:8080/modules/monPlatform/roadMonitor.html';           
   },
   mounted() {
     this.selectAddr = this.treeItem.path.split("|");
@@ -380,6 +380,11 @@ export default {
                     yaw: 0.0029627735803421373
                   }
                 }
+                for (const i in camData.data) {
+                  if(!camData.data[i] && camData.data[i] != 0){
+                    return;
+                  }
+                }
                 document.getElementById("cesiumContainer").contentWindow.postMessage(camData,'*'); 
                 _this.getExtend(item.lon,item.lat,_this.extend);
                 console.log(111111)
@@ -461,6 +466,13 @@ export default {
             yaw:this.cameraParam.yaw
           }
         }
+
+        for (const i in camData.data) {
+          if(!camData.data[i] && camData.data[i] != 0){
+            return;
+          }
+        }
+     
         document.getElementById("cesiumContainer").contentWindow.postMessage(camData,'*'); 
         _this.getExtend(item.lon,item.lat,_this.extend);
         let msgData = {
@@ -667,6 +679,11 @@ export default {
             yaw:this.cameraParam.yaw
           }
         }
+        for (const i in camData.data) {
+          if(!camData.data[i] && camData.data[i] != 0){
+            return;
+          }
+        }
         document.getElementById("cesiumContainer").contentWindow.postMessage(camData,'*'); 
         return;
       }
@@ -686,6 +703,11 @@ export default {
                 yaw:this.cameraParam.yaw
               }
             }
+            for (const i in camData.data) {
+              if(!camData.data[i] && camData.data[i] != 0){
+                return;
+              }
+            }
             document.getElementById("cesiumContainer").contentWindow.postMessage(camData,'*'); 
           }else{
             let camData = {
@@ -697,6 +719,11 @@ export default {
                 radius:70,
                 pitch:-0.2369132859032279,
                 yaw:0.0029627735803421373
+              }
+            }
+            for (const i in camData.data) {
+              if(!camData.data[i] && camData.data[i] != 0){
+                return;
               }
             }
             document.getElementById("cesiumContainer").contentWindow.postMessage(camData,'*'); 
