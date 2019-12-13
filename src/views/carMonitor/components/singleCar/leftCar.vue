@@ -134,6 +134,7 @@
         countTime: 0,
         // wsFlag:false,
         firstStartPoint:true,
+        durationTimeNum:0,
       }
     },
     props:{
@@ -150,6 +151,10 @@
           return {
           };
         }
+      },
+      isStop:{
+        type:Boolean,
+        default:false
       },
       
     },
@@ -170,18 +175,30 @@
       deep: true,
       handleZoom(newVal, oldVal){
           // this.all = 1;  //可以不用重绘
-
           this.setScale();
-          console.log("zoom, change");
-      },
-    
+      },  
       'routeInfo.durationTime'(newVal, oldVal) {
         if(!oldVal) {
           this.showRouteInfoDurationTime = newVal;
           this.timer = setInterval(() => {
             this.showRouteInfoDurationTime += 1000;
-            // console.log(this.showRouteInfoDurationTime);
           }, 1000);
+        }    
+        if(!this.timer){
+          this.durationTimeNum ++
+          if(this.durationTimeNum > 1){
+            this.showRouteInfoDurationTime = newVal;
+            this.timer = setInterval(() => {
+              this.showRouteInfoDurationTime += 1000;
+            }, 1000);
+          }     
+        }
+      },
+      isStop(newVal, oldVal){   
+        if(this.isStop){
+          clearInterval(this.timer);
+          this.timer = null;
+          this.durationTimeNum = 0;
         }
       },
       countTime(newVal, oldVal) {

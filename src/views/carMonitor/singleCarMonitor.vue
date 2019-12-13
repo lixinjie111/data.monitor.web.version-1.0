@@ -1,7 +1,7 @@
 <template>
 <div class="car-view-wrapper clearfix">
     <div class="single-left">
-        <left-car :vehWsData="vehWsData" :singleVehicle="singleVehicle"></left-car>
+        <left-car :vehWsData="vehWsData" :isStop="isStop" :singleVehicle="singleVehicle"></left-car>
     </div>
     <div class="single-main">
         <div class="single-header">

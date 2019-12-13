@@ -688,8 +688,10 @@
                       clearTimeout(_this.lightData[key].time)
                   }
         
-                  _this.lightData[key].spareTime = item.leftTime;
-                  _this.lightData[key].lightColor = item.light;
+                  // _this.lightData[key].spareTime = item.leftTime;
+                  // _this.lightData[key].lightColor = item.light;
+                  this.$set(_this.lightData[key],'spareTime',item.leftTime);
+                  this.$set(_this.lightData[key],'lightColor',item.light);
                   if(_this.lightData[key].spareTime && _this.lightData[key].lightColor){
                      _this.lightData[key].flag=true;
                   }
