@@ -51,7 +51,7 @@
               let _data = res.data;
               _data.forEach(item => {
                 // item.iframeUrl = window.config.staticUrl+"fusionMonitorIframe/#/perception/"+item.lon+"/"+item.lat+"/"+item.cameraParam+"/0.0002";
-                item.iframeUrl = 'http://127.0.0.1:8080/modules/monPlatform/roadMonitor.html';        
+                item.iframeUrl = window.config.staticUrl+'cesium-map/modules/monPlatform/sideDeviceMonitor.html';  
              });
               _this.roadList = _data;
             });
