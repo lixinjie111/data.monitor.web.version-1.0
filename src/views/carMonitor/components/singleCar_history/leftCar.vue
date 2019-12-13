@@ -79,7 +79,7 @@
   </div>
 </template>
 <script>
-  import { getDrivingStatisticsData, getVehicleBaseData } from '@/api/carMonitor'
+  import { getDrivingStatisticsData, getVehicleBaseData, getRouteDataByVehId } from '@/api/carMonitor'
   import ConvertCoord from '@/assets/js/utils/coordConvert.js'
   export default {
     name: "LeftCar", // 实时数据
@@ -106,7 +106,7 @@
 
         // times: 1,
         scale: 10,
-        // all: 1,
+        all: 1,
         handleZoom: 11,
 
         zoom: 11,
@@ -123,7 +123,7 @@
             'action':'route',
             'vehicleId': '',
             'scale': 0,
-            // 'all': 1
+            'all': 1
         },
         routeInfo: {},
         timer: null,
@@ -132,8 +132,7 @@
         countTimer: null,
         countTimeLimit: 1000*60*5,
         countTime: 0,
-        // wsFlag:false,
-        firstStartPoint:true,
+        wsFlag:false,
       }
     },
     props:{
@@ -174,7 +173,17 @@
           this.setScale();
           console.log("zoom, change");
       },
-    
+      all(newVal, oldVal){
+        if(newVal == 1){
+          this.initDistanceMap();
+          console.log("all=1, change重绘路线");
+        }else{
+          // this.webSocketData.scale = this.scale;
+          // this.webSocketData.all = newVal;
+          // this.webSocket.send(JSON.stringify(this.webSocketData));
+          // console.log("all=0, chang，重新发起服务");
+        }
+      },
       'routeInfo.durationTime'(newVal, oldVal) {
         if(!oldVal) {
           this.showRouteInfoDurationTime = newVal;
@@ -195,16 +204,19 @@
         }
       },
       vehWsData(newVal,oldVal){
-        // if(this.wsFlag){
+        if(this.wsFlag){
           this.onmessage(newVal)
-        // }  
+        }
+        
       },
     },
     mounted () {
       this.initMap();
       // var roadNetLayer =  new AMap.TileLayer.RoadNet();
       // this.distanceMap.add(roadNetLayer);
-     
+      this.getRouteDataByVehId();
+      // this.initWebSocket();
+
 //      this.getBaseData();
       this.getDrivingStatistics();
 
@@ -262,7 +274,52 @@
         });
       },
 
-    
+      //重绘形成初始化
+      initDistanceMap(){
+        this.prevLastPointPath = [];//上次请求的终点，
+        this.carStartPoint = window.mapOption.defaultCenterPoint;
+        this.routeId = "";
+        this.pointPath = [];
+        // this.direction = 0;
+        // this.times = 1;
+        this.scale = 10;
+        this.all = 1;
+        // this.zoom = 11;
+
+        // this.mapTimestamp = 0;
+        this.wholePath = [];
+        this.count = 0;
+        this.flag = true;
+
+        this.distanceMap.remove(this.markers.polyline);
+        this.markers.polyline = [];
+        if(this.markers.markerStart) {
+          this.distanceMap.remove(this.markers.markerStart);
+          this.markers.markerStart = null;
+        }
+        if(this.markers.markerEnd) {
+          this.distanceMap.remove(this.markers.markerEnd);
+          this.markers.markerEnd = null;
+        }
+
+        this.webSocketData.scale = this.scale;
+        this.webSocketData.all = this.all;
+
+        this.routeInfo = {
+          routeStartTime: "", //行驶开始时间
+          durationTime: "", //累计行驶时间
+          mileage: "", //累计行驶里程
+          avgSpd: "" //平均测速
+        };
+        clearInterval(this.timer);
+        this.timer = null;
+        this.showRouteInfoDurationTime = 0;
+
+        clearInterval(this.countTimer);
+        this.countTimer = null;
+        this.countTime = 0;
+
+      },
       //行程概览--绘制起点
       distanceMapStart(){
         let _this = this;
@@ -352,7 +409,34 @@
             this.scale = 20;
         }
       },
+      getRouteDataByVehId() {
+        getRouteDataByVehId({
+          'scale': this.scale,
+          'vehicleId': this.vehicleId,
+        }).then(res => {
+          let _result = res.data.pointList;
+          if(_result && _result.length > 0) {
+            this.onmessage(res);
+          }
+          this.wsFlag = true;
+          // this.initWebSocket();
+        }).catch(error => {
+          // console.log("hahahah");
+          // this.initWebSocket();
+        });
+      },
       
+      // initWebSocket(){
+      //   // debugger
+      //   let _this=this;
+      //   if ('WebSocket' in window) {
+      //     _this.webSocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
+      //   }
+      //   _this.webSocket.onmessage = _this.onmessage;
+      //   _this.webSocket.onclose = _this.onclose;
+      //   _this.webSocket.onopen = _this.onopen;
+      //   _this.webSocket.onerror = _this.onerror;
+      // },
       onmessage(message){
         // console.log("行程概览 route *********************************************");
        
@@ -371,31 +455,52 @@
         }
         // var json = message.result.track[0];
         var pointList = [];
-     
-        pointList = [{
-          longitude: json.data.longitude,
-          latitude: json.data.latitude,
-          heading: json.data.heading
-        }]; 
-        this.routeInfo = {
-          routeStartTime: message.result.route.routeStartTime, //行驶开始时间
-          durationTime: message.result.route.durationTime, //累计行驶时间
-          mileage: parseFloat(message.result.route.mileage/1000).toFixed(1).toLocaleString(), //累计行驶里程
-          avgSpd: parseFloat(message.result.route.avgSpd).toFixed(1).toLocaleString() //平均测速
-        };
-       
+        if(this.all == 1){
+          if(json.data.pointList && json.data.pointList.length > 0){
+            pointList = json.data.pointList;
+          }else{
+            pointList = [{
+              longitude: json.data.longitude,
+              latitude: json.data.latitude,
+              heading: json.data.heading
+            }];
+          }
+          this.routeInfo = {
+            routeStartTime: json.data.routeStartTime, //行驶开始时间
+            durationTime: json.data.durationTime, //累计行驶时间
+            mileage: parseFloat(json.data.mileage).toFixed(1).toLocaleString(), //累计行驶里程
+            avgSpd: parseFloat(json.data.avgSpd).toFixed(1).toLocaleString() //平均测速
+          };
+        }else{
+          pointList = [{
+            longitude: json.data.longitude,
+            latitude: json.data.latitude,
+            heading: json.data.heading
+          }]; 
+          this.routeInfo = {
+            routeStartTime: message.result.route.routeStartTime, //行驶开始时间
+            durationTime: message.result.route.durationTime, //累计行驶时间
+            mileage: parseFloat(message.result.route.mileage/1000).toFixed(1).toLocaleString(), //累计行驶里程
+            avgSpd: parseFloat(message.result.route.avgSpd).toFixed(1).toLocaleString() //平均测速
+          };
+        }
         // let _pointer = [json.data.lon, json.data.lat];
         // console.log("行程概览 route *********************************************");
        
         if(pointList && pointList.length > 0) {
-          console.log("第一次开启行程");
-          this.routeId = json.data.routeId;
-          if(this.firstStartPoint){
+          if(this.routeId != ""){
+            if(this.routeId != json.data.routeId) {
+              console.log("重新开启行程");
+              this.all = 1;
+              return false;
+            }
+          }else{
+            console.log("第一次开启行程");
+            this.routeId = json.data.routeId;
             _this.carStartPoint = ConvertCoord.wgs84togcj02(pointList[0].longitude, pointList[0].latitude);
             _this.distanceMapStart();
-            this.firstStartPoint = false;
           }
-        
+
           if(this.prevLastPointPath.length !=0 && pointList.length==1 && this.prevLastPointPath[0] == pointList[0].longitude && this.prevLastPointPath[1] == pointList[0].latitude){
             this.changeLngLat();
             return false;
@@ -421,7 +526,7 @@
           });
           this.changeLngLat();
 
-          // this.all = 0;
+          this.all = 0;
         }
       },
       changeLngLat(){
@@ -448,6 +553,26 @@
             };
         }
       },
+      // onclose(data){
+      //   console.log("结束连接");
+      // },
+      // onopen(data){
+      //   //行程
+      //   this.webSocketData.vehicleId = this.vehicleId;
+      //   this.webSocketData.scale = this.scale;
+      //   this.webSocketData.all = this.all;
+      //   this.sendMsg(JSON.stringify(this.webSocketData));
+      // },
+      // sendMsg(msg) {
+      //   let _this=this;
+      //   if(window.WebSocket){
+      //     if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+      //       _this.webSocket.send(msg); //send()发送消息
+      //     }
+      //   }else{
+      //     return;
+      //   }
+      // },
       /**
        * 传入最小最大像素坐标
        * **/
