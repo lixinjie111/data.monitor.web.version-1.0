@@ -347,7 +347,7 @@
       //   let _this=this;
       //   if ('WebSocket' in window) {
       //     // _this.hostWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
-      //     _this.hostWebsocket = new WebSocket(window.config.socketTestUrl);  //获得WebSocket对象
+      //     _this.hostWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
       //   }
       //   _this.hostWebsocket.onmessage = _this.onmessage;
       //   _this.hostWebsocket.onclose = _this.onclose;
@@ -460,7 +460,7 @@
         let _this=this;
         if ('WebSocket' in window) {
           // _this.sideWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
-          _this.sideWebsocket = new WebSocket(window.config.socketTestUrl);  //获得WebSocket对象
+          _this.sideWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
         }
         _this.sideWebsocket.onmessage = _this.onSideMessage;
         _this.sideWebsocket.onclose = _this.onSideClose;

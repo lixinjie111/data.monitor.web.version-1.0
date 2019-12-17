@@ -675,7 +675,7 @@ export default {
         try{
             if ('WebSocket' in window) {
                 // _this.perceptionWebsocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
-                _this.perceptionWebsocket = new WebSocket(window.config.socketTestUrl);  //获得WebSocket对象
+                _this.perceptionWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
                 _this.perceptionWebsocket.onmessage = _this.onPerceptionMessage;
                 _this.perceptionWebsocket.onclose = _this.onPerceptionClose;
                 _this.perceptionWebsocket.onopen = _this.onPerceptionOpen;
