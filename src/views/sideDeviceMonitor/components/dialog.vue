@@ -387,9 +387,6 @@ export default {
                 }
                 document.getElementById("cesiumContainer").contentWindow.postMessage(camData,'*'); 
                 _this.getExtend(item.lon,item.lat,_this.extend);
-                console.log(111111)
-                console.log(_this.getExtend(item.lon,item.lat,_this.extend))
-                console.log(_this.currentExtent)
                 let msgData = {
                   type:"position",
                   data:{
