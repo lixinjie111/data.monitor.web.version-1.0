@@ -78,7 +78,7 @@
         let _this=this;
         if ('WebSocket' in window) {
           // _this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
-          _this.webSocket = new WebSocket(window.config.socketTestUrl);  //获得WebSocket对象
+          _this.webSocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
         }
         _this.webSocket.onmessage = _this.onmessage;
         _this.webSocket.onclose = _this.onclose;
@@ -138,7 +138,7 @@
         let _this=this;
         if ('WebSocket' in window) {
           // _this.webSocketVeh = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
-          _this.webSocketVeh = new WebSocket(window.config.socketTestUrl);  //获得WebSocket对象
+          _this.webSocketVeh = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
         }
         _this.webSocketVeh.onmessage = _this.onmessageVeh;
         _this.webSocketVeh.onclose = _this.oncloseVeh;
