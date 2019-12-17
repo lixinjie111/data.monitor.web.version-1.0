@@ -8,7 +8,7 @@
         <img src="@/assets/images/car/car-22.png" class="img3"/>
         <canvas id="up0" class="upCanvas"></canvas>
         <canvas id="upImg0" class="upCanvas"></canvas>
-        <img id="upPlan0" src="@/assets/images/car/circle.png"style="display: none;">
+        <img id="upPlan0" src="@/assets/images/car/circle.png" style="display: none;">
         <canvas id="up1" class="upCanvas" ></canvas>
         <canvas id="upImg1" class="upCanvas"></canvas>
         <img id="upPlan1" src="@/assets/images/car/circle.png" style="display: none;">
@@ -18,7 +18,8 @@
         <canvas id="up3" class="upCanvas" ></canvas>
         <canvas id="upImg3" class="upCanvas"></canvas>
         <img id="upPlan3" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="upImg4" class="upCanvas" ></canvas>
+        <canvas id="up4" class="upCanvas" ></canvas>
+        <canvas id="upImg4" class="upCanvas"></canvas>
         <img id="upPlan4" src="@/assets/images/car/circle.png" style="display: none;">
         <canvas id="upImg5" class="upCanvas" ></canvas>
         <img id="upPlan5" src="@/assets/images/car/circle.png" style="display: none;">
@@ -43,6 +44,8 @@
         <img id="upPlan14" src="@/assets/images/car/circle.png" style="display: none;">
         <canvas id="upImg15" class="upCanvas"></canvas>
         <img id="upPlan15" src="@/assets/images/car/circle.png" style="display: none;">
+        <canvas id="upImg16" class="upCanvas"></canvas>
+        <img id="upPlan16" src="@/assets/images/car/circle.png" style="display: none;">
 
 
 
@@ -89,7 +92,7 @@
         <p><span class="legend-size" style="background: #2acdc2"></span>BSM</p>
         <p><span class="legend-size" style="background: #d3d12d"></span>PER</p>
         <p><span class="legend-size" style="background: #6ec9fd"></span>SPAT</p>
-
+        <p><span class="legend-size" style="background: #8a46f1"></span>RSM</p>
       </div>
     </div>
     <div class="chart-region">
@@ -132,6 +135,7 @@
         k:3,
         m : 6,
         n :9,
+        r :12,
 
         j:0,
         upRandom:0.1,
@@ -142,6 +146,7 @@
 
         downRandom:0.2,
         spatRandom:0,
+        rsmRandom:0,
 
         n1:0
 
@@ -452,6 +457,7 @@
         var eventData=[];
 
         var spatData = [];
+        var rsmData = [];
 
         if(_this.i>=3){
           _this.i=0;
@@ -465,6 +471,10 @@
         if(_this.n>=12){
           _this.n=9;
         }
+        if(_this.r>=15){
+          _this.r=12;
+        }
+
 
         if(_this.j>=4){
           _this.j=0;
@@ -485,10 +495,14 @@
             if (item.type == 'EVENT') {
               eventData.push(item);
             }
+            if (item.type == 'RSM/RCU') {
+              rsmData.push(item);
+            }
 
             if (item.type == 'SPAT') {
               spatData.push(item);
             }
+          
           })
 
           if(canGpsData.length>0){
@@ -514,12 +528,19 @@
             _this.n++;
           }
 
+          if(rsmData.length>0){
+            let curve5 = new Curve();
+            curve5.drawImgs(_this.rsmRandom,'RSM/RCU','up',_this.r,[130, 142], [320, 58],'#8a46f1');
+            _this.r++;
+          }
+
 
           if(spatData.length>0){
             let downCurve1 = new Curve();
             downCurve1.drawImgs("-"+_this.spatRandom,'SPAT','down',_this.j,[552, 150],[356, 55],'#59d44f');//信号灯
             _this.j++;
           }
+         
         }
       },
       onReportOpen(data){
@@ -559,25 +580,31 @@
       curve1.drawLines(_this.upRandom,'#d47b24','up',0,[130, 142], [320, 58]);
       curve1.drawImgs(_this.upRandom,'GPS+CAN','up',12,[130, 142], [320, 58],'#6ec9fd');
       _this.gpsRandom = _this.upRandom;
-      _this.upRandom=_this.upRandom+0.2;
+      _this.upRandom=_this.upRandom+0.15;
       //开始画can的第一条线
       let curve2 = new Curve();
       curve2.drawLines(_this.upRandom,'#2acdc2','up',1,[130, 142], [320, 58]);
       curve2.drawImgs(_this.upRandom,'BSM','up',13,[130, 142], [320, 58],'#3db765');
       _this.canRandom = _this.upRandom;
-      _this.upRandom=_this.upRandom+0.2;
+      _this.upRandom=_this.upRandom+0.15;
       //开始画perception的第一条线
       let curve3 = new Curve();
       curve3.drawLines(_this.upRandom,'#d3d12d','up',2,[130, 142], [320, 58]);
       curve3.drawImgs(_this.upRandom,'PER','up',14,[130, 142], [320, 58],'#d47b24');
       _this.perRandom = _this.upRandom;
-      _this.upRandom=_this.upRandom+0.2;
+      _this.upRandom=_this.upRandom+0.15;
       //开始画event的第一条线
       let curve4 = new Curve();
       curve4.drawLines(_this.upRandom,'#595450','up',3,[130, 142], [320, 58]);
       curve4.drawImgs(_this.upRandom,'EVENT','up',15,[130, 142], [320, 58],'#59d44f');
       _this.eventRandom = _this.upRandom;
-      _this.upRandom=_this.upRandom+0.2;
+      _this.upRandom=_this.upRandom+0.15;
+     //开始画rsm的第一条线
+      let curve5 = new Curve();
+      curve5.drawLines(_this.upRandom,'#8a46f1','up',4,[130, 142], [320, 58]);
+      curve5.drawImgs(_this.upRandom,'RSM/RCU','up',16,[130, 142], [320, 58],'#8a46f1');
+      _this.rsmRandom = _this.upRandom;
+      _this.upRandom=_this.upRandom+0.15;
       //开始画spat的第一条线
       let downCurve1 = new Curve();
       downCurve1.drawLines("-"+_this.downRandom,'#6ec9fd','down',0,[552, 150],[356, 55]);

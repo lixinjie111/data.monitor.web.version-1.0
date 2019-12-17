@@ -287,7 +287,7 @@
         if(this.mountedFlag){
               // 杆
           this.initDeviceWebSocket();   
-          // 红绿灯
+          // 信号灯
           this.initLightWebSocket();
           //云端和车端此次行程统计
           this.getV2xInformation();
