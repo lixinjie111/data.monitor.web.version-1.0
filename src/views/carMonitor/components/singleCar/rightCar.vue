@@ -5,6 +5,7 @@
         <p class="monitor-title c-title">车端视频</p>
         <div class="monitor-video right-title">
           <live-player
+            v-if="liveDeviceInfo.serialNum"
                   :isStretch="true"
                   :requestVideoUrl="startStream"
                   :params="streamParam"
@@ -15,6 +16,9 @@
           >
           <span></span>
           </live-player>
+          <div class="c-mask-tip" v-else>
+            暂无视频数据
+          </div>
           <div class="stop-style" v-show="isStop">
             <img src="@/assets/images/car/stop.png"/>
             <p>无数据提示</p>
