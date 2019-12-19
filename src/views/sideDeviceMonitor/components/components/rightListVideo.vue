@@ -2,14 +2,25 @@
     <div class="c-size-style">
       <div class="c-size-inner">
         <live-player
+                v-if="roadItem.camSerialNum"
                 :isStretch="true"
                 :requestVideoUrl="requestVideoUrl"
                 :params="forwardParam"
                 type="wsUrl"
                 :autoplay="false"
         >
-        <a class="title" href="javascript:;" @click="queryDeviceDetail(roadItem,'video')">路侧点：{{roadItem.roadSiderName}}</a>
+          <a class="title" href="javascript:;" @click="queryDeviceDetail(roadItem,'video')">路侧点：{{roadItem.roadSiderName}}</a>
         </live-player>
+        <template v-else>
+          <a href="javascript:;" class="c-video-title">
+              <span class="title">路侧点：{{roadItem.roadSiderName}}</span>
+          </a>
+          <div class="c-mask-tip">
+            未获取到摄像头数据，请稍后重试
+          </div>
+        </template>
+
+        </div>
       
       </div>
     </div>
