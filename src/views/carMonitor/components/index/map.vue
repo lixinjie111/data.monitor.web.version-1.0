@@ -24,9 +24,7 @@ export default {
             // responseData: [],
             prevData: [],
             setFitViewFlag: true,
-            count: 0,
-            flag: true,
-            timeOut:1000*60*5
+            timeOut:3000
         }
     },
     mounted() {
@@ -49,83 +47,100 @@ export default {
             this.webSocket.onerror = this.onerror;
         },
         onmessage(message){
-            let _this = this,
-            _json = JSON.parse(message.data),
-            _result = _json.result.data;    
-            if (_result) {
-                let _filterData = {};
-                let maxGpsTime = 0;
+                let _this = this;
+                let jsonData = JSON.parse(message.data);
 
-                for (const k in _result) {
-                    _result[k].map(item=>{
-                        if(item.gpsTime > maxGpsTime){
-                        maxGpsTime = item.gpsTime;
-                        _filterData = {
-                            vehicleId: item.vehicleId,
-                            plateNo: item.plateNo,
-                            source: item.source.join(','),
-                            heading: item.heading,
-                            speed: item.speed,
-                            position: ConvertCoord.wgs84togcj02(item.longitude, item.latitude),
+                let data = jsonData.result.data;
+                let _result = {};
+                let _filterData = {};
+                for(let vehicleId in data){
+                    if(data[vehicleId]&&data[vehicleId].length>0){
+                        _result[vehicleId] = data[vehicleId][data[vehicleId].length-1];
+                        _filterData[vehicleId] = {
+                            vehicleId: _result[vehicleId].vehicleId,
+                            plateNo: _result[vehicleId].plateNo,
+                            source: _result[vehicleId].source.join(','),
+                            heading: _result[vehicleId].heading,
+                            speed: _result[vehicleId].speed,
+                            position: ConvertCoord.wgs84togcj02(_result[vehicleId].longitude, _result[vehicleId].latitude),
                             marker: null,
                             plateNoMarker: null,
-                            timer:null
                         };
-                        }
-                    })  
-
-                    for (let id in _this.prevData) {
-                        if(_filterData.vehicleId == id) {   //表示有该点，做move
-                            clearTimeout(_this.prevData[_filterData.vehicleId].timer)
-                            _filterData.marker = _this.prevData[id].marker;
-                            _filterData.plateNoMarker = _this.prevData[id].plateNoMarker;
-                            let _currentCar = _filterData;
-                            _filterData.marker.setAngle(_currentCar.heading);
-                            _filterData.marker.setPosition(_currentCar.position);
-                            _filterData.plateNoMarker.setText(_currentCar.plateNo+"<br/><span style='color:#e6a23c'>"+_currentCar.source+'</span>')
-                            _filterData.plateNoMarker.setPosition(_currentCar.position); 
-                        } 
                     }
-      
-                    if(!_this.prevData[_filterData.vehicleId] && _filterData.vehicleId) {   //表示新增该点，做add
-                        _this.addMarker(_filterData);
-                        _this.addPlateNoMarker(_filterData);
-                    }       
-                
+                }
+                if (Object.keys(_filterData).length>0) {
+                    for (let id in _this.prevData) {
+                        if(_filterData[id]) {   //表示有该点，做setPosition
+                            if(_this.prevData[id].timer){
+                                clearTimeout(_this.prevData[id].timer)
+                            }
+                            let _currentCar = _filterData[id];
+                            _this.prevData[id].marker.setAngle(_currentCar.heading);
+                            _this.prevData[id].marker.setPosition(_currentCar.position);
+                            _this.prevData[id].plateNoMarker.setText(_currentCar.plateNo+"<br/><span style='color:#e6a23c'>"+_currentCar.source+'</span>');
+                            _this.prevData[id].plateNoMarker.setPosition(_currentCar.position);
+                        }
+                    }
+                    for (let id in _filterData) {
+                        if(!_this.prevData[id]) {   //表示新增该点，做add
+                            _this.addMarker(id,_filterData);
+                            _this.addPlateNoMarker(id,_filterData);
+                        }
+                    }
+
                     if(_this.setFitViewFlag) {
-                        setTimeout(_ => {
+                        setTimeout(()=>{
                             _this.AMap.setFitView();
                             _this.setFitViewFlag = false;
-                        }, 500);      
+                        },500)
                     }
 
-                    _this.prevData[_filterData.vehicleId] = _filterData;
-                    _this.prevData[_filterData.vehicleId].timer = setTimeout(() => {
-                         _filterData.plateNoMarker.setText(_filterData.plateNo+"<br/><span style='color:red'>离线</span>")
-                        // _this.AMap.remove(_this.prevData[_filterData.vehicleId].marker);
-                        // _this.AMap.remove(_this.prevData[_filterData.vehicleId].plateNoMarker);
-                        // delete _this.prevData[_filterData.vehicleId];
-                    }, this.timeOut);
 
+                    // _this.prevData[_filterData.vehicleId] = _filterData;
+                    // console.log(_this.prevData)
+                    for(let vehicleId in data){
+                        _this.prevData[vehicleId].timer = setTimeout(() => {
+                           // _this.prevData[vehicleId].plateNoMarker.setText(data[vehicleId][0].plateNo+"<br/><span style='color:red'>离线</span>")
+                            //3s后消失
+                            _this.prevData[vehicleId].marker.off('click', _this.showView);
+                            _this.prevData[vehicleId].plateNoMarker.off('click', _this.showView);
+                            _this.AMap.remove(_this.prevData[vehicleId].marker);
+                            _this.AMap.remove(_this.prevData[vehicleId].plateNoMarker);
+                            console.log("消失车辆",vehicleId)
+                            delete _this.prevData[vehicleId];
+                        }, this.timeOut);
+                    }
+                // } else {
+                //     // 返回的数据为空
+                //     for (let id in _this.prevData) {
+                //         // console.log("delete:-"+_this.prevData[id].plateNo);
+                //         _this.prevData[id].marker.off('click', _this.showView);
+                //         _this.prevData[id].plateNoMarker.off('click', _this.showView);
+                //         _this.AMap.remove(_this.prevData[id].marker);
+                //         _this.AMap.remove(_this.prevData[id].plateNoMarker);
+                //         delete _this.prevData[id];
+                //     }
                 }
-            } 
-        },
-        addMarker(obj) {
-            obj.marker = new AMap.Marker({
+            },
+        addMarker(id,_filterData) {
+            this.prevData[id] = new Object();
+            this.prevData[id].marker = new AMap.Marker({
                 map: this.AMap,
-                position: obj.position,
+                position: _filterData[id].position,
                 icon: "static/images/car/point.png",
                 offset: new AMap.Pixel(-2, -2),
-                angle: obj.heading,
+                angle: _filterData[id].heading,
                 zIndex: 50,
-                vehicleId: obj.vehicleId
+                vehicleId: _filterData[id].vehicleId
             });
-            obj.marker.on('click', this.showView);
+            /*this.prevData[id] = new Object();
+            this.prevData[id].marker = marker;*/
+            this.prevData[id].marker.on('click', this.showView);
         },
-        addPlateNoMarker(obj) {
-            obj.plateNoMarker = new AMap.Text({
+        addPlateNoMarker(id,_filterData) {
+            this.prevData[id].plateNoMarker = new AMap.Text({
                 map: this.AMap,
-                text: obj.plateNo+"<br/><span style='color:#e6a23c'>"+obj.source+'</span>',
+                text: _filterData[id].plateNo+"<br/><span style='color:#e6a23c'>"+_filterData[id].source+'</span>',
                 // text: '京N123456',
                 anchor: 'center', // 设置文本标记锚点
                 style: {
@@ -141,10 +156,11 @@ export default {
                     'color': '#ccc'
                 },
                 offset: new AMap.Pixel(0, -35),
-                position: obj.position,
-                vehicleId: obj.vehicleId
+                position: _filterData[id].position,
+                vehicleId: _filterData[id].vehicleId,
+                zIndex: 60
             });
-            obj.plateNoMarker.on('click', this.showView);
+            this.prevData[id].plateNoMarker.on('click', this.showView);
         },
         showView(e) {
             const { href } = this.$router.resolve({
