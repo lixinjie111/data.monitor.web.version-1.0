@@ -114,6 +114,7 @@
 <script>
   import Curve from '@/assets/js/utils/curve.js';
   import $echarts from 'echarts'
+  import WebSocketObj from '@/assets/js/utils/webSocket.js'
   export default {
     name:"bottom-car",
     data () {
@@ -128,7 +129,6 @@
         isStop: false,
 
         container:{},
-        webSocket:null,
         reportWebSocket:{},
 
         i:0,
@@ -351,16 +351,6 @@
         };
         return timeArr;
       },
-      // initWebSocket(){
-      //   let _this=this;
-      //   if ('WebSocket' in window) {
-      //     _this.webSocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
-      //   }
-      //   _this.webSocket.onmessage = _this.onmessage;
-      //   _this.webSocket.onclose = _this.onclose;
-      //   _this.webSocket.onopen = _this.onopen;
-      //   _this.webSocket.onerror = _this.onerror;
-      // },
       onmessage(message){
         let _this=this;
         
@@ -410,40 +400,13 @@
           this.isStop = true;
         }
       },
-      // onclose(data){
-      //   console.log("结束连接");
-      // },
-      // onopen(data){
-      //   console.log("建立连接,,,,,,");
-
-      //   //获取速度加速度
-      //   var speed = {
-      //     'action':'track',
-      //     /*'vid':this.vehicleID,*/
-      //     'vehicleId':this.vehicleId
-      //   }
-      //   var speedMsg = JSON.stringify(speed);
-      //   this.sendMsg(speedMsg);
-      // },
-      // sendMsg(msg) {
-      //   let _this=this;
-      //   if(window.WebSocket){
-      //     if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-      //       // console.log("speedAcceleration 发送请求成功");
-      //       _this.webSocket.send(msg); //send()发送消息
-      //     }
-      //   }else{
-      //     return;
-      //   }
-      // },
       realReportWebSocket(){
-        let _this=this;
-        if ('WebSocket' in window) {
-          _this.reportWebSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+        var _params = {
+          'action':'vehicleDataCount',
+          'vehicleId':this.vehicleId,
+          'token':''
         }
-        _this.reportWebSocket.onmessage = _this.onReportMessage;
-        _this.reportWebSocket.onclose = _this.onReportClose;
-        _this.reportWebSocket.onopen = _this.onReportOpen;
+        this.reportWebSocket = new WebSocketObj(window.config.websocketUrl, _params, this.onReportMessage);
       },
       onReportMessage(message){
         let _this=this;
@@ -542,32 +505,7 @@
           }
          
         }
-      },
-      onReportOpen(data){
-        //获取速度加速度
-        var reportData = {
-          'action':'vehicleDataCount',
-          /*'vid':this.vehicleID,*/
-          'vehicleId':this.vehicleId,
-          'token':''
-        }
-        var reportMsg = JSON.stringify(reportData);
-        this.sendReportMsg(reportMsg);
-      },
-      sendReportMsg(msg) {
-        let _this=this;
-        if(window.WebSocket){
-          if(_this.reportWebSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-            _this.reportWebSocket.send(msg); //send()发送消息
-          }
-        }else{
-          return;
-        }
-      },
-      onReportClose(data){
-        console.log("结束连接");
       }
-
     },
     mounted () {
       var _this = this;
@@ -611,13 +549,11 @@
       downCurve1.drawImgs("-"+_this.downRandom,'SPAT','down',12, [552, 150],[356, 55],'#59d44f');//信号灯
       _this.spatRandom = _this.downRandom;
 
-      // _this.initWebSocket();
       _this.realReportWebSocket();
     },
     destroyed(){
       //销毁Socket
-      this.reportWebSocket.close();
-      this.webSocket&&this.webSocket.close();
+      this.reportWebSocket&&this.reportWebSocket.webSocket.close();
 
     }
   }

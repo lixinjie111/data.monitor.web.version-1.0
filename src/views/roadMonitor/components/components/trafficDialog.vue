@@ -126,6 +126,7 @@ import {
 import { getFeaturesByPoint } from "@/api/roadMonitor";
 import ConvertCoord from "@/assets/js/utils/coordConvert.js";
 import LivePlayer from '@/components/livePlayer/template';
+import WebSocketObj from '@/assets/js/utils/webSocket.js'
 
 // import GIS3D from '@/utils/GIS3D.js'
 // import PerceptionCars from '@/utils/PerceptionCars.js'
@@ -442,14 +443,7 @@ export default {
       }
     },
     initWebSocket() {
-      if ("WebSocket" in window) {
-        // this.webSocket = new WebSocket(window.config.websocketUrl); //获得WebSocket对象
-        this.webSocket = new WebSocket(window.config.websocketUrl); //获得WebSocket对象
-      }
-      this.webSocket.onmessage = this.onmessage;
-      this.webSocket.onclose = this.onclose;
-      this.webSocket.onopen = this.onopen;
-      this.webSocket.onerror = this.onerror;
+      this.webSocket = new WebSocketObj(window.config.websocketUrl, this.webSocketData, this.onmessage);
     },
     onmessage(message) {
       //console.log(JSON.parse(message.data))
@@ -465,23 +459,6 @@ export default {
         this.deviceList = JSON.parse(message.data).result.deviceList;
       } else {
         this.deviceList = [];
-      }
-    },
-    onclose(data) {
-      console.log("结束连接");
-    },
-    onopen(data) {
-      var _traffic = JSON.stringify(this.webSocketData);
-      this.sendMsg(_traffic);
-    },
-    sendMsg(msg) {
-      if (window.WebSocket) {
-        if (this.webSocket.readyState == WebSocket.OPEN) {
-          //如果WebSocket是打开状态
-          this.webSocket.send(msg); //send()发送消息
-        }
-      } else {
-        return;
       }
     },
     //平台车 小汽车
@@ -751,9 +728,9 @@ export default {
     },
   },
   destroyed() {
-    this.webSocket && this.webSocket.close();
-    // this.platformWebsocket && this.platformWebsocket.close();
-    this.perceptionWebsocket && this.perceptionWebsocket.close();
+    this.webSocket && this.webSocket.webSocket.close();
+    // // this.platformWebsocket && this.platformWebsocket.close();
+    // this.perceptionWebsocket && this.perceptionWebsocket.close();
   }
 };
 </script>

@@ -28,6 +28,7 @@
   import { rwDis } from '@/api/roadMonitor'
   import ConvertCoord from '@/assets/js/utils/coordConvert.js'
   import trafficDialog from './components/trafficDialog.vue'
+  import WebSocketObj from '@/assets/js/utils/webSocket.js'
   export default {
     name: "MapContainer",
     components: {trafficDialog},
@@ -213,7 +214,7 @@
       
             //取消选中，将设备从地图中消除
             this.removeMarkers(item.id);
-            this.webSocket && this.webSocket.close();
+            this.webSocket && this.webSocket.webSocket.close();
             }
           }
       },
@@ -331,7 +332,7 @@
         }
         if(type=='traffic'&& this.masstraffic){  
           
-          this.webSocket&&this.webSocket.close();
+          this.webSocket&&this.webSocket.webSocket.close();
           this.webSocket = null;
           this.masstraffic.clear();
           this.map.remove(this.masstraffic);
@@ -398,38 +399,12 @@
         }
       },
       initWebSocket(){
-        let _this=this;
-        if ('WebSocket' in window) {
-          _this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
-          _this.webSocket.onmessage = _this.onmessage;
-          _this.webSocket.onclose = _this.onclose;
-          _this.webSocket.onopen = _this.onopen;
-          _this.webSocket.onerror = _this.onerror;
-        }
-
+        this.webSocket = new WebSocketObj(window.config.websocketUrl, this.webSocketData, this.onmessage);
       },
       onmessage(mesasge){
         let _this=this;
         this.trafficData = JSON.parse(mesasge.data).result.data;
         
-      },
-      onclose(data){
-        console.log("结束连接");
-      },
-      onopen(data){
-        //获取在驶车辆状态
-        var _traffic = JSON.stringify(this.webSocketData);
-        this.sendMsg(_traffic);
-      },
-      sendMsg(msg) {
-        let _this=this;
-        if(window.WebSocket){
-          if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-            _this.webSocket.send(msg); //send()发送消息
-          }
-        }else{
-          return;
-        }
       },
       setMassMarker(data,disParam,type){
         // 创建样式对象
@@ -516,7 +491,7 @@
       clearInterval(this.carTimer);
       clearInterval(this.speedTimer);
       //清除websocket
-      this.webSocket&&this.webSocket.close();
+      this.webSocket&&this.webSocket.webSocket.close();
     }
   }
 </script>

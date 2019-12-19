@@ -93,6 +93,7 @@
   </div>
 </template>
 <script>
+  import WebSocketObj from '@/assets/js/utils/webSocket.js'
   export default {
     name: "header-car",
     data () {
@@ -163,7 +164,7 @@
           // this.naviStatus.naviPlanningStatus=3;
           // this.naviStatus.naviPerceptionStatus=3;
           // this.naviStatus.naviPredictionStatus=3;
-          // this.webSocket&&this.webSocket.close()
+          // this.webSocket&&this.webSocket.webSocket.close()
         // }
       },
       lastTime(oldValue,newValue){
@@ -201,14 +202,19 @@
     },
     methods: {
       initWebSocket(){
-        let _this=this;
-        if ('WebSocket' in window) {
-          _this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+        //获取车辆状态
+        let _vehicleStatus = {
+          'action':'vehicleStatus',
+          'vehicleId': this.$route.params.vehicleId,
+          'token':''
         }
-        _this.webSocket.onmessage = _this.onmessage;
-        _this.webSocket.onclose = _this.onclose;
-        _this.webSocket.onopen = _this.onopen;
-        _this.webSocket.onerror = _this.onerror;
+        //获取车辆驾驶状态
+        let _naviStatus = {
+          'action':'vehicleNaviStatus',
+          'vehicleId': this.$route.params.vehicleId,
+          'token':''
+        }
+        this.webSocket = new WebSocketObj(window.config.websocketUrl, _vehicleStatus, this.onmessage, {openMeg: _naviStatus});
       },
       onmessage(mesasge){
         let _this=this;
@@ -225,41 +231,10 @@
           }
         }
       },
-      onclose(data){
-        console.log("结束连接");
-      },
-      onopen(data){
-        //获取车辆状态
-        var vehicleStatus = {
-          'action':'vehicleStatus',
-          'vehicleId': this.$route.params.vehicleId,
-          'token':''
-        }
-        var vehicleStatusMsg = JSON.stringify(vehicleStatus);
-        this.sendMsg(vehicleStatusMsg);
-        //获取车辆驾驶状态
-        var naviStatus = {
-          'action':'vehicleNaviStatus',
-          'vehicleId': this.$route.params.vehicleId,
-          'token':''
-        }
-        var naviStatusMsg = JSON.stringify(naviStatus);
-        this.sendMsg(naviStatusMsg);
-      },
-      sendMsg(msg) {
-        let _this=this;
-        if(window.WebSocket){
-          if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-            _this.webSocket.send(msg); //send()发送消息
-          }
-        }else{
-          return;
-        }
-      }
     },
     destroyed(){
       //销毁Socket
-       this.webSocket&&this.webSocket.close();
+       this.webSocket&&this.webSocket.webSocket.close();
     }
   }
 </script>

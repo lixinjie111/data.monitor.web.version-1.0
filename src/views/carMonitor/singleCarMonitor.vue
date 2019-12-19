@@ -42,6 +42,7 @@
   import MainCar from './components/singleCar/mainCar.vue'
   import BottomCar from './components/singleCar/bottomCar.vue'
   import {getVehicleBaseData} from '@/api/carMonitor'
+  import WebSocketObj from '@/assets/js/utils/webSocket.js'
   export default {
     name: "SingleCarMonitor",
     components: {LeftCar,HeaderCar,RightCar,MainCar,BottomCar},
@@ -75,15 +76,12 @@
     },
     methods: {
       initWebSocket(){
-        let _this=this;
-        if ('WebSocket' in window) {
-          // _this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
-          _this.webSocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
-        }
-        _this.webSocket.onmessage = _this.onmessage;
-        _this.webSocket.onclose = _this.onclose;
-        _this.webSocket.onopen = _this.onopen;
-        _this.webSocket.onerror = _this.onerror;
+        let _params = {
+          action: 'can_real_data',
+          token: 'fpx',
+          vehicleIds: this.vehicleId
+        };
+        this.webSocket = new WebSocketObj(window.config.socketUrl, _params, this.onmessage);
       },
       onmessage(mesasge){
         if(this.timer) clearTimeout(this.timer);
@@ -108,32 +106,6 @@
             this.routeStartTime="";
         }, this.timeOut);
       },
-      onclose(data){
-        console.log("结束连接");
-      },
-      onopen(data){
-        var real = {
-          action: 'can_real_data',
-          token: 'fpx',
-          vehicleIds: this.vehicleId
-        }
-        var realMsg = JSON.stringify(real);
-        this.sendMsg(realMsg);
-      },
-      sendMsg(msg) {
-        let _this=this;
-        if(window.WebSocket){
-          if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-            _this.webSocket.send(msg); //send()发送消息
-          }
-        }else{
-          return;
-        }
-      },
-      onerror(event){
-        console.error("WebSocket error observed:", event);
-      },
-
       initVehWebSocket(){
         let _this=this;
         if ('WebSocket' in window) {
@@ -203,8 +175,8 @@
     },
     destroyed(){
       //销毁Socket
-       this.webSocket&&this.webSocket.close();
-       this.webSocketVeh&&this.webSocketVeh.close();
+       this.webSocket&&this.webSocket.webSocket.close();
+       this.webSocketVeh&&this.webSocketVeh.webSocket.close();
        
     }
   }

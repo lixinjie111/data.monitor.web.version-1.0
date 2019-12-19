@@ -60,6 +60,7 @@
   import ConvertCoord from '@/assets/js/utils/coordConvert.js'
   import TusvnMap from './components/map/TusvnMap.vue';
   import {allCross,getCrossById,getCrossPageById} from '@/api/roadMonitor'
+  import WebSocketObj from '@/assets/js/utils/webSocket.js'
     export default {
       	components: {
           TusvnMap
@@ -143,7 +144,7 @@
         "finalFourPosition"(newVal, oldVal) {
             this.clearCars();
             if(this.webSocket) {
-              this.onopen();
+              this.webSocket.onOpen();
             }else {
               this.initWebSocket();
             }
@@ -229,7 +230,7 @@
         closeDialog(){
           this.clearCars();
           this.clearLight();
-          this.webSocket && this.webSocket.close();
+          this.webSocket && this.webSocket.webSocket.close();
           var divScroll = document.getElementById("divScroll");
           divScroll.removeEventListener("scroll",this.scrollHandler,true);
           this.$emit("closeDialog");
@@ -496,15 +497,14 @@
           });
         },
         initWebSocket(){
-          let _this=this;
-          if ('WebSocket' in window) {
-            // _this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
-            _this.webSocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
+          let _params ={
+              "action": "vehicle",
+              "body": {
+                  "polygon": this.finalFourPosition,
+              },
+              "type": 3
           }
-          _this.webSocket.onmessage = _this.onmessage;
-          _this.webSocket.onclose = _this.onclose;
-          _this.webSocket.onopen = _this.onopen;
-          _this.webSocket.onerror = _this.onerror;
+          this.webSocket = new WebSocketObj(window.config.socketUrl, _params, this.onmessage);
         },
         onmessage(message){
           let _this = this;
@@ -655,44 +655,11 @@
             this.$refs.refTusvnMap.removeOverlayById(i);
           })
           this.prevLight = [];
-        },
-        onclose(data){
-          this.webSocket = null;
-          console.log("结束连接");
-        },
-        onopen(data){
-          //获取在驶车辆状态
-          // let _params = {
-          //   action: "road_real_data_reg",
-          //   data: {
-          //     polygon: this.finalFourPosition,
-          //     fuselType: 1
-          //   }
-          // };
-          // var _paramsMsg = JSON.stringify(_params);
-          // this.sendMsg(_paramsMsg);
-
-          let platform ={
-              "action": "vehicle",
-              "body": {
-                  "polygon": this.finalFourPosition,
-              },
-              "type": 3
-          }
-          let _paramsMsg = JSON.stringify(platform);
-          this.sendMsg(_paramsMsg);
-        },
-        sendMsg(msg) {
-          let _this=this;
-          if(window.WebSocket){
-            if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-              _this.webSocket.send(msg); //send()发送消息
-            }
-          }else{
-            return;
-          }
-        },
-       
+        }       
+      },
+      destroyed(){
+        //销毁Socket
+        this.webSocket&&this.webSocket.webSocket.close();
       }
     }
 </script>

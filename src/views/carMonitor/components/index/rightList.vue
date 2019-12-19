@@ -42,6 +42,7 @@
 
 <script>
 import { getGpsRealConfig, getGpsRealList } from '@/api/carMonitor'
+import WebSocketObj from '@/assets/js/utils/webSocket.js'
 import $echarts from 'echarts'
 export default {
 	name: 'RightList',
@@ -62,7 +63,6 @@ export default {
 	},
 	mounted() {
 		this.getGpsRealConfig();
-		// this.initWebSocket();
 	},
 	methods: {
 		getGpsRealConfig() {
@@ -70,7 +70,7 @@ export default {
 			getGpsRealConfig().then(res => {
 				this.vehicleIds = res.data;
 				this.webSocketData.vehicleIds = res.data;
-				this.initWebSocket();
+				this.getGpsRealList();
 			});
 		},
 		getGpsRealList() {
@@ -82,6 +82,7 @@ export default {
 				_responseData.forEach(item => {
 					this.initResult(item.vehicleId, item);
 				});
+				this.initWebSocket();
 			});
 		},
         initResult(attr, result) {
@@ -90,12 +91,13 @@ export default {
 			_filterResult.transmission = result.transmission;
 			if(result.transmission != 'P') {
 				_filterResult.speed = result.speed;
+				_filterResult.turnLight = result.turnLight;
 			}else {
 				_filterResult.speed = 0;
+				_filterResult.turnLight = '';
 			}
 			// _filterResult.speed = result.speed;
 			_filterResult.headingAngle = result.headingAngle;
-			_filterResult.turnLight = result.turnLight;
 			_filterResult.autoLevel = result.autoLevel;
 			_filterResult.vehicleLogo = result.vehicleLogo;
 			_filterResult.plateNo = result.plateNo;
@@ -104,19 +106,24 @@ export default {
 			_filterResult.echarts = null;
 			_filterResult.echartsData = [];
 			_filterResult.echartsData.push(result.speed);
-			_filterResult.timer = null;
+
 			this.responseData.push(_filterResult);
+
+			this.responseData.forEach((item, index) => {
+				this.resetData(item);
+			});
+        },
+        resetData(obj) {
+			obj.timer = setTimeout(() => {
+				obj.transmission = "P";
+				obj.turnLight = "";
+				let _option = this.defaultOption([]);
+				obj.echarts.setOption(_option);	
+				obj.speed = 0;
+			}, this.timeOut);
         },
         initWebSocket(){
-            // console.log('websocket获取指定车辆实时信息');
-            if ('WebSocket' in window) {
-                // this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
-                this.webSocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
-            }
-            this.webSocket.onmessage = this.onmessage;
-            this.webSocket.onclose = this.onclose;
-            this.webSocket.onopen = this.onopen;
-            this.webSocket.onerror = this.onerror;
+            this.webSocket = new WebSocketObj(window.config.socketUrl, this.webSocketData, this.onmessage);
         },
         onmessage(message){
             let _json = JSON.parse(message.data)
@@ -154,36 +161,9 @@ export default {
 		            	}, 0);
 					}
 				
-					item.timer = setTimeout(() => {
-						item.transmission = "P";
-						item.turnLight = "";
-						let _option = this.defaultOption([]);
-						item.echarts.setOption(_option);	
-						item.speed = 0;
-
-					}, this.timeOut);
+					this.resetData(item);
             	}
             });
-        },
-        onclose(data){
-            // console.log("结束--vehicleList--连接");
-        },
-        onopen(data){
-            // console.log("建立--vehicleList--连接");
-            //行程
-            this.sendMsg(JSON.stringify(this.webSocketData));
-        },
-        sendMsg(msg) {
-            // console.log("vehicleList--连接状态："+this.webSocket.readyState);
-            if(window.WebSocket){
-                if(this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-                    this.webSocket.send(msg); //send()发送消息
-                    // console.log("vehicleList--已发送消息:"+ msg);
-        			this.getGpsRealList();
-                }
-            }else{
-                return;
-            }
         },
         showView(carId) {
         	const { href } = this.$router.resolve({
@@ -248,7 +228,7 @@ export default {
 	},
     destroyed(){
         //销毁Socket
-         this.webSocket&&this.webSocket.close();
+         this.webSocket&&this.webSocket.webSocket.close();
     }
 }
 </script>

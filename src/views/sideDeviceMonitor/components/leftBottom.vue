@@ -26,6 +26,7 @@
 <script>
   import {getTotalData} from '@/api/sideDeviceMonitor'
   import $echarts from 'echarts'
+  import WebSocketObj from '@/assets/js/utils/webSocket.js'
     export default {
         data() {
             return {
@@ -175,14 +176,11 @@
             })
           },
           initWebSocket(){
-            let _this=this;
-            if ('WebSocket' in window) {
-              _this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
+            let _params = {
+              'action': "deviceCount",
+              'token': ''
             }
-            _this.webSocket.onmessage = _this.onmessage;
-            _this.webSocket.onclose = _this.onclose;
-            _this.webSocket.onopen = _this.onopen;
-            _this.webSocket.onerror = _this.onerror;
+            this.webSocket = new WebSocketObj(window.config.websocketUrl, _params, this.onmessage);
           },
           onmessage(mesasge){
             let _this=this;
@@ -262,33 +260,7 @@
             })
             var option = this.realOption(_this.rsuData,_this.rcuData,_this.videoData,_this.lightData);
             this.sideRealEcharts.setOption(option);
-          },
-          onclose(data){
-            console.log("结束连接");
-          },
-          onopen(data){
-            //获取车辆状态
-            var deviceCount = {
-              'action': "deviceCount",
-              'token': ''
-            }
-            var deviceCountMsg = JSON.stringify(deviceCount);
-            this.sendMsg(deviceCountMsg);
-          },
-          sendMsg(msg) {
-            let _this=this;
-            //console.log("连接状态："+_this.webSocket.readyState);
-            if(window.WebSocket){
-              if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-                _this.webSocket.send(msg); //send()发送消息
-                //console.log("已发送消息:"+ msg);
-              }
-            }else{
-              return;
-            }
           }
-
-
         },
         mounted() {
           this.sideTotalEcharts = $echarts.init(document.getElementById("sideTotalId"));
@@ -299,7 +271,7 @@
         },
       destroyed(){
         //销毁Socket
-        this.webSocket&&this.webSocket.close();
+        this.webSocket&&this.webSocket.webSocket.close();
         clearInterval(this.countTimer);
       }
     }

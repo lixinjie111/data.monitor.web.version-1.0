@@ -8,6 +8,7 @@
 
 <script>
 import { getHisVehStat } from '@/api/dataMonitor'
+import WebSocketObj from '@/assets/js/utils/webSocket.js'
 import $echarts from 'echarts'
 export default {
 	name: 'DrivingCarEcharts',
@@ -52,14 +53,7 @@ export default {
             });
         },
         initWebSocket(){
-            // console.log('websocket获取当前时间节点的车辆分布数量');
-            if ('WebSocket' in window) {
-                this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
-            }
-            this.webSocket.onmessage = this.onmessage;
-            this.webSocket.onclose = this.onclose;
-            this.webSocket.onopen = this.onopen;
-            this.webSocket.onerror = this.onerror;
+            this.webSocket = new WebSocketObj(window.config.websocketUrl, this.webSocketData, this.onmessage);
         },
         onmessage(message){
             let _json = JSON.parse(message.data),
@@ -71,25 +65,6 @@ export default {
             this.responseData.curDay.push(_result.count);
             // console.log(this.responseData.curDay.length);
             this.echarts.setOption(this.defaultOption());
-        },
-        onclose(data){
-            // console.log("结束--vehicleOLCount--连接");
-        },
-        onopen(data){
-            // console.log("建立--vehicleOLCount--连接");
-            //行程
-            this.sendMsg(JSON.stringify(this.webSocketData));
-        },
-        sendMsg(msg) {
-            // console.log("vehicleOLCount--连接状态："+this.webSocket.readyState);
-            if(window.WebSocket){
-                if(this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-                    this.webSocket.send(msg); //send()发送消息
-                    // console.log("vehicleOLCount--已发送消息:"+ msg);
-                }
-            }else{
-                return;
-            }
         },
         defaultOption() {
             let option = {
@@ -128,7 +103,7 @@ export default {
 	},
     destroyed(){
         //销毁Socket
-        this.webSocket&&this.webSocket.close();
+        this.webSocket&&this.webSocket.webSocket.close();
     }
 }
 </script>

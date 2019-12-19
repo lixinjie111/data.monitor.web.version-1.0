@@ -122,14 +122,8 @@
           }else{
             //打开窗口，关闭连接
             _this.mapMessage='连接关闭';
-            this.perceptionWebsocket&&this.perceptionWebsocket.close();
           }
         }
-      },
-     
-      destroyed(){
-        //销毁Socket
-        this.perceptionWebsocket&&this.perceptionWebsocket.close();
       }
     }
 </script>

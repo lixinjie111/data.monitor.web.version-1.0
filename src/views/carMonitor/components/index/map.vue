@@ -3,6 +3,7 @@
 </template>
 <script>
 import ConvertCoord from '@/assets/js/utils/coordConvert.js'
+import WebSocketObj from '@/assets/js/utils/webSocket.js'
 export default {
     name: "MapContainer",
     data () {
@@ -11,11 +12,6 @@ export default {
             AMap: null,
             // 获取在驶车辆实时数据（辆）
             webSocket:null,
-            // webSocketData: {
-            //     action: "vehicleOnline",
-            //     token: 'fpx',
-            //     vehicleId: 'vehicleOnline'
-            // },
             webSocketData:{
                 "action": "vehicle",
                 "body": {},
@@ -36,92 +32,84 @@ export default {
     },
     methods: {
         initWebSocket(){
-            // console.log('websocket获取地图行驶车辆展示');
-            if ('WebSocket' in window) {
-                // this.webSocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
-                this.webSocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
-            }
-            this.webSocket.onmessage = this.onmessage;
-            this.webSocket.onclose = this.onclose;
-            this.webSocket.onopen = this.onopen;
-            this.webSocket.onerror = this.onerror;
+            this.webSocket = new WebSocketObj(window.config.socketUrl, this.webSocketData, this.onmessage);
         },
         onmessage(message){
-                let _this = this;
-                let jsonData = JSON.parse(message.data);
+            let _this = this;
+            let jsonData = JSON.parse(message.data);
 
-                let data = jsonData.result.data;
-                let _result = {};
-                let _filterData = {};
+            let data = jsonData.result.data;
+            let _result = {};
+            let _filterData = {};
+            for(let vehicleId in data){
+                if(data[vehicleId]&&data[vehicleId].length>0){
+                    _result[vehicleId] = data[vehicleId][data[vehicleId].length-1];
+                    _filterData[vehicleId] = {
+                        vehicleId: _result[vehicleId].vehicleId,
+                        plateNo: _result[vehicleId].plateNo,
+                        source: _result[vehicleId].source.join(','),
+                        heading: _result[vehicleId].heading,
+                        speed: _result[vehicleId].speed,
+                        position: ConvertCoord.wgs84togcj02(_result[vehicleId].longitude, _result[vehicleId].latitude),
+                        marker: null,
+                        plateNoMarker: null,
+                    };
+                }
+            }
+            if (Object.keys(_filterData).length>0) {
+                for (let id in _this.prevData) {
+                    if(_filterData[id]) {   //表示有该点，做setPosition
+                        if(_this.prevData[id].timer){
+                            clearTimeout(_this.prevData[id].timer)
+                        }
+                        let _currentCar = _filterData[id];
+                        _this.prevData[id].marker.setAngle(_currentCar.heading);
+                        _this.prevData[id].marker.setPosition(_currentCar.position);
+                        _this.prevData[id].plateNoMarker.setText(_currentCar.plateNo+"<br/><span style='color:#e6a23c'>"+_currentCar.source+'</span>');
+                        _this.prevData[id].plateNoMarker.setPosition(_currentCar.position);
+                    }
+                }
+                for (let id in _filterData) {
+                    if(!_this.prevData[id]) {   //表示新增该点，做add
+                        _this.addMarker(id,_filterData);
+                        _this.addPlateNoMarker(id,_filterData);
+                    }
+                }
+
+                if(_this.setFitViewFlag) {
+                    setTimeout(()=>{
+                        _this.AMap.setFitView();
+                        _this.setFitViewFlag = false;
+                    },500)
+                }
+
+
+                // _this.prevData[_filterData.vehicleId] = _filterData;
+                // console.log(_this.prevData)
                 for(let vehicleId in data){
-                    if(data[vehicleId]&&data[vehicleId].length>0){
-                        _result[vehicleId] = data[vehicleId][data[vehicleId].length-1];
-                        _filterData[vehicleId] = {
-                            vehicleId: _result[vehicleId].vehicleId,
-                            plateNo: _result[vehicleId].plateNo,
-                            source: _result[vehicleId].source.join(','),
-                            heading: _result[vehicleId].heading,
-                            speed: _result[vehicleId].speed,
-                            position: ConvertCoord.wgs84togcj02(_result[vehicleId].longitude, _result[vehicleId].latitude),
-                            marker: null,
-                            plateNoMarker: null,
-                        };
-                    }
+                    _this.prevData[vehicleId].timer = setTimeout(() => {
+                       // _this.prevData[vehicleId].plateNoMarker.setText(data[vehicleId][0].plateNo+"<br/><span style='color:red'>离线</span>")
+                        //3s后消失
+                        _this.prevData[vehicleId].marker.off('click', _this.showView);
+                        _this.prevData[vehicleId].plateNoMarker.off('click', _this.showView);
+                        _this.AMap.remove(_this.prevData[vehicleId].marker);
+                        _this.AMap.remove(_this.prevData[vehicleId].plateNoMarker);
+                        console.log("消失车辆",vehicleId)
+                        delete _this.prevData[vehicleId];
+                    }, this.timeOut);
                 }
-                if (Object.keys(_filterData).length>0) {
-                    for (let id in _this.prevData) {
-                        if(_filterData[id]) {   //表示有该点，做setPosition
-                            if(_this.prevData[id].timer){
-                                clearTimeout(_this.prevData[id].timer)
-                            }
-                            let _currentCar = _filterData[id];
-                            _this.prevData[id].marker.setAngle(_currentCar.heading);
-                            _this.prevData[id].marker.setPosition(_currentCar.position);
-                            _this.prevData[id].plateNoMarker.setText(_currentCar.plateNo+"<br/><span style='color:#e6a23c'>"+_currentCar.source+'</span>');
-                            _this.prevData[id].plateNoMarker.setPosition(_currentCar.position);
-                        }
-                    }
-                    for (let id in _filterData) {
-                        if(!_this.prevData[id]) {   //表示新增该点，做add
-                            _this.addMarker(id,_filterData);
-                            _this.addPlateNoMarker(id,_filterData);
-                        }
-                    }
-
-                    if(_this.setFitViewFlag) {
-                        setTimeout(()=>{
-                            _this.AMap.setFitView();
-                            _this.setFitViewFlag = false;
-                        },500)
-                    }
-
-
-                    // _this.prevData[_filterData.vehicleId] = _filterData;
-                    // console.log(_this.prevData)
-                    for(let vehicleId in data){
-                        _this.prevData[vehicleId].timer = setTimeout(() => {
-                           // _this.prevData[vehicleId].plateNoMarker.setText(data[vehicleId][0].plateNo+"<br/><span style='color:red'>离线</span>")
-                            //3s后消失
-                            _this.prevData[vehicleId].marker.off('click', _this.showView);
-                            _this.prevData[vehicleId].plateNoMarker.off('click', _this.showView);
-                            _this.AMap.remove(_this.prevData[vehicleId].marker);
-                            _this.AMap.remove(_this.prevData[vehicleId].plateNoMarker);
-                            console.log("消失车辆",vehicleId)
-                            delete _this.prevData[vehicleId];
-                        }, this.timeOut);
-                    }
-                // } else {
-                //     // 返回的数据为空
-                //     for (let id in _this.prevData) {
-                //         // console.log("delete:-"+_this.prevData[id].plateNo);
-                //         _this.prevData[id].marker.off('click', _this.showView);
-                //         _this.prevData[id].plateNoMarker.off('click', _this.showView);
-                //         _this.AMap.remove(_this.prevData[id].marker);
-                //         _this.AMap.remove(_this.prevData[id].plateNoMarker);
-                //         delete _this.prevData[id];
-                //     }
-                }
-            },
+            // } else {
+            //     // 返回的数据为空
+            //     for (let id in _this.prevData) {
+            //         // console.log("delete:-"+_this.prevData[id].plateNo);
+            //         _this.prevData[id].marker.off('click', _this.showView);
+            //         _this.prevData[id].plateNoMarker.off('click', _this.showView);
+            //         _this.AMap.remove(_this.prevData[id].marker);
+            //         _this.AMap.remove(_this.prevData[id].plateNoMarker);
+            //         delete _this.prevData[id];
+            //     }
+            }
+        },
         addMarker(id,_filterData) {
             this.prevData[id] = new Object();
             this.prevData[id].marker = new AMap.Marker({
@@ -171,29 +159,10 @@ export default {
             })
             window.open(href, '_blank')
         },
-        onclose(data){
-            // console.log("结束--vehicleOnline--连接");
-        },
-        onopen(data){
-            // console.log("建立--vehicleOnline--连接");
-            //行程
-            this.sendMsg(JSON.stringify(this.webSocketData));
-        },
-        sendMsg(msg) {
-            // console.log("vehicleOnline--连接状态："+this.webSocket.readyState);
-            if(window.WebSocket){
-                if(this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-                    this.webSocket.send(msg); //send()发送消息
-                    // console.log("vehicleOnline--已发送消息:"+ msg);
-                }
-            }else{
-                return;
-            }
-        }
     },
     destroyed(){
         //销毁Socket
-        this.webSocket&&this.webSocket.close();
+        this.webSocket&&this.webSocket.webSocket.close();
     }
 }
 </script>

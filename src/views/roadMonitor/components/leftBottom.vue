@@ -29,6 +29,7 @@
 </template>
 <script>
   import {roadLevel,roadCategory} from '@/api/roadMonitor'
+  import WebSocketObj from '@/assets/js/utils/webSocket.js'
   import $echarts from 'echarts'
     export default {
         data() {
@@ -139,14 +140,7 @@
             });
           },
           initWebSocket(){
-            let _this=this;
-            if ('WebSocket' in window) {
-              _this.webSocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
-            }
-            _this.webSocket.onmessage = _this.onmessage;
-            _this.webSocket.onclose = _this.onclose;
-            _this.webSocket.onopen = _this.onopen;
-            _this.webSocket.onerror = _this.onerror;
+            this.webSocket = new WebSocketObj(window.config.websocketUrl, this.webSocketData, this.onmessage);
           },
           onmessage(mesasge){
             let _this=this;
@@ -155,26 +149,6 @@
             Array.prototype.push.apply(this.trafficData, json.result.data);
             if(this.trafficData.length > 5) {
               this.trafficData.splice(0, this.trafficData.length - 5);
-            }
-            //var result = json.result.roadVeh;
-
-          },
-          onclose(data){
-            console.log("结束连接");
-          },
-          onopen(data){
-            //获取在驶车辆状态
-            var _traffic = JSON.stringify(this.webSocketData);
-            this.sendMsg(_traffic);
-          },
-          sendMsg(msg) {
-            let _this=this;
-            if(window.WebSocket){
-              if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-                _this.webSocket.send(msg); //send()发送消息
-              }
-            }else{
-              return;
             }
           }
         },
@@ -188,6 +162,10 @@
           this.classifyPie.setOption(option);*/
          this.getRoadLevel();
          this.getRoadCategory();
+        },
+        destroyed(){
+          //清除websocket
+          this.webSocket&&this.webSocket.webSocket.close();
         }
     }
 </script>

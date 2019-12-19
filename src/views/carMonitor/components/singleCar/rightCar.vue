@@ -51,6 +51,7 @@
   import { getVehicleCalendarData, getLiveDeviceInfo, startStream, sendStreamHeart } from '@/api/carMonitor'
   import $echarts from 'echarts'
   import LivePlayer from '@/components/livePlayer/template';
+  import WebSocketObj from '@/assets/js/utils/webSocket.js'
   export default {
     data () {
       return {
@@ -60,7 +61,7 @@
         streamInfo:{},
         timer:{},
         vehicleId: this.$route.params.vehicleId,//车辆id
-        socket:'',
+        webSocket:'',
         screenConfig:{
             scrWidth: 270, //屏幕宽 px
             scrHeight: 180, //屏幕高 
@@ -275,39 +276,17 @@
           _this.keepStream();
         },5000)
       },
-      initSocket(){
-          if(typeof(WebSocket) === "undefined"){
-              alert("您的浏览器不支持socket");
-              return;
-          }
-          // 实例化socket
-          this.socket = new WebSocket(window.config.socketUrl)
-          // 监听socket连接
-          this.socket.onopen = this.openSocket
-          // 监听socket错误信息
-          this.socket.onerror = this.error
-          // 监听socket消息
-          this.socket.onmessage = this.getMessage
-      },
-      openSocket(){
-          this.sendMsg();
-      },
-      sendMsg(){
-          let params = {
+      initWebSocket(){
+          let _params = {
             "action": "vehicle",
             "body": {
                 "vehicleId": this.vehicleId
             },
             "type": 5
           }
-          this.socket.send(JSON.stringify(params));
-      },
-      error(msg){
-          console.log('Socked连接失败',msg);
+          this.webSocket = new WebSocketObj(window.config.socketUrl, _params, this.getMessage);
       },
       getMessage(msg){
-          // console.log("感知数据 vehicleRadar %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-//        console.log("感知事件----")
           var that = this;
           var res = JSON.parse(msg.data);
           var arr = Object.keys(res.result.data);
@@ -390,7 +369,7 @@
     mounted () {
       this.getDriveCalendar();
       this.getDeviceInfo();
-      this.initSocket();
+      this.initWebSocket();
     },
     beforeDestroy(){
       clearTimeout(this.timer);
@@ -400,7 +379,7 @@
 
     destroyed(){
         //销毁Socket
-        this.socket.close();
+        this.webSocket.webSocket.close();
     }
   }
 </script>

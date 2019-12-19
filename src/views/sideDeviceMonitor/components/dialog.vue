@@ -937,8 +937,8 @@ export default {
  
   destroyed(){
       //销毁Socket
-      this.perceptionWebsocket&&this.perceptionWebsocket.close();
-      this.pulseWebsocket&&this.pulseWebsocket.close();
+      // this.perceptionWebsocket&&this.perceptionWebsocket.close();
+      // this.pulseWebsocket&&this.pulseWebsocket.close();
   }
 };
 </script>

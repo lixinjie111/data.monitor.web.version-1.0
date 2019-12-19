@@ -141,6 +141,7 @@
   import { getAlarmInformation,getV2xInformation } from '@/api/carMonitor'
   import DateFormat from '@/assets/js/utils/date.js'
   import ConvertCoord from '@/assets/js/utils/coordConvert.js'
+  import WebSocketObj from '@/assets/js/utils/webSocket.js'
   export default {
     name:"main-car",
     data () {
@@ -149,7 +150,6 @@
         marker:{},
         platNoMarker:{},
       
-        hostWebsocket:null,
         sideWebsocket:null,
         deviceWebsocket:null,
         lightWebsocket:null,
@@ -274,7 +274,7 @@
       deep: true,
       isStop(newVal,oldVal){
         if(newVal){
-          this.sideWebsocket.close();
+          this.sideWebsocket.webSocket.close();
         }else{
           console.log("第一次是否走此方法")
           this.initSideWebSocket();
@@ -343,17 +343,6 @@
           diff_y = map_center.y - p_start.y;
         return 360*Math.atan2(diff_y, diff_x)/(2*Math.PI);
       },
-      // initWebSocket(){
-      //   let _this=this;
-      //   if ('WebSocket' in window) {
-      //     // _this.hostWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
-      //     _this.hostWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
-      //   }
-      //   _this.hostWebsocket.onmessage = _this.onmessage;
-      //   _this.hostWebsocket.onclose = _this.onclose;
-      //   _this.hostWebsocket.onopen = _this.onopen;
-      //   _this.hostWebsocket.onerror = _this.onerror;
-      // },
       onmessage(mesasge){
         if(!mesasge.result.track || !mesasge.result.track[0]){
           return;
@@ -427,45 +416,15 @@
               _this.makerPosition = newPosition;
 
       },
-      // onclose(data){
-      //   console.log("结束连接");
-      // },
-      // onopen(data){
-      //   //自车
-      //   let hostVehicle ={
-      //       "action": "vehicle",
-      //       "body": {
-      //           "vehicleId": this.vehicleId
-      //       },
-      //       "type": 1
-      //   }
-      //   // let hostVehicle = {
-      //   //   "action": "hostVehicle",
-      //   //   "vehicleId": this.vehicleId
-      //   // }
-      //   let hostVehicleMsg = JSON.stringify(hostVehicle);
-      //   this.sendMsg(hostVehicleMsg);
-      // },
-      // sendMsg(msg) {
-      //   let _this=this;
-      //   if(window.WebSocket){
-      //     if(_this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-      //       _this.hostWebsocket.send(msg); //send()发送消息
-      //     }
-      //   }else{
-      //     return;
-      //   }
-      // },
       initSideWebSocket(){
-        let _this=this;
-        if ('WebSocket' in window) {
-          // _this.sideWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
-          _this.sideWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
-        }
-        _this.sideWebsocket.onmessage = _this.onSideMessage;
-        _this.sideWebsocket.onclose = _this.onSideClose;
-        _this.sideWebsocket.onopen = _this.onSideOpen;
-        _this.sideWebsocket.onerror = _this.onSideError;
+        let _params ={
+            "action": "vehicle",
+            "body": {
+                "vehicleId": this.vehicleId
+            },
+            "type": 2
+        };
+        this.sideWebsocket = new WebSocketObj(window.config.socketUrl, _params, this.onSideMessage);
       },
       onSideMessage(message){
 
@@ -542,45 +501,13 @@
                 }, this.timeOut);
               }    
         } 
-     
-      },
-      onSideClose(data){
-        console.log("结束连接");
-      },
-      onSideOpen(data){
-        //旁车
-        let sideVehicle ={
-            "action": "vehicle",
-            "body": {
-                "vehicleId": this.vehicleId
-            },
-            "type": 2
-        }
-        // let sideVehicle = {
-        //   "action": "sideVehicle",
-        //   "vehicleId": this.vehicleId
-        // }
-        let sideVehicleMsg = JSON.stringify(sideVehicle);
-        this.sendSideMsg(sideVehicleMsg);
-      },
-      sendSideMsg(msg) {
-        let _this=this;
-        if(window.WebSocket){
-          if(_this.sideWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-            _this.sideWebsocket.send(msg); //send()发送消息
-          }
-        }else{
-          return;
-        }
       },
       initDeviceWebSocket(){
-        let _this=this;
-        if ('WebSocket' in window) {
-          _this.deviceWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
-        }
-        _this.deviceWebsocket.onmessage = _this.onDeviceMessage;
-        _this.deviceWebsocket.onclose = _this.onDeviceClose;
-        _this.deviceWebsocket.onopen = _this.onDeviceOpen;
+        let _params = {
+          "action": "rsb",
+          "vehicleId": this.vehicleId
+        };
+        this.deviceWebsocket = new WebSocketObj(window.config.socketUrl, _params, this.onDeviceMessage);
       },
       onDeviceMessage(mesasge){
           let _this=this;
@@ -628,37 +555,14 @@
                 //     // delete _this.devicePrevData[id];
                 // }
           } 
-
-      },
-      onDeviceClose(data){
-        console.log("结束连接");
-      },
-      onDeviceOpen(data){
-        let deviceVehicle = {
-          "action": "rsb",
-          "vehicleId": this.vehicleId
-        }
-        let deviceVehicleMsg = JSON.stringify(deviceVehicle);
-        this.sendDeviceMsg(deviceVehicleMsg);
-      },
-      sendDeviceMsg(msg) {
-        let _this=this;
-        if(window.WebSocket){
-          if(_this.deviceWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-            _this.deviceWebsocket.send(msg); //send()发送消息
-          }
-        }else{
-          return;
-        }
       },
       initLightWebSocket(){
-        let _this=this;
-        if ('WebSocket' in window) {
-          _this.lightWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
-        }
-        _this.lightWebsocket.onmessage = _this.onLightMessage;
-        _this.lightWebsocket.onclose = _this.onLightClose;
-        _this.lightWebsocket.onopen = _this.onLightOpen;
+        let _params = {
+          "action": "spat",
+          "vehicleId": this.vehicleId,
+          "type":1
+        };
+        this.lightWebsocket = new WebSocketObj(window.config.socketUrl, _params, this.onLightMessage);
       },
       onLightMessage(mesasge){
         let _this=this;
@@ -729,39 +633,16 @@
                   delete _this.lightPrevData[id];
               }
         }
-       
-      },
-      onLightClose(data){
-        console.log("结束连接");
-      },
-      onLightOpen(data){
-        //旁车
-        let light = {
-          "action": "spat",
-          "vehicleId": this.vehicleId,
-          "type":1
-        }
-        let lightMsg = JSON.stringify(light);
-        this.sendLightMsg(lightMsg);
-      },
-      sendLightMsg(msg) {
-        let _this=this;
-        if(window.WebSocket){
-          if(_this.lightWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-            _this.lightWebsocket.send(msg); //send()发送消息
-          }
-        }else{
-          return;
-        }
       },
       initWarningWebSocket(){
-        let _this=this;
-        if ('WebSocket' in window) {
-          _this.warningWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
-        }
-        _this.warningWebsocket.onmessage = _this.onWarningMessage;
-        _this.warningWebsocket.onclose = _this.onWarningClose;
-        _this.warningWebsocket.onopen = _this.onWarningOpen;
+        let _params = {
+          "action":"warning",
+          "type":1,
+          "body":{
+            "vehicleId": this.vehicleId
+          }
+        };
+        this.warningWebsocket = new WebSocketObj(window.config.socketUrl, _params, this.onWarningMessage);
       },
       onWarningMessage(mesasge){
         let _this=this;
@@ -894,33 +775,6 @@
         
         }
       },
-      onWarningClose(data){
-        console.log("结束连接");
-      },
-      onWarningOpen(data){
-        //旁车
-        let warning = {
-          "action":"warning",
-          "type":1,
-          "body":{
-            "vehicleId": this.vehicleId
-          }
-        }
-        
-        let warningMsg = JSON.stringify(warning);
-        this.sendWarningMsg(warningMsg);
-      },
-      sendWarningMsg(msg) {
-        let _this=this;
-        if(window.WebSocket){
-          if(_this.warningWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-            _this.warningWebsocket.send(msg); //send()发送消息
-            console.log("warning已发送消息:"+ msg);
-          }
-        }else{
-          return;
-        }
-      },
       hashcode(str) {
         let hash = 0, i, chr, len;
         if (str.length === 0) return hash;
@@ -1004,11 +858,10 @@
     
     destroyed(){
       //销毁Socket
-      this.hostWebsocket&&this.hostWebsocket.close();
-      this.sideWebsocket&&this.sideWebsocket.close();
-      this.deviceWebsocket&&this.deviceWebsocket.close();
-      this.lightWebsocket&&this.lightWebsocket.close();
-      this.warningWebsocket&&this.warningWebsocket.close();
+      this.sideWebsocket&&this.sideWebsocket.webSocket.close();
+      this.deviceWebsocket&&this.deviceWebsocket.webSocket.close();
+      this.lightWebsocket&&this.lightWebsocket.webSocket.close();
+      this.warningWebsocket&&this.warningWebsocket.webSocket.close();
     }
   }
 </script>
