@@ -33,7 +33,8 @@ window.config = {
 window.mapOption = {
     // center: [121.551976, 31.276054], //上海-高德地图坐标点
     // center: [113.07876,28.255618],   //长沙-高德地图坐标点
-    mapStyleEmpty: "amap://styles/bc5a63d154ee0a5221a1ee7197607a00", // 纯灰色背景地图 路口
+    // mapStyleEmpty: "amap://styles/bc5a63d154ee0a5221a1ee7197607a00", // 纯灰色背景地图 路口
+    mapStyleEmpty: "amap://styles/7b007636f01d8a19e9cc2841a85dc083", // 纯绿色背景地图 路口
     defaultCenterPoint :  [121.262939,31.245149],   // 上海默认中心点 --- 高德坐标点
     centerPoint :  [121.17265957261286,31.284096076877844],     // 数据概览 中心点位置(获取地理位置计算天气) --- 高德坐标点
     singlePoint:[121.18653381418872,31.274421462567677],    // 单车监控 大地图中心点 --- 高德坐标点

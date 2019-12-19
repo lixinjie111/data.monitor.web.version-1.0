@@ -42,13 +42,14 @@
             @TemporaryClearPubMsg='temporaryClearPubMsg($event)'>
 		      </tusvn-map> -->
           <tusvn-map
-                  ref="refTusvnMap"
-                  targetId="refTusvnMap"
-                  overlayContainerId="overlay1"
-                  :isMasker='false'
-                  :isCircle='false'
-                  @ExtentChange="extentChange" 
-                  @MapInitComplete='mapInitComplete'>
+            class="c-tusvn-map-box"
+            ref="refTusvnMap"
+            targetId="refTusvnMap"
+            overlayContainerId="overlay1"
+            :isMasker='false'
+            :isCircle='false'
+            @ExtentChange="extentChange" 
+            @MapInitComplete='mapInitComplete'>
           </tusvn-map>
         </div>
     </div>
