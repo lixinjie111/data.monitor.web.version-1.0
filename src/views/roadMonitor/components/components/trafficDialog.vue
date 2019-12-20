@@ -128,16 +128,10 @@ import ConvertCoord from "@/assets/js/utils/coordConvert.js";
 import LivePlayer from '@/components/livePlayer/template';
 import WebSocketObj from '@/assets/js/utils/webSocket.js'
 
-// import GIS3D from '@/utils/GIS3D.js'
-// import PerceptionCars from '@/utils/PerceptionCars.js'
-// let gis3d=new GIS3D();
-// let perceptionCars = new PerceptionCars();
-
 export default {
   name: "SideDialog",
   data() {
     return {
-      mapParam:window.mapParam,
       webSocket: null,
       webSocketData: {
         action: "event_detail_data",
@@ -145,12 +139,6 @@ export default {
         taskCode: ""
       },
       currentExtent: [],
-      carData: null,
-      webSocket1: null, //交通事件车辆
-      platformWebsocket: null, //平台车
-      perceptionWebsocket: null, //感知车
-      perceptionCar: "",
-      webSocketData1: {},
       itemData: {},
       deviceList: [],
       deviceId: "",
@@ -461,153 +449,22 @@ export default {
         this.deviceList = [];
       }
     },
-    //平台车 小汽车
-  
-    // initPlatformWebSocket(){
-    //     let _this=this;
-    //     try{
-    //         if ('WebSocket' in window) {
-    //             _this.platformWebsocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
-    //             _this.platformWebsocket.onmessage = _this.onPlatformMessage;
-    //             _this.platformWebsocket.onclose = _this.onPlatformClose;
-    //             _this.platformWebsocket.onopen = _this.onPlatformOpen;
-    //             _this.platformWebsocket.onerror=_this.onPlatformError;
-    //         }else{
-    //             _this.$message("此浏览器不支持websocket");
-    //         }
-    //     }catch (e){
-    //         this.platformReconnect();
-    //     }
-    // },
-    // onPlatformMessage(message) {
-    //   let _this=this;
-    //   let json = JSON.parse(message.data);
-    //   platCars.onCarMessage(json,0);
-
-    //   let keys = Object.keys(platCars.cacheAndInterpolateDataByVid);
-    //   if(keys&&keys.length>0){
-    //       let key = keys[0];
-    //       _this.$parent.vehData = platCars.cacheAndInterpolateDataByVid[key].data;
-    //   }
-    // },
-
-    // onPlatformClose(data) {
-    //   console.log("结束连接");
-    //   this.platformReconnect();
-    // },
-    // onPlatformError(){
-    //   console.log("平台车连接error");
-    //   this.platformReconnect();
-    // },
-    // onPlatformOpen(data) {
-    //   //旁车
-    //   var platform = {
-    //     action: "road_real_data_reg",
-    //     data: {
-    //       polygon: this.currentExtent
-    //     }
-    //   };
-    //   var platformMsg = JSON.stringify(platform);
-    //   this.sendPlatformMsg(platformMsg);
-    // },
-    // sendPlatformMsg(msg) {
-    //   let _this = this;
-    //   if (window.WebSocket) {
-    //     if (_this.platformWebsocket.readyState == WebSocket.OPEN) {
-    //       //如果WebSocket是打开状态
-    //       _this.platformWebsocket.send(msg); //send()发送消息
-    //     }
-    //   } else {
-    //     return;
-    //   }
-    // },
-    //感知车
-    // initPerceptionWebSocket(){
-    //     let _this=this;
-    //     try{
-    //         if ('WebSocket' in window) {
-    //             // _this.perceptionWebsocket = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
-    //             _this.perceptionWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
-    //             _this.perceptionWebsocket.onmessage = _this.onPerceptionMessage;
-    //             _this.perceptionWebsocket.onclose = _this.onPerceptionClose;
-    //             _this.perceptionWebsocket.onopen = _this.onPerceptionOpen;
-    //             _this.perceptionWebsocket.onerror= _this.onPerceptionError;
-    //         }else{
-    //             _this.$message("此浏览器不支持websocket");
-    //         }
-    //     }catch (e){
-    //         this.perceptionReconnect();
-    //     }
-
-    // },
-    // onPerceptionMessage(mesasge){
-    //     let _this=this;
-    //     let data = JSON.parse(mesasge.data)
-    //     _this.processPerData(data);
-    // },
-    // onPerceptionClose(data) {
-    //   console.log("结束连接");
-    // },
-    // onPerceptionError(){
-    //     console.log("感知车连接error");
-    //     this.perceptionReconnect();
-    // },
-    // onPerceptionOpen(data) {
-    //   //旁车
-    //   // var perception = {
-    //   //   action: "road_real_data_per",
-    //   //   data: {
-    //   //     polygon: this.currentExtent
-    //   //   }
-    //   // };
-    //   // var perceptionMsg = JSON.stringify(perception);
-    //   // this.sendPerceptionMsg(perceptionMsg);
-
-    //   var perception = {
-    //   action:"road_real_data_per",
-    //   data:{
-    //       type:1,
-    //       polygon:[[121.17403069999999,31.2836193],[121.1760307,31.2836193],[121.1760307,31.2816193],[121.17403069999999,31.2816193]]
-    //       }
-    //   }
-    //   var perceptionMsg = JSON.stringify(perception);
-    //   this.sendPerceptionMsg(perceptionMsg);
-    // },
-    // processPerData(data){
-    //     let _this = this;
-    //     let maxGpsTime = 0;
-    //     let fiterData;
-    //     if(data.result.perList.length){
-    //       data.result.perList.map(item=>{
-    //         if(item.gpsTime > maxGpsTime){
-    //           maxGpsTime = item.gpsTime;
-    //           fiterData = item;
-    //         }
-    //       })
+    processPerData(data){
+        let _this = this;
+        let maxGpsTime = 0;
+        let fiterData;
+        if(data.result.perList.length){
+          data.result.perList.map(item=>{
+            if(item.gpsTime > maxGpsTime){
+              maxGpsTime = item.gpsTime;
+              fiterData = item;
+            }
+          })
               
-    //     }
-    //     perceptionCars.addPerceptionData(fiterData.data,0);
+        }
+        perceptionCars.addPerceptionData(fiterData.data,0);
       
-    // },
-    // sendPerceptionMsg(msg) {
-    //   let _this = this;
-    //   if (window.WebSocket) {
-    //     if (_this.perceptionWebsocket.readyState == WebSocket.OPEN) {
-    //       //如果WebSocket是打开状态
-    //       _this.perceptionWebsocket.send(msg); //send()发送消息
-    //     }
-    //   } else {
-    //     return;
-    //   }
-    // },
-   
-    // coordinateTransfer(sourceProject, destinatePorject, longitude, latitude) {
-    //   let targetCoor = proj4(sourceProject, destinatePorject, [
-    //     longitude,
-    //     latitude
-    //   ]);
-    //   return targetCoor;
-    // },
+    },
     getExtend(x, y, r) {
       //1度=108000米；方圆200米
       this.currentExtent = [];
@@ -673,42 +530,6 @@ export default {
     showTimeStamp(time) {
       this.time = time;
     },
-    // onMapComplete(){ 
-       
-    //     this.getData();
-      
-    // },
-    // getData(){
-    //     this.initWebSocket();
-    //     this.initPerceptionWebSocket();
-    //     // this.initPlatformWebSocket();
-    // },
-    // platformReconnect(){
-    //     //实例销毁后不进行重连
-    //     if(this._isDestroyed){
-    //         return;
-    //     }
-    //     //重连不能超过10次
-    //     if(this.platformConnectCount>=10){
-    //         return;
-    //     }
-    //     this.initPlatformWebSocket();
-    //     //重连不能超过5次
-    //     this.platformConnectCount++;
-    // },
-    // perceptionReconnect(){
-    //     //实例销毁后不进行重连
-    //     if(this._isDestroyed){
-    //         return;
-    //     }
-    //     //重连不能超过10次
-    //     if(this.perceptionConnectCount>=10){
-    //         return;
-    //     }
-    //     this.initPerceptionWebSocket();
-    //     //重连不能超过5次
-    //     this.perceptionConnectCount++;
-    // },
     getVideo() {
       this.wsUrl = "";
       getVideoByNum({
@@ -729,8 +550,6 @@ export default {
   },
   destroyed() {
     this.webSocket && this.webSocket.webSocket.close();
-    // // this.platformWebsocket && this.platformWebsocket.close();
-    // this.perceptionWebsocket && this.perceptionWebsocket.close();
   }
 };
 </script>
