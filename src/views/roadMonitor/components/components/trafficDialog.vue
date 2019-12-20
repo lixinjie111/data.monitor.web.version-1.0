@@ -535,7 +535,7 @@ export default {
       }).then(res => {
         this.$refs['player'].initVideo();
         if (res.status == 200) {
-          this.videoUrl = res.data.wsUrl;
+          this.videoUrl = res.data.flvUrl;
           setTimeout(() => {
              this.$refs["player"].requestVideo();
           }, 0);
