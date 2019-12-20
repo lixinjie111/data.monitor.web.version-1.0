@@ -107,50 +107,20 @@
         }, this.timeOut);
       },
       initVehWebSocket(){
-        let _this=this;
-        if ('WebSocket' in window) {
-          // _this.webSocketVeh = new WebSocket(window.config.websocketUrl);  //获得WebSocket对象
-          _this.webSocketVeh = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
-        }
-        _this.webSocketVeh.onmessage = _this.onmessageVeh;
-        _this.webSocketVeh.onclose = _this.oncloseVeh;
-        _this.webSocketVeh.onopen = _this.onopenVeh;
-        _this.webSocketVeh.onerror = _this.onerrorVeh;
+        let _params = {
+          "action": "vehicle",
+          "body": {
+              "vehicleId": this.vehicleId
+          },
+          "type": 1
+        };
+        this.webSocketVeh = new WebSocketObj(window.config.socketUrl, _params, this.onmessageVeh);
       },
 
       onmessageVeh(mesasge){
         this.vehWsData = JSON.parse(mesasge.data);
        
       },
-      oncloseVeh(data){
-        console.log("结束连接");
-      },
-      onopenVeh(data){
-        let param = {
-          "action": "vehicle",
-          "body": {
-              "vehicleId": this.vehicleId
-          },
-          "type": 1
-        }
-        var paramMsg = JSON.stringify(param);
-        this.sendVehMsg(paramMsg);
-      },
-      sendVehMsg(msg) {
-        let _this=this;
-        if(window.WebSocket){
-          if(_this.webSocketVeh.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
-            _this.webSocketVeh.send(msg); //send()发送消息
-          }
-        }else{
-          return;
-        }
-      },
-      onerrorVeh(event){
-        console.error("webSocketVeh error observed:", event);
-      },
-
-
       getBaseData(){
         var _this = this;
         getVehicleBaseData({
