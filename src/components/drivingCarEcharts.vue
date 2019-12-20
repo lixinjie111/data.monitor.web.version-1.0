@@ -53,7 +53,7 @@ export default {
             });
         },
         initWebSocket(){
-            this.webSocket = new WebSocketObj(window.config.websocketUrl, this.webSocketData, this.onmessage);
+            this.webSocket = new WebSocketObj(this, window.config.websocketUrl, this.webSocketData, this.onmessage);
         },
         onmessage(message){
             let _json = JSON.parse(message.data),

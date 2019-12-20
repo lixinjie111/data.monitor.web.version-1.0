@@ -284,7 +284,7 @@
             },
             "type": 5
           }
-          this.webSocket = new WebSocketObj(window.config.socketUrl, _params, this.onmessage);
+          this.webSocket = new WebSocketObj(this, window.config.socketUrl, _params, this.onmessage);
       },
       onmessage(msg){
           var that = this;

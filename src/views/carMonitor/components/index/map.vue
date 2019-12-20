@@ -32,7 +32,7 @@ export default {
     },
     methods: {
         initWebSocket(){
-            this.webSocket = new WebSocketObj(window.config.socketUrl, this.webSocketData, this.onmessage);
+            this.webSocket = new WebSocketObj(this, window.config.socketUrl, this.webSocketData, this.onmessage);
         },
         onmessage(message){
             let _this = this;

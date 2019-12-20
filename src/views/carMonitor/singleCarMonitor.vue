@@ -81,7 +81,7 @@
           token: 'fpx',
           vehicleIds: this.vehicleId
         };
-        this.webSocket = new WebSocketObj(window.config.socketUrl, _params, this.onmessage);
+        this.webSocket = new WebSocketObj(this, window.config.socketUrl, _params, this.onmessage);
       },
       onmessage(mesasge){
         if(this.timer) clearTimeout(this.timer);
@@ -114,7 +114,7 @@
           },
           "type": 1
         };
-        this.webSocketVeh = new WebSocketObj(window.config.socketUrl, _params, this.onmessageVeh);
+        this.webSocketVeh = new WebSocketObj(this, window.config.socketUrl, _params, this.onmessageVeh);
       },
 
       onmessageVeh(mesasge){

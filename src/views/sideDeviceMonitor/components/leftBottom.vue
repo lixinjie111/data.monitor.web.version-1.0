@@ -180,7 +180,7 @@
               'action': "deviceCount",
               'token': ''
             }
-            this.webSocket = new WebSocketObj(window.config.websocketUrl, _params, this.onmessage);
+            this.webSocket = new WebSocketObj(this, window.config.websocketUrl, _params, this.onmessage);
           },
           onmessage(mesasge){
             let _this=this;

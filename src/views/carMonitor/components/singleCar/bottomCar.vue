@@ -406,7 +406,7 @@
           'vehicleId':this.vehicleId,
           'token':''
         }
-        this.reportWebSocket = new WebSocketObj(window.config.websocketUrl, _params, this.onReportMessage);
+        this.reportWebSocket = new WebSocketObj(this, window.config.websocketUrl, _params, this.onReportMessage);
       },
       onReportMessage(message){
         let _this=this;

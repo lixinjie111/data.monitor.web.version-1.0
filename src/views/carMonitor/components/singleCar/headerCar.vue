@@ -214,7 +214,7 @@
           'vehicleId': this.$route.params.vehicleId,
           'token':''
         }
-        this.webSocket = new WebSocketObj(window.config.websocketUrl, _vehicleStatus, this.onmessage, {openMeg: _naviStatus});
+        this.webSocket = new WebSocketObj(this, window.config.websocketUrl, _vehicleStatus, this.onmessage, {openMeg: _naviStatus});
       },
       onmessage(mesasge){
         let _this=this;

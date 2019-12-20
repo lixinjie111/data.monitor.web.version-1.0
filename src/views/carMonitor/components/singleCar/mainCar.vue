@@ -424,7 +424,7 @@
             },
             "type": 2
         };
-        this.sideWebsocket = new WebSocketObj(window.config.socketUrl, _params, this.onSideMessage);
+        this.sideWebsocket = new WebSocketObj(this, window.config.socketUrl, _params, this.onSideMessage);
       },
       onSideMessage(message){
 
@@ -507,7 +507,7 @@
           "action": "rsb",
           "vehicleId": this.vehicleId
         };
-        this.deviceWebsocket = new WebSocketObj(window.config.socketUrl, _params, this.onDeviceMessage);
+        this.deviceWebsocket = new WebSocketObj(this, window.config.socketUrl, _params, this.onDeviceMessage);
       },
       onDeviceMessage(mesasge){
           let _this=this;
@@ -562,7 +562,7 @@
           "vehicleId": this.vehicleId,
           "type":1
         };
-        this.lightWebsocket = new WebSocketObj(window.config.socketUrl, _params, this.onLightMessage);
+        this.lightWebsocket = new WebSocketObj(this, window.config.socketUrl, _params, this.onLightMessage);
       },
       onLightMessage(mesasge){
         let _this=this;
@@ -642,7 +642,7 @@
             "vehicleId": this.vehicleId
           }
         };
-        this.warningWebsocket = new WebSocketObj(window.config.socketUrl, _params, this.onWarningMessage);
+        this.warningWebsocket = new WebSocketObj(this, window.config.socketUrl, _params, this.onWarningMessage);
       },
       onWarningMessage(mesasge){
         let _this=this;
