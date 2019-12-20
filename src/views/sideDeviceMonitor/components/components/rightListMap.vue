@@ -23,7 +23,6 @@
     export default {
         data() {
             return {
-              mapParam:window.mapParam,
               isFullScreen:false,
               rtmp:"",
               mapShow:false,

@@ -10,22 +10,22 @@ window.config = {
     // dlWmsUrl: 'http://10.0.1.22:8080/', //迪路
 
     //望京 外网
-    staticUrl: "http://120.133.21.14:9090/", //静态文件路径
-    url: 'http://120.133.21.14:9093/monPlatApp/', //监控平台
-    operateUrl: 'http://120.133.21.14:9090/operateApp/',    //运营平台
-    websocketUrl:'ws://120.133.21.14:49982/mon',  //监控
-    socketUrl:'ws://120.133.21.14:49999/ws',  //影子系统
-    dlUrl: 'http://117.114.144.227:8085/', //迪路
-    dlWmsUrl: 'http://117.114.144.227:8080/', //迪路
+    // staticUrl: "http://120.133.21.14:9090/", //静态文件路径
+    // url: 'http://120.133.21.14:9093/monPlatApp/', //监控平台
+    // operateUrl: 'http://120.133.21.14:9090/operateApp/',    //运营平台
+    // websocketUrl:'ws://120.133.21.14:49982/mon',  //监控
+    // socketUrl:'ws://120.133.21.14:49999/ws',  //影子系统
+    // dlUrl: 'http://117.114.144.227:8085/', //迪路
+    // dlWmsUrl: 'http://117.114.144.227:8080/', //迪路
 
     //上海正式环境  外网
-    // staticUrl: "http://116.236.72.204:49090/", //静态文件路径
-    // url: 'http://116.236.72.206:49093/monPlatApp/', //监控平台
-    // operateUrl: 'http://116.236.72.204:49090/operateApp/', //运营平台
-    // websocketUrl:'ws://116.236.72.206:49982/mon',  //监控
-    // socketUrl:'ws://116.236.72.205:49999/ws',  //影子系统
-    // dlUrl: 'http://116.236.72.204:48085/', //迪路
-    // dlWmsUrl: 'http://116.236.72.204:48080/', //迪路
+    staticUrl: "http://116.236.72.204:49090/", //静态文件路径
+    url: 'http://116.236.72.206:49093/monPlatApp/', //监控平台
+    operateUrl: 'http://116.236.72.204:49090/operateApp/', //运营平台
+    websocketUrl:'ws://116.236.72.206:49982/mon',  //监控
+    socketUrl:'ws://116.236.72.205:49999/ws',  //影子系统
+    dlUrl: 'http://116.236.72.204:48085/', //迪路
+    dlWmsUrl: 'http://116.236.72.204:48080/', //迪路
 
     version: 1.0,       // 版本号
 }
@@ -62,36 +62,14 @@ window.dlWmsDefaultOption = {
     params:{}
 }
 // 3D地图范围默认参数配置
-window.mapParam={
-    minX:325295.155400,
-    minY:3461941.703700,
-    minZ:50,
-    maxX:326681.125700,
-    maxY:3462723.022400,
-    maxZ:80,
-    background:"black"
-};
-
 window.defaultMapParam = {
-    x:442456.0905737311,
-    y:4427223.965503679,
-    z:60.22107514430958,
-    radius:31.40011218302981,
-    pitch:-0.6747685185185206,
-    yaw:-0.7853942219746017
+    x: 121.17659986110053,
+    y: 31.28070920407326,
+    z: 39.142101722743725,
+    radius: 5.573718449729121,
+    pitch: -0.23338301782710902,
+    yaw: 6.281191529370343
 }
 
-window.circleParam = {
-    redius:600.0,
-    center:[325535.061,3462402.816,13.618],
-    color:"#ffffff",
-    outline:false,
-    outlineColor:"#ff0000",
-    opacity:0.5,
-    rotate:[0,0,0]
-};
-
-// 703107.8554066379 3134156.7025534217 507.27478379813056 470.8646483310546 -1.4534003822911599 -6.6197325184937625
-window.currentExtent=[window.mapOption.center,window.mapOption.center,window.mapOption.center,window.mapOption.center];
 window.mapUrl=window.config.dlWmsUrl+"geoserver/gwc/service/wmts/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=shanghai_qcc:dl_shcsq_wgs84_zc_0709&STYLE=&FORMAT=image/png&TILEMATRIXSET=EPSG:900913&TileMatrix=EPSG:900913:{TileMatrix}&TileCol={TileCol}&TileRow={TileRow}"
 window.defualtZ=0;

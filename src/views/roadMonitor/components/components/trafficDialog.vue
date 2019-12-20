@@ -164,8 +164,8 @@ export default {
   },
   props: ["selectedItem"],
   beforeCreate(){
-    //this.iframeSrc =  window.config.staticUrl+'cesium-map/modules/monPlatform/roadMonitor.html'; 
-    this.iframeSrc =  'http://127.0.0.1:8848/qiDi/cesium-map/modules/monPlatform/roadMonitor.html'; 
+    this.iframeSrc =  window.config.staticUrl+'cesium-map/modules/monPlatform/roadMonitor.html'; 
+    // this.iframeSrc =  'http://127.0.0.1:8848/qiDi/cesium-map/modules/monPlatform/roadMonitor.html'; 
 
   },
   created() {
@@ -318,14 +318,7 @@ export default {
           }
           let camData = {
             type:"updateCam",
-            data:{
-              x:this.cameraParam.x,
-              y:this.cameraParam.y,
-              z:this.cameraParam.z,
-              radius:this.cameraParam.radius,
-              pitch:this.cameraParam.pitch,
-              yaw:this.cameraParam.yaw
-            }
+            data:this.cameraParam
           }
           for (const i in camData.data) {
             if(!camData.data[i] && camData.data[i] != 0){
@@ -356,14 +349,7 @@ export default {
                 this.setCameraPosition();
                   let camData = {
                     type:"updateCam",
-                    data:{
-                      x:this.cameraParam.x,
-                      y:this.cameraParam.y,
-                      z:this.cameraParam.z,
-                      radius:this.cameraParam.radius,
-                      pitch:this.cameraParam.pitch,
-                      yaw:this.cameraParam.yaw
-                    }
+                    data:this.cameraParam
                   }
                   for (const i in camData.data) {
                     if(!camData.data[i] && camData.data[i] != 0){
@@ -414,19 +400,19 @@ export default {
         this.cameraParam = {
           x: this.position[0],
           y: this.position[1],
-          z: 39,
-          radius: 70,
-          pitch: -0.2369132859032279,
+          z: window.defaultMapParam.z,
+          radius: window.defaultMapParam.radius,
+          pitch: window.defaultMapParam.pitch,
           yaw: (Math.PI / 180.0) * (this.heading+25),
         }
       } else {
          this.cameraParam = {
           x: this.position[0],
           y: this.position[1],
-          z: 39,
-          radius: 50,
-          pitch: -1.5369132859032279,
-          yaw: 0.029627735803421373
+          z: window.defaultMapParam.z,
+          radius: window.defaultMapParam.radius,
+          pitch: window.defaultMapParam.pitch,
+          yaw: window.defaultMapParam.yaw
         }
       }
     },

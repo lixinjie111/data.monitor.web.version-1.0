@@ -192,7 +192,6 @@ export default {
   name: "SideDialog",
   data() {
     return {
-      mapParam:window.mapParam,
       provinceOptions: [],
       provinceValue: "",
       cityOptions: [],
@@ -311,7 +310,6 @@ export default {
       let _this = this;
       // gis3d.initload("cesiumContainer",false);
       // perceptionCars.viewer=gis3d.cesium.viewer;
-      _this.mapParam=window.mapParam;
       this.onMapComplete();
     },
 
@@ -374,10 +372,10 @@ export default {
                   data:{
                     x: _this.cameraParam.x,
                     y: _this.cameraParam.y,
-                    z: 39,
-                    radius: 70,
-                    pitch: -0.2369132859032279,
-                    yaw: 0.0029627735803421373
+                    z: window.defaultMapParam.z,
+                    radius: window.defaultMapParam.radius,
+                    pitch: window.defaultMapParam.pitch,
+                    yaw: window.defaultMapParam.yaw
                   }
                 }
                 for (const i in camData.data) {
@@ -454,14 +452,7 @@ export default {
 
          let camData = {
           type:"updateCam",
-          data:{
-            x:_this.cameraParam.x,
-            y:_this.cameraParam.y,
-            z:this.cameraParam.z,
-            radius:this.cameraParam.radius,
-            pitch:this.cameraParam.pitch,
-            yaw:this.cameraParam.yaw
-          }
+          data:_this.cameraParam
         }
 
         for (const i in camData.data) {
@@ -667,14 +658,7 @@ export default {
         this.mapInit = true;
         let camData = {
           type:"updateCam",
-          data:{
-            x:this.cameraParam.x,
-            y:this.cameraParam.y,
-            z:this.cameraParam.z,
-            radius:this.cameraParam.radius,
-            pitch:this.cameraParam.pitch,
-            yaw:this.cameraParam.yaw
-          }
+          data:this.cameraParam
         }
         for (const i in camData.data) {
           if(!camData.data[i] && camData.data[i] != 0){
@@ -691,14 +675,7 @@ export default {
           if(this.treeItem.cameraParam){
             let camData = {
               type:"updateCam",
-              data:{
-                x:this.cameraParam.x,
-                y:this.cameraParam.y,
-                z:this.cameraParam.z,
-                radius:this.cameraParam.radius,
-                pitch:this.cameraParam.pitch,
-                yaw:this.cameraParam.yaw
-              }
+              data:this.cameraParam
             }
             for (const i in camData.data) {
               if(!camData.data[i] && camData.data[i] != 0){
@@ -709,14 +686,7 @@ export default {
           }else{
             let camData = {
               type:"updateCam",
-              data:{
-                x:window.defaultMapParam.x,
-                y:window.defaultMapParam.y,
-                z:39,
-                radius:70,
-                pitch:-0.2369132859032279,
-                yaw:0.0029627735803421373
-              }
+              data: window.defaultMapParam
             }
             for (const i in camData.data) {
               if(!camData.data[i] && camData.data[i] != 0){
