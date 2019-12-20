@@ -148,7 +148,7 @@ export default {
                         this.requestVideo();
                     }
                 }
-            }, 1000);
+            }, 2000);
         },
         setVideoOptionPause() {
             this.initVideoTimer();
@@ -197,7 +197,9 @@ export default {
                 this.videoLoadingDelay.lastTimeupdate = player;
                 this.setVideoOptionClose();
             }
-            this.videoTimerReload();
+            setTimeout(() => {
+                this.videoTimerReload();
+            }, 0);
             this.$emit("videoTimeupdate",player);
         },
         onPlayerPause() {
@@ -281,6 +283,10 @@ export default {
         }
     },
     destoryed() {
+        if(this.videoLoadingDelay.timer) {
+            clearInterval(this.videoLoadingDelay.timer);
+            clearInterval(this.videoLoadingDelay.timer._id);
+        }
         if(this.player) {
             this.player.pause();
         }else {

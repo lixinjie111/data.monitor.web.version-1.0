@@ -6,7 +6,7 @@
                 :isStretch="true"
                 :requestVideoUrl="requestVideoUrl"
                 :params="forwardParam"
-                type="wsUrl"
+                type="flvUrl"
                 :autoplay="false"
         >
           <a class="title" href="javascript:;" @click="queryDeviceDetail(roadItem,'video')">路侧点：{{roadItem.roadSiderName}}</a>
