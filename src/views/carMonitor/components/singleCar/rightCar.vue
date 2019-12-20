@@ -284,9 +284,9 @@
             },
             "type": 5
           }
-          this.webSocket = new WebSocketObj(window.config.socketUrl, _params, this.getMessage);
+          this.webSocket = new WebSocketObj(window.config.socketUrl, _params, this.onmessage);
       },
-      getMessage(msg){
+      onmessage(msg){
           var that = this;
           var res = JSON.parse(msg.data);
           var arr = Object.keys(res.result.data);
@@ -304,9 +304,6 @@
                 }, 3000);
             })
           }
-      },
-      close(){
-          console.log('Socket已经关闭');
       },
       /**
        * mapPtToScrPt 地理坐标转换屏幕坐标
