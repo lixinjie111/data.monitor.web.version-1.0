@@ -54,7 +54,7 @@ class WebSocketObj {
         if(window.WebSocket){
             if(this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
                 this.webSocket.send(params); //send()发送消息
-                // this.connectCount = 0;
+                this.connectCount = 0;
                 if(this.optionCallback.sendMsg && typeof this.optionCallback.sendMsg == 'function') {
                     this.optionCallback.sendMsg();
                 }
