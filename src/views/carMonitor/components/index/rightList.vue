@@ -70,7 +70,9 @@ export default {
 			getGpsRealConfig().then(res => {
 				this.vehicleIds = res.data;
 				this.webSocketData.vehicleIds = res.data;
-				this.getGpsRealList();
+				if(this.vehicleIds) {
+                    this.getGpsRealList();
+                }
 			});
 		},
 		getGpsRealList() {
@@ -101,6 +103,7 @@ export default {
 			_filterResult.autoLevel = result.autoLevel;
 			_filterResult.vehicleLogo = result.vehicleLogo;
 			_filterResult.plateNo = result.plateNo;
+            _filterResult.timer = null;
 
 			_filterResult.id = "echarts-" + attr;
 			_filterResult.echarts = null;
