@@ -408,10 +408,11 @@ export default {
       }
     },
     setCameraPosition() {
+      console.log(this.heading)
       
-      if(!this.position.length){
-        this.position = [112.94760914128275, 28.325093927226323]
-      }
+      // if(!this.position.length){
+      //   this.position = [112.94760914128275, 28.325093927226323]
+      // }
       if (this.heading) {
         this.cameraParam = {
           x: this.position[0],
@@ -426,9 +427,9 @@ export default {
           x: this.position[0],
           y: this.position[1],
           z: 39,
-          radius: 70,
-          pitch: -0.2369132859032279,
-          yaw: 0.0029627735803421373
+          radius: 50,
+          pitch: -1.5369132859032279,
+          yaw: 0.029627735803421373
         }
       }
     },
