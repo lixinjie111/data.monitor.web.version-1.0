@@ -142,7 +142,7 @@
                     <live-player
                             :isStretch="true"
                             :requestVideoUrl="videoUrl"
-                            :autoplay="true"
+                            :autoplay="false"
                             ref="player"
                     >
                     <span></span>

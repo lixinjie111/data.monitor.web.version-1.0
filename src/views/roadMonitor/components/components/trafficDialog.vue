@@ -98,9 +98,7 @@
                 <div class="side-video-style">
                   <live-player
                           :isStretch="true"
-                          :requestVideoUrl="wsUrl"
-                          :params="forwardParam"
-                          type="wsUrl"
+                          :requestVideoUrl="videoUrl"
                           :autoplay="false"
                           ref="player"
                   >
@@ -156,8 +154,7 @@ export default {
       isOne: true,
       heading: "", //航向角
       position: [],
-      wsUrl:"",
-      forwardParam:{},
+      videoUrl:"",
       platformConnectCount:0,
       mapOk:false,
     };
@@ -260,7 +257,7 @@ export default {
             if (i == item.deviceId) {
               if (item.value) {
                 //如果切换的按钮是正在播放状态，先清除视频源，后删除
-                this.wsUrl = "";
+                this.videoUrl = "";
                 this.$refs['player'].initVideo();
               }
               delete this.deviceObj[i];
@@ -520,7 +517,7 @@ export default {
         //根据摄像头调取视频
         _this.getVideo();
       } else {
-        _this.wsUrl = "";
+        _this.videoUrl = "";
         _this.$refs['player'].initVideo();
       }
     },
@@ -531,14 +528,14 @@ export default {
       this.time = time;
     },
     getVideo() {
-      this.wsUrl = "";
+      this.videoUrl = "";
       getVideoByNum({
         protocal: 1,
         serialNum: this.serialNum
       }).then(res => {
         this.$refs['player'].initVideo();
         if (res.status == 200) {
-          this.wsUrl = res.data.wsUrl;
+          this.videoUrl = res.data.wsUrl;
           setTimeout(() => {
              this.$refs["player"].requestVideo();
           }, 0);
