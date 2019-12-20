@@ -148,7 +148,7 @@ export default {
                         this.requestVideo();
                     }
                 }
-            }, 1000);
+            }, 2000);
         },
         setVideoOptionPause() {
             this.initVideoTimer();
