@@ -9,7 +9,7 @@
                 type="flvUrl"
                 :autoplay="false"
         >
-          <a class="title" href="javascript:;" @click="queryDeviceDetail(roadItem,'video')">路侧点：{{roadItem.roadSiderName}}</a>
+        <a class="title" href="javascript:;" @click="queryDeviceDetail(roadItem,'video')">路侧点：{{roadItem.roadSiderName}}</a>
         </live-player>
         <template v-else>
           <a href="javascript:;" class="c-video-title">
