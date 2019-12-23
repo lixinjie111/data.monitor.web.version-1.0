@@ -362,6 +362,12 @@ export default {
               let _name = this.itemData.modelIcon.split("/")[_length - 1];
               // let _url = "./static/map3d/traffic_models/" + _name;
               // _url = "./static/map3d/model/zhui_tong.glb";
+              let glbNameTmp;
+              if(this.itemData.eventName == "障碍物"){
+                glbNameTmp = "zhui_tong";
+              }else{
+                glbNameTmp = "zhui_tong";
+              }
 
               let modelData = {
                 type:"addModel",
@@ -371,7 +377,7 @@ export default {
                     heading:0,
                     vehicleId:"",
                     name:_name,
-                    glbName:"zhui_tong",
+                    glbName:glbNameTmp,
                     labelName:_name,
                 }
               }
