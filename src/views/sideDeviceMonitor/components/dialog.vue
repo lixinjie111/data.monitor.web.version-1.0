@@ -714,7 +714,7 @@ export default {
         serialNum: this.serialNum
       }).then(res => {
         this.$refs["player"].initVideo();
-        this.videoUrl = res.data.wsUrl;   
+        this.videoUrl = res.data.flvUrl;   
         setTimeout(() => {
              this.$refs["player"].requestVideo();
         }, 0);
