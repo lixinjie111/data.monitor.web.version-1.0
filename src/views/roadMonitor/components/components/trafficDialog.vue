@@ -366,12 +366,13 @@ export default {
               let modelData = {
                 type:"addModel",
                 data:{
-                  longitude:this.position[0],
-                  latitude:this.position[1],
-                  heading:0,
-                  vehicleId:"",
-                  name:_name,
-                  glbName:"zhui_tong",
+                    longitude:this.position[0],
+                    latitude:this.position[1],
+                    heading:0,
+                    vehicleId:"",
+                    name:_name,
+                    glbName:"zhui_tong",
+                    labelName:_name,
                 }
               }
               document.getElementById("cesiumContainer").contentWindow.postMessage(modelData,'*'); 
