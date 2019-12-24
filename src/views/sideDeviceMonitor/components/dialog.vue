@@ -366,6 +366,7 @@ export default {
               _this.getVideo();
               //切换路侧点时，重新切换3D地图
               //第一次地图加载后调整位置即可
+            
               if (_this.mapInit) {
                 let camData = {
                   type:"updateCam",
@@ -447,9 +448,8 @@ export default {
         //选中后重新请求
         if(!item.cameraParam) return;
         _this.cameraParam = JSON.parse(item.cameraParam);
-        _this.cameraParam.x = item.lon;
-        _this.cameraParam.y = item.lat;
-
+        // _this.cameraParam.x = item.lon;
+        // _this.cameraParam.y = item.lat;
          let camData = {
           type:"updateCam",
           data:_this.cameraParam
