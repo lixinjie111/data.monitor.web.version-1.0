@@ -261,7 +261,7 @@ export default {
   },
   beforeCreate(){
     this.iframeSrc = window.config.staticUrl+'cesium-map/modules/monPlatform/index.html';     
-    // this.iframeSrc =  'http://127.0.0.1:8083/modules/monPlatform/index.html';       
+    // this.iframeSrc =  'http://127.0.0.1:8082/modules/monPlatform/index.html';       
   },
   mounted() {
     this.selectAddr = this.treeItem.path.split("|");
@@ -278,18 +278,15 @@ export default {
   },
   methods: {
 
-    onLoadMap(){
-    
-      this.getData();
-      
-      // let msgData = {
-      //   type:"position",
-      //   data:{
-      //     currentExtent:this.currentExtent
-      //   }
-      // }
-      // document.getElementById("cesiumContainer").contentWindow.postMessage(msgData,'*');
-  
+    onLoadMap(){  
+      this.getData(); 
+      let msgData = {
+        type:"position",
+        data:{
+          currentExtent:this.currentExtent
+        }
+      }
+      document.getElementById("cesiumContainer").contentWindow.postMessage(msgData,'*'); 
     },
 
 
