@@ -271,7 +271,8 @@ export default {
     }
   },
   beforeCreate(){
-    this.iframeSrc = window.config.staticUrl+'cesium-map/modules/monPlatform/sideDeviceMonitor.html';           
+    this.iframeSrc = window.config.staticUrl+'cesium-map/modules/monPlatform/index.html';     
+    // this.iframeSrc =  'http://127.0.0.1:8083/modules/monPlatform/index.html';       
   },
   mounted() {
     this.selectAddr = this.treeItem.path.split("|");
