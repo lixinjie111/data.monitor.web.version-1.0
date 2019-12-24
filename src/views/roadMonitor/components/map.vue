@@ -22,7 +22,7 @@
       </div>
     </div>
     <traffic-dialog v-if="trafficDialog" :selectedItem="trafficeItem" @closeDialog="closeDialog"></traffic-dialog>
-    <bus-dialog ref="busDialog" v-if="busDialog" :wescoketData="lightData" :selectedItem="selectedItem" :busListData="busListData"  @closeDialog="closeDialog"></bus-dialog>
+    <bus-dialog  v-if="busDialog" :wescoketData="lightData" :selectedItem="busItem" :busListData="busListData"  @closeDialog="closeDialog"></bus-dialog>
   </div>
 </template>
 <script>
@@ -44,7 +44,6 @@
           action: "event_real_data",
           token: 'tusvn',
         },
-        selectedItem:null,
         busWebSocket: null,
         busWebSocketData: {
           action: "third_spat",
@@ -682,7 +681,7 @@
             this.smartBus.setData(data);
             this.smartBus.on('click', function(e) {
               _this.trafficDialog=true;
-              this.selectedItem=e.data.subItem;
+              _this.busItem=e.data.subItem;
             }); 
         }else{
             if(!this[massNum]) {
@@ -712,7 +711,7 @@
               }else if(disParam == "smartBus"){
                 this[massNum].on('click', function(e) {
                     _this.busDialog=true;
-                    this.selectedItem=e.data.subItem;
+                    _this.busItem=e.data.subItem;
                     //_this.$refs.busDialog.initData(e.data.subItem);
                 });  
               }

@@ -39,6 +39,7 @@ export default {
   props: ['wescoketData', 'busListData','selectedItem'],
   created() {
     this.busList=this.busListData;
+    console.log(this.selectedItem)
     this.initData();
   },
   methods: {
@@ -69,6 +70,13 @@ export default {
                 })
               })
           })
+        }else{
+            this.busList.forEach(item=>{//循环初始数据没有的相位id隐藏
+              item.list.forEach(item1=>{
+                  item1.flag=true;
+                  this.hasData=true;
+              })
+          })
         }
         for(var key in this.wescoketData){
           this.selectedItem.tpPhaseList.forEach(item2=>{
@@ -87,6 +95,7 @@ export default {
             })
         }
       }
+      this.$forceUpdate();
     },
     closeDialog() {
       this.$emit("closeDialog");
@@ -118,13 +127,13 @@ export default {
         padding:5px;
         background:gray;
         &.lightRed{
-          background:red
+          background:#d41010
         }
         &.lightGreen{
-          background:green
+          background:#00ff86
         }
         &.lightYellow{
-          background:yellow
+          background:#fda53f
         }
         img{
           display: block;
