@@ -331,8 +331,8 @@ export default {
             
             if(item.cameraParam){
               _this.cameraParam = JSON.parse(item.cameraParam);
-              _this.cameraParam.x = item.lon;
-              _this.cameraParam.y = item.lat;
+              // _this.cameraParam.x = item.lon;
+              // _this.cameraParam.y = item.lat;
             }else{
               _this.cameraParam = {
                 x:item.lon,
