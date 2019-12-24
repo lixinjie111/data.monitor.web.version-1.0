@@ -22,7 +22,7 @@
       </div>
     </div>
     <traffic-dialog v-if="trafficDialog" :selectedItem="trafficeItem" @closeDialog="closeDialog"></traffic-dialog>
-    <bus-dialog ref="busDialog" v-show="busDialog" :wescoketData="lightData" :busListData="busListData"  @closeDialog="closeDialog"></bus-dialog>
+    <bus-dialog ref="busDialog" v-if="busDialog" :wescoketData="lightData" :selectedItem="selectedItem" :busListData="busListData"  @closeDialog="closeDialog"></bus-dialog>
   </div>
 </template>
 <script>
@@ -44,10 +44,12 @@
           action: "event_real_data",
           token: 'tusvn',
         },
+        selectedItem:null,
         busWebSocket: null,
         busWebSocketData: {
           action: "third_spat",
         },
+        smartBus:null,
         busItem:null,
         lightData:null,
         // 获取在驶车辆实时数据（辆）
@@ -78,11 +80,11 @@
             'text':'通行速度',
             'isActive':false
           },
-          // {
-          //   'id':'smartBus',
-          //   'text':'智慧公交',
-          //   'isActive':false
-          // },
+          {
+            'id':'smartBus',
+            'text':'智慧公交',
+            'isActive':false
+          },
         ],
         distributeShow:false,
         message:{},
@@ -240,21 +242,21 @@
       },
       onBusMessage(mesasge) {
         this.lightData = JSON.parse(mesasge.data).data;
-        this.processData(this.lightData);
-      },
-      processData(listData){
-          let _samelightId=[];
-          for(var key in listData){
+        for(var key in this.lightData){
             this.smartBusData.forEach(item=>{
-              if(item.id==listData[key].lightId){
-                _samelightId.push(listData[key]);
-                if(item.subItem&&item.subItem.length>0){
-                   item.subItem[0]['light']=listData[key].light;
+              if(item.subItem&&item.subItem.length>0){
+                   let _id=item.id+"_"+item.subItem.phaseId;
+                    if(_id===key){
+                      item.subItem[0]['light']=this.lightData[key].light;
+                    }
                 }
-              }
+             
             })
           }
           this.setMassMarker(this.smartBusData,"smartBUs")
+      },
+      processData(listData){
+          
       },
       onBusClose(data) {
         console.log("结束连接");
@@ -347,6 +349,7 @@
             //取消选中，将设备从地图中消除
             this.removeMarkers(item.id);
             this.webSocket && this.webSocket.close();
+           
           }
         }
       },
@@ -484,12 +487,17 @@
           this.masscross.hide();
         }
         if(type=='traffic'&& this.masstraffic){  
-          
           this.webSocket&&this.webSocket.close();
           this.webSocket = null;
           this.masstraffic.clear();
           this.map.remove(this.masstraffic);
           this.masstraffic=null;
+        }
+        if(type=='smartBus'&& this.smartBus){
+          this.busWebSocket&&this.busWebSocket.close();  
+          this.smartBus.clear();
+          this.map.remove(this.smartBus);
+          this.smartBus=null;
          
         }
       },
@@ -674,7 +682,7 @@
             this.smartBus.setData(data);
             this.smartBus.on('click', function(e) {
               _this.trafficDialog=true;
-              _this.trafficeItem=e.data.subItem;
+              this.selectedItem=e.data.subItem;
             }); 
         }else{
             if(!this[massNum]) {
@@ -704,7 +712,8 @@
               }else if(disParam == "smartBus"){
                 this[massNum].on('click', function(e) {
                     _this.busDialog=true;
-                  _this.$refs.busDialog.initData(e.data.subItem);
+                    this.selectedItem=e.data.subItem;
+                    //_this.$refs.busDialog.initData(e.data.subItem);
                 });  
               }
             }else {
