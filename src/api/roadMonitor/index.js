@@ -1,5 +1,5 @@
 // import axios from 'axios';
-import {HTTPURL, DLURL} from '../requestUrl';
+import {HTTPURL, DLURL , OPERATEURL} from '../requestUrl';
 
 /**
  * 汇总数据
@@ -52,3 +52,8 @@ export const getCrossPageById = params => {return axios.post(`${HTTPURL}rw/bs/al
  * 根据航向角信息
  */
 export const getFeaturesByPoint = (params,config) => {return axios.post(`${DLURL}analyze/getFeaturesByPoint.do`, params,config).then(res => res.data); };
+
+/**
+ * 智慧公交
+ */
+export const tpSignalLight = params => {return axios.post(`${OPERATEURL}tpSignalLight/remote/findList`, params).then(res => res.data); };

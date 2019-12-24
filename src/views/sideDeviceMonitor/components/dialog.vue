@@ -111,9 +111,19 @@
                           v-if="item.deviceType=='N'"
                         />
                         <img
-                          src="@/assets/images/monitorManage/monitor-4.png"
+                          src="@/assets/images/monitorManage/radar-online.png"
                           class="monitor-device-img-2"
-                          v-else
+                          v-else-if="item.deviceType=='S'"
+                        />
+                        <img
+                          src="@/assets/images/monitorManage/rcu-online.png"
+                          class="monitor-device-img-2"
+                          v-else-if="item.deviceType=='U'"
+                        />
+                        <img
+                          src="@/assets/images/monitorManage/rsu-online.png"
+                          class="monitor-device-img-2"
+                         v-else-if="item.deviceType=='R'"
                         />
                         <span class="monitor-device-text">{{item.deviceId}}</span>
                       </li>
@@ -265,14 +275,14 @@ export default {
         roadSiderId: this.roadId
       }).then(res => {
         _this.deviceList = res.data;
-        var flag = true;
-        let deviceNList = []
-        _this.deviceList.forEach(function(item, index) {
-          if(item.deviceType == "N" ) {
-            deviceNList.push(item)
-          }
-        })
-        _this.deviceList = deviceNList;
+         var flag = true;
+        // let deviceNList = []
+        // _this.deviceList.forEach(function(item, index) {
+        //   if(item.deviceType == "N" ) {
+        //     deviceNList.push(item)
+        //   }
+        // })
+        // _this.deviceList = deviceNList;
         _this.deviceList.forEach(function(item, index) {
           //第一次默认并且是摄像头而且在线设置其打开状态
           if (flag && item.deviceType == "N" ) {

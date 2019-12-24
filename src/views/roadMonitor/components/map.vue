@@ -22,15 +22,17 @@
       </div>
     </div>
     <traffic-dialog v-if="trafficDialog" :selectedItem="trafficeItem" @closeDialog="closeDialog"></traffic-dialog>
+    <bus-dialog ref="busDialog" v-show="busDialog" :wescoketData="lightData" :busListData="busListData"  @closeDialog="closeDialog"></bus-dialog>
   </div>
 </template>
 <script>
-  import { rwDis } from '@/api/roadMonitor'
+  import { rwDis,tpSignalLight } from '@/api/roadMonitor'
   import ConvertCoord from '@/assets/js/utils/coordConvert.js'
   import trafficDialog from './components/trafficDialog.vue'
+  import busDialog from './components/busDialog.vue'
   export default {
     name: "MapContainer",
-    components: {trafficDialog},
+    components: {trafficDialog,busDialog},
     data() {
       return {
         id: "road-map-container",
@@ -42,6 +44,12 @@
           action: "event_real_data",
           token: 'tusvn',
         },
+        busWebSocket: null,
+        busWebSocketData: {
+          action: "third_spat",
+        },
+        busItem:null,
+        lightData:null,
         // 获取在驶车辆实时数据（辆）
         responseData: {},
         options:[
@@ -69,7 +77,12 @@
             'id':'speed',
             'text':'通行速度',
             'isActive':false
-          }
+          },
+          // {
+          //   'id':'smartBus',
+          //   'text':'智慧公交',
+          //   'isActive':false
+          // },
         ],
         distributeShow:false,
         message:{},
@@ -85,9 +98,77 @@
         wms:null,
         carSpeedFlag:{},
         distributeDialogFlag:null,
-
+        busDialog:false,
+        smartBusData:null,
+        busListData:[{
+            position:'east',
+            list:[
+              {flag:false,light:'', id:4,twords:'turn-around'},
+              {flag:false,light:'', id:2,twords:'turn-left'},
+              {flag:false,light:'', id:1,twords:'forward'},
+              {flag:false,light:'', id:3,twords:'turn-right'},
+            ]
+          },{
+            position:'south',
+            list:[
+              {flag:false,light:'', id:14,twords:'turn-around'},
+              {flag:false,light:'', id:12,twords:'turn-left'},
+              {flag:false,light:'', id:11,twords:'forward'},
+              {flag:false,light:'', id:13,twords:'turn-right'},
+            ]
+          },{
+            position:'west',
+            list:[
+              {flag:false,light:'', id:24,twords:'turn-around'},
+              {flag:false,light:'', id:22,twords:'turn-left'},
+              {flag:false,light:'', id:21,twords:'forward'},
+              {flag:false,light:'', id:23,twords:'turn-right'},
+            ]
+          },{
+            position:'north',
+            list:[
+              {flag:false,light:'', id:34,twords:'turn-around'},
+              {flag:false,light:'', id:32,twords:'turn-left'},
+              {flag:false,light:'', id:31,twords:'forward'},
+              {flag:false,light:'', id:33,twords:'turn-right'},
+            ]
+          },{
+            position:'northeast',
+            list:[
+              {flag:false,light:'', id:39,twords:'turn-around'},
+              {flag:false,light:'', id:37,twords:'turn-left'},
+              {flag:false,light:'', id:36,twords:'forward'},
+              {flag:false,light:'', id:38,twords:'turn-right'},
+            ]
+          },{
+            position:'northwest',
+            list:[
+              {flag:false,light:'', id:29,twords:'turn-around'},
+              {flag:false,light:'', id:27,twords:'turn-left'},
+              {flag:false,light:'', id:26,twords:'forward'},
+              {flag:false,light:'', id:28,twords:'turn-right'},
+            ]
+          },{
+            position:'southeast',
+            list:[
+              {flag:false,light:'', id:9,twords:'turn-around'},
+              {flag:false,light:'', id:7,twords:'turn-left'},
+              {flag:false,light:'', id:6,twords:'forward'},
+              {flag:false,light:'', id:8,twords:'turn-right'},
+            ]
+          },{
+            position:'southwest',
+            list:[
+              {flag:false,light:'', id:19,twords:'turn-around'},
+              {flag:false,light:'', id:17,twords:'turn-left'},
+              {flag:false,light:'', id:16,twords:'forward'},
+              {flag:false,light:'', id:18,twords:'turn-right'},
+            ]
+          },
+        ],
       }
     },
+  
     watch: {
         trafficData: {
             handler(newVal, oldVal) {
@@ -138,6 +219,9 @@
       },0);
       this.map.setZoom(12);
       this.getWms();
+      //  this.map.on('click', function(e){
+      //    alert(e.lnglat.getLng()+';'+e.lnglat.getLat())
+      //  });
       
       var item = {
         'id':0
@@ -145,6 +229,53 @@
       this.getMarkers(item);
     },
     methods: {
+      initBusWebSocket() {
+        if ("WebSocket" in window) {
+          this.busWebSocket = new WebSocket(window.config.socketUrl); //获得WebSocket对象
+        }
+        this.busWebSocket.onmessage = this.onBusMessage;
+        this.busWebSocket.onclose = this.onBusClose;
+        this.busWebSocket.onopen = this.onBusOpen;
+        this.busWebSocket.onerror = this.onBusError;
+      },
+      onBusMessage(mesasge) {
+        this.lightData = JSON.parse(mesasge.data).data;
+        this.processData(this.lightData);
+      },
+      processData(listData){
+          let _samelightId=[];
+          for(var key in listData){
+            this.smartBusData.forEach(item=>{
+              if(item.id==listData[key].lightId){
+                _samelightId.push(listData[key]);
+                if(item.subItem&&item.subItem.length>0){
+                   item.subItem[0]['light']=listData[key].light;
+                }
+              }
+            })
+          }
+          this.setMassMarker(this.smartBusData,"smartBUs")
+      },
+      onBusClose(data) {
+        console.log("结束连接");
+      },
+      onBusError(data) {
+        console.log("连接错误");
+      },
+      onBusOpen(data) {
+        var _traffic = JSON.stringify(this.busWebSocketData);
+        this.busSendMsg(_traffic);
+      },
+      busSendMsg(msg) {
+        if (window.WebSocket) {
+          if (this.busWebSocket.readyState == WebSocket.OPEN) {
+            //如果WebSocket是打开状态
+            this.busWebSocket.send(msg); //send()发送消息
+          }
+        } else {
+          return;
+        }
+      },
       getMarkers(item) {
      
         var disParams=[];
@@ -184,6 +315,8 @@
                 this.getSpeedWms();
               },5000)
               return;
+            }else if(item.id=='smartBus'){
+              this.tpSignalLight('smartBus');
             }else{
               this.getRwDis(item.id);
             }
@@ -214,8 +347,8 @@
             //取消选中，将设备从地图中消除
             this.removeMarkers(item.id);
             this.webSocket && this.webSocket.close();
-            }
           }
+        }
       },
       setMessage(type){
         if(type == "car"){
@@ -265,7 +398,14 @@
           };
         }
       },
-      
+      tpSignalLight(disParam){
+        tpSignalLight({}).then(res => {
+          if(res.data && res.data.length) {
+            this.rwDisMap(res.data,disParam);
+            this.initBusWebSocket();
+          }
+        });
+      },
       getRwDis(disParam){
         rwDis({
           'disType': disParam,
@@ -280,10 +420,10 @@
             //转成高德地图的坐标
             let posotionData = [];
             resultData.forEach((item, index, arr)=>{
-              resultData[index].position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
+                resultData[index].position = ConvertCoord.wgs84togcj02(item.longitude, item.latitude);
                   _this.count ++;
                   if(_this.count == arr.length) {
-                    //绘制线的轨迹             
+                    //绘制线的轨迹     
                     resultData.forEach(function (subItem,subIndex) {
                       //信号灯
                       if(disParam=='spat'){          
@@ -310,6 +450,15 @@
                           subItem: subItem
                         });
                       }
+                      //智慧公交
+                      if(disParam=='smartBus'){ 
+                        posotionData.push({
+                          lnglat: subItem.position,
+                          id: subItem.lightId,
+                          style: subIndex,
+                          subItem: subItem.tpPhaseList
+                        });
+                      }
                       //绘制完后，重新设置
                       if(subIndex==resultData.length-1){     
                         _this.count=0;
@@ -320,6 +469,9 @@
                 /*}
               });*/
             })
+            if(disParam=='smartBus'){ 
+              this.smartBusData=posotionData;
+            }
             this.setMassMarker(posotionData,disParam);    
           }
         }
@@ -344,13 +496,13 @@
       closeDialog(){
         // this.distributeShow=false;
         this.trafficDialog=false;
+        this.busDialog=false;
       },
       closeDistributeDialog(){
         this.distributeDialogFlag = true;
         this.distributeShow=false;
         // this.trafficDialog=false;
       },
-      
       getWms() {
         let _optionWms = Object.assign(
               {},
@@ -413,10 +565,12 @@
       onmessage(mesasge){
         let _this=this;
         this.trafficData = JSON.parse(mesasge.data).result.data;
-        
       },
       onclose(data){
         console.log("结束连接");
+      },
+      onerror(data){
+        console.log("连接错误");
       },
       onopen(data){
         //获取在驶车辆状态
@@ -452,7 +606,6 @@
               size: sizeMass
           });
         }else if(disParam=='cross'){
-          //makerUrl = './static/images/road/cross.png';
           anchorMass =  new AMap.Pixel(11, 11);
           sizeMass = new AMap.Size(22, 22);
           massNum = "masscross";
@@ -481,12 +634,45 @@
                   size: sizeMass
               });        
           });
+        }else if(disParam =='smartBus'){ 
+          makerUrl='./static/images/smartlight/noLight.png';
+          anchorMass =  new AMap.Pixel(5,13);
+          sizeMass = new AMap.Size(10,26);
+          massNum="smartBus";
+          data.map(item => {
+              if(item.subItem&&item.subItem.length>0){
+                if(item.subItem.light){
+                   if(item.subItem.light=='RED'){
+                       makerUrl='./static/images/smartlight/redLight.png';
+                    }else if(item.subItem.light=='YELLOW'){
+                       makerUrl='./static/images/smartlight/yellowLight.png';
+                    }else if(item.subItem.light=='GREEN'){
+                       makerUrl='./static/images/smartlight/greenLight.png';
+                    }else{
+                      return ''
+                    }
+                }
+              }
+              style.push({
+                url: makerUrl,
+                anchor: anchorMass,
+                size: sizeMass
+              });      
+          });
         }
+
         if(massNum == "masstraffic" && this.masstraffic){ 
             this.masstraffic.setStyle(style);
             this.masstraffic.setData(data);
             //this.masstraffic.clear();
             this.masstraffic.on('click', function(e) {
+              _this.trafficDialog=true;
+              _this.trafficeItem=e.data.subItem;
+            }); 
+        }else if(massNum == "smartBus" && this.smartBus){ 
+            this.smartBus.setStyle(style);
+            this.smartBus.setData(data);
+            this.smartBus.on('click', function(e) {
               _this.trafficDialog=true;
               _this.trafficeItem=e.data.subItem;
             }); 
@@ -514,6 +700,11 @@
                 this[massNum].on('click', function(e) {
                   _this.trafficDialog=true;
                   _this.trafficeItem=e.data.subItem;
+                });  
+              }else if(disParam == "smartBus"){
+                this[massNum].on('click', function(e) {
+                    _this.busDialog=true;
+                  _this.$refs.busDialog.initData(e.data.subItem);
                 });  
               }
             }else {

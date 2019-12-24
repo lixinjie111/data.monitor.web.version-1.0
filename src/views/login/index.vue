@@ -113,7 +113,7 @@ export default {
             this.$refs.loginForm.validate(valid => {
                 if (valid) {
                     this.loading = true;
-                    let _password = this.loginForm.password.length > 20 ? this.loginForm.password : md5(md5(this.loginForm.password));
+                    let _password = this.loginForm.password.length > 20 ? this.loginForm.password : md5(this.loginForm.password);
                     let _param = Object.assign({}, this.loginForm, {
                         password: _password
                     });
@@ -132,13 +132,13 @@ export default {
                     this.$router.push({ path: '/dataMonitor' });
                     localStorage.setItem("yk-token",JSON.stringify({data:JSON.parse(res.data).token,"time":new Date().getTime()}));
                 }else {
-                    if(res.status == -200){
-                        if(res.data.errorCount) {
-                            if(res.data.errorCount>=5){
-                                this.dragFlag=true;
-                            }
-                        }
-                    }
+                    // if(res.status == -200){
+                    //     if(res.data.errorCount) {
+                    //         if(res.data.errorCount>=5){
+                    //             this.dragFlag=true;
+                    //         }
+                    //     }
+                    // }
                     this.removeStorage();
                 }
             }).catch(err => {

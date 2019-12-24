@@ -71,16 +71,26 @@
                 <div class="table-row-group">
                   <ul class="table-row" v-for="item in deviceObj" :key="item.deviceId">
                     <li class="table-cell device-num">
-                      <img
-                        src="@/assets/images/monitorManage/monitor-3.png"
-                        class="monitor-device-img-1"
-                        v-if="item.type=='N'"
-                      />
-                      <img
-                        src="@/assets/images/monitorManage/monitor-4.png"
-                        class="monitor-device-img-2"
-                        v-else
-                      />
+                       <img
+                          src="@/assets/images/monitorManage/monitor-3.png"
+                          class="monitor-device-img-1"
+                          v-if="item.type=='N'"
+                        />
+                        <img
+                          src="@/assets/images/monitorManage/radar-online.png"
+                          class="monitor-device-img-2"
+                          v-else-if="item.type=='S'"
+                        />
+                        <img
+                          src="@/assets/images/monitorManage/rcu-online.png"
+                          class="monitor-device-img-2"
+                          v-else-if="item.type=='U'"
+                        />
+                        <img
+                          src="@/assets/images/monitorManage/rsu-online.png"
+                          class="monitor-device-img-2"
+                         v-else-if="item.type=='R'"
+                        />
                       <span class="monitor-device-text">{{item.deviceId}}</span>
                     </li>
                     <li class="table-cell">
@@ -438,11 +448,11 @@ export default {
     },
     onmessage(mesasge) {
       //console.log(JSON.parse(mesasge.data))
-	  this.itemData = JSON.parse(mesasge.data).result.data;
-	  this.getExtend(
-		this.itemData.longitude,
-		this.itemData.latitude,
-		0.002
+      this.itemData = JSON.parse(mesasge.data).result.data;
+      this.getExtend(
+      this.itemData.longitude,
+      this.itemData.latitude,
+		  0.002
 	  );
       this.position = this.coordinateTransfer(
         "EPSG:4326",
