@@ -120,9 +120,6 @@
               prevLight:[],
               roadSenseCars:"",
               timeOut:1000*60*5,
-              // arr1:[[121.16738988000452,31.283023068308857],
-              //       [121.16756842020821,31.28308374188236]],
-              // aaa:0
             }
         },
       props:{
@@ -145,48 +142,21 @@
       },
       watch:{
         "finalFourPosition"(newVal, oldVal) {
-            // this.clearCars();
-            this.$nextTick(()=>{
-              if(this.webSocket) {
-                let _params ={
-                  "action": "vehicle",
-                  "body": {
-                      "polygon": this.finalFourPosition,
-                  },
-                  "type": 3
-                }
-                let param = JSON.stringify(_params);
-                this.webSocket.sendMsg(param);
-                
-              }else {
-                this.initWebSocket();
+            this.clearCars();
+            if(this.webSocket) {
+              let _params ={
+                "action": "vehicle",
+                "body": {
+                    "polygon": this.finalFourPosition,
+                },
+                "type": 3
               }
-            })
-                 
-            // setTimeout(() => {
-            //   if(this.aaa == 0){
-            //     for (let i = 0; i < this.arr1.length; i++) {
-            //       let imgUrl =  "static/images/road/car.png";
-            //       let courseAngle = 120;
-            //       let bdata = null;
-            //       let offset = [0,0];
-            //       let callback = null;
-                
-            //       this.$refs.refTusvnMap.addImgOverlay(
-            //         i, 
-            //         imgUrl, 
-            //         courseAngle, 
-            //         this.arr1[i][0],
-            //         this.arr1[i][1],
-            //         bdata, 
-            //         offset, 
-            //         callback
-            //       );  
-            //     }
-            //     this.aaa++
-            //   }          
-            // }, 10000);
-         
+              let param = JSON.stringify(_params);
+              this.webSocket.sendMsg(param);
+              
+            }else {
+              this.initWebSocket();
+            }     
         }
       },
       mounted() {
@@ -455,8 +425,9 @@
                 bdata, 
                 offset, 
                 callback
-              );   
-
+              ); 
+              this.$refs.refTusvnMap.setOverlayPosition(id, item.centerX, item.centerY,courseAngle)   
+                
             })
           });
         },
@@ -584,7 +555,7 @@
                       } 
                     }
 
-
+                
                    
                     if(!_this.prevData[_filterData.vehicleId]) {   //表示新增该点，做add
                         let imgUrl =  "static/images/road/car.png";
@@ -597,13 +568,13 @@
                           _filterData.vehicleId, 
                           imgUrl, 
                           courseAngle, 
-                          _filterData.longitude,
-                          _filterData.latitude,
+                          0,
+                          0,
                           bdata, 
                           offset, 
                           callback
                         );  
-              
+                         _this.$refs.refTusvnMap.setOverlayPosition(_filterData.vehicleId,_filterData.longitude, _filterData.latitude,_filterData.heading)   
                     }
                     
                     _this.prevData[_filterData.vehicleId] = _filterData;
