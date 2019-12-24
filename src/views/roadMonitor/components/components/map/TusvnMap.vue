@@ -842,7 +842,10 @@ export default {
         resize:function(size)
         {
             this.$data.map.setSize(size);
-        }
+        },
+        wmsOnload(){
+            return this.$data.map.tileQueue_.getTilesLoading();
+        },
     },
     created(){
     },

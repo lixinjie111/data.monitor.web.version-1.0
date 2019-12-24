@@ -33,9 +33,16 @@
       },
       watch:{
         "crossData.finalFourPosition"(newVal, oldVal) {
-            // console.log("finalFourPosition");
             if(this.webSocket) {
-              this.webSocket.onOpen();
+              let _params ={
+                "action": "vehicle",
+                "body": {
+                     "polygon": this.crossData.finalFourPosition,
+                },
+                "type": 3
+              }
+              let param = JSON.stringify(_params);
+              this.webSocket.sendMsg(param);
             }else {
               this.initWebSocket();
             }
@@ -46,8 +53,8 @@
           center: window.mapOption.defaultCenterPoint,
           zoom: 18,
           mapStyle: window.mapOption.mapStyleEmpty,
-          // dragEnable: false,
-          // zoomEnable:  false,
+          dragEnable: false,
+          zoomEnable:  false,
           resizeEnable: true, //是否监控地图容器尺寸变化
           rotateEnable: true,
         };
