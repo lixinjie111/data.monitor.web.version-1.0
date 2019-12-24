@@ -22,7 +22,7 @@
       </div>
     </div>
     <traffic-dialog v-if="trafficDialog" :selectedItem="trafficeItem" @closeDialog="closeDialog"></traffic-dialog>
-    <bus-dialog  v-if="busDialog" :wescoketData="lightData" :selectedItem="busItem" :busListData="busListData"  @closeDialog="closeDialog"></bus-dialog>
+    <bus-dialog v-if="busDialog" :wescoketData="lightData" :selectedItem="busItem"  @closeDialog="closeDialog"></bus-dialog>
   </div>
 </template>
 <script>
@@ -44,15 +44,7 @@
           action: "event_real_data",
           token: 'tusvn',
         },
-        busWebSocket: null,
-        busWebSocketData: {
-          action: "third_spat",
-        },
-        smartBus:null,
-        busItem:null,
-        lightData:null,
         // 获取在驶车辆实时数据（辆）
-        responseData: {},
         options:[
           {
             'id':'spat',
@@ -81,7 +73,7 @@
           },
           {
             'id':'smartBus',
-            'text':'智慧公交',
+            'text':'智慧信号灯',
             'isActive':false
           },
         ],
@@ -99,74 +91,16 @@
         wms:null,
         carSpeedFlag:{},
         distributeDialogFlag:null,
+        
+        busWebSocket: null,
+        busWebSocketData: {
+          action: "third_spat",
+        },
+        smartBus:null,
+        busItem:null,
         busDialog:false,
-        smartBusData:null,
-        busListData:[{
-            position:'east',
-            list:[
-              {flag:false,light:'', id:4,twords:'turn-around'},
-              {flag:false,light:'', id:2,twords:'turn-left'},
-              {flag:false,light:'', id:1,twords:'forward'},
-              {flag:false,light:'', id:3,twords:'turn-right'},
-            ]
-          },{
-            position:'south',
-            list:[
-              {flag:false,light:'', id:14,twords:'turn-around'},
-              {flag:false,light:'', id:12,twords:'turn-left'},
-              {flag:false,light:'', id:11,twords:'forward'},
-              {flag:false,light:'', id:13,twords:'turn-right'},
-            ]
-          },{
-            position:'west',
-            list:[
-              {flag:false,light:'', id:24,twords:'turn-around'},
-              {flag:false,light:'', id:22,twords:'turn-left'},
-              {flag:false,light:'', id:21,twords:'forward'},
-              {flag:false,light:'', id:23,twords:'turn-right'},
-            ]
-          },{
-            position:'north',
-            list:[
-              {flag:false,light:'', id:34,twords:'turn-around'},
-              {flag:false,light:'', id:32,twords:'turn-left'},
-              {flag:false,light:'', id:31,twords:'forward'},
-              {flag:false,light:'', id:33,twords:'turn-right'},
-            ]
-          },{
-            position:'northeast',
-            list:[
-              {flag:false,light:'', id:39,twords:'turn-around'},
-              {flag:false,light:'', id:37,twords:'turn-left'},
-              {flag:false,light:'', id:36,twords:'forward'},
-              {flag:false,light:'', id:38,twords:'turn-right'},
-            ]
-          },{
-            position:'northwest',
-            list:[
-              {flag:false,light:'', id:29,twords:'turn-around'},
-              {flag:false,light:'', id:27,twords:'turn-left'},
-              {flag:false,light:'', id:26,twords:'forward'},
-              {flag:false,light:'', id:28,twords:'turn-right'},
-            ]
-          },{
-            position:'southeast',
-            list:[
-              {flag:false,light:'', id:9,twords:'turn-around'},
-              {flag:false,light:'', id:7,twords:'turn-left'},
-              {flag:false,light:'', id:6,twords:'forward'},
-              {flag:false,light:'', id:8,twords:'turn-right'},
-            ]
-          },{
-            position:'southwest',
-            list:[
-              {flag:false,light:'', id:19,twords:'turn-around'},
-              {flag:false,light:'', id:17,twords:'turn-left'},
-              {flag:false,light:'', id:16,twords:'forward'},
-              {flag:false,light:'', id:18,twords:'turn-right'},
-            ]
-          },
-        ],
+        smartBusData:[], //初始化
+        lightData: {}, //格式化
       }
     },
   
@@ -240,25 +174,37 @@
         this.busWebSocket.onerror = this.onBusError;
       },
       onBusMessage(mesasge) {
-        this.lightData = JSON.parse(mesasge.data).data;
-        for(var key in this.lightData){
-            this.smartBusData.forEach(item=>{
-              if(item.subItem&&item.subItem.length>0){
-                   let _id=item.id+"_"+item.subItem.phaseId;
-                    if(_id===key){
-                      item.subItem[0]['light']=this.lightData[key].light;
+        let _data = JSON.parse(mesasge.data).data;
+        for(var key in _data){
+          if(this.lightData[key]) {
+            this.$set(this.lightData[key], 'light', _data[key].light);
+          }
+        }
+        this.smartBusData.forEach((item, index) => {
+          let _first=true;
+          if(item.subItem&&item.subItem.length) {
+            item.subItem.forEach(subItem1=>{
+                 if(_first){
+                   let _id=item.id+'_'+subItem1.phaseId;
+                    for(var key in this.lightData){
+                      if(_id==key){
+                        if(this.lightData[key].light){
+                          console.log(key)
+                          subItem1.light = this.lightData[key].light;
+                           _first=false;
+                        }
+                      }
                     }
-                }
-             
+                 }
             })
           }
-          this.setMassMarker(this.smartBusData,"smartBUs")
+        });
+        this.setMassMarker(this.smartBusData,"smartBus")
       },
       processData(listData){
           
       },
       onBusClose(data) {
-        console.log("结束连接");
       },
       onBusError(data) {
         console.log("连接错误");
@@ -458,6 +404,7 @@
                           lnglat: subItem.position,
                           id: subItem.lightId,
                           style: subIndex,
+                          crossingName:subItem.crossingName,
                           subItem: subItem.tpPhaseList
                         });
                       }
@@ -472,7 +419,23 @@
               });*/
             })
             if(disParam=='smartBus'){ 
+              this.lightData = {};
               this.smartBusData=posotionData;
+              this.smartBusData.forEach(item => {
+                if(item.subItem && item.subItem.length) {
+                  item.subItem.forEach(subItem => {
+                    let _id = item.id+'_'+subItem.phaseId;
+                    if(!this.lightData[_id]) {
+                      let _item = {
+                        lightId: item.id, 
+                        phaseId: subItem.phaseId, 
+                        light: ''
+                      };
+                      this.$set(this.lightData, _id, _item);
+                    }
+                  });
+                }
+              });
             }
             this.setMassMarker(posotionData,disParam);    
           }
@@ -493,11 +456,10 @@
           this.masstraffic=null;
         }
         if(type=='smartBus'&& this.smartBus){
-          this.busWebSocket&&this.busWebSocket.close();  
+          // this.busWebSocket&&this.busWebSocket.close();  
           this.smartBus.clear();
           this.map.remove(this.smartBus);
           this.smartBus=null;
-         
         }
       },
       closeDialog(){
@@ -642,23 +604,20 @@
               });        
           });
         }else if(disParam =='smartBus'){ 
-          makerUrl='./static/images/smartlight/noLight.png';
           anchorMass =  new AMap.Pixel(5,13);
           sizeMass = new AMap.Size(10,26);
           massNum="smartBus";
           data.map(item => {
+              makerUrl='./static/images/smartlight/noLight.png';
               if(item.subItem&&item.subItem.length>0){
-                if(item.subItem.light){
-                   if(item.subItem.light=='RED'){
-                       makerUrl='./static/images/smartlight/redLight.png';
-                    }else if(item.subItem.light=='YELLOW'){
-                       makerUrl='./static/images/smartlight/yellowLight.png';
-                    }else if(item.subItem.light=='GREEN'){
-                       makerUrl='./static/images/smartlight/greenLight.png';
-                    }else{
-                      return ''
-                    }
-                }
+                item.subItem.forEach(subItem=>{
+                  if(subItem.light) {
+                    let _color = subItem.light.toLowerCase();
+                    makerUrl='./static/images/smartlight/'+_color+'Light.png';
+                  }else {
+                    return ''
+                  }
+                })
               }
               style.push({
                 url: makerUrl,
@@ -671,7 +630,6 @@
         if(massNum == "masstraffic" && this.masstraffic){ 
             this.masstraffic.setStyle(style);
             this.masstraffic.setData(data);
-            //this.masstraffic.clear();
             this.masstraffic.on('click', function(e) {
               _this.trafficDialog=true;
               _this.trafficeItem=e.data.subItem;
@@ -680,8 +638,8 @@
             this.smartBus.setStyle(style);
             this.smartBus.setData(data);
             this.smartBus.on('click', function(e) {
-              _this.trafficDialog=true;
-              _this.busItem=e.data.subItem;
+              _this.busDialog=true;
+              _this.busItem=e.data;
             }); 
         }else{
             if(!this[massNum]) {
@@ -711,8 +669,7 @@
               }else if(disParam == "smartBus"){
                 this[massNum].on('click', function(e) {
                     _this.busDialog=true;
-                    _this.busItem=e.data.subItem;
-                    //_this.$refs.busDialog.initData(e.data.subItem);
+                    _this.busItem=e.data;
                 });  
               }
             }else {
