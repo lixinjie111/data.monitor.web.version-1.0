@@ -77,19 +77,19 @@
                           v-if="item.type=='N'"
                         />
                         <img
-                          src="@/assets/images/monitorManage/radar-online.png"
+                          :src="item.cameraRunStatus==1?require('@/assets/images/monitorManage/radar-online.png'):require('@/assets/images/monitorManage/radar-offline.png')"
                           class="monitor-device-img-2"
                           v-else-if="item.type=='S'"
                         />
                         <img
-                          src="@/assets/images/monitorManage/rcu-online.png"
+                          :src="item.cameraRunStatus==1?require('@/assets/images/monitorManage/rcu-online.png'):require('@/assets/images/monitorManage/rcu-offline.png')"
                           class="monitor-device-img-2"
                           v-else-if="item.type=='U'"
                         />
                         <img
-                          src="@/assets/images/monitorManage/rsu-online.png"
+                          :src="item.cameraRunStatus==1?require('@/assets/images/monitorManage/rsu-online.png'):require('@/assets/images/monitorManage/rsu-offline.png')"
                           class="monitor-device-img-2"
-                         v-else-if="item.type=='R'"
+                          v-else-if="item.type=='R'"
                         />
                       <span class="monitor-device-text">{{item.deviceId}}</span>
                     </li>

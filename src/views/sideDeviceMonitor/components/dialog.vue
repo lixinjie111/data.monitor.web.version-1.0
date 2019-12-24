@@ -111,17 +111,17 @@
                           v-if="item.deviceType=='N'"
                         />
                         <img
-                          src="@/assets/images/monitorManage/radar-online.png"
+                          :src="item.workStatus==1?require('@/assets/images/monitorManage/radar-online.png'):require('@/assets/images/monitorManage/radar-offline.png')"
                           class="monitor-device-img-2"
                           v-else-if="item.deviceType=='S'"
                         />
                         <img
-                          src="@/assets/images/monitorManage/rcu-online.png"
+                          :src="item.workStatus==1?require('@/assets/images/monitorManage/rcu-online.png'):require('@/assets/images/monitorManage/rcu-offline.png')"
                           class="monitor-device-img-2"
                           v-else-if="item.deviceType=='U'"
                         />
                         <img
-                          src="@/assets/images/monitorManage/rsu-online.png"
+                          :src="item.workStatus==1?require('@/assets/images/monitorManage/rsu-online.png'):require('@/assets/images/monitorManage/rsu-offline.png')"
                           class="monitor-device-img-2"
                          v-else-if="item.deviceType=='R'"
                         />
