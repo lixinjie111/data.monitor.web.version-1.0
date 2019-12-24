@@ -228,7 +228,6 @@ export default {
       currentExtent:[],
       videoUrl:'',
       extend: 0.0002,
-      mapOk:false,
       perCaptureList:[],
       captureCount:0,
       pulseInterval:40,
@@ -252,16 +251,6 @@ export default {
     target: {
       type: String,
       default: ""
-    }
-  },
-  watch:{
-    mapOk: {
-      handler: function(newVal, oldVal) {
-        if(this.mapOk){
-          // this.initMap();
-        }    
-      },
-      deep: true
     }
   },
   computed:{
@@ -290,7 +279,7 @@ export default {
   methods: {
 
     onLoadMap(){
-      this.mapOk = true;
+    
       this.getData();
       
       // let msgData = {
@@ -303,16 +292,6 @@ export default {
   
     },
 
-
-
-
-
-    initMap(){
-      let _this = this;
-      // gis3d.initload("cesiumContainer",false);
-      // perceptionCars.viewer=gis3d.cesium.viewer;
-      this.onMapComplete();
-    },
 
     getDeviceList() {
       var _this = this;
@@ -371,14 +350,7 @@ export default {
               if (_this.mapInit) {
                 let camData = {
                   type:"updateCam",
-                  data:{
-                    x: _this.cameraParam.x,
-                    y: _this.cameraParam.y,
-                    z: window.defaultMapParam.z,
-                    radius: window.defaultMapParam.radius,
-                    pitch: window.defaultMapParam.pitch,
-                    yaw: window.defaultMapParam.yaw
-                  }
+                  data:_this.cameraParam
                 }
                 for (const i in camData.data) {
                   if(!camData.data[i] && camData.data[i] != 0){
@@ -401,7 +373,6 @@ export default {
             /*_this.$set(item, 'value', false);*/
             item.value = false;
           }
-          _this.mapOk = true;
         });
 
       });
@@ -644,17 +615,9 @@ export default {
     showTimeStamp(time) {
       this.time = time;
     },
-    onMapComplete(){
-        // perceptionCars.stepTime = this.pulseInterval;
-        // perceptionCars.pulseInterval = parseInt(this.pulseInterval)*2*0.8;
-
-        this.getData();
-      
-    },
+   
     getData() {
-      
-      // this.initPulseWebSocket();
-
+   
       if (this.serialNum && this.serialNum != "") {
         this.mapInit = true;
         let camData = {
