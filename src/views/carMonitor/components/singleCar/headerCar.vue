@@ -48,7 +48,7 @@
       <li>
         <span>剩余里程</span>
         <!--<img src="@/assets/images/car/car-15.png"/>-->
-        <span class="current-electric">{{realData.remainElec | toFixed(1)}} km</span>
+        <span class="current-electric">{{remainElec}}</span>
       </li>
     </ul>
     <!-- 1 绿（良好），2 红（故障），3 灰（未安装） -->
@@ -145,6 +145,9 @@
         let pedalData = parseFloat(this.realData.brakePedal/100);
         return parseInt(this.stopLeftWidth*2/7);
       },
+      remainElec(){
+        return (this.realData.remainElec ? this.realData.remainElec.toFixed(1) : "--")+ " km";
+      }
       /*lastTime(){
         var time = new Date().getTime()-this.realData.gpsTime;
         console.log("time---------"+time)
