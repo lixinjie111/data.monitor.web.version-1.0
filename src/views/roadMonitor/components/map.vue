@@ -456,7 +456,7 @@
           this.masstraffic=null;
         }
         if(type=='smartBus'&& this.smartBus){
-          // this.busWebSocket&&this.busWebSocket.close();  
+          this.busWebSocket&&this.busWebSocket.close();  
           this.smartBus.clear();
           this.map.remove(this.smartBus);
           this.smartBus=null;
