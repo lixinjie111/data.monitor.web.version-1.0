@@ -152,7 +152,7 @@ export default {
       deviceObj: {},
       isFirst: true,
       isOne: true,
-      heading: "", //航向角
+      heading: 0, //航向角
       position: [],
       videoUrl:"",
       platformConnectCount:0,
@@ -165,7 +165,7 @@ export default {
   props: ["selectedItem"],
   beforeCreate(){
     this.iframeSrc =  window.config.staticUrl+'cesium-map/modules/monPlatform/index.html'; 
-    // this.iframeSrc =  'http://127.0.0.1:8083/modules/monPlatform/index.html'; 
+    // this.iframeSrc =  'http://127.0.0.1:8080/modules/monPlatform/index.html'; 
 
   },
   created() {
@@ -342,7 +342,7 @@ export default {
           //获取航向角
           getFeaturesByPoint(formData, config).then(res => {
             if (res.state == 1) {
-              if(res.data.length>1){
+              if(res.data.length){
                  this.heading = res.data[0].heading;
               }
               if (!this.cameraParam) {
@@ -366,15 +366,14 @@ export default {
               if(this.itemData.eventName == "障碍物"){
                 glbNameTmp = "zhui_tong";
               }else{
-                glbNameTmp = "zhui_tong";
+                glbNameTmp = "gan_tan_hao";
               }
-
               let modelData = {
                 type:"addModel",
                 data:{
                     longitude:this.position[0],
                     latitude:this.position[1],
-                    heading:0,
+                    heading:this.heading,
                     vehicleId:"",
                     name:_name,
                     glbName:glbNameTmp,
