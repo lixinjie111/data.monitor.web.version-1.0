@@ -16,6 +16,7 @@
                     v-show="subItem.flag" 
                     :id="subItem.id" >
                     <img :src="'static/images/smartlight/'+subItem.twords+'.png'" alt="">
+                    <span class="timestamp">{{subItem.likelyTime}}</span>
                   </div>
                 </li>
                 <li class="direction"><img src="static/images/pointer.png" alt=""></li>
@@ -36,66 +37,66 @@ export default {
       busListData:[{
           position:'east',
           list:[
-            {flag:false,light:'', id:4,twords:'turn-around'},
-            {flag:false,light:'', id:2,twords:'turn-left'},
-            {flag:false,light:'', id:1,twords:'forward'},
-            {flag:false,light:'', id:3,twords:'turn-right'},
+            {likelyTime:'',flag:false,light:'', id:4,twords:'turn-around'},
+            {likelyTime:'',flag:false,light:'', id:2,twords:'turn-left'},
+            {likelyTime:'',flag:false,light:'', id:1,twords:'forward'},
+            {likelyTime:'',flag:false,light:'', id:3,twords:'turn-right'},
           ]
         },{
           position:'south',
           list:[
-            {flag:false,light:'', id:14,twords:'turn-around'},
-            {flag:false,light:'', id:12,twords:'turn-left'},
-            {flag:false,light:'', id:11,twords:'forward'},
-            {flag:false,light:'', id:13,twords:'turn-right'},
+            {likelyTime:'',flag:false,light:'', id:14,twords:'turn-around'},
+            {likelyTime:'',flag:false,light:'', id:12,twords:'turn-left'},
+            {likelyTime:'',flag:false,light:'', id:11,twords:'forward'},
+            {likelyTime:'',flag:false,light:'', id:13,twords:'turn-right'},
           ]
         },{
           position:'west',
           list:[
-            {flag:false,light:'', id:24,twords:'turn-around'},
-            {flag:false,light:'', id:22,twords:'turn-left'},
-            {flag:false,light:'', id:21,twords:'forward'},
-            {flag:false,light:'', id:23,twords:'turn-right'},
+            {likelyTime:'',flag:false,light:'', id:24,twords:'turn-around'},
+            {likelyTime:'',flag:false,light:'', id:22,twords:'turn-left'},
+            {likelyTime:'',flag:false,light:'', id:21,twords:'forward'},
+            {likelyTime:'',flag:false,light:'', id:23,twords:'turn-right'},
           ]
         },{
           position:'north',
           list:[
-            {flag:false,light:'', id:34,twords:'turn-around'},
-            {flag:false,light:'', id:32,twords:'turn-left'},
-            {flag:false,light:'', id:31,twords:'forward'},
-            {flag:false,light:'', id:33,twords:'turn-right'},
+            {likelyTime:'',flag:false,light:'', id:34,twords:'turn-around'},
+            {likelyTime:'',flag:false,light:'', id:32,twords:'turn-left'},
+            {likelyTime:'',flag:false,light:'', id:31,twords:'forward'},
+            {likelyTime:'',flag:false,light:'', id:33,twords:'turn-right'},
           ]
         },{
           position:'northeast',
           list:[
-            {flag:false,light:'', id:39,twords:'turn-around'},
-            {flag:false,light:'', id:37,twords:'turn-left'},
-            {flag:false,light:'', id:36,twords:'forward'},
-            {flag:false,light:'', id:38,twords:'turn-right'},
+            {likelyTime:'',flag:false,light:'', id:39,twords:'turn-around'},
+            {likelyTime:'',flag:false,light:'', id:37,twords:'turn-left'},
+            {likelyTime:'',flag:false,light:'', id:36,twords:'forward'},
+            {likelyTime:'',flag:false,light:'', id:38,twords:'turn-right'},
           ]
         },{
           position:'northwest',
           list:[
-            {flag:false,light:'', id:29,twords:'turn-around'},
-            {flag:false,light:'', id:27,twords:'turn-left'},
-            {flag:false,light:'', id:26,twords:'forward'},
-            {flag:false,light:'', id:28,twords:'turn-right'},
+            {likelyTime:'',flag:false,light:'', id:29,twords:'turn-around'},
+            {likelyTime:'',flag:false,light:'', id:27,twords:'turn-left'},
+            {likelyTime:'',flag:false,light:'', id:26,twords:'forward'},
+            {likelyTime:'',flag:false,light:'', id:28,twords:'turn-right'},
           ]
         },{
           position:'southeast',
           list:[
-            {flag:false,light:'', id:9,twords:'turn-around'},
-            {flag:false,light:'', id:7,twords:'turn-left'},
-            {flag:false,light:'', id:6,twords:'forward'},
-            {flag:false,light:'', id:8,twords:'turn-right'},
+            {likelyTime:'',flag:false,light:'', id:9,twords:'turn-around'},
+            {likelyTime:'',flag:false,light:'', id:7,twords:'turn-left'},
+            {likelyTime:'',flag:false,light:'', id:6,twords:'forward'},
+            {likelyTime:'',flag:false,light:'', id:8,twords:'turn-right'},
           ]
         },{
           position:'southwest',
           list:[
-            {flag:false,light:'', id:19,twords:'turn-around'},
-            {flag:false,light:'', id:17,twords:'turn-left'},
-            {flag:false,light:'', id:16,twords:'forward'},
-            {flag:false,light:'', id:18,twords:'turn-right'},
+            {likelyTime:'',flag:false,light:'', id:19,twords:'turn-around'},
+            {likelyTime:'',flag:false,light:'', id:17,twords:'turn-left'},
+            {likelyTime:'',flag:false,light:'', id:16,twords:'forward'},
+            {likelyTime:'',flag:false,light:'', id:18,twords:'turn-right'},
           ]
         },
       ],
@@ -157,6 +158,7 @@ export default {
                         if(item4.id==realData.phaseId){
                           this.$set(item4, "flag", true);
                           this.$set(item4, "light", realData.light);
+                          this.$set(item4, "likelyTime", realData.likelyTime);
                         }
                     })
                 })
@@ -212,6 +214,17 @@ export default {
         margin:2px;
         padding:5px;
         background:gray;
+        position: relative;
+        .timestamp{
+          position: absolute;
+          width:30px;
+          height: 30px;
+          color:#fff;
+          top:-30px;
+          left:0;
+          font-size: 14px;
+          @include layoutMode();
+        }
         &.RED{
           background:#d41010
         }

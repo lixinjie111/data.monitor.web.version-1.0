@@ -178,6 +178,7 @@
         for(var key in _data){
           if(this.lightData[key]) {
             this.$set(this.lightData[key], 'light', _data[key].light);
+            this.$set(this.lightData[key], 'likelyTime', _data[key].likelyTime);
           }
         }
         this.smartBusData.forEach((item, index) => {
@@ -429,7 +430,8 @@
                       let _item = {
                         lightId: item.id, 
                         phaseId: subItem.phaseId, 
-                        light: ''
+                        light: '', 
+                        likelyTime:''
                       };
                       this.$set(this.lightData, _id, _item);
                     }
