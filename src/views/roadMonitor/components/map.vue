@@ -214,7 +214,6 @@
       
             //取消选中，将设备从地图中消除
             this.removeMarkers(item.id);
-            this.webSocket && this.webSocket.webSocket.close();
             }
           }
       },
