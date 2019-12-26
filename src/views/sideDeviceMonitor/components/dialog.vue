@@ -261,7 +261,7 @@ export default {
   },
   beforeCreate(){
     this.iframeSrc = window.config.staticUrl+'cesium-map/modules/monPlatform/index.html';     
-    // this.iframeSrc =  'http://127.0.0.1:8082/modules/monPlatform/index.html';       
+    // this.iframeSrc =  'http://127.0.0.1:8080/modules/monPlatform/index.html';       
   },
   mounted() {
     this.selectAddr = this.treeItem.path.split("|");
@@ -336,7 +336,11 @@ export default {
             }else{
               _this.cameraParam = {
                 x:item.lon,
-                y:item.lat
+                y:item.lat,
+                z:window.defaultMapParam.z,
+                radius:window.defaultMapParam.radius,
+                pitch:window.defaultMapParam.pitch,
+                yaw:window.defaultMapParam.yaw,
               }
             }
             if (_this.serialNum != "") {
