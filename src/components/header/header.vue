@@ -15,6 +15,16 @@
             </span>
             <a href="javascript:;" class="tip" @click="dialogWarning">预警<em class="num">{{ warningNum || '--' }}</em></a>
             <a href="javascript:;" class="tip" @click="dialogFault">故障<em class="num">{{ faultNum || '--' }}</em></a>
+            <el-dropdown trigger="click">
+                <span class="el-dropdown-link userinfo-inner">
+                    <i class="icon iconfont el-icon-mc-yonghuzhongxin_f c-vertical-middle"></i>
+                    <em class="name c-vertical-middle">{{sysAdminName}}</em>
+                </span>
+                <el-dropdown-menu slot="dropdown" class="c-header-dropdown">
+                    <el-dropdown-item divided>版本V{{version}}</el-dropdown-item>
+                    <el-dropdown-item divided @click.native="logout">登出</el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
         </div>
         <dialog-warning-fault :type="type" v-if="DialogWarningFlag" @closeDialogWarning="closeDialogWarning"></dialog-warning-fault>
 
@@ -23,6 +33,7 @@
 <script>
 import { getTopHead, getTopWeather } from '@/api/header';
 import { mapActions } from 'vuex';
+import { removeAuthInfo } from '@/session/index';
 import DialogWarningFault from './components/dialogWarningFault.vue';
 export default {
 	name: "Header",
@@ -35,6 +46,7 @@ export default {
     data() {
         return {
             sysAdminName: this.$store.state.admin.adminName,
+            version: window.config.version,
             navList: [
               {id:1,name:'概览',path:'/dataMonitor'},
               {id:2,name:'车辆',path:'/carMonitor'},
@@ -143,14 +155,16 @@ export default {
         ...mapActions(['goLogOut']),
         //退出登录
         logout() {
-            let that = this;
-            that.$confirm('确认退出吗?', '提示', {
+            this.$confirm('确认退出吗?', '提示', {
             }).then(() => {
-                that.goLogOut(that).then(res => {
-                    that.ClearMenuList();
-                    that.$router.push({ path: '/' });
+                this.goLogOut().then(res => {
+                    this.$message.success(res.message);
+                    removeAuthInfo();
+                    localStorage.removeItem("yk-token");
+                    this.$router.push({ path: '/login' });
                 });
-            }).catch(() => {
+            }).catch(err => {
+                console.log("取消退出！");
             });
         }
     }
@@ -230,13 +244,16 @@ export default {
                 color: #dc8c00;
             }
         }
+        .userinfo-inner {
+            margin-left: 15px;
+            cursor: pointer;
+            color: #fff;
+            .icon {
+                font-size: 28px;
+                line-height: 28px;
+            }
+        }
     }
-    // .userinfo {
-    //     font-size: 12px;
-    //     height: 100%;
-    //     color: #fff;
-    //     @include layoutMode();
-    // }
 }
 </style>
 

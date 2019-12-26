@@ -44,6 +44,7 @@ import { setAuthInfo, getAdminId, getAuthInfo, removeAuthInfo } from '@/session/
 import './assets/css/reset.css';
 import './assets/scss/public.scss';
 import './assets/scss/element-ui-reset.scss';
+import './assets/icon-font/iconfont.css';
 
 // 设置页面切换进度条
 NProgress.inc(0.2)
