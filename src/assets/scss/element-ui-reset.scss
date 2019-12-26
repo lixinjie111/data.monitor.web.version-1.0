@@ -138,8 +138,8 @@
   border: 1px solid #535457 !important;
   margin-top: -2px !important;
 }
-.el-popper .popper__arrow,
-.el-popper .popper__arrow::after {
+.el-select-dropdown.el-popper .popper__arrow,
+.el-select-dropdown.el-popper .popper__arrow::after {
   border-style: none !important;
 }
 .el-picker-panel{
