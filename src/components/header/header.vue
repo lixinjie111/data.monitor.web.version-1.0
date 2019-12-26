@@ -15,7 +15,7 @@
             </span>
             <a href="javascript:;" class="tip" @click="dialogWarning">预警<em class="num">{{ warningNum || '--' }}</em></a>
             <a href="javascript:;" class="tip" @click="dialogFault">故障<em class="num">{{ faultNum || '--' }}</em></a>
-            <el-dropdown trigger="click">
+            <el-dropdown trigger="hover">
                 <span class="el-dropdown-link userinfo-inner">
                     <i class="icon iconfont el-icon-mc-yonghuzhongxin_f c-vertical-middle"></i>
                     <em class="name c-vertical-middle">{{sysAdminName}}</em>
