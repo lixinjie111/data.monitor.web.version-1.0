@@ -317,7 +317,7 @@ export default {
             this.setCameraPosition();
           }
           let camData = {
-            type:"updateCam",
+            type:"zoomModule",
             data:this.cameraParam
           }
           for (const i in camData.data) {
@@ -348,7 +348,7 @@ export default {
               if (!this.cameraParam) {
                 this.setCameraPosition();
                   let camData = {
-                    type:"updateCam",
+                    type:"zoomModule",
                     data:this.cameraParam
                   }
                   for (const i in camData.data) {
