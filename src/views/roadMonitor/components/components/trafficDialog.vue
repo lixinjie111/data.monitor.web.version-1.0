@@ -316,17 +316,7 @@ export default {
           } else {
             this.setCameraPosition();
           }
-          let camData = {
-            type:"zoomModule",
-            data:this.cameraParam
-          }
-          for (const i in camData.data) {
-            if(!camData.data[i] && camData.data[i] != 0){
-              return;
-            }
-          }
-          document.getElementById("cesiumContainer").contentWindow.postMessage(camData,'*'); 
-
+     
           let formData = new FormData(); //创建form对象
           formData.append("featureclass", "dl_shcsq_wgs84_lb_points");
           formData.append("lng", this.selectedItem.longitude); //通过append向form对象添加数据
@@ -345,23 +335,23 @@ export default {
               if(res.data.length){
                  this.heading = res.data[0].heading;
               }
-              if (!this.cameraParam) {
-                this.setCameraPosition();
-                  let camData = {
-                    type:"zoomModule",
-                    data:this.cameraParam
-                  }
-                  for (const i in camData.data) {
-                    if(!camData.data[i] && camData.data[i] != 0){
-                      return;
-                    }
-                  }
-                  document.getElementById("cesiumContainer").contentWindow.postMessage(camData,'*'); 
+            
+              this.setCameraPosition();
+              let camData = {
+                type:"zoomModule",
+                data:this.cameraParam
               }
+              // 相机位置使用航向角 正对着路
+              camData.data.radius = this.heading || 0;
+              for (const i in camData.data) {
+                if(!camData.data[i] && camData.data[i] != 0){
+                  return;
+                }
+              }
+              document.getElementById("cesiumContainer").contentWindow.postMessage(camData,'*'); 
+            
               let _length = this.itemData.modelIcon.split("/").length;
               let _name = this.itemData.modelIcon.split("/")[_length - 1];
-              // let _url = "./static/map3d/traffic_models/" + _name;
-              // _url = "./static/map3d/model/zhui_tong.glb";
               let glbNameTmp;
               if(this.itemData.eventName == "障碍物"){
                 glbNameTmp = "zhui_tong";
@@ -397,8 +387,7 @@ export default {
       }
     },
     setCameraPosition() {
-      console.log(this.heading)
-      
+   
       // if(!this.position.length){
       //   this.position = [112.94760914128275, 28.325093927226323]
       // }
@@ -409,7 +398,7 @@ export default {
           z: window.defaultMapParam.z,
           radius: window.defaultMapParam.radius,
           pitch: window.defaultMapParam.pitch,
-          yaw: (Math.PI / 180.0) * (this.heading+25),
+          yaw: this.heading,
         }
       } else {
          this.cameraParam = {
