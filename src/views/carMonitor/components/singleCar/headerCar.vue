@@ -146,7 +146,7 @@
         return parseInt(this.stopLeftWidth*2/7);
       },
       remainElec(){
-        return (this.realData.remainElec ? this.realData.remainElec.toFixed(1) : "--")+ " km";
+        return (this.realData.remainElec ? Number(this.realData.remainElec).toFixed(1) : "--")+ " km";
       }
       /*lastTime(){
         var time = new Date().getTime()-this.realData.gpsTime;
