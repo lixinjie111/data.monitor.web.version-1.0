@@ -20,6 +20,12 @@
         <span class="real-legend-style light-style"></span>
         <span>信号灯</span>
       </div>
+      <div class="side-real-legend">
+        <span class="real-legend-style cam-style"></span>
+        <span>摄像头</span>
+      </div>
+
+      
     </div>
   </div>
 </template>
@@ -118,18 +124,19 @@
                 show:false,
                 min: 0,
               },
-              series: [{
-                /*data: [820, 932, 901, 934, 1290, 1330, 1320], */
-                data: data1,
-                type: 'line',
-                smooth: true,
-                symbol: 'none',
-                lineStyle: {
-                  color: '#936314',
-                  width: 1,
-                  opacity:0.7
-                }
-              },
+              series: [
+                {
+                  /*data: [820, 932, 901, 934, 1290, 1330, 1320], */
+                  data: data1,
+                  type: 'line',
+                  smooth: true,
+                  symbol: 'none',
+                  lineStyle: {
+                    color: '#936314',
+                    width: 1,
+                    opacity:0.7
+                  }
+                },
                 {
                   /*data: [700, 632, 501, 334, 990, 730, 520],*/
                   data: data2,
@@ -165,7 +172,8 @@
                     width: 1,
                     opacity:0.7
                   }
-                }],
+                }
+                ],
               /*animation:false*/
             };
             return option;
@@ -313,6 +321,10 @@
         background-color:#ff0000 ;
         margin-left: 10px;
       }
+      .cam-style{
+        background-color:#368099 ;
+        margin-left: 10px;
+      }  
     }
   }
 </style>
