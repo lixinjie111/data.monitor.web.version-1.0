@@ -49,7 +49,8 @@
               type:"position",
               data:{
                 currentExtent:this.currentExtent
-              }
+              },
+              size:true
             }
             document.getElementById(this.roadItem.camSerialNum).contentWindow.postMessage(msgData,'*');
             this.onMapComplete();
