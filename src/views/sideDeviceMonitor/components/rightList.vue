@@ -50,8 +50,8 @@
               // _this.roadList = res.data;
               let _data = res.data;
               _data.forEach(item => {
-                item.iframeUrl = window.config.staticUrl+'cesium-map/modules/monPlatform/index_mini.html';  
-                // item.iframeUrl =  'http://127.0.0.1:8080/modules/monPlatform/index_mini.html';    
+                item.iframeUrl = window.config.staticUrl+'cesium-map/modules/monPlatform/index_mini.html?v='+ new Date().getTime() + '';  
+                // item.iframeUrl =  'http://127.0.0.1:8080/modules/monPlatform/index_mini.html?v='+ new Date().getTime() + '';    
              });
               _this.roadList = _data;
             });
