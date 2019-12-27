@@ -12,7 +12,7 @@
           </div>
         </div>
         <div v-if="!visible" :id="roadItem.camSerialNum" class="c-map-style"></div>
-        <!-- <iframe v-if="!visible" class="m-iframe" :src="roadItem.iframeUrl"></iframe> -->
+        <!-- <iframe v-if="!visible" class="m-iframe" :src="roadItem.iframeSrc"></iframe> -->
 
         <!-- <tusvn-map
           class="c-map-video-style"

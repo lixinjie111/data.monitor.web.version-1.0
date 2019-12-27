@@ -12,7 +12,7 @@
           </div>
         </div>
         <!-- <div v-if="!visible" :id="roadItem.camSerialNum" class="c-map-style"></div> -->
-        <iframe @load ="onLoadMap" :id=roadItem.camSerialNum :name ="roadItem.camSerialNum" ref="iframe1" v-if="!visible" class="c-iframe" :src="roadItem.iframeUrl"></iframe>
+        <iframe @load ="onLoadMap" :id=roadItem.camSerialNum :name ="roadItem.camSerialNum" ref="iframe1" v-if="!visible" class="c-iframe" :src="roadItem.iframeSrc"></iframe>
 
       </div>
     </div>
