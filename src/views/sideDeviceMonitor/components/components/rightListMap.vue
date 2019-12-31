@@ -63,6 +63,7 @@
               cameraParam.y = this.roadItem.lat;
               let msgData = {
                 type:"updateCam",
+                animationZ:true,
                 data:{
                   x:cameraParam.x,
                   y:cameraParam.y,

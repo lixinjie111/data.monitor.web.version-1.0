@@ -351,6 +351,7 @@ export default {
               if (_this.mapInit) {
                 let camData = {
                   type:"updateCam",
+                  animationZ:false,
                   data:_this.cameraParam
                 }
                 for (const i in camData.data) {
@@ -425,6 +426,7 @@ export default {
         // _this.cameraParam.y = item.lat;
          let camData = {
           type:"updateCam",
+          animationZ:false,
           data:_this.cameraParam
         }
 
@@ -623,6 +625,7 @@ export default {
         this.mapInit = true;
         let camData = {
           type:"updateCam",
+          animationZ:true,
           data:this.cameraParam
         }
         for (const i in camData.data) {
@@ -640,6 +643,7 @@ export default {
           if(this.treeItem.cameraParam){
             let camData = {
               type:"updateCam",
+              animationZ:true,
               data:this.cameraParam
             }
             for (const i in camData.data) {
@@ -651,6 +655,7 @@ export default {
           }else{
             let camData = {
               type:"updateCam",
+              animationZ:true,
               data: window.defaultMapParam
             }
             for (const i in camData.data) {
