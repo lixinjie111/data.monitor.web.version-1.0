@@ -30,11 +30,9 @@
 
     <template v-else>
         <div class="c-car-list" v-for="item in new Array(4)">
-          <div class="c-size-inner">
             <div class="c-mask-tip">
               暂无数据
             </div>
-          </div>
         </div>
     </template>
   </ul>
