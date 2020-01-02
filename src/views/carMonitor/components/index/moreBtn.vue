@@ -1,7 +1,9 @@
 
 <template>
 	<div class="more-wrapper">
-		<a href="javascript:;" class="more-btn c-car-list" @click="dialogVisible = true">更多</a>
+		<ul class="c-button-style clearfix">
+			<li @click="dialogVisible = true">更多</li>
+		</ul>
 		<div class="c-dialog-wrapper" v-show="dialogVisible">
 			<div class="c-dialog-container">
 				<div class="c-dialog-header">
@@ -64,39 +66,35 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "@/assets/scss/theme.scss";
-.more-btn {
-    position: absolute;
-    top: 100px;
-    right: 420px;
-    z-index: 3;
-    width: 65px;
-    height: 30px;
-    @include layoutMode();
-   /* font-size: 20px;*/
-    color: #ccc;
-    padding: 0;
-}
-.echarts-classify-wrap {
-	margin-bottom: 18px;
-	margin-right: 20px;
-	&:last-child {
-		margin-bottom: 0;
+.more-wrapper {
+	.c-button-style {
+	    right: 420px;
+	    li {
+	    	width: 65px;
+	    }
 	}
-	.title {
-		position: relative;
-		padding-left: 11px;
-		height: 30px;
-		line-height: 30px;
-		font-size: 18px;
-		&:before {
-			content: "";
-			position: absolute;
-			left: 0;
-			top: 50%;
-			margin-top: -9px;
-			width: 2px;
-			height: 18px;
-			background-color: #41b27e;
+	.echarts-classify-wrap {
+		margin-bottom: 18px;
+		margin-right: 20px;
+		&:last-child {
+			margin-bottom: 0;
+		}
+		.title {
+			position: relative;
+			padding-left: 11px;
+			height: 30px;
+			line-height: 30px;
+			font-size: 18px;
+			&:before {
+				content: "";
+				position: absolute;
+				left: 0;
+				top: 50%;
+				margin-top: -9px;
+				width: 2px;
+				height: 18px;
+				background-color: #41b27e;
+			}
 		}
 	}
 }
