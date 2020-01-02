@@ -22,17 +22,15 @@
       </div>
     </div>
     <traffic-dialog v-if="trafficDialog" :selectedItem="trafficeItem" @closeDialog="closeDialog"></traffic-dialog>
-    <bus-dialog v-if="busDialog" :wescoketData="lightData" :selectedItem="busItem"  @closeDialog="closeDialog"></bus-dialog>
   </div>
 </template>
 <script>
   import { rwDis,tpSignalLight } from '@/api/roadMonitor'
   import ConvertCoord from '@/assets/js/utils/coordConvert.js'
   import trafficDialog from './components/trafficDialog.vue'
-  import busDialog from './components/busDialog.vue'
   export default {
     name: "MapContainer",
-    components: {trafficDialog,busDialog},
+    components: {trafficDialog},
     data() {
       return {
         id: "road-map-container",
@@ -71,11 +69,6 @@
             'text':'通行速度',
             'isActive':false
           },
-          {
-            'id':'smartBus',
-            'text':'智慧信号灯',
-            'isActive':false
-          },
         ],
         distributeShow:false,
         message:{},
@@ -91,16 +84,6 @@
         wms:null,
         carSpeedFlag:{},
         distributeDialogFlag:null,
-        
-        busWebSocket: null,
-        busWebSocketData: {
-          action: "third_spat",
-        },
-        smartBus:null,
-        busItem:null,
-        busDialog:false,
-        smartBusData:[], //初始化
-        lightData: {}, //格式化
       }
     },
   
@@ -164,66 +147,6 @@
       this.getMarkers(item);
     },
     methods: {
-      initBusWebSocket() {
-        if ("WebSocket" in window) {
-          this.busWebSocket = new WebSocket(window.config.socketUrl); //获得WebSocket对象
-        }
-        this.busWebSocket.onmessage = this.onBusMessage;
-        this.busWebSocket.onclose = this.onBusClose;
-        this.busWebSocket.onopen = this.onBusOpen;
-        this.busWebSocket.onerror = this.onBusError;
-      },
-      onBusMessage(mesasge) {
-        let _data = JSON.parse(mesasge.data).data;
-        for(var key in _data){
-          if(this.lightData[key]) {
-            this.$set(this.lightData[key], 'light', _data[key].light);
-            this.$set(this.lightData[key], 'likelyTime', _data[key].likelyTime);
-          }
-        }
-        this.smartBusData.forEach((item, index) => {
-          let _first=true;
-          if(item.subItem&&item.subItem.length) {
-            item.subItem.forEach(subItem1=>{
-                 if(_first){
-                   let _id=item.id+'_'+subItem1.phaseId;
-                    for(var key in this.lightData){
-                      if(_id==key){
-                        if(this.lightData[key].light){
-                          console.log(key)
-                          subItem1.light = this.lightData[key].light;
-                           _first=false;
-                        }
-                      }
-                    }
-                 }
-            })
-          }
-        });
-        this.setMassMarker(this.smartBusData,"smartBus")
-      },
-      processData(listData){
-          
-      },
-      onBusClose(data) {
-      },
-      onBusError(data) {
-        console.log("连接错误");
-      },
-      onBusOpen(data) {
-        var _traffic = JSON.stringify(this.busWebSocketData);
-        this.busSendMsg(_traffic);
-      },
-      busSendMsg(msg) {
-        if (window.WebSocket) {
-          if (this.busWebSocket.readyState == WebSocket.OPEN) {
-            //如果WebSocket是打开状态
-            this.busWebSocket.send(msg); //send()发送消息
-          }
-        } else {
-          return;
-        }
-      },
       getMarkers(item) {
      
         var disParams=[];
@@ -263,8 +186,6 @@
                 this.getSpeedWms();
               },5000)
               return;
-            }else if(item.id=='smartBus'){
-              this.tpSignalLight('smartBus');
             }else{
               this.getRwDis(item.id);
             }
@@ -347,14 +268,6 @@
           };
         }
       },
-      tpSignalLight(disParam){
-        tpSignalLight({}).then(res => {
-          if(res.data && res.data.length) {
-            this.rwDisMap(res.data,disParam);
-            this.initBusWebSocket();
-          }
-        });
-      },
       getRwDis(disParam){
         rwDis({
           'disType': disParam,
@@ -399,16 +312,6 @@
                           subItem: subItem
                         });
                       }
-                      //智慧公交
-                      if(disParam=='smartBus'){ 
-                        posotionData.push({
-                          lnglat: subItem.position,
-                          id: subItem.lightId,
-                          style: subIndex,
-                          crossingName:subItem.crossingName,
-                          subItem: subItem.tpPhaseList
-                        });
-                      }
                       //绘制完后，重新设置
                       if(subIndex==resultData.length-1){     
                         _this.count=0;
@@ -419,26 +322,6 @@
                 /*}
               });*/
             })
-            if(disParam=='smartBus'){ 
-              this.lightData = {};
-              this.smartBusData=posotionData;
-              this.smartBusData.forEach(item => {
-                if(item.subItem && item.subItem.length) {
-                  item.subItem.forEach(subItem => {
-                    let _id = item.id+'_'+subItem.phaseId;
-                    if(!this.lightData[_id]) {
-                      let _item = {
-                        lightId: item.id, 
-                        phaseId: subItem.phaseId, 
-                        light: '', 
-                        likelyTime:''
-                      };
-                      this.$set(this.lightData, _id, _item);
-                    }
-                  });
-                }
-              });
-            }
             this.setMassMarker(posotionData,disParam);    
           }
         }
@@ -456,12 +339,6 @@
           this.masstraffic.clear();
           this.map.remove(this.masstraffic);
           this.masstraffic=null;
-        }
-        if(type=='smartBus'&& this.smartBus){
-          this.busWebSocket&&this.busWebSocket.close();  
-          this.smartBus.clear();
-          this.map.remove(this.smartBus);
-          this.smartBus=null;
         }
       },
       closeDialog(){
@@ -605,28 +482,6 @@
                   size: sizeMass
               });        
           });
-        }else if(disParam =='smartBus'){ 
-          anchorMass =  new AMap.Pixel(5,13);
-          sizeMass = new AMap.Size(10,26);
-          massNum="smartBus";
-          data.map(item => {
-              makerUrl='./static/images/smartlight/noLight.png';
-              if(item.subItem&&item.subItem.length>0){
-                item.subItem.forEach(subItem=>{
-                  if(subItem.light) {
-                    let _color = subItem.light.toLowerCase();
-                    makerUrl='./static/images/smartlight/'+_color+'Light.png';
-                  }else {
-                    return ''
-                  }
-                })
-              }
-              style.push({
-                url: makerUrl,
-                anchor: anchorMass,
-                size: sizeMass
-              });      
-          });
         }
 
         if(massNum == "masstraffic" && this.masstraffic){ 
@@ -635,13 +490,6 @@
             this.masstraffic.on('click', function(e) {
               _this.trafficDialog=true;
               _this.trafficeItem=e.data.subItem;
-            }); 
-        }else if(massNum == "smartBus" && this.smartBus){ 
-            this.smartBus.setStyle(style);
-            this.smartBus.setData(data);
-            this.smartBus.on('click', function(e) {
-              _this.busDialog=true;
-              _this.busItem=e.data;
             }); 
         }else{
             if(!this[massNum]) {
@@ -667,11 +515,6 @@
                 this[massNum].on('click', function(e) {
                   _this.trafficDialog=true;
                   _this.trafficeItem=e.data.subItem;
-                });  
-              }else if(disParam == "smartBus"){
-                this[massNum].on('click', function(e) {
-                    _this.busDialog=true;
-                    _this.busItem=e.data;
                 });  
               }
             }else {
