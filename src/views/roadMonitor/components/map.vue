@@ -344,7 +344,6 @@
       closeDialog(){
         // this.distributeShow=false;
         this.trafficDialog=false;
-        this.busDialog=false;
       },
       closeDistributeDialog(){
         this.distributeDialogFlag = true;
