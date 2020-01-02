@@ -534,12 +534,11 @@
 </script>
 <style lang="scss" scoped>
 
-  .road-distribute{
+  .c-car-list{
     position: absolute;
     top: 146px;
     right: 400px;
     z-index:2;
-    border:1px solid #5e5970;
     .road-title{
       padding:13px 20px;
       border-bottom: 1px solid #5e5970;
