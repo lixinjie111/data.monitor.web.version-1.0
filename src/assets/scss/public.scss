@@ -227,7 +227,7 @@ img {
 .c-car-list {
   position: relative;
   // height: 180px;
-  border: solid 1px #5e5970;
+  border: solid 1px $borderColor;
   box-sizing: border-box;
   background-color: rgba(94, 89, 112, .2);
   // padding: 14px 12px;
@@ -328,9 +328,10 @@ img {
   right:400px;
   color: #ccc;
   z-index: 2;
+  background-color: $backgroundColor;
   li{
     float: left;
-    border:1px solid #5e5970;
+    border:1px solid $borderColor;
     width: 100px;
     height: 30px;
     @include layoutMode();
@@ -352,9 +353,10 @@ img {
   width: 330px;
   height: 210px;
   margin-bottom: 30px;
-  border:1px solid #5e5970;
+  border:1px solid $borderColor;
   box-sizing: border-box;
   padding: 5px;
+  background-color: $backgroundColor;
   &:last-child{
     margin-bottom:0
   }
