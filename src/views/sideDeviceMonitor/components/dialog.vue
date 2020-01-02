@@ -331,8 +331,6 @@ export default {
             
             if(item.cameraParam){
               _this.cameraParam = JSON.parse(item.cameraParam);
-              // _this.cameraParam.x = item.lon;
-              // _this.cameraParam.y = item.lat;
             }else{
               _this.cameraParam = {
                 x:item.lon,
@@ -354,11 +352,16 @@ export default {
                   animationZ:false,
                   data:_this.cameraParam
                 }
-                for (const i in camData.data) {
-                  if(!camData.data[i] && camData.data[i] != 0){
-                    return;
-                  }
+                // for (const i in camData.data) {
+                //   if(!camData.data[i] && camData.data[i] != 0){
+                //     this.camErrMsg();
+                //     return;
+                //   }
+                // }
+                if(_this.camErrMsg(camData.data)){
+                  return;
                 }
+
                 document.getElementById("cesiumContainer").contentWindow.postMessage(camData,'*'); 
                 _this.getExtend(item.lon,item.lat,_this.extend);
                 let msgData = {
@@ -368,7 +371,6 @@ export default {
                   }
                 }
                 document.getElementById("cesiumContainer").contentWindow.postMessage(msgData,'*');
-
               }
             }
           } else {
@@ -422,18 +424,21 @@ export default {
         //选中后重新请求
         if(!item.cameraParam) return;
         _this.cameraParam = JSON.parse(item.cameraParam);
-        // _this.cameraParam.x = item.lon;
-        // _this.cameraParam.y = item.lat;
          let camData = {
           type:"updateCam",
           animationZ:false,
           data:_this.cameraParam
         }
 
-        for (const i in camData.data) {
-          if(!camData.data[i] && camData.data[i] != 0){
-            return;
-          }
+        // for (const i in camData.data) {
+      
+        //   if(!camData.data[i] && camData.data[i] != 0){
+        //     this.camErrMsg();
+        //     return;
+        //   }
+        // }
+        if(_this.camErrMsg(camData.data)){
+          return;
         }
      
         document.getElementById("cesiumContainer").contentWindow.postMessage(camData,'*'); 
@@ -628,53 +633,18 @@ export default {
           animationZ:true,
           data:this.cameraParam
         }
-        for (const i in camData.data) {
-          if(!camData.data[i] && camData.data[i] != 0){
-            return;
-          }
+        // for (const i in camData.data) {
+        //   if(!camData.data[i] && camData.data[i] != 0){
+        //     this.camErrMsg();
+        //     return;
+        //   }
+        // }
+        if(this.camErrMsg(camData.data)){
+          return;
         }
         document.getElementById("cesiumContainer").contentWindow.postMessage(camData,'*'); 
         return;
-      }
-      let count = 0;
-      let time = setInterval(() => {
-        if (this.serialNum && this.serialNum != "") {
-          this.mapInit = true;
-          if(this.treeItem.cameraParam){
-            let camData = {
-              type:"updateCam",
-              animationZ:true,
-              data:this.cameraParam
-            }
-            for (const i in camData.data) {
-              if(!camData.data[i] && camData.data[i] != 0){
-                return;
-              }
-            }
-            document.getElementById("cesiumContainer").contentWindow.postMessage(camData,'*'); 
-          }else{
-            let camData = {
-              type:"updateCam",
-              animationZ:true,
-              data: window.defaultMapParam
-            }
-            for (const i in camData.data) {
-              if(!camData.data[i] && camData.data[i] != 0){
-                return;
-              }
-            }
-            document.getElementById("cesiumContainer").contentWindow.postMessage(camData,'*'); 
-          }
-          clearInterval(time);
-        }
-        //超过5s仍然没有响应 则停止渲染
-        if (count == 5) {
-          clearInterval(time);
-        }
-        count++;
-      }, 1000);
-
-    
+      } 
     },
     getVideo() {
       this.videoUrl = "";
@@ -702,6 +672,42 @@ export default {
         this.currentExtent.push([x1, y1]);
         return this.currentExtent;
     },
+
+    camErrMsg(cameraParam){
+       for (const i in cameraParam) {
+          if(!cameraParam[i] && cameraParam[i] != 0){
+            this.$message({
+              type: 'error',
+              duration: '1500',
+              message: '摄像头角度参数缺失',
+              showClose: true
+            });
+            return false;
+          }
+          if(i == "x"){
+            if(cameraParam[i] >180 || cameraParam[i] < 0){
+              this.$message({
+                type: 'error',
+                duration: '1500',
+                message: '摄像头角度经度错误',
+                showClose: true
+              });
+            }
+            return;
+          }
+          if(i == "y"){
+             if(cameraParam[i] >90 || cameraParam[i] < 0){
+              this.$message({
+                type: 'error',
+                duration: '1500',
+                message: '摄像头角度纬度错误',
+                showClose: true
+              }); 
+            }
+            return;
+          }
+       }  
+    }
 
     //感知车
     // initPerceptionWebSocket(){
