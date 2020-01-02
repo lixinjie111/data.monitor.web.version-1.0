@@ -1,4 +1,6 @@
 @charset "UTF-8";
+$borderColor: #5e5970;
+$backgroundColor: rgba(94, 89, 112, .2);
 @mixin lineClampOne() {
   white-space: nowrap;
   overflow: hidden;
