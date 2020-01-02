@@ -2,12 +2,12 @@
 
   <div class="c-view-main" >
     <div :id="id" class="c-map-style"></div>
-    <ul class="c-button-style clearfix trans">
+    <ul class="c-button-style clearfix">
       <li v-for="item in options" :key="item.id" :class="{active:item.isActive}" @click="getMarkers(item)">
         {{item.text}}
       </li>
     </ul>
-    <div class="road-distribute trans" v-show="distributeShow">
+    <div class="c-car-list" v-show="distributeShow">
       <div class="road-title">
         <span >{{message.title}}</span>
         <i class="road-title-close" @click="closeDistributeDialog"></i>
@@ -569,10 +569,6 @@
         }
       }
     }
-  }
-  .trans{
-    background-color: rgba(94,89,112,.2);
-  }
- 
+  } 
 </style>
 
