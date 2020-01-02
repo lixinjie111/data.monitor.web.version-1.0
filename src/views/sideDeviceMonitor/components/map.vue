@@ -293,9 +293,9 @@
                       }
                       //绘制完后，重新设置
                       if(subIndex==resultData.length-1){
-                        // _this.map.setFitView();
+                        _this.map.setFitView();
 //                        console.log("zoom===="+_this.map.getZoom())
-                       // _this.map.setZoom(_this.map.getZoom()-2);
+                        _this.map.setZoom(_this.map.getZoom()-2);
                         _this.count=0;
 //                        console.log("zoom1===="+_this.map.getZoom())
                       }
