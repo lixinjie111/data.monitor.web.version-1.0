@@ -679,33 +679,27 @@ export default {
             this.$message({
               type: 'error',
               duration: '1500',
-              message: '摄像头角度参数缺失',
+              message: '摄像头参数缺失',
               showClose: true
             });
             return false;
           }
-          if(i == "x"){
-            if(cameraParam[i] >180 || cameraParam[i] < 0){
-              this.$message({
-                type: 'error',
-                duration: '1500',
-                message: '摄像头角度经度错误',
-                showClose: true
-              });
-            }
-            return;
+          let errFlag = false;
+          if((i == "x") && (cameraParam[i] >180 || cameraParam[i] < 0)){
+            errFlag = true;
           }
-          if(i == "y"){
-             if(cameraParam[i] >90 || cameraParam[i] < 0){
-              this.$message({
-                type: 'error',
-                duration: '1500',
-                message: '摄像头角度纬度错误',
-                showClose: true
-              }); 
-            }
-            return;
+          if((i == "y") && (cameraParam[i] >90 || cameraParam[i] < 0)){
+            errFlag = true;
           }
+          if(errFlag){
+            this.$message({
+              type: 'error',
+              duration: '1500',
+              message: '摄像头参数错误',
+              showClose: true
+            }); 
+            return;
+          }     
        }  
     }
 
