@@ -11,7 +11,7 @@
   </div>
 </template>
 <script>
-  import { tpSignalLight } from '@/api/roadMonitor'
+  import { findCrossLightList } from '@/api/roadMonitor'
   import { getDevDis } from '@/api/sideDeviceMonitor'
   import ConvertCoord from '@/assets/js/utils/coordConvert.js'
   import busDialog from './components/busDialog.vue'
@@ -88,23 +88,27 @@
             this.$set(this.lightData[key], 'likelyTime', _data[key].likelyTime);
           }
         }
+       
         this.smartBusData.forEach((item, index) => {
-          let _first=true;
-          if(item.subItem&&item.subItem.length) {
-            item.subItem.forEach(subItem1=>{
-                 if(_first){
-                   let _id=item.id+'_'+subItem1.phaseId;
-                    for(var key in this.lightData){
-                      if(_id==key){
-                        if(this.lightData[key].light){
-                          subItem1.light = this.lightData[key].light;
-                           _first=false;
-                        }
+            let _first=true;
+            item.subItem.forEach(subItem=>{
+                if(subItem.tpPhaseList.length) {
+                   subItem.tpPhaseList.forEach(subItem1 => {
+                      if(_first){
+                        let _id=subItem.lightCode+'_'+subItem1.phaseCode;
+                          for(var key in this.lightData){
+                            if(_id==key){
+                              if(this.lightData[key].light){
+                                subItem1.light = this.lightData[key].light;
+                                _first=false;
+                              }
+                            }
+                          }
                       }
-                    }
-                 }
+                   })
+                    
+                }
             })
-          }
         });
         this.setMassMarker(this.smartBusData,"smartBus")
       },
@@ -137,7 +141,7 @@
           //当选中后才进行请求
           if(item.isActive){
             if(item.id=='smartBus'){
-              this.tpSignalLight('smartBus');
+              this.findCrossLightList('smartBus');
             }else{
               disParams.push(item.id);
               this.getDevDis(disParams);
@@ -159,8 +163,8 @@
           this.deviceMap(res.data);
         });
       },
-      tpSignalLight(disParam){
-        tpSignalLight({}).then(res => {
+      findCrossLightList(disParam){
+        findCrossLightList({}).then(res => {
           if(res.data && res.data.length) {
             this.rwDisMap(res.data,disParam);
             this.initBusWebSocket();
@@ -183,10 +187,10 @@
                       if(disParam=='smartBus'){ 
                         posotionData.push({
                           lnglat: subItem.position,
-                          id: subItem.lightId,
+                          id: subItem.id,
                           style: subIndex,
                           crossingName:subItem.crossingName,
-                          subItem: subItem.tpPhaseList
+                          subItem: subItem.tpLightList
                         });
                       }
                       //绘制完后，重新设置
@@ -200,20 +204,22 @@
               this.lightData = {};
               this.smartBusData=posotionData;
               this.smartBusData.forEach(item => {
-                if(item.subItem && item.subItem.length) {
-                  item.subItem.forEach(subItem => {
-                    let _id = item.id+'_'+subItem.phaseId;
-                    if(!this.lightData[_id]) {
-                      let _item = {
-                        lightId: item.id, 
-                        phaseId: subItem.phaseId, 
-                        light: '', 
-                        likelyTime:''
-                      };
-                      this.$set(this.lightData, _id, _item);
-                    }
-                  });
-                }
+                item.subItem.forEach(subItem => {
+                    if(subItem.tpPhaseList.length) {
+                      subItem.tpPhaseList.forEach(subItem1 => {
+                      let _id = subItem.lightCode+'_'+subItem1.phaseCode;
+                      if(!this.lightData[_id]) {
+                        let _item = {
+                          lightId: subItem.lightCode, 
+                          phaseCode: subItem1.phaseCode, 
+                          light: '', 
+                          likelyTime:''
+                        };
+                        this.$set(this.lightData, _id, _item);
+                      }
+                    })
+                  }
+                });
               });
             }
             this.setMassMarker(posotionData,disParam);    
@@ -320,17 +326,19 @@
           sizeMass = new AMap.Size(10,26);
           massNum="smartBus";
           data.map(item => {
-              makerUrl='./static/images/smartlight/noLight.png';
-              if(item.subItem&&item.subItem.length>0){
-                item.subItem.forEach(subItem=>{
-                  if(subItem.light) {
-                    let _color = subItem.light.toLowerCase();
-                    makerUrl='./static/images/smartlight/'+_color+'Light.png';
-                  }else {
-                    return ''
-                  }
-                })
-              }
+              makerUrl='./static/images/smartlight/light.png';
+              // if(item.subItem&&item.subItem.length){
+              //   if(item.subItem[0].tpPhaseList&&item.subItem[0].tpPhaseList.length){
+              //     item.subItem[0].tpPhaseList.forEach(subItem=>{
+              //         if(subItem.light) {
+              //           let _color = subItem.light.toLowerCase();
+              //           makerUrl='./static/images/smartlight/'+_color+'Light.png';
+              //         }else {
+              //           return ''
+              //         }
+              //     })
+              //   }
+              // }
               style.push({
                 url: makerUrl,
                 anchor: anchorMass,

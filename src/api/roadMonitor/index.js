@@ -56,4 +56,4 @@ export const getFeaturesByPoint = (params,config) => {return axios.post(`${DLURL
 /**
  * 智慧公交
  */
-export const tpSignalLight = params => {return axios.post(`${OPERATEURL}tpSignalLight/remote/findList`, params).then(res => res.data); };
+export const findCrossLightList = params => {return axios.post(`${OPERATEURL}tpSignalLight/remote/findCrossLightList`, params).then(res => res.data); };

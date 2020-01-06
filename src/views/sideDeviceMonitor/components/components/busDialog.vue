@@ -123,47 +123,54 @@ export default {
   methods: {
     initData(){
       if(this.selectedItem){
-        if(this.selectedItem.subItem){
-          this.busListData.forEach(item=>{//循环初始数据 没有的相位 id隐藏
-              item.list.forEach(item1=>{
-                this.selectedItem.subItem.forEach(item2=>{
-                  if(item1.id==item2.phaseId){
-                    this.$set(item1, "flag", true);
-                    this.hasData=true;
-                  }
-                })
+        this.selectedItem.subItem.forEach(item0=>{
+           if(item0.tpPhaseList&&item0.tpPhaseList.length){
+              this.busListData.forEach(item=>{//循环初始数据 没有的相位 id隐藏
+                  item.list.forEach(item1=>{
+                    item0.tpPhaseList.forEach(item2=>{
+                      if(item1.id==item2.phaseCode){
+                        this.$set(item1, "flag", true);
+                        this.hasData=true;
+                      }
+                    })
+                  })
               })
-          })
-        }else{//相位列表为空，全部置灰；
-            this.busListData.forEach(item=>{
-              item.list.forEach(item1=>{
-                  this.$set(item1, "flag", true);
-                  this.hasData=true;
+            }else{//相位列表为空，全部置灰；
+                this.busListData.forEach(item=>{
+                  item.list.forEach(item1=>{
+                      this.$set(item1, "flag", true);
+                      this.hasData=true;
+                  })
               })
-          })
-        }
-        this.initBusList();
+            }
+            this.initBusList();
+        })
+           
       }
     },
     initBusList(newVal) {
       let _data = newVal || this.lightData;
       if(_data){
         for(var key in _data){//变幻灯的颜色和显示隐藏
-          this.selectedItem.subItem.forEach(item2=>{
-            let _id=this.selectedItem.id+"_"+item2.phaseId;
-              if(key==_id){
-                let realData=_data[key];
-                this.busListData.forEach(item3=>{
-                    item3.list.forEach(item4=>{
-                        if(item4.id==realData.phaseId){
-                          this.$set(item4, "flag", true);
-                          this.$set(item4, "light", realData.light);
-                          this.$set(item4, "likelyTime", realData.likelyTime);
-                        }
-                    })
-                })
-              }
-            })
+          this.selectedItem.subItem.forEach(item0=>{
+            if(item0.tpPhaseList&&item0.tpPhaseList.length){
+              item0.tpPhaseList.forEach(item2=>{
+                let _id=item0.lightCode+"_"+item2.phaseCode;
+                if(key==_id){
+                  let realData=_data[key];
+                  this.busListData.forEach(item3=>{
+                      item3.list.forEach(item4=>{
+                          if(item4.id==realData.phaseCode){
+                            this.$set(item4, "flag", true);
+                            this.$set(item4, "light", realData.light);
+                            this.$set(item4, "likelyTime", realData.likelyTime);
+                          }
+                      })
+                  })
+                }
+              })
+            }
+          })
         }
       }
     },
