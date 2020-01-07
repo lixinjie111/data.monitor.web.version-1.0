@@ -236,8 +236,6 @@ export default {
       delayTime:9000,
       pulseConnectCount:0,
       perceptionConnectCount:0,
-      mapOk:false,
-      reqOk:false,
     };
   },
   components: {
@@ -261,19 +259,6 @@ export default {
       return _filterData;
     }
   },
-  watch:{
-      mapOk(){
-        if(this.mapOk && this.reqOk){
-          this.setIframePer();
-        }       
-      },
-      reqOk(){
-        if(this.mapOk && this.reqOk){
-          this.setIframePer();
-        }       
-      },
-
-  },
   beforeCreate(){
     this.iframeSrc = window.config.staticUrl+'cesium-map/modules/monPlatform/index.html';      
     // this.iframeSrc =  'http://127.0.0.1:8080/modules/monPlatform/index.html';       
@@ -291,10 +276,18 @@ export default {
   methods: {
 
     onLoadMap(){  
-     this.mapOk = true;
-    },
-    setIframePer(){
-      this.getData(); 
+      this.mapInit = true;
+      let camData = {
+        type:"updateCam",
+        animationZ:true,
+        data:JSON.parse(this.treeItem.cameraParam)
+      }   
+      if(this.camErrMsg(camData.data)){
+        return;
+      }
+      document.getElementById("cesiumContainer").contentWindow.postMessage(camData,'*'); 
+      return;
+
       let msgData = {
         type:"position",
         data:{
@@ -303,7 +296,7 @@ export default {
       }
       document.getElementById("cesiumContainer").contentWindow.postMessage(msgData,'*'); 
     },
-
+ 
 
     getDeviceList() {
       var _this = this;
@@ -312,7 +305,6 @@ export default {
       getDeviceList({
         roadSiderId: this.roadId
       }).then(res => {
-        this.reqOk = true;
         _this.deviceList = res.data;
         var flag = true;
         let deviceNList = []
@@ -639,28 +631,7 @@ export default {
     showTimeStamp(time) {
       this.time = time;
     },
-   
-    getData() {
-      if (this.serialNum && this.serialNum != "") {
-        this.mapInit = true;
-        let camData = {
-          type:"updateCam",
-          animationZ:true,
-          data:this.cameraParam
-        }
-        // for (const i in camData.data) {
-        //   if(!camData.data[i] && camData.data[i] != 0){
-        //     this.camErrMsg();
-        //     return;
-        //   }
-        // }
-        if(this.camErrMsg(camData.data)){
-          return;
-        }
-        document.getElementById("cesiumContainer").contentWindow.postMessage(camData,'*'); 
-        return;
-      } 
-    },
+  
     getVideo() {
       this.videoUrl = "";
       getVideoByNum({
