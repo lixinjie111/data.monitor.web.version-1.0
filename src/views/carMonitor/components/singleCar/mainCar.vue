@@ -442,21 +442,7 @@
                 if( k == _this.realData.vehicleId){
                   return;
                 }
-                deviceData[k].forEach((item, index) => {
-                    _filterData[item.vehicleId] = {
-                        vehicleId:item.vehicleId,
-                        position:ConvertCoord.wgs84togcj02(item.longitude, item.latitude),
-                        heading:item.heading,
-                        speed:item.speed,
-                        longitude:item.longitude,
-                        latitude: item.latitude,
-                        icon:'static/images/car/car-7.png',
-                        size:[17,40],
-                        ancher:[8,20],
-                        zIndex:50
-                    }; 
-                });
-
+            
                 deviceData[k].map(item=>{
                     if(item.gpsTime > maxGpsTime){
                       maxGpsTime = item.gpsTime;
@@ -489,13 +475,6 @@
                 if(!_this.sidePrevData[_filterData.vehicleId]) {   //表示新增该点，做add
                     _this.addMarker(_filterData);
                 }    
-
-                if(_this.setFitViewFlag) {
-                    setTimeout(_ => {
-                        _this.distanceMap.setFitView();
-                        _this.setFitViewFlag = false;
-                    }, 500);  
-                }
 
                 _this.sidePrevData[_filterData.vehicleId] = _filterData;
                 _this.sidePrevData[_filterData.vehicleId].timer = setTimeout(() => {
@@ -533,12 +512,6 @@
                 });
                 this.setMassMarker(_filterData,"addLightMarker");
 
-                if(_this.setFitViewFlag) {
-                    setTimeout(_ => {
-                        _this.distanceMap.setFitView();
-                        _this.setFitViewFlag = false;
-                    }, 500);  
-                }
           }     
           this.clearLightTimer = setTimeout(() => {      
             this.addLightMarker.setData([]);
@@ -611,12 +584,6 @@
                   if(!_this.lightPrevData[id]) {   //表示新增该点，做add
                       _this.addMarker(_filterData[id]);
                   }       
-              }
-              if(_this.setFitViewFlag) {
-                  setTimeout(_ => {
-                      _this.distanceMap.setFitView();
-                      _this.setFitViewFlag = false;
-                  }, 500);  
               }
               _this.lightPrevData = _filterData;
         }
