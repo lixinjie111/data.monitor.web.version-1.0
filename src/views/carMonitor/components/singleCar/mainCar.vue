@@ -578,7 +578,7 @@
                       timer:setTimeout(() => {
                         _this.distanceMap.remove(_this.lightPrevData[item.spatId].marker);
                         delete _this.lightPrevData[item.spatId];
-                      }, 3000)  
+                      }, 3500)  
                   };
                  
                   let direction = item.direction+"";
