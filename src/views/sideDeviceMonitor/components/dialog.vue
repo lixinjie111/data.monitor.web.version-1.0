@@ -390,6 +390,7 @@ export default {
       });
     },
     switchChange(item) {
+      if(item.value) return;
       var _this = this;
       //不在线 也可以打开
       /*if (item.workStatus != 1) {
