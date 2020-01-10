@@ -559,6 +559,9 @@
         if (lightData.length > 0) {
               let _filterData = {};
               lightData.forEach((item, index) => {
+                  if(_this.lightPrevData[item.spatId]){
+                    clearTimeout(_this.lightPrevData[item.spatId].timer)
+                  }
                   _filterData[item.spatId] = {
                       position:ConvertCoord.wgs84togcj02(item.longitude, item.latitude),
                       leftTime:item.leftTime,
@@ -572,6 +575,10 @@
                       ancher:[27,10],
                       zIndex:48,
                       heading:item.heading || 0,
+                      timer:setTimeout(() => {
+                        _this.distanceMap.remove(_this.lightPrevData[item.spatId].marker);
+                        delete _this.lightPrevData[item.spatId];
+                      }, 3000)  
                   };
                  
                   let direction = item.direction+"";
@@ -580,8 +587,6 @@
                       clearTimeout(_this.lightData[key].time)
                   }
         
-                  // _this.lightData[key].spareTime = item.leftTime;
-                  // _this.lightData[key].lightColor = item.light;
                   this.$set(_this.lightData[key],'spareTime',item.leftTime);
                   this.$set(_this.lightData[key],'lightColor',item.light);
                   if(_this.lightData[key].spareTime && _this.lightData[key].lightColor){
@@ -614,12 +619,6 @@
                   }, 500);  
               }
               _this.lightPrevData = _filterData;
-        } else {
-              // 返回的数据为空
-              for (let id in _this.lightPrevData) {
-                  _this.distanceMap.remove(_this.lightPrevData[id].marker);
-                  delete _this.lightPrevData[id];
-              }
         }
       },
       initWarningWebSocket(){
