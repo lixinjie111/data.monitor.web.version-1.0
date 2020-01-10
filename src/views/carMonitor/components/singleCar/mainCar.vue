@@ -210,6 +210,9 @@
         wsFlag:true,
         makerPosition:null,
         mountedFlag:true,
+        addLightMarker:null,
+        addWarningMarker:null,
+        clearLightTimer:false,
       }
     },
     props:{
@@ -514,6 +517,9 @@
           let json = JSON.parse(mesasge.data);
           let deviceData = json.result.data;
           if (deviceData.length > 0) {
+                if(this.clearLightTimer){
+                  clearTimeout(this.clearLightTimer)
+                }
                 let _filterData = {};
                 deviceData.forEach((item, index) => {
                     _filterData[item.rsPtId] = {
@@ -523,38 +529,20 @@
                         size:[29,50],
                         ancher:[15,50],
                         zIndex:49
-                    };
-                 
+                    };              
                 });
-                for (let id in _this.devicePrevData) {
-                    if(_filterData[id]) {   //表示有该点，做setPosition
-                        _filterData[id].marker = _this.devicePrevData[id].marker;
-                        let _currentCar = _filterData[id];
-                        _filterData[id].marker.setAngle(_currentCar.heading);
-                        _filterData[id].marker.setPosition(_currentCar.position);
-                    } 
-                }
-                for (let id in _filterData) {       
-                    if(!_this.devicePrevData[id]) {   //表示新增该点，做add
-                        _this.addMarker(_filterData[id]);
-                    }       
-                }
+                this.setMassMarker(_filterData,"addLightMarker");
+
                 if(_this.setFitViewFlag) {
                     setTimeout(_ => {
                         _this.distanceMap.setFitView();
                         _this.setFitViewFlag = false;
                     }, 500);  
                 }
-                _this.devicePrevData = _filterData;
-          } else {
-                // 返回的数据为空
-                // console.log(_this.devicePrevData)
-                // for (let id in _this.devicePrevData) {
-                //   console.log(111111)
-                //     _this.distanceMap.remove(_this.devicePrevData[id].marker);
-                //     // delete _this.devicePrevData[id];
-                // }
-          } 
+          }     
+          this.clearLightTimer = setTimeout(() => {      
+            this.addLightMarker.setData([]);
+          }, 3000);       
       },
       initLightWebSocket(){
         let _params = {
@@ -679,13 +667,13 @@
                       }
                     },3000)
                     _this.warningList.unshift(obj);
-                    _this.warningData[warningId]=obj;
+                    // _this.warningData[warningId]=obj;
                   }
                 
               }
               if(type=='CLOUD'){
-                let warningId;
-                let eventType = v.eventType;
+                  let warningId;
+                  let eventType = v.eventType;
                 
                   warningId = v.data.warnId;
                   // warningId = warningId.substring(0,warningId.lastIndexOf("_"));
@@ -693,38 +681,19 @@
                     longitude:v.data.longitude,
                     latitude:v.data.latitude
                   }
-                  let warningHash = _this.hashcode(JSON.stringify(warningObj));
                   let position = ConvertCoord.wgs84togcj02(v.data.longitude, v.data.latitude);
-                  //如果告警id不存在 右侧弹出          
-                  if(!_this.warningData[warningId]){
-              
-                    //在地图上标记交通事件
-                    let marker = new AMap.ElasticMarker({
-                      position:position,
-                      zooms:[10,20],
-                      zIndex:47,
-                      styles:[{
-                        icon:{
-                          img:v.data.warnMapIcon,
-                          size:[44,60],
-                          ancher:[22,60],
-                          fitZoom:18,//最合适的级别，在此级别下显示为原始大小
-                          scaleFactor:1.3,//地图放大一级的缩放比例系数
-                          maxScale:1.3,//最大放大比例 达到此处图片不在变化
-                          minScale:0.5//最小放大比例
-                        }
-                      }],
-                      zoomStyleMapping:_this.zoomStyleMapping
-                    })
-                    _this.distanceMap.add(marker);
-                    //同时
-                    let eventObj = {
-                      marker:marker,
-                      hash:warningHash
-                    }
-                    _this.warningData[warningId]=eventObj;
+                  //如果告警id不存在 右侧弹出  
 
-                    // 先打点 在预警信息中的内容不在右下角弹出 但是会在地图上打点
+                  if(!_this.warningData[warningId]){
+                    _this.warningData[warningId] = {
+                      position:position,
+                      icon:v.data.warnMapIcon,
+                      timer:setTimeout(() => {
+                              delete _this.warningData[warningId];
+                            }, 3000)  
+                    }
+                  
+                    // 在预警信息中的内容不在右下角弹出 但是会在地图上打点
                   
                     if(_this.cloudIdList.indexOf(warningId) >= 0){
                         return;
@@ -735,8 +704,6 @@
                     // debugger
                     let dist;
                    
-                   
-                    console.log(this.makerPosition)
                     let dis = AMap.GeometryUtil.distance([this.makerPosition[0],this.makerPosition[1]], [v.data.longitude,v.data.latitude]);
                     dist = parseInt(dis);
                     if(!dist){
@@ -759,31 +726,21 @@
                     _this.cloudCount++;
 
                   }else{
-                    //判断是否需要更新
-                    let eventObj = _this.warningData[warningId];
-                    if(eventObj.hash!=warningHash){
-                      //进行更新
-                      eventObj.marker.setPosition(position);
+                    if(_this.warningData[warningId].timer){  
+                      clearTimeout(_this.warningData[warningId].timer)
                     }
-                  }
-                
+                    _this.warningData[warningId] = {
+                      position:position,
+                      icon:v.data.warnMapIcon,
+                      timer:setTimeout(() => {
+                              delete _this.warningData[warningId];
+                            }, 3000)  
+                    }
+                  } 
               }
-
-
-          })
-         
-        
+          }) 
+          this.setMassMarker(this.warningData,"addWarningMarker");
         }
-      },
-      hashcode(str) {
-        let hash = 0, i, chr, len;
-        if (str.length === 0) return hash;
-        for (i = 0, len = str.length; i < len; i++) {
-          chr   = str.charCodeAt(i);
-          hash  = ((hash << 5) - hash) + chr;
-          hash |= 0; // Convert to 32bit integer
-        }
-        return hash;
       },
       getAlarmInformation(){
         let param = {
@@ -851,9 +808,43 @@
             zoomStyleMapping:this.zoomStyleMapping
           })
       },
-      
-    
 
+
+       setMassMarker(data,markerName){
+          // 创建样式对象
+          let style=[];
+          let massData = [];
+        
+          for (const item in data) {
+            style.push({
+                url: data[item].icon,
+                anchor: new AMap.Pixel(12,34),
+                size: new AMap.Size(24,34),
+            });   
+            massData.push({
+                lnglat: data[item].position,  
+                name:massData.length,
+                id:massData.length,
+                style:massData.length
+            })   
+          }
+
+          if(!this[markerName]){
+              this[markerName] = new AMap.MassMarks(massData, {
+              opacity: 1,
+              zIndex: 111,
+              zooms:[11,18],
+              cursor: 'pointer',
+              style: style
+            });
+            // 将海量点添加至地图实例
+            this[markerName].setMap(this.distanceMap);
+          }else{
+            this[markerName].setStyle(style);
+            this[markerName].setData(massData);
+          } 
+        },
+  
     },
     
     destroyed(){

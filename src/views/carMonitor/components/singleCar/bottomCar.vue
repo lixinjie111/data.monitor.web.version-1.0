@@ -18,7 +18,6 @@
         <canvas id="up3" class="upCanvas" ></canvas>
         <canvas id="upImg3" class="upCanvas"></canvas>
         <img id="upPlan3" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="up4" class="upCanvas" ></canvas>
         <canvas id="upImg4" class="upCanvas"></canvas>
         <img id="upPlan4" src="@/assets/images/car/circle.png" style="display: none;">
         <canvas id="upImg5" class="upCanvas" ></canvas>
@@ -44,14 +43,14 @@
         <img id="upPlan14" src="@/assets/images/car/circle.png" style="display: none;">
         <canvas id="upImg15" class="upCanvas"></canvas>
         <img id="upPlan15" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="upImg16" class="upCanvas"></canvas>
-        <img id="upPlan16" src="@/assets/images/car/circle.png" style="display: none;">
+      
 
 
 
         <canvas id="down0" class="downCanvas" ></canvas>
         <canvas id="downImg0" class="downCanvas" ></canvas>
         <img id="downPlan0" src="@/assets/images/car/circle.png" style="display: none;">
+        <canvas id="down1" class="downCanvas" ></canvas>
         <canvas id="down1" class="downCanvas" ></canvas>
         <canvas id="downImg1" class="downCanvas" ></canvas>
         <img id="downPlan1" src="@/assets/images/car/circle.png" style="display: none;">
@@ -135,16 +134,17 @@
         k:3,
         m : 6,
         n :9,
-        r :12,
+        
 
         j:0,
+        r :4,
         upRandom:0.1,
         canRandom:0,
         gpsRandom:0,
         perRandom:0,
         eventRandom:0,
 
-        downRandom:0.2,
+        downRandom:0.15,
         spatRandom:0,
         rsmRandom:0,
 
@@ -434,15 +434,13 @@
         if(_this.n>=12){
           _this.n=9;
         }
-        if(_this.r>=15){
-          _this.r=12;
-        }
-
-
+       
         if(_this.j>=4){
           _this.j=0;
         }
-
+        if(_this.r>=8){
+          _this.r=4;
+        }
 
         if(data.length>0) {
           data.forEach(function (item) {
@@ -458,12 +456,11 @@
             if (item.type == 'EVENT') {
               eventData.push(item);
             }
-            if (item.type == 'RSM/RCU') {
-              rsmData.push(item);
-            }
-
             if (item.type == 'SPAT') {
               spatData.push(item);
+            }
+            if (item.type == 'RSM/RCU') {
+              rsmData.push(item);
             }
           
           })
@@ -491,18 +488,20 @@
             _this.n++;
           }
 
-          if(rsmData.length>0){
-            let curve5 = new Curve();
-            curve5.drawImgs(_this.rsmRandom,'RSM/RCU','up',_this.r,[130, 142], [320, 58],'#8a46f1');
-            _this.r++;
-          }
-
+       
 
           if(spatData.length>0){
             let downCurve1 = new Curve();
-            downCurve1.drawImgs("-"+_this.spatRandom,'SPAT','down',_this.j,[552, 150],[356, 55],'#59d44f');//信号灯
+            downCurve1.drawImgs("-"+_this.spatRandom,'SPAT','down',_this.j,[552, 150],[356, 60],'#59d44f');//信号灯
             _this.j++;
           }
+
+          if(rsmData.length>0){
+            let downCurve2 = new Curve();
+            downCurve2.drawImgs(_this.rsmRandom,'RSM/RCU','down',_this.r,[552, 150],[356, 60],'#8a46f1');
+            _this.r++;
+          }
+
          
         }
       }
@@ -536,18 +535,19 @@
       curve4.drawLines(_this.upRandom,'#595450','up',3,[130, 142], [320, 58]);
       curve4.drawImgs(_this.upRandom,'EVENT','up',15,[130, 142], [320, 58],'#59d44f');
       _this.eventRandom = _this.upRandom;
-      _this.upRandom=_this.upRandom+0.15;
-     //开始画rsm的第一条线
-      let curve5 = new Curve();
-      curve5.drawLines(_this.upRandom,'#8a46f1','up',4,[130, 142], [320, 58]);
-      curve5.drawImgs(_this.upRandom,'RSM/RCU','up',16,[130, 142], [320, 58],'#8a46f1');
-      _this.rsmRandom = _this.upRandom;
-      _this.upRandom=_this.upRandom+0.15;
+      _this.upRandom=_this.upRandom+0.15; 
       //开始画spat的第一条线
       let downCurve1 = new Curve();
-      downCurve1.drawLines("-"+_this.downRandom,'#6ec9fd','down',0,[552, 150],[356, 55]);
-      downCurve1.drawImgs("-"+_this.downRandom,'SPAT','down',12, [552, 150],[356, 55],'#59d44f');//信号灯
+      downCurve1.drawLines("-"+_this.downRandom,'#6ec9fd','down',0,[552, 150],[356, 60]);
+      downCurve1.drawImgs("-"+_this.downRandom,'SPAT','down',12, [552, 150],[356, 60],'#59d44f');//信号灯
       _this.spatRandom = _this.downRandom;
+      _this.downRandom=_this.downRandom-0.45;
+      //开始画rsm的第一条线
+      let downCurve2 = new Curve();
+      downCurve2.drawLines(_this.downRandom,'#8a46f1','down',1,[552, 150],[356, 60]);
+      downCurve2.drawImgs(_this.downRandom,'RSM/RCU','down',13,[552, 150],[356, 60],'#8a46f1');
+      _this.rsmRandom = _this.downRandom;
+      _this.downRandom=_this.downRandom-0.45;
 
       _this.realReportWebSocket();
     },
