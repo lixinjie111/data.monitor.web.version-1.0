@@ -219,7 +219,7 @@
     right:0;
     background: #17181c;
     overflow:hidden;
-    line-height: 1.42857143;
+    line-height: 1.5;
     letter-spacing: 0;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     background-image:url("../../assets/images/car/background.png") ;
