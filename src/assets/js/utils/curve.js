@@ -1,5 +1,4 @@
-class Curve{
-
+class Curve{ 
   constructor(){
 
     this.stop1=null;
@@ -40,7 +39,7 @@ class Curve{
     );
     ctx.stroke();
     percent = ( percent + 1 ) % 100;
-    if(percent==99){
+    if(percent==60){
       cancelAnimationFrame(this.stop1);
       return;
     }
@@ -61,31 +60,60 @@ class Curve{
    * @param {Array.<Number>} start  开始坐标
    * @param {Array.<Number>} end  结束坐标
    */
-  generatorImg(imgCtx,random,img,imgPercent,start,end,type,color) {
+  generatorImg(imgCtx,random,img,imgPercent,start,end,animatNum) {
     var _this = this;
-    imgCtx.clearRect(0, 0, 800, 800);
-    imgCtx.beginPath();
-    /* var random = 0.2;*/
-    this.drawImage(
-      imgCtx,
-      start,
-      end,
-      random,
-      imgPercent,
-      img,
-      type,
-      color
-    );
-    imgCtx.stroke();
     imgPercent = ( imgPercent + 1 ) % 100;
-    if(imgPercent==99){
+    if(imgPercent==60){
       imgCtx.clearRect( 10, 10, 1000, 1000 );
       window.cancelAnimationFrame(this.stop2);
       return ;
     }
-    this.stop2 = requestAnimationFrame(function() {
-      _this.generatorImg(imgCtx,random,img,imgPercent,start,end,type)
+    animatNum++;
+    if(animatNum > 1){
+      imgCtx.clearRect(0, 0, 800, 800);
+      imgCtx.beginPath();
+      /* var random = 0.2;*/
+      this.drawImage(
+        imgCtx,
+        start,
+        end,
+        random,
+        imgPercent,
+        img,
+      );
+      imgCtx.stroke();
+      animatNum = 0;
+    }
+   
+    this.stop2 = requestAnimationFrame(function() { 
+      _this.generatorImg(imgCtx,random,img,imgPercent,start,end,animatNum);  
     });
+  
+
+    // function tick() {
+       
+    // 　　requestAnimationFrame(tick);
+    // 　　now = Date.now();
+    // 　　delta = now - then;
+    // 　　if (delta > interval) {
+    // 　　　　// 这里不能简单then=now，否则还会出现上边简单做法的细微时间差问题。例如fps=10，每帧100ms，而现在每16ms（60fps）执行一次draw。16*7=112>100，需要7次才实际绘制一次。这个情况下，实际10帧需要112*10=1120ms>1000ms才绘制完成。
+    // 　　　　then = now - (delta % interval);
+    //        _this.generatorImg(imgCtx,random,img,imgPercent,start,end,type)
+    // 　　}
+    // }
+    // tick();
+
+
+    // let step = (timestamp, elapsed) => {
+    //     if (elapsed > 1000 / 24) {
+    //         elapsed = 0
+    //     }
+    //    console.log(111111)
+    //     window.requestAnimationFrame(
+    //         _timestamp => step(_timestamp, elapsed + _timestamp - timestamp)
+    //     )
+    // };
+    // this.stop2 = requestAnimationFrame(timestamp => step(timestamp, 0));
   }
   drawLines(random,color,order,i,start,end){
     var lineCanvas = document.getElementById(order +i);
@@ -110,7 +138,7 @@ class Curve{
     imgCtx.scale(2,2);
     //获取图像
     var img = document.getElementById(order+"Plan"+i);
-    this.generatorImg(imgCtx,random,img,1,start, end,type,color);
+    this.generatorImg(imgCtx,random,img,1,start, end,0);
   }
 
   /**
@@ -129,7 +157,7 @@ class Curve{
       ( start[ 1 ] + end[ 1 ] ) / 2 - ( end[ 0 ] - start[ 0 ] ) * curveness
     ];
 
-    var t = percent / 100;
+    var t = percent / 60;
 
     var p0 = start;
     var p1 = cp;
@@ -152,7 +180,7 @@ class Curve{
     );
 
   }
-  drawImage( ctx, start, end, curveness, percent,img,type,color) {
+  drawImage( ctx, start, end, curveness, percent,img) {
 
     //console.log("curveness----"+curveness);
     var cp = [
@@ -160,7 +188,7 @@ class Curve{
       ( start[ 1 ] + end[ 1 ] ) / 2 - ( end[ 0 ] - start[ 0 ] ) * curveness
     ];
 
-    var t = percent / 100;
+    var t = percent / 60;
 
     var p0 = start;
     var p1 = cp;
