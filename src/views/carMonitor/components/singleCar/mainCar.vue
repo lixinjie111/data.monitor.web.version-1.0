@@ -622,7 +622,15 @@
                     if(!dist){
                       dist=-1;
                     }
-                    let obj = {type: v.data.eventType,timer: null, flag: true,dist:dist,message:v.data.warnMsg,icon:v.data.warnIcon,warnColor:v.data.warnColor};
+                    let obj = {
+                      type: v.data.eventType,
+                      timer: null, 
+                      flag: true,
+                      dist:dist,
+                      message:v.data.warnMsg,
+                      icon:window.config.iconPath+'rsi_'+v.data.eventType.split('_')[1]+'.png',
+                      warnColor:v.data.warnColor
+                    };
                     obj.timer=setTimeout(()=>{
                       obj.flag=false;
                       _this.warningList.forEach(item=>{
@@ -655,7 +663,7 @@
                   if(!_this.warningData[warningId]){
                     _this.warningData[warningId] = {
                       position:position,
-                      icon: window.config.iconPath+'rsi_map_'+v.data.eventType.split("_")[1]+'.png',
+                      icon: window.config.iconPath+'rsi_map_'+eventType.split("_")[1]+'.png',
                       timer:setTimeout(() => {
                               delete _this.warningData[warningId];
                             }, 3000)  
@@ -678,7 +686,15 @@
                       dist=-1;
                     }
                        
-                    let obj = {type:eventType,timer:null,flag:true,dist:dist,message:v.data.warnMsg,icon:v.data.warnIcon,warnColor:v.data.warnColor};
+                    let obj = {
+                      type:eventType,
+                      timer:null,
+                      flag:true,
+                      dist:dist,
+                      message:v.data.warnMsg,
+                      icon:window.config.iconPath+'rsi_'+eventType.split('_')[1]+'.png',
+                      warnColor:v.data.warnColor
+                    };
                     obj.timer=setTimeout(()=>{
                       obj.flag=false;
                       _this.warningList.forEach(item=>{
@@ -699,7 +715,7 @@
                     }
                     _this.warningData[warningId] = {
                       position:position,
-                      icon: window.config.iconPath+'rsi_map_'+v.data.eventType.split("_")[1]+'.png',
+                      icon: window.config.iconPath+'rsi_map_'+eventType.split("_")[1]+'.png',
                       timer:setTimeout(() => {
                               delete _this.warningData[warningId];
                             }, 3000)  

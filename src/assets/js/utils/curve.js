@@ -206,37 +206,7 @@ class Curve{
 
     ctx.drawImage(img,(b[ 0 ]-10),(b[ 1 ]-10),20,20);
 
-
-  /*  ctx.strokeStyle= color;
-    if(type=='GPS'){
-      ctx.strokeStyle= '#6ec9fd';
-    }
-    if(type=='CAN'){
-      ctx.strokeStyle= '#3db765';
-    }
-    if(type=='perception'){
-      ctx.strokeStyle= '#d47b24';
-    }
-    if(type=='event'){
-      ctx.strokeStyle= '#f75b30';
-    }
-    ctx.font = '10px Adobe Ming Std';
-    /!*console.log("x"+b[ 0 ]+"---y"+b[ 1 ]);*!/
-    ctx.strokeText(type,(b[ 0 ]-5),(b[ 1 ]-10));
-    ctx.stroke();*/
-
-    /* img.onload = function () {
-       ctx.drawImage(img,(b[ 0 ]),(b[ 1 ]),10,10);
-     }
- */
-
-
-
-
-
   }
-
-
 
 }
 export default  Curve;
