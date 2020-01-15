@@ -350,8 +350,6 @@ export default {
               }
               document.getElementById("cesiumContainer").contentWindow.postMessage(camData,'*'); 
             
-              let _length = this.itemData.modelIcon.split("/").length;
-              let _name = this.itemData.modelIcon.split("/")[_length - 1];
               let glbNameTmp;
               if(this.itemData.eventName == "障碍物"){
                 glbNameTmp = "zhui_tong";
@@ -365,9 +363,8 @@ export default {
                     latitude:this.position[1],
                     heading:this.heading,
                     vehicleId:"",
-                    name:_name,
-                    glbName:glbNameTmp,
-                    labelName:_name,
+                    name: this.itemData.taskCode,
+                    glbName:glbNameTmp
                 }
               }
               document.getElementById("cesiumContainer").contentWindow.postMessage(modelData,'*'); 

@@ -279,7 +279,7 @@
         if(newVal){
           this.sideWebsocket.webSocket.close();
         }else{
-          console.log("第一次是否走此方法")
+          // console.log("第一次是否走此方法")
           this.initSideWebSocket();
         }
       },
@@ -371,6 +371,7 @@
                 _this.marker = new AMap.ElasticMarker({
                   position:newPosition,
                   zooms:[6,20],
+                  cursor: 'auto',
                   styles:[{
                     icon:{
                       img:'static/images/car/car-6.png',
@@ -390,6 +391,7 @@
                   map: _this.distanceMap,
                   text: platNo+"<br/><span style='color:#e6a23c'>"+source+'</span>',
                   anchor: 'center', // 设置文本标记锚点
+                  cursor: 'auto',
                   style: {
                     'padding': '0 5px',
                     'border-radius': '4px',
@@ -653,7 +655,7 @@
                   if(!_this.warningData[warningId]){
                     _this.warningData[warningId] = {
                       position:position,
-                      icon:v.data.warnMapIcon,
+                      icon: window.config.iconPath+'rsi_map_'+v.data.eventType.split("_")[1]+'.png',
                       timer:setTimeout(() => {
                               delete _this.warningData[warningId];
                             }, 3000)  
@@ -697,7 +699,7 @@
                     }
                     _this.warningData[warningId] = {
                       position:position,
-                      icon:v.data.warnMapIcon,
+                      icon: window.config.iconPath+'rsi_map_'+v.data.eventType.split("_")[1]+'.png',
                       timer:setTimeout(() => {
                               delete _this.warningData[warningId];
                             }, 3000)  
@@ -760,6 +762,7 @@
             position: obj.position,
             zooms:[10,20],
             zIndex: obj.zIndex,
+            cursor: 'auto',
             styles:[{
               icon:{
                 img: obj.icon,
@@ -800,7 +803,7 @@
               opacity: 1,
               zIndex: 111,
               zooms:[11,18],
-              cursor: 'pointer',
+              cursor: 'auto',
               style: style
             });
             // 将海量点添加至地图实例

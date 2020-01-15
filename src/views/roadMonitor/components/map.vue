@@ -303,7 +303,7 @@
                         posotionData.push({
                           lnglat: subItem.position,
                           id: subItem.id,
-                          icon: subItem.mapIcon,
+                          icon: window.config.iconPath+'rsi_map_'+subItem.category+'.png',
                           style: subIndex,
                           subItem: subItem
                         });
