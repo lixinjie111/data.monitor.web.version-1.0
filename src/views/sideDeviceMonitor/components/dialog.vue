@@ -260,8 +260,8 @@ export default {
     }
   },
   beforeCreate(){
-    // this.iframeSrc = window.config.staticUrl+'cesium-map/modules/monPlatform/index.html';      
-    this.iframeSrc =  'http://127.0.0.1:8082/modules/monPlatform/index.html';       
+    this.iframeSrc = window.config.staticUrl+'cesium-map/modules/monPlatform/index.html';      
+    // this.iframeSrc =  'http://127.0.0.1:8082/modules/monPlatform/index.html';       
   },
   mounted() {
     this.selectAddr = this.treeItem.path.split("|");
@@ -390,6 +390,7 @@ export default {
       });
     },
     switchChange(item) {
+      if(item.value) return;
       var _this = this;
       //不在线 也可以打开
       /*if (item.workStatus != 1) {

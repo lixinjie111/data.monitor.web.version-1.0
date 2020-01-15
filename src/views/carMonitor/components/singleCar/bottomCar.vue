@@ -95,15 +95,9 @@
       </div>
     </div>
     <div class="chart-region">
-      <div class="chart-title title1">
-        <img src="@/assets/images/car/car-10.png" class="chart-title-img"/>
-        <span>速度（km/h）</span>
-      </div>
+      <div class="chart-title title1">速度（km/h）</div>
       <div id="speedChart" class="speed-chart chart1"></div>
-      <div class="chart-title title2">
-        <img src="@/assets/images/car/car-10.png" class="chart-title-img"/>
-        <span>加速度（m/s²）</span>
-      </div>
+      <div class="chart-title title2">加速度（m/s²）</div>
       <div id="accelerateChart" class="speed-chart chart2"></div>
       <div class="chart-mask" v-if="isStop">车辆已停驶</div>
     </div>
@@ -558,7 +552,7 @@
     }
   }
 </script>
-<style scoped>
+<style scoped lang="scss">
   .downCanvas, .upCanvas {
     position: absolute;
     color: #000;
@@ -628,11 +622,21 @@
     font-size: 12px;
     color: #ddd9d1;
     position: absolute;
+    padding-left: 12px;
+    &:before{
+      position: absolute;
+      left: 0;
+      top: 50%;
+      margin-top: -4px;
+      content: '';
+      width: 4px;
+      height: 8px;
+      background-color: #DC8C00;
+    }
   }
-  .chart-title-img{
-    width: 4px;
-    height: 8px;
-  }
+
+ 
+  
   .title1{
     left:0;
     top: 16px;

@@ -459,6 +459,7 @@ export default {
       this.currentExtent.push([x1, y1]);
     },
     switchChange(item) {
+      if(item.value) return;
       this.isFirst = false;
       var _this = this;
       //如果设备不在线进行提示
