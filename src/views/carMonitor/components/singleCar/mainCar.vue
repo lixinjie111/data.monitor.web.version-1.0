@@ -297,6 +297,7 @@
           this.getAlarmInformation();
           // 事件
           this.initWarningWebSocket();
+          this.initEventCancelWebSocket();
           this.mountedFlag = false;
         }
       },
@@ -590,6 +591,36 @@
               _this.lightPrevData = _filterData;
         }
       },
+      initEventCancelWebSocket(){
+          let _params = {
+            "action":"event_cancel",
+            "type":1,
+            "body":{
+              "busType": "rsi"
+            }
+          };
+          // this.warningWebsocket = new WebSocketObj(this, window.config.socketUrl, _params, this.onEventCancelMessage);
+          this.eventCancelWebsocket = new WebSocketObj(this, window.config.socketUrltest, _params, this.onEventCancelMessage);
+      },
+      onEventCancelMessage(message){
+         let _this=this;
+         let warningId = JSON.parse(message.data).result;
+         let _params = {
+              "action":"event_cancel",
+              "type":2,
+              "body":{
+                "events": warningId,
+                "status":1
+              }
+          };
+          console.log(111111)
+          _params = JSON.stringify(_params);
+          this.eventCancelWebsocket.sendMsg(_params);
+          if(_this.warningData[warningId]){
+            delete _this.warningData[warningId]; 
+          } 
+        
+      },
       initWarningWebSocket(){
         let _params = {
           "action":"warning",
@@ -598,7 +629,8 @@
             "vehicleId": this.vehicleId
           }
         };
-        this.warningWebsocket = new WebSocketObj(this, window.config.socketUrl, _params, this.onWarningMessage);
+        // this.warningWebsocket = new WebSocketObj(this, window.config.socketUrl, _params, this.onWarningMessage);
+        this.warningWebsocket = new WebSocketObj(this, window.config.socketUrltest, _params, this.onWarningMessage);
       },
       onWarningMessage(mesasge){
         let _this=this;
@@ -609,8 +641,7 @@
           warningData.map((v,k)=>{  
               let type = v.type;     
               if(type=='VEHICLE'){
-                let warningId;          
-                  warningId = v.data.warnId;
+                let warningId = v.data.warnId;
                   if(_this.vehicleIdList.indexOf(warningId) >= 0){
                     return;
                   }
@@ -648,79 +679,146 @@
                 
               }
               if(type=='CLOUD'){
-                  let warningId;
-                  let eventType = v.eventType;
-                
-                  warningId = v.data.warnId;
-                  // warningId = warningId.substring(0,warningId.lastIndexOf("_"));
-                  let warningObj={
-                    longitude:v.data.longitude,
-                    latitude:v.data.latitude
-                  }
-                  let position = ConvertCoord.wgs84togcj02(v.data.longitude, v.data.latitude);
-                  //如果告警id不存在 右侧弹出  
+                  // isD true 为动态事件  false 为静态事件
+                  if(v.data.isD){                         
+                    let warningId = v.data.warnId;
+                    let eventType = v.eventType;
+                    let warningObj={
+                      longitude:v.data.longitude,
+                      latitude:v.data.latitude
+                    }
+                    let position = ConvertCoord.wgs84togcj02(v.data.longitude, v.data.latitude);
+                    //如果告警id不存在 右侧弹出  
 
-                  if(!_this.warningData[warningId]){
-                    _this.warningData[warningId] = {
-                      position:position,
-                      icon: window.config.iconPath+'rsi_map_'+eventType.split("_")[1]+'.png',
-                      timer:setTimeout(() => {
-                              delete _this.warningData[warningId];
-                            }, 3000)  
-                    }
-                  
-                    // 在预警信息中的内容不在右下角弹出 但是会在地图上打点
-                  
-                    if(_this.cloudIdList.indexOf(warningId) >= 0){
-                        return;
-                    }else{
-                        this.cloudIdList.push(v.data.warnId);
-                        _this.cloudList.push(v.data)
-                    }
-                    // debugger
-                    let dist;
-                   
-                    let dis = AMap.GeometryUtil.distance([this.makerPosition[0],this.makerPosition[1]], [v.data.longitude,v.data.latitude]);
-                    dist = parseInt(dis);
-                    if(!dist){
-                      dist=-1;
-                    }
-                       
-                    let obj = {
-                      type:eventType,
-                      timer:null,
-                      flag:true,
-                      dist:dist,
-                      message:v.data.warnMsg,
-                      icon:window.config.iconPath+'rsi_'+eventType.split('_')[1]+'.png',
-                      warnColor:v.data.warnColor
-                    };
-                    obj.timer=setTimeout(()=>{
-                      obj.flag=false;
-                      _this.warningList.forEach(item=>{
-                        if(item.flag){
-                          _this.isAllClear=true;
-                        }
-                      })
-                      if(!_this.isAllClear){
-                        this.warningList=[];
+                    if(!_this.warningData[warningId]){
+                      _this.warningData[warningId] = {
+                        position:position,
+                        icon: window.config.iconPath+'rsi_map_'+v.data.eventType.split("_")[1]+'.png',
+                        timer:setTimeout(() => {
+                                delete _this.warningData[warningId];
+                              }, 3000)  
                       }
-                    },3000)
-                    _this.warningList.unshift(obj);
-                    _this.cloudCount++;
+                    
+                      // 在预警信息中的内容不在右下角弹出 但是会在地图上打点     
+                      if(_this.cloudIdList.indexOf(warningId) >= 0){
+                          return;
+                      }else{
+                          this.cloudIdList.push(v.data.warnId);
+                          _this.cloudList.push(v.data)
+                      }
+                      let dist;
+                    
+                      let dis = AMap.GeometryUtil.distance([this.makerPosition[0],this.makerPosition[1]], [v.data.longitude,v.data.latitude]);
+                      dist = parseInt(dis);
+                      if(!dist){
+                        dist=-1;
+                      }
+                        
+                      let obj = {
+                        type:eventType,
+                        timer:null,
+                        flag:true,
+                        dist:dist,
+                        message:v.data.warnMsg,
+                        icon:window.config.iconPath+'rsi_'+v.data.eventType.split('_')[1]+'.png',
+                        warnColor:v.data.warnColor
+                      };
+                      obj.timer=setTimeout(()=>{
+                        obj.flag=false;
+                        _this.warningList.forEach(item=>{
+                          if(item.flag){
+                            _this.isAllClear=true;
+                          }
+                        })
+                        if(!_this.isAllClear){
+                          this.warningList=[];
+                        }
+                      },3000)
+                      _this.warningList.unshift(obj);
+                      _this.cloudCount++;
+                    
+                    }else{
+                      if(_this.warningData[warningId].timer){  
+                        clearTimeout(_this.warningData[warningId].timer)
+                      }
+                      _this.warningData[warningId] = {
+                        position:position,
+                        icon: window.config.iconPath+'rsi_map_'+v.data.eventType.split("_")[1]+'.png',
+                        timer:setTimeout(() => {
+                                delete _this.warningData[warningId];
+                              }, 3000)  
+                      }
+                    } 
 
-                  }else{
-                    if(_this.warningData[warningId].timer){  
-                      clearTimeout(_this.warningData[warningId].timer)
+                  }else{        
+                    let warningId = v.data.warnId;  
+                    let eventType = v.eventType; 
+                    let warningObj={
+                      longitude:v.data.longitude,
+                      latitude:v.data.latitude
                     }
-                    _this.warningData[warningId] = {
-                      position:position,
-                      icon: window.config.iconPath+'rsi_map_'+eventType.split("_")[1]+'.png',
-                      timer:setTimeout(() => {
-                              delete _this.warningData[warningId];
-                            }, 3000)  
-                    }
-                  } 
+                    let position = ConvertCoord.wgs84togcj02(v.data.longitude, v.data.latitude);
+                    //如果告警id不存在 右侧弹出  
+
+                    if(!_this.warningData[warningId]){
+                      let _params = {
+                        "action":"warning",
+                        "type":2,
+                        "body":{
+                          "warnId": warningId,
+                          "status":1
+                        }
+                      };
+                      _params = JSON.stringify(_params);
+                      this.warningWebsocket.sendMsg(_params);
+                        _this.warningData[warningId] = {
+                          position:position,
+                          icon: window.config.iconPath+'rsi_map_'+v.data.eventType.split("_")[1]+'.png',
+                      }
+                    
+                      // 在预警信息中的内容不在右下角弹出 但是会在地图上打点     
+                      if(_this.cloudIdList.indexOf(warningId) >= 0){
+                          return;
+                      }else{
+                          this.cloudIdList.push(v.data.warnId);
+                          _this.cloudList.push(v.data)
+                      }
+                      let dist;
+                    
+                      let dis = AMap.GeometryUtil.distance([this.makerPosition[0],this.makerPosition[1]], [v.data.longitude,v.data.latitude]);
+                      dist = parseInt(dis);
+                      if(!dist){
+                        dist=-1;
+                      }
+                        
+                      let obj = {
+                        type:eventType,
+                        timer:null,
+                        flag:true,
+                        dist:dist,
+                        message:v.data.warnMsg,
+                        icon:window.config.iconPath+'rsi_'+v.data.eventType.split('_')[1]+'.png',
+                        warnColor:v.data.warnColor
+                      };
+                      obj.timer=setTimeout(()=>{
+                        obj.flag=false;
+                        _this.warningList.forEach(item=>{
+                          if(item.flag){
+                            _this.isAllClear=true;
+                          }
+                        })
+                        if(!_this.isAllClear){
+                          this.warningList=[];
+                        }
+                      },3000)
+                      _this.warningList.unshift(obj);
+                      _this.cloudCount++;
+                    
+                    }else{
+                      console.log('------------------------------')
+                      delete _this.warningData[warningId];
+                    } 
+                  }
               }
           }) 
           this.setMassMarker(this.warningData,"addWarningMarker");

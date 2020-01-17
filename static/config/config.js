@@ -16,9 +16,12 @@ window.config = {
     operateUrl: 'http://120.133.21.14:9090/operateApp/',    //运营平台
     websocketUrl:'ws://120.133.21.14:49982/mon',  //监控
     socketUrl:'ws://120.133.21.14:49999/ws',  //影子系统
+    socketUrltest:'ws://172.17.1.16:19999/ws',  //影子系统
+    
     dlUrl: 'http://117.114.144.227:8085/', //迪路
     dlWmsUrl: 'http://117.114.144.227:8080/', //迪路
     iconPath: 'http://120.133.21.14:9090/file/pic/trafficPic/', // 设备icon图片
+
     
     //测试环境 内网
     // staticUrl: "http://10.0.1.181:9090/", //静态文件路径
