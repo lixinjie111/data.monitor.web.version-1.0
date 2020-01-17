@@ -151,7 +151,7 @@
           onmessage(mesasge){
             let _this=this;
             var json = JSON.parse(mesasge.data);
-            this.trafficCount=json.result.eventCount;
+            this.trafficCount=json.result.eventCount ? json.result.eventCount : 0;
             Array.prototype.push.apply(this.trafficData, json.result.data);
             if(this.trafficData.length > 5) {
               this.trafficData.splice(0, this.trafficData.length - 5);
