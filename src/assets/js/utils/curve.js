@@ -3,6 +3,32 @@ class Curve{
 
     this.stop1=null;
     this.stop2=null;
+    this.drawArr = {
+      'GPS+CAN':{
+        points:[],
+        firstdraw:true,
+      },
+      'BSM':{
+        points:[],
+        firstdraw:true,
+      },
+      'PER':{
+        points:[],
+        firstdraw:true,
+      },
+      'EVENT':{
+        points:[],
+        firstdraw:true,
+      },
+      'SPAT':{
+        points:[],
+        firstdraw:true,
+      },
+      'RSM/RCU':{
+        points:[],
+        firstdraw:true,
+      },
+    };
   }
 
   /**
@@ -60,19 +86,21 @@ class Curve{
    * @param {Array.<Number>} start  开始坐标
    * @param {Array.<Number>} end  结束坐标
    */
-  generatorImg(imgCtx,random,img,imgPercent,start,end,animatNum) {
+  generatorImg(imgCtx,random,img,imgPercent,start,end,type) {
     var _this = this;
-    imgPercent = ( imgPercent + 1 ) % 100;
-    if(imgPercent==60){
+
+    if(imgPercent>60){
+      this.drawArr[type].firstdraw = false;
       imgCtx.clearRect( 10, 10, 1000, 1000 );
       window.cancelAnimationFrame(this.stop2);
       return ;
     }
-    animatNum++;
-    if(animatNum > 1){
-      imgCtx.clearRect(0, 0, 800, 800);
-      imgCtx.beginPath();
-      /* var random = 0.2;*/
+  
+  
+    imgCtx.clearRect(0, 0, 800, 800);
+    imgCtx.beginPath();
+    /* var random = 0.2;*/
+    if(this.drawArr[type].firstdraw){
       this.drawImage(
         imgCtx,
         start,
@@ -80,13 +108,23 @@ class Curve{
         random,
         imgPercent,
         img,
+        type
       );
-      imgCtx.stroke();
-      animatNum = 0;
     }
-   
+    // else{
+    //   if(this.drawArr[type].points[imgPercent]){
+    //     imgCtx.drawImage(img,this.drawArr[type].points[imgPercent][0],this.drawArr[type].points[imgPercent][1],20,20);
+    //   }else{
+    //     console.log(imgPercent)
+    //     console.log(this.drawArr[type].points[imgPercent])
+    //   }
+     
+    // }
+    
+    imgCtx.stroke();
+    imgPercent = ( imgPercent + 1 ) % 100;   
     this.stop2 = requestAnimationFrame(function() { 
-      _this.generatorImg(imgCtx,random,img,imgPercent,start,end,animatNum);  
+      _this.generatorImg(imgCtx,random,img,imgPercent,start,end,type);  
     });
   
 
@@ -131,6 +169,8 @@ class Curve{
   drawImgs(random,type,order,i,start,end,color){
     var imgCanvas = document.getElementById(order+'Img'+i);
     var imgCtx = imgCanvas.getContext( '2d' );
+    imgCanvas.height = imgCanvas.height;
+    imgCtx.clearRect( 0, 0, 1000, 1000 );
     imgCanvas.width=1200;
     imgCanvas.height=400;
     imgCanvas.style.width='600px';
@@ -138,7 +178,24 @@ class Curve{
     imgCtx.scale(2,2);
     //获取图像
     var img = document.getElementById(order+"Plan"+i);
-    this.generatorImg(imgCtx,random,img,1,start, end,0);
+   
+    if(this.drawArr[type].firstdraw){
+      this.generatorImg(imgCtx,random,img,1,start, end,type);
+    }else{
+      let imgPercent = 0
+   
+      let stoptimeer = setInterval(() => {
+        if(imgPercent>59){
+          imgCtx.clearRect( 10, 10, 1000, 1000 );
+          return ;
+        }  
+        imgCtx.clearRect(0, 0, 800, 800);
+        imgCtx.beginPath();  
+        imgCtx.drawImage(img,this.drawArr[type].points[imgPercent][0],this.drawArr[type].points[imgPercent][1],20,20);           
+        imgCtx.stroke(); 
+        imgPercent++;
+      }, 50);
+    }
   }
 
   /**
@@ -180,7 +237,9 @@ class Curve{
     );
 
   }
-  drawImage( ctx, start, end, curveness, percent,img) {
+  drawImage( ctx, start, end, curveness, percent,img,type) {
+
+   
 
     //console.log("curveness----"+curveness);
     var cp = [
@@ -203,6 +262,8 @@ class Curve{
     var v = [ q1[ 0 ] - q0[ 0 ], q1[ 1 ] - q0[ 1 ] ];       // 向量<q0, q1>
 
     var b = [ q0[ 0 ] + v[ 0 ] * t, q0[ 1 ] + v[ 1 ] * t ];
+
+    this.drawArr[type].points.push([(b[ 0 ]-10),(b[ 1 ]-10)]);
 
     ctx.drawImage(img,(b[ 0 ]-10),(b[ 1 ]-10),20,20);
 

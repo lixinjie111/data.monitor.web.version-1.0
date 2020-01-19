@@ -142,7 +142,8 @@
         spatRandom:0,
         rsmRandom:0,
 
-        n1:0
+        n1:0,
+        vehicleDataCountNum:0
 
       }
     },
@@ -403,101 +404,99 @@
         this.reportWebSocket = new WebSocketObj(this, window.config.websocketUrl, _params, this.onReportMessage);
       },
       onReportMessage(message){
-        let _this=this;
-        var json = JSON.parse(message.data);
-        var data = json.result.reportItems;
-        _this.n1++;
 
-        var canGpsData=[];
-        var bsmData=[];
-        var perData=[];
-        var eventData=[];
+        if(this.vehicleDataCountNum > 4){
+            let _this=this;
+            var json = JSON.parse(message.data);
+            var data = json.result.reportItems;    
+            _this.n1++;
 
-        var spatData = [];
-        var rsmData = [];
+            var canGpsData=[];
+            var bsmData=[];
+            var perData=[];
+            var eventData=[];
 
-        if(_this.i>=3){
-          _this.i=0;
-        }
-        if(_this.k>=6){
-          _this.k=3;
-        }
-        if(_this.m>=9){
-          _this.m=6;
-        }
-        if(_this.n>=12){
-          _this.n=9;
-        }
-       
-        if(_this.j>=4){
-          _this.j=0;
-        }
-        if(_this.r>=8){
-          _this.r=4;
-        }
+            var spatData = [];
+            var rsmData = [];
 
-        if(data.length>0) {
-          data.forEach(function (item) {
-            if (item.type == 'GPS+CAN') {
-              canGpsData.push(item);
+            if(_this.i>=3){
+              _this.i=0;
             }
-            if (item.type == 'BSM') {
-              bsmData.push(item);
+            if(_this.k>=6){
+              _this.k=3;
             }
-            if (item.type == 'PER') {
-              perData.push(item);
+            if(_this.m>=9){
+              _this.m=6;
             }
-            if (item.type == 'EVENT') {
-              eventData.push(item);
-            }
-            if (item.type == 'SPAT') {
-              spatData.push(item);
-            }
-            if (item.type == 'RSM/RCU') {
-              rsmData.push(item);
+            if(_this.n>=12){
+              _this.n=9;
             }
           
-          })
+            if(_this.j>=4){
+              _this.j=0;
+            }
+            if(_this.r>=8){
+              _this.r=4;
+            }
 
-          if(canGpsData.length>0){
-            let curve1 = new Curve();
-            curve1.drawImgs(_this.gpsRandom,'GPS+CAN','up',_this.i,[130, 142], [320, 58],'#6ec9fd');
-            _this.i++;
-          }
-          if(bsmData.length>0){
-            let curve2 = new Curve();
-            curve2.drawImgs(_this.canRandom,'BSM','up',_this.k,[130, 142], [320, 58],'#3db765');
-            _this.k++;
-          }
+            if(data.length>0) {
+              data.forEach(function (item) {
+                if (item.type == 'GPS+CAN') {
+                  canGpsData.push(item);
+                }
+                if (item.type == 'BSM') {
+                  bsmData.push(item);
+                }
+                if (item.type == 'PER') {
+                  perData.push(item);
+                }
+                if (item.type == 'EVENT') {
+                  eventData.push(item);
+                }
+                if (item.type == 'SPAT') {
+                  spatData.push(item);
+                }
+                if (item.type == 'RSM/RCU') {
+                  rsmData.push(item);
+                }
+              
+              })
 
-          if(perData.length>0){
-            let curve3 = new Curve();
-            curve3.drawImgs(_this.perRandom,'PER','up',_this.m,[130, 142], [320, 58],'#d47b24');
-            _this.m++;
-          }
-
-          if(eventData.length>0){
-            let curve4 = new Curve();
-            curve4.drawImgs(_this.eventRandom,'EVENT','up',_this.n,[130, 142], [320, 58],'#59d44f');
-            _this.n++;
-          }
-
-       
-
-          if(spatData.length>0){
-            let downCurve1 = new Curve();
-            downCurve1.drawImgs("-"+_this.spatRandom,'SPAT','down',_this.j,[552, 150],[356, 60],'#59d44f');//信号灯
-            _this.j++;
-          }
-
-          if(rsmData.length>0){
-            let downCurve2 = new Curve();
-            downCurve2.drawImgs(_this.rsmRandom,'RSM/RCU','down',_this.r,[552, 150],[356, 60],'#8a46f1');
-            _this.r++;
-          }
-
-         
+              if(canGpsData.length>0){
+                // let curve1 = new Curve();
+                this.curve1.drawImgs(_this.gpsRandom,'GPS+CAN','up',_this.i,[130, 142], [320, 58],'#6ec9fd');
+                _this.i++;
+              }
+              if(bsmData.length>0){
+                // let curve2 = new Curve();
+                this.curve2.drawImgs(_this.canRandom,'BSM','up',_this.k,[130, 142], [320, 58],'#3db765');
+                _this.k++;
+              }
+              if(perData.length>0){
+                // let curve3 = new Curve();
+                this.curve3.drawImgs(_this.perRandom,'PER','up',_this.m,[130, 142], [320, 58],'#d47b24');
+                _this.m++;
+              }
+              if(eventData.length>0){
+                // let curve4 = new Curve();
+                this.curve4.drawImgs(_this.eventRandom,'EVENT','up',_this.n,[130, 142], [320, 58],'#59d44f');
+                _this.n++;
+              }
+              if(spatData.length>0){
+                // let downCurve1 = new Curve();
+                this.downCurve1.drawImgs("-"+_this.spatRandom,'SPAT','down',_this.j,[552, 150],[356, 60],'#59d44f');//信号灯
+                _this.j++;
+              }
+              if(rsmData.length>0){
+                // let downCurve2 = new Curve();
+                this.downCurve2.drawImgs(_this.rsmRandom,'RSM/RCU','down',_this.r,[552, 150],[356, 60],'#8a46f1');
+                _this.r++;
+              }
+ 
+            }
+            this.vehicleDataCountNum = 0;
         }
+        this.vehicleDataCountNum++;
       }
     },
     mounted () {
@@ -507,43 +506,45 @@
       _this.speedChart = $echarts.init(document.getElementById('speedChart'));
       _this.accelerateChart = $echarts.init(document.getElementById('accelerateChart'));
       //开始画gps的第一条线
-      let curve1 = new Curve();
-      curve1.drawLines(_this.upRandom,'#d47b24','up',0,[130, 142], [320, 58]);
-      curve1.drawImgs(_this.upRandom,'GPS+CAN','up',12,[130, 142], [320, 58],'#6ec9fd');
+      this.curve1 = new Curve();
+      this.curve1.drawLines(_this.upRandom,'#d47b24','up',0,[130, 142], [320, 58]);
+      this.curve1.drawImgs(_this.upRandom,'GPS+CAN','up',12,[130, 142], [320, 58],'#6ec9fd');
       _this.gpsRandom = _this.upRandom;
       _this.upRandom=_this.upRandom+0.15;
       //开始画can的第一条线
-      let curve2 = new Curve();
-      curve2.drawLines(_this.upRandom,'#2acdc2','up',1,[130, 142], [320, 58]);
-      curve2.drawImgs(_this.upRandom,'BSM','up',13,[130, 142], [320, 58],'#3db765');
+      this.curve2 = new Curve();
+      this.curve2.drawLines(_this.upRandom,'#2acdc2','up',1,[130, 142], [320, 58]);
+      this.curve2.drawImgs(_this.upRandom,'BSM','up',13,[130, 142], [320, 58],'#3db765');
       _this.canRandom = _this.upRandom;
       _this.upRandom=_this.upRandom+0.15;
       //开始画perception的第一条线
-      let curve3 = new Curve();
-      curve3.drawLines(_this.upRandom,'#d3d12d','up',2,[130, 142], [320, 58]);
-      curve3.drawImgs(_this.upRandom,'PER','up',14,[130, 142], [320, 58],'#d47b24');
+      this.curve3 = new Curve();
+      this.curve3.drawLines(_this.upRandom,'#d3d12d','up',2,[130, 142], [320, 58]);
+      this.curve3.drawImgs(_this.upRandom,'PER','up',14,[130, 142], [320, 58],'#d47b24');
       _this.perRandom = _this.upRandom;
       _this.upRandom=_this.upRandom+0.15;
       //开始画event的第一条线
-      let curve4 = new Curve();
-      curve4.drawLines(_this.upRandom,'#595450','up',3,[130, 142], [320, 58]);
-      curve4.drawImgs(_this.upRandom,'EVENT','up',15,[130, 142], [320, 58],'#59d44f');
+      this.curve4 = new Curve();
+      this.curve4.drawLines(_this.upRandom,'#595450','up',3,[130, 142], [320, 58]);
+      this.curve4.drawImgs(_this.upRandom,'EVENT','up',15,[130, 142], [320, 58],'#59d44f');
       _this.eventRandom = _this.upRandom;
       _this.upRandom=_this.upRandom+0.15; 
       //开始画spat的第一条线
-      let downCurve1 = new Curve();
-      downCurve1.drawLines("-"+_this.downRandom,'#6ec9fd','down',0,[552, 150],[356, 60]);
-      downCurve1.drawImgs("-"+_this.downRandom,'SPAT','down',12, [552, 150],[356, 60],'#59d44f');//信号灯
+      this.downCurve1 = new Curve();
+      this.downCurve1.drawLines("-"+_this.downRandom,'#6ec9fd','down',0,[552, 150],[356, 60]);
+      this.downCurve1.drawImgs("-"+_this.downRandom,'SPAT','down',12, [552, 150],[356, 60],'#59d44f');//信号灯
       _this.spatRandom = _this.downRandom;
       _this.downRandom=_this.downRandom-0.45;
       //开始画rsm的第一条线
-      let downCurve2 = new Curve();
-      downCurve2.drawLines(_this.downRandom,'#8a46f1','down',1,[552, 150],[356, 60]);
-      downCurve2.drawImgs(_this.downRandom,'RSM/RCU','down',13,[552, 150],[356, 60],'#8a46f1');
+      this.downCurve2 = new Curve();
+      this.downCurve2.drawLines(_this.downRandom,'#8a46f1','down',1,[552, 150],[356, 60]);
+      this.downCurve2.drawImgs(_this.downRandom,'RSM/RCU','down',13,[552, 150],[356, 60],'#8a46f1');
       _this.rsmRandom = _this.downRandom;
       _this.downRandom=_this.downRandom-0.45;
 
-      _this.realReportWebSocket();
+      setTimeout(() => {
+          _this.realReportWebSocket();
+      }, 1000);
     },
     destroyed(){
       //销毁Socket

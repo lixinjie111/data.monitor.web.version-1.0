@@ -516,8 +516,10 @@
                 this.setMassMarker(_filterData,"addLightMarker");
 
           }     
-          this.clearLightTimer = setTimeout(() => {      
-            this.addLightMarker.setData([]);
+          this.clearLightTimer = setTimeout(() => {  
+            if(this.addLightMarker){
+               this.addLightMarker.setData([]);
+            }     
           }, 3000);       
       },
       initLightWebSocket(){
