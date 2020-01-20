@@ -6,6 +6,13 @@
         <img src="@/assets/images/car/car-7.png" class="img1"/>
         <img src="@/assets/images/car/car-8.png" class="img2"/>
         <img src="@/assets/images/car/car-22.png" class="img3"/>
+        <div id="GPS+CAN" :class="showgpsPoint ? 'ball run-gps' : 'ball'"></div>
+        <div id="BSM" :class="showbsmPoint ? 'ball run-bsm' : 'ball'"></div>
+        <div id="PER" :class="showperPoint ? 'ball run-per' : 'ball'"></div>
+        <div id="EVENT" :class="showeventPoint ? 'ball run-event' : 'ball'"></div>
+        <div id="SPAT" :class="showspatPoint ? 'ball run-spat' : 'ball'"></div>
+        <div id="RSM/RCU" :class="showrsmPoint ? 'ball run-rsm' : 'ball'"></div>
+
         <canvas id="up0" class="upCanvas"></canvas>
         <canvas id="upImg0" class="upCanvas"></canvas>
         <img id="upPlan0" src="@/assets/images/car/circle.png" style="display: none;">
@@ -18,23 +25,6 @@
         <canvas id="up3" class="upCanvas" ></canvas>
         <canvas id="upImg3" class="upCanvas"></canvas>
         <img id="upPlan3" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="upImg4" class="upCanvas"></canvas>
-        <img id="upPlan4" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="upImg5" class="upCanvas" ></canvas>
-        <img id="upPlan5" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="upImg6" class="upCanvas" ></canvas>
-        <img id="upPlan6" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="upImg7" class="upCanvas" ></canvas>
-        <img id="upPlan7" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="upImg8" class="upCanvas" ></canvas>
-        <img id="upPlan8" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="upImg9" class="upCanvas"></canvas>
-        <img id="upPlan9" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="upImg10" class="upCanvas" ></canvas>
-        <img id="upPlan10" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="upImg11" class="upCanvas"></canvas>
-        <img id="upPlan11" src="@/assets/images/car/circle.png" style="display: none;">
-
         <canvas id="upImg12" class="upCanvas"></canvas>
         <img id="upPlan12" src="@/assets/images/car/circle.png" style="display: none;" >
         <canvas id="upImg13" class="upCanvas"></canvas>
@@ -44,46 +34,16 @@
         <canvas id="upImg15" class="upCanvas"></canvas>
         <img id="upPlan15" src="@/assets/images/car/circle.png" style="display: none;">
       
-
-
-
         <canvas id="down0" class="downCanvas" ></canvas>
         <canvas id="downImg0" class="downCanvas" ></canvas>
         <img id="downPlan0" src="@/assets/images/car/circle.png" style="display: none;">
         <canvas id="down1" class="downCanvas" ></canvas>
-        <canvas id="down1" class="downCanvas" ></canvas>
         <canvas id="downImg1" class="downCanvas" ></canvas>
         <img id="downPlan1" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="down2" class="downCanvas"></canvas>
-        <canvas id="downImg2" class="downCanvas"></canvas>
-        <img id="downPlan2" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="down3" class="downCanvas"></canvas>
-        <canvas id="downImg3" class="downCanvas"></canvas>
-        <img id="downPlan3" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="downImg4" class="downCanvas"></canvas>
-        <img id="downPlan4" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="downImg5" class="downCanvas"></canvas>
-        <img id="downPlan5" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="downImg6" class="downCanvas"></canvas>
-        <img id="downPlan6" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="downImg7" class="downCanvas"></canvas>
-        <img id="downPlan7" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="downImg8" class="downCanvas" ></canvas>
-        <img id="downPlan8" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="downImg9" class="downCanvas" ></canvas>
-        <img id="downPlan9" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="downImg10" class="downCanvas" ></canvas>
-        <img id="downPlan10" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="downImg11" class="downCanvas" ></canvas>
-        <img id="downPlan11" src="@/assets/images/car/circle.png" style="display: none;">
-
         <canvas id="downImg12" class="downCanvas" ></canvas>
         <img id="downPlan12" src="@/assets/images/car/circle.png" style="display: none;">
         <canvas id="downImg13" class="downCanvas"></canvas>
         <img id="downPlan13" src="@/assets/images/car/circle.png" style="display: none;">
-        <canvas id="downImg14" class="downCanvas"></canvas>
-        <img id="downPlan14" src="@/assets/images/car/circle.png" style="display: none;" >
-
       </div>
       <div class="legend-style">
         <p><span class="legend-size" style="background: #d47b24"></span>GPS+CAN</p>
@@ -113,38 +73,29 @@
     data () {
       return {
         vehicleId: this.$route.params.vehicleId,
-
         speedChart:{},
         accelerateChart:{},
         xData:[],
         data:[NaN,NaN,NaN,NaN,NaN],
         accelerateData:[NaN,NaN,NaN,NaN,NaN],
         isStop: false,
-
         container:{},
         reportWebSocket:{},
-
-        i:0,
-        k:3,
-        m : 6,
-        n :9,
-        
-
-        j:0,
-        r :4,
         upRandom:0.1,
         canRandom:0,
         gpsRandom:0,
         perRandom:0,
         eventRandom:0,
-
         downRandom:0.15,
         spatRandom:0,
         rsmRandom:0,
-
-        n1:0,
-        vehicleDataCountNum:0
-
+        vehicleDataCountNum:0,
+        showgpsPoint:false,
+        showbsmPoint:false,
+        showperPoint:false,
+        showeventPoint:false,
+        showspatPoint :false,
+        showrsmPoint:false,
       }
     },
     props:{
@@ -405,94 +356,40 @@
       },
       onReportMessage(message){
 
-        if(this.vehicleDataCountNum > 4){
+        if(this.vehicleDataCountNum > 3){
             let _this=this;
             var json = JSON.parse(message.data);
-            var data = json.result.reportItems;    
-            _this.n1++;
-
-            var canGpsData=[];
-            var bsmData=[];
-            var perData=[];
-            var eventData=[];
-
-            var spatData = [];
-            var rsmData = [];
-
-            if(_this.i>=3){
-              _this.i=0;
-            }
-            if(_this.k>=6){
-              _this.k=3;
-            }
-            if(_this.m>=9){
-              _this.m=6;
-            }
-            if(_this.n>=12){
-              _this.n=9;
-            }
-          
-            if(_this.j>=4){
-              _this.j=0;
-            }
-            if(_this.r>=8){
-              _this.r=4;
-            }
-
+            var data = json.result.reportItems;   
+             
             if(data.length>0) {
               data.forEach(function (item) {
                 if (item.type == 'GPS+CAN') {
-                  canGpsData.push(item);
+                  _this.showgpsPoint = true;
                 }
                 if (item.type == 'BSM') {
-                  bsmData.push(item);
+                  _this.showbsmPoint = true;
                 }
                 if (item.type == 'PER') {
-                  perData.push(item);
+                  _this.showperPoint = true;
                 }
                 if (item.type == 'EVENT') {
-                  eventData.push(item);
+                  _this.showeventPoint = true;
                 }
                 if (item.type == 'SPAT') {
-                  spatData.push(item);
+                  _this.showspatPoint = true;
                 }
                 if (item.type == 'RSM/RCU') {
-                  rsmData.push(item);
-                }
-              
+                  _this.showrsmPoint = true;
+                }  
               })
-
-              if(canGpsData.length>0){
-                // let curve1 = new Curve();
-                this.curve1.drawImgs(_this.gpsRandom,'GPS+CAN','up',_this.i,[130, 142], [320, 58],'#6ec9fd');
-                _this.i++;
-              }
-              if(bsmData.length>0){
-                // let curve2 = new Curve();
-                this.curve2.drawImgs(_this.canRandom,'BSM','up',_this.k,[130, 142], [320, 58],'#3db765');
-                _this.k++;
-              }
-              if(perData.length>0){
-                // let curve3 = new Curve();
-                this.curve3.drawImgs(_this.perRandom,'PER','up',_this.m,[130, 142], [320, 58],'#d47b24');
-                _this.m++;
-              }
-              if(eventData.length>0){
-                // let curve4 = new Curve();
-                this.curve4.drawImgs(_this.eventRandom,'EVENT','up',_this.n,[130, 142], [320, 58],'#59d44f');
-                _this.n++;
-              }
-              if(spatData.length>0){
-                // let downCurve1 = new Curve();
-                this.downCurve1.drawImgs("-"+_this.spatRandom,'SPAT','down',_this.j,[552, 150],[356, 60],'#59d44f');//信号灯
-                _this.j++;
-              }
-              if(rsmData.length>0){
-                // let downCurve2 = new Curve();
-                this.downCurve2.drawImgs(_this.rsmRandom,'RSM/RCU','down',_this.r,[552, 150],[356, 60],'#8a46f1');
-                _this.r++;
-              }
- 
+              setTimeout(()=>{
+                _this.showgpsPoint = false;
+                _this.showbsmPoint = false;
+                _this.showperPoint = false;
+                _this.showeventPoint = false;
+                _this.showspatPoint = false;
+                _this.showrsmPoint = false;
+              },3000)
             }
             this.vehicleDataCountNum = 0;
         }
@@ -542,9 +439,8 @@
       _this.rsmRandom = _this.downRandom;
       _this.downRandom=_this.downRandom-0.45;
 
-      setTimeout(() => {
-          _this.realReportWebSocket();
-      }, 1000);
+      _this.realReportWebSocket();
+   
     },
     destroyed(){
       //销毁Socket
@@ -598,18 +494,21 @@
     left:100px;
     top: 140px;
     width: 36px;
+    z-index: 999;
   }
   .img2{
     position: absolute;
     left: 310px;
     top: 35px;
     width: 55px;
+    z-index: 999;
   }
   .img3{
     position: absolute;
     left: 550px;
     top: 145px;
     width: 30px;
+    z-index: 999;
   }
   .speed-chart{
     width: 250px;
@@ -662,4 +561,94 @@
     display: inline-block;
     margin-right: 6px;
   }
+
+
+.ball{
+  height: 6px;
+  width: 6px;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 48px;
+  left: 122px;
+  z-index: 10;
+  background: #41C66D;
+  box-shadow: 0px 0px 5px #ccc;
+  opacity: 0
+}
+
+@keyframes run-right-top {
+  0% {
+    bottom: 48px; 
+    opacity: 1
+  }
+  100% {
+    bottom: 140px;
+    opacity: 1
+  }
+}
+
+@keyframes run-right-right {
+  0% {
+    left: 122px;
+    opacity: 1
+  }
+  100% {
+    left: 310px;
+    opacity: 1
+  }
+}
+@keyframes run-left-top {
+  0% {
+    bottom: 48px;
+    opacity: 1
+  }
+  100% {
+    bottom: 140px;
+    opacity: 1
+  }
+}
+
+@keyframes run-left-right {
+  0% {
+    left: 545px;
+    opacity: 1
+  }
+  100% {
+    left: 340px;
+    opacity: 1
+  }
+}
+
+   .run-event{
+    display: block;
+    animation: run-right-right 2s 0s 1 linear, run-right-top 2s 0s 1 cubic-bezier(.14,.66,0.35,1.61);
+    animation-fill-mode: none;   
+  }
+   .run-per{
+    display: block;
+    animation: run-right-right 2s 0s 1 linear, run-right-top 2s 0s 1 cubic-bezier(.18,.63,0.38,1.27);
+    animation-fill-mode: none;    
+  }
+  .run-bsm{
+    display: block;
+    animation: run-right-right 2s 0s 1 linear, run-right-top 2s 0s 1 cubic-bezier(0.15,.47,0.5,1);
+    animation-fill-mode: none;   
+  }
+   .run-gps{
+    display: block;
+    animation: run-right-right 2s 0s 1 linear, run-right-top 2s 0s 1 cubic-bezier(.14,.34,.78,.93);
+    animation-fill-mode: none;  
+  }
+  .run-spat{
+    display: block;
+    animation: run-left-right 2s 0s 1 linear, run-left-top 2s 0s 1 cubic-bezier(.12,.38,0.22,1);
+    animation-fill-mode: none;    
+  }
+  .run-rsm{
+    display: block;
+    animation: run-left-right 2s 0s 1 linear, run-left-top 2s 0s 1 cubic-bezier(.15,.4,.56,.88);
+    animation-fill-mode: none;    
+  }
+
+
 </style>
