@@ -6,12 +6,14 @@
         <img src="@/assets/images/car/car-7.png" class="img1"/>
         <img src="@/assets/images/car/car-8.png" class="img2"/>
         <img src="@/assets/images/car/car-22.png" class="img3"/>
-        <div id="GPS+CAN" :class="showgpsPoint ? 'ball run-gps' : 'ball'"></div>
-        <div id="BSM" :class="showbsmPoint ? 'ball run-bsm' : 'ball'"></div>
-        <div id="PER" :class="showperPoint ? 'ball run-per' : 'ball'"></div>
-        <div id="EVENT" :class="showeventPoint ? 'ball run-event' : 'ball'"></div>
-        <div id="SPAT" :class="showspatPoint ? 'ball run-spat' : 'ball'"></div>
-        <div id="RSM/RCU" :class="showrsmPoint ? 'ball run-rsm' : 'ball'"></div>
+
+        <div  v-for="(item,index) in showgpsPointList" :class="item.showPoint ? 'ball run-gps' : 'ball'" ></div>
+        <div  v-for="(item,index) in showbsmPointList" :class="item.showPoint ? 'ball run-bsm' : 'ball'" ></div>
+        <div  v-for="(item,index) in showperPointList" :class="item.showPoint ? 'ball run-per' : 'ball'" ></div>
+        <div  v-for="(item,index) in showeventPointList" :class="item.showPoint ? 'ball run-event' : 'ball'" ></div>
+        <div  v-for="(item,index) in showspatPointList" :class="item.showPoint ? 'ball run-spat' : 'ball'" ></div>
+        <div  v-for="(item,index) in showrsmPointList" :class="item.showPoint ? 'ball run-rsm' : 'ball'" ></div>
+
 
         <canvas id="up0" class="upCanvas"></canvas>
         <canvas id="upImg0" class="upCanvas"></canvas>
@@ -90,12 +92,12 @@
         spatRandom:0,
         rsmRandom:0,
         vehicleDataCountNum:0,
-        showgpsPoint:false,
-        showbsmPoint:false,
-        showperPoint:false,
-        showeventPoint:false,
-        showspatPoint :false,
-        showrsmPoint:false,
+        showgpsPointList:[],
+        showbsmPointList:[],
+        showperPointList:[],
+        showeventPointList:[],
+        showspatPointList:[],
+        showrsmPointList:[],
       }
     },
     props:{
@@ -110,6 +112,62 @@
       vehWsData(newVal,oldVal){
         this.onmessage(newVal);
       },
+    },
+    mounted () {
+      let pointArr = ['showgpsPointList','showbsmPointList','showperPointList','showeventPointList','showspatPointList','showrsmPointList',]
+      pointArr.map((x)=>{
+        for (let i = 0; i < 6; i++) {
+          this[x].push({
+             showPoint:false,
+             timer:null
+          });
+        }
+      });
+
+      var _this = this;
+      _this.container = document.getElementById('canvasContainer');
+      //速度和加速度
+      _this.speedChart = $echarts.init(document.getElementById('speedChart'));
+      _this.accelerateChart = $echarts.init(document.getElementById('accelerateChart'));
+      //开始画gps的第一条线
+      this.curve1 = new Curve();
+      this.curve1.drawLines(_this.upRandom,'#d47b24','up',0,[130, 142], [320, 58]);
+      this.curve1.drawImgs(_this.upRandom,'GPS+CAN','up',12,[130, 142], [320, 58],'#6ec9fd');
+      _this.gpsRandom = _this.upRandom;
+      _this.upRandom=_this.upRandom+0.15;
+      //开始画can的第一条线
+      this.curve2 = new Curve();
+      this.curve2.drawLines(_this.upRandom,'#2acdc2','up',1,[130, 142], [320, 58]);
+      this.curve2.drawImgs(_this.upRandom,'BSM','up',13,[130, 142], [320, 58],'#3db765');
+      _this.canRandom = _this.upRandom;
+      _this.upRandom=_this.upRandom+0.15;
+      //开始画perception的第一条线
+      this.curve3 = new Curve();
+      this.curve3.drawLines(_this.upRandom,'#d3d12d','up',2,[130, 142], [320, 58]);
+      this.curve3.drawImgs(_this.upRandom,'PER','up',14,[130, 142], [320, 58],'#d47b24');
+      _this.perRandom = _this.upRandom;
+      _this.upRandom=_this.upRandom+0.15;
+      //开始画event的第一条线
+      this.curve4 = new Curve();
+      this.curve4.drawLines(_this.upRandom,'#595450','up',3,[130, 142], [320, 58]);
+      this.curve4.drawImgs(_this.upRandom,'EVENT','up',15,[130, 142], [320, 58],'#59d44f');
+      _this.eventRandom = _this.upRandom;
+      _this.upRandom=_this.upRandom+0.15; 
+      //开始画spat的第一条线
+      this.downCurve1 = new Curve();
+      this.downCurve1.drawLines("-"+_this.downRandom,'#6ec9fd','down',0,[552, 150],[356, 60]);
+      this.downCurve1.drawImgs("-"+_this.downRandom,'SPAT','down',12, [552, 150],[356, 60],'#59d44f');//信号灯
+      _this.spatRandom = _this.downRandom;
+      _this.downRandom=_this.downRandom-0.45;
+      //开始画rsm的第一条线
+      this.downCurve2 = new Curve();
+      this.downCurve2.drawLines(_this.downRandom,'#8a46f1','down',1,[552, 150],[356, 60]);
+      this.downCurve2.drawImgs(_this.downRandom,'RSM/RCU','down',13,[552, 150],[356, 60],'#8a46f1');
+      _this.rsmRandom = _this.downRandom;
+      _this.downRandom=_this.downRandom-0.45;
+
+      _this.realReportWebSocket();
+   
     },
     methods: {
       getSpeedChart(){
@@ -355,93 +413,46 @@
         this.reportWebSocket = new WebSocketObj(this, window.config.websocketUrl, _params, this.onReportMessage);
       },
       onReportMessage(message){
-
-        if(this.vehicleDataCountNum > 3){
             let _this=this;
             var json = JSON.parse(message.data);
-            var data = json.result.reportItems;   
-             
+            var data = json.result.reportItems;     
             if(data.length>0) {
               data.forEach(function (item) {
                 if (item.type == 'GPS+CAN') {
-                  _this.showgpsPoint = true;
+                  _this.setPointData('showgpsPointList');
                 }
                 if (item.type == 'BSM') {
-                  _this.showbsmPoint = true;
+                  _this.setPointData('showbsmPointList');
                 }
                 if (item.type == 'PER') {
-                  _this.showperPoint = true;
+                  _this.setPointData('showperPointList');
                 }
                 if (item.type == 'EVENT') {
-                  _this.showeventPoint = true;
+                  _this.setPointData('showeventPointList');
                 }
                 if (item.type == 'SPAT') {
-                  _this.showspatPoint = true;
+                  _this.setPointData('showspatPointList');
                 }
                 if (item.type == 'RSM/RCU') {
-                  _this.showrsmPoint = true;
+                  _this.setPointData('showrsmPointList');
                 }  
               })
-              setTimeout(()=>{
-                _this.showgpsPoint = false;
-                _this.showbsmPoint = false;
-                _this.showperPoint = false;
-                _this.showeventPoint = false;
-                _this.showspatPoint = false;
-                _this.showrsmPoint = false;
-              },3000)
             }
-            this.vehicleDataCountNum = 0;
-        }
-        this.vehicleDataCountNum++;
+      },
+      setPointData(pointName){
+          for (let i = 0; i < this[pointName].length; i++) {
+              if(!this[pointName][i].showPoint){
+                this[pointName][i].showPoint = true;
+                this[pointName][i].timer = setTimeout(() => {
+                  this[pointName][i].showPoint = false;
+                }, 3000);
+                return;
+              }
+          }
       }
+     
     },
-    mounted () {
-      var _this = this;
-      _this.container = document.getElementById('canvasContainer');
-      //速度和加速度
-      _this.speedChart = $echarts.init(document.getElementById('speedChart'));
-      _this.accelerateChart = $echarts.init(document.getElementById('accelerateChart'));
-      //开始画gps的第一条线
-      this.curve1 = new Curve();
-      this.curve1.drawLines(_this.upRandom,'#d47b24','up',0,[130, 142], [320, 58]);
-      this.curve1.drawImgs(_this.upRandom,'GPS+CAN','up',12,[130, 142], [320, 58],'#6ec9fd');
-      _this.gpsRandom = _this.upRandom;
-      _this.upRandom=_this.upRandom+0.15;
-      //开始画can的第一条线
-      this.curve2 = new Curve();
-      this.curve2.drawLines(_this.upRandom,'#2acdc2','up',1,[130, 142], [320, 58]);
-      this.curve2.drawImgs(_this.upRandom,'BSM','up',13,[130, 142], [320, 58],'#3db765');
-      _this.canRandom = _this.upRandom;
-      _this.upRandom=_this.upRandom+0.15;
-      //开始画perception的第一条线
-      this.curve3 = new Curve();
-      this.curve3.drawLines(_this.upRandom,'#d3d12d','up',2,[130, 142], [320, 58]);
-      this.curve3.drawImgs(_this.upRandom,'PER','up',14,[130, 142], [320, 58],'#d47b24');
-      _this.perRandom = _this.upRandom;
-      _this.upRandom=_this.upRandom+0.15;
-      //开始画event的第一条线
-      this.curve4 = new Curve();
-      this.curve4.drawLines(_this.upRandom,'#595450','up',3,[130, 142], [320, 58]);
-      this.curve4.drawImgs(_this.upRandom,'EVENT','up',15,[130, 142], [320, 58],'#59d44f');
-      _this.eventRandom = _this.upRandom;
-      _this.upRandom=_this.upRandom+0.15; 
-      //开始画spat的第一条线
-      this.downCurve1 = new Curve();
-      this.downCurve1.drawLines("-"+_this.downRandom,'#6ec9fd','down',0,[552, 150],[356, 60]);
-      this.downCurve1.drawImgs("-"+_this.downRandom,'SPAT','down',12, [552, 150],[356, 60],'#59d44f');//信号灯
-      _this.spatRandom = _this.downRandom;
-      _this.downRandom=_this.downRandom-0.45;
-      //开始画rsm的第一条线
-      this.downCurve2 = new Curve();
-      this.downCurve2.drawLines(_this.downRandom,'#8a46f1','down',1,[552, 150],[356, 60]);
-      this.downCurve2.drawImgs(_this.downRandom,'RSM/RCU','down',13,[552, 150],[356, 60],'#8a46f1');
-      _this.rsmRandom = _this.downRandom;
-      _this.downRandom=_this.downRandom-0.45;
-
-      _this.realReportWebSocket();
-   
-    },
+  
     destroyed(){
       //销毁Socket
       this.reportWebSocket&&this.reportWebSocket.webSocket.close();
