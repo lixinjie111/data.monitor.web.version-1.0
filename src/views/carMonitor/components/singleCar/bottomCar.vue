@@ -505,21 +505,21 @@
     left:100px;
     top: 140px;
     width: 36px;
-    z-index: 999;
+    z-index: 99;
   }
   .img2{
     position: absolute;
     left: 310px;
     top: 35px;
     width: 55px;
-    z-index: 999;
+    z-index: 99;
   }
   .img3{
     position: absolute;
     left: 550px;
     top: 145px;
     width: 30px;
-    z-index: 999;
+    z-index: 99;
   }
   .speed-chart{
     width: 250px;
