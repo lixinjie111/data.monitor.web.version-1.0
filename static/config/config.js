@@ -18,8 +18,10 @@ window.config = {
     socketUrl:'ws://120.133.21.14:49999/ws',  //影子系统
     socketUrltest:'ws://172.17.1.16:19999/ws',  //影子系统
     
-    dlUrl: 'http://117.114.144.227:8085/', //迪路
-    dlWmsUrl: 'http://117.114.144.227:8080/', //迪路
+    // dlUrl: 'http://117.114.144.227:8085/', //迪路   外网被封临时改用内网
+    // dlWmsUrl: 'http://117.114.144.227:8080/', //迪路
+    dlUrl: 'http://10.0.1.22:8085/',
+    dlWmsUrl: 'http://10.0.1.22:8080/',
     iconPath: 'http://120.133.21.14:9090/file/pic/trafficPic/', // 设备icon图片
 
     
