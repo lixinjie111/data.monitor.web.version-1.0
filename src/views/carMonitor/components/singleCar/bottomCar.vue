@@ -2,7 +2,7 @@
 
   <div class="car-bottom">
     <div class="curve-container">
-      <div id="canvasContainer" class="curve-style">
+      <div id="canvasContainer" class="curve-style"  v-if="!isStop">
         <img src="@/assets/images/car/car-7.png" class="img1"/>
         <img src="@/assets/images/car/car-8.png" class="img2"/>
         <img src="@/assets/images/car/car-22.png" class="img3"/>

@@ -297,7 +297,8 @@
           this.getAlarmInformation();
           // 事件
           this.initWarningWebSocket();
-          this.initEventCancelWebSocket();
+          // rsi事件取消
+          // this.initEventCancelWebSocket();
           this.mountedFlag = false;
         }
       },
@@ -601,8 +602,7 @@
               "busType": "rsi"
             }
           };
-          // this.warningWebsocket = new WebSocketObj(this, window.config.socketUrl, _params, this.onEventCancelMessage);
-          this.eventCancelWebsocket = new WebSocketObj(this, window.config.socketUrltest, _params, this.onEventCancelMessage);
+          this.warningWebsocket = new WebSocketObj(this, window.config.socketUrl, _params, this.onEventCancelMessage);
       },
       onEventCancelMessage(message){
          let _this=this;
@@ -631,8 +631,7 @@
             "vehicleId": this.vehicleId
           }
         };
-        // this.warningWebsocket = new WebSocketObj(this, window.config.socketUrl, _params, this.onWarningMessage);
-        this.warningWebsocket = new WebSocketObj(this, window.config.socketUrltest, _params, this.onWarningMessage);
+        this.warningWebsocket = new WebSocketObj(this, window.config.socketUrl, _params, this.onWarningMessage);
       },
       onWarningMessage(mesasge){
         let _this=this;
