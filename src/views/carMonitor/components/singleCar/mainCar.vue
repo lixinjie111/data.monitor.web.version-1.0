@@ -298,7 +298,7 @@
           // 事件
           this.initWarningWebSocket();
           // rsi事件取消
-          // this.initEventCancelWebSocket();
+          this.initEventCancelWebSocket();
           this.mountedFlag = false;
         }
       },
@@ -822,6 +822,7 @@
                   }
               }
           }) 
+          console.log(this.warningData)
           this.setMassMarker(this.warningData,"addWarningMarker");
         }
       },
