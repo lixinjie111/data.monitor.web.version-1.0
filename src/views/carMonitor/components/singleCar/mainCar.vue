@@ -154,6 +154,7 @@
         deviceWebsocket:null,
         lightWebsocket:null,
         warningWebsocket:null,
+        eventCancelWebsocket:null,
         warningData:{},
         vehicleId: this.$route.params.vehicleId,
         whetherData:{},
@@ -615,7 +616,6 @@
                 "status":1
               }
           };
-          console.log(111111)
           _params = JSON.stringify(_params);
           this.eventCancelWebsocket.sendMsg(_params);
           if(_this.warningData[warningId]){
@@ -816,13 +816,11 @@
                       _this.cloudCount++;
                     
                     }else{
-                      console.log('------------------------------')
                       delete _this.warningData[warningId];
                     } 
                   }
               }
           }) 
-          console.log(this.warningData)
           this.setMassMarker(this.warningData,"addWarningMarker");
         }
       },
@@ -938,6 +936,8 @@
       this.deviceWebsocket&&this.deviceWebsocket.webSocket.close();
       this.lightWebsocket&&this.lightWebsocket.webSocket.close();
       this.warningWebsocket&&this.warningWebsocket.webSocket.close();
+      this.eventCancelWebsocket&&this.eventCancelWebsocket.webSocket.close();
+
     }
   }
 </script>
