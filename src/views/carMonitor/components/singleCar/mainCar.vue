@@ -602,7 +602,7 @@
               "busType": "rsi"
             }
           };
-          this.warningWebsocket = new WebSocketObj(this, window.config.socketUrl, _params, this.onEventCancelMessage);
+          this.eventCancelWebsocket = new WebSocketObj(this, window.config.socketUrl, _params, this.onEventCancelMessage);
       },
       onEventCancelMessage(message){
          let _this=this;
