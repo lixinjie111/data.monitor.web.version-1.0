@@ -50,7 +50,7 @@
               // _this.roadList = res.data;
               let _data = res.data;
               _data.forEach(item => {
-                item.iframeSrc = window.config.staticUrl+'cesium-map/modules/monPlatform/index.html';  
+                item.iframeSrc = window.config.iframeUrl+'cesium-map/modules/monPlatform/index.html';  
                 // item.iframeSrc =  'http://127.0.0.1:8080/modules/monPlatform/index.html';    
              });
               _this.roadList = _data;

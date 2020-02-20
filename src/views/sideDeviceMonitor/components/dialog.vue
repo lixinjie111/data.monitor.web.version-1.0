@@ -260,7 +260,7 @@ export default {
     }
   },
   beforeCreate(){
-    this.iframeSrc = window.config.staticUrl+'cesium-map/modules/monPlatform/index.html';      
+    this.iframeSrc = window.config.iframeUrl+'cesium-map/modules/monPlatform/index.html';      
     // this.iframeSrc =  'http://127.0.0.1:8082/modules/monPlatform/index.html';       
   },
   mounted() {

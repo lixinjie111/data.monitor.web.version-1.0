@@ -6,45 +6,20 @@ import router from './router'
 import store from './store';
 import Qs from 'qs'
 
-
-// Element-ui
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
-Vue.use(ElementUI)
-
 // 进度条
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-//导入video.js
-
-
-// import $ from 'jquery'
-//echarts
-// import echarts from 'echarts'
-// Vue.prototype.$echarts = echarts
-
-//高德地图
-// import VueAMap from "vue-amap";
-// Vue.use(VueAMap);
-
-// VueAMap.initAMapApiLoader({
-//   key: "8bf04484a44d846096c9ab84730e88b8",
-//   plugin: [
-//     "AMap.ElasticMarker"
-//   ],
-//   uiVersion: "1.0"
-// });
 
 // 权限
 import { setAuthInfo, getAdminId, getAuthInfo, removeAuthInfo } from '@/session/index.js';
-
-
 
 // 全局静态资源
 import './assets/css/reset.css';
 import './assets/scss/public.scss';
 import './assets/scss/element-ui-reset.scss';
 import './assets/icon-font/iconfont.css';
+
+import AddScriptJs from '@/assets/js/utils/addScriptJs';
 
 // 设置页面切换进度条
 NProgress.inc(0.2)
@@ -85,11 +60,15 @@ router.beforeEach((to, from, next) => {
     if(ADMINID) {//已登录
         // 回填用户信息
         store.dispatch('setAuthInfo', getAuthInfo());
-        if(to.path === '/login'){
-            next({path: '/dataMonitor'});
-        }else {
-            next();
-        }
+        AddScriptJs.add("gaodeMap", window.scriptJs.gaodeMapUrl, function() {
+            AddScriptJs.add("livePlayer", window.scriptJs.livePlayerUrl, function() {
+                if(to.path === '/login') {
+                    next({path: '/dataMonitor'});
+                }else {
+                    next();
+                }
+            });
+        });
     }else {//未登录
         if (whiteList.indexOf(to.path) !== -1) { // 在免登录白名单，直接进入
           next()

@@ -1,7 +1,7 @@
 window.config = {
 
     //望京 内网
-    // staticUrl: "http://172.17.1.16:9090/", //静态文件路径
+    // iframeUrl: "http://172.17.1.16:9090/", //静态文件路径
     // url: 'http://172.17.1.16:9093/monPlatApp/', //监控平台
     // operateUrl: 'http://172.17.1.16:9090/operateApp/',	//运营平台
     // websocketUrl:'ws://172.17.1.16:9982/mon',  //监控
@@ -11,19 +11,18 @@ window.config = {
     // iconPath: 'http://172.17.1.16:9090/file/pic/trafficPic/', // 设备icon图片
 
     //望京 外网
-    staticUrl: "http://120.133.21.14:9090/", //静态文件路径
+    iframeUrl: "http://120.133.21.14:9090/", //静态文件路径
     url: 'http://120.133.21.14:9093/monPlatApp/', //监控平台
     operateUrl: 'http://120.133.21.14:9090/operateApp/',    //运营平台
     websocketUrl:'ws://120.133.21.14:49982/mon',  //监控
     socketUrl:'ws://120.133.21.14:49999/ws',  //影子系统
-    socketUrltest:'ws://172.17.1.16:19999/ws',  //影子系统
     // dlUrl: 'http://117.114.144.227:8085/', //迪路   外网被封临时改用内网
     // dlWmsUrl: 'http://117.114.144.227:8080/', //迪路
     iconPath: 'http://120.133.21.14:9090/file/pic/trafficPic/', // 设备icon图片
-
+    socketUrltest:'ws://172.17.1.16:19999/ws',  //影子系统
     
     //测试环境 内网
-    // staticUrl: "http://10.0.1.181:9090/", //静态文件路径
+    // iframeUrl: "http://10.0.1.181:9090/", //静态文件路径
     // url: 'http://10.0.1.183:9093/monPlatApp/', //监控平台
     // operateUrl: 'http://10.0.1.181:9090/operateApp/',    //运营平台
     // websocketUrl:'ws://10.0.1.183:49982/mon',  //监控
@@ -33,7 +32,7 @@ window.config = {
     // iconPath: 'http://10.0.1.181:9090/file/pic/trafficPic/', // 设备icon图片
 
     //上海正式环境  外网
-    // staticUrl: "http://116.236.72.205:49092/", //静态文件路径 -- 影子服务器
+    // iframeUrl: "http://116.236.72.205:49092/", //静态文件路径 -- 影子服务器
     // url: 'http://116.236.72.206:49093/monPlatApp/', //监控平台
     // operateUrl: 'http://116.236.72.204:49090/operateApp/', //运营平台
     // websocketUrl:'ws://116.236.72.206:49982/mon',  //监控
@@ -44,6 +43,12 @@ window.config = {
 
     version: "1.2",       // 版本号
 }
+
+window.scriptJs = {
+    gaodeMapUrl: "https://webapi.amap.com/maps?v=1.4.14&key=8bf04484a44d846096c9ab84730e88b8&plugin=ElasticMarker,AMap.Geocoder,AMap.ToolBar,AMap.Scale",
+    livePlayerUrl: "http://39.105.52.139:8080/frontStatic/liveplayer/liveplayer-lib.min.js"
+};
+
 //地图额外配置项添加
 window.mapOption = {
     // center: [121.551976, 31.276054], //上海-高德地图坐标点
