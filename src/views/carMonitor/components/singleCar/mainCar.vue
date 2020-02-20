@@ -660,7 +660,7 @@
                       flag: true,
                       dist:dist,
                       message:v.data.warnMsg,
-                      icon:window.config.iconPath+'rsi_'+v.data.eventType.split('_')[1]+'.png',
+                      icon:window.config.iconPath+'rsi_'+v.data.alertType+'.png',
                       warnColor:v.data.warnColor
                     };
                     obj.timer=setTimeout(()=>{
@@ -694,7 +694,7 @@
                     if(!_this.warningData[warningId]){
                       _this.warningData[warningId] = {
                         position:position,
-                        icon: window.config.iconPath+'rsi_map_'+v.data.eventType.split("_")[1]+'.png',
+                        icon: window.config.iconPath+'rsi_map_'+v.data.alertType+'.png',
                         timer:setTimeout(() => {
                                 delete _this.warningData[warningId];
                               }, 3000)  
@@ -721,7 +721,7 @@
                         flag:true,
                         dist:dist,
                         message:v.data.warnMsg,
-                        icon:window.config.iconPath+'rsi_'+v.data.eventType.split('_')[1]+'.png',
+                        icon:window.config.iconPath+'rsi_'+v.data.alertType+'.png',
                         warnColor:v.data.warnColor
                       };
                       obj.timer=setTimeout(()=>{
@@ -744,7 +744,7 @@
                       }
                       _this.warningData[warningId] = {
                         position:position,
-                        icon: window.config.iconPath+'rsi_map_'+v.data.eventType.split("_")[1]+'.png',
+                        icon: window.config.iconPath+'rsi_map_'+v.data.alertType+'.png',
                         timer:setTimeout(() => {
                                 delete _this.warningData[warningId];
                               }, 3000)  
@@ -774,7 +774,7 @@
                       this.warningWebsocket.sendMsg(_params);
                         _this.warningData[warningId] = {
                           position:position,
-                          icon: window.config.iconPath+'rsi_map_'+v.data.eventType.split("_")[1]+'.png',
+                          icon: window.config.iconPath+'rsi_map_'+v.data.alertType+'.png',
                       }
                     
                       // 在预警信息中的内容不在右下角弹出 但是会在地图上打点     
@@ -798,7 +798,7 @@
                         flag:true,
                         dist:dist,
                         message:v.data.warnMsg,
-                        icon:window.config.iconPath+'rsi_'+v.data.eventType.split('_')[1]+'.png',
+                        icon:window.config.iconPath+'rsi_'+v.data.alertType+'.png',
                         warnColor:v.data.warnColor
                       };
                       obj.timer=setTimeout(()=>{
