@@ -368,6 +368,8 @@
             })
             source = source.substring(0,source.lastIndexOf(","));
           }
+             data.longitude = data.longitude ? data.longitude : 0;
+             data.latitude = data.latitude ? data.latitude : 0;
              let newPosition = ConvertCoord.wgs84togcj02(data.longitude, data.latitude);
               if(_this.isInit){
              
@@ -451,6 +453,8 @@
                 deviceData[k].map(item=>{
                     if(item.gpsTime > maxGpsTime){
                       maxGpsTime = item.gpsTime;
+                      item.longitude = item.longitude ? item.longitude : 0;
+                      item.latitude = item.latitude ? item.latitude : 0;
                       _filterData = {
                           vehicleId:item.vehicleId,
                           position:ConvertCoord.wgs84togcj02(item.longitude, item.latitude),
@@ -506,6 +510,8 @@
                 }
                 let _filterData = {};
                 deviceData.forEach((item, index) => {
+                   item.ptLon = item.ptLon ? item.ptLon : 0;
+                   item.ptLat = item.ptLat ? item.ptLat : 0;
                     _filterData[item.rsPtId] = {
                         position:ConvertCoord.wgs84togcj02(item.ptLon, item.ptLat),
                         marker: null,
@@ -542,6 +548,8 @@
                   if(_this.lightPrevData[item.spatId]){
                     clearTimeout(_this.lightPrevData[item.spatId].timer)
                   }
+                  item.longitude = item.longitude ? item.longitude : 0;
+                  item.latitude = item.latitude ? item.latitude : 0;
                   _filterData[item.spatId] = {
                       position:ConvertCoord.wgs84togcj02(item.longitude, item.latitude),
                       leftTime:item.leftTime,
@@ -688,6 +696,8 @@
                       longitude:v.data.longitude,
                       latitude:v.data.latitude
                     }
+                    v.data.longitude = v.data.longitude ? v.data.longitude : 0;
+                    v.data.latitude = v.data.latitude ? v.data.latitude : 0;
                     let position = ConvertCoord.wgs84togcj02(v.data.longitude, v.data.latitude);
                     //如果告警id不存在 右侧弹出  
 
@@ -758,6 +768,8 @@
                       longitude:v.data.longitude,
                       latitude:v.data.latitude
                     }
+                    v.data.longitude = v.data.longitude ? v.data.longitude : 0;
+                    v.data.latitude = v.data.latitude ? v.data.latitude : 0;
                     let position = ConvertCoord.wgs84togcj02(v.data.longitude, v.data.latitude);
                     //如果告警id不存在 右侧弹出  
 
