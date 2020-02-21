@@ -4,7 +4,6 @@
 import App from './App'
 import router from './router'
 import store from './store';
-import Qs from 'qs'
 
 // 进度条
 import NProgress from 'nprogress'
